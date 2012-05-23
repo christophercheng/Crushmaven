@@ -20,6 +20,7 @@ class CrusheeList(models.Model):
 class CrushRelationship(models.Model):
     # crushee is the user who is being desired
     crushee = models.ForeignKey(User,unique=True)
+    
     crushee_list = models.ForeignKey(CrusheeList)
 
     # a crush relationship can be in only one of the following states:
