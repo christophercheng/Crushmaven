@@ -10,43 +10,45 @@ urlpatterns = patterns('facebook.views',
     url(r'^facebook/authentication_callback$', 'authentication_callback'),                    
 )
 
-urlpatterns += patterns('crush.views',
+urlpatterns += patterns('crush',
                        
     # -- HOME PAGE --
     # guest vs. member processing done at view module
-    url(r'^$', 'home', name='home'),
+    url(r'^$', 'views_home.home', name='home'),
     
-    url(r'^home/$', 'home'),
+    url(r'^home/$', 'views.home'),
+    
+    url(r'^accounts/login/$', 'views.home'),
     
     # -- CRUSH SEARCH -- 
-    url(r'^search/$', 'search'),
+    url(r'^search/$', 'views.search'),
     
     # -- CRUSH LIST --
-    url(r'^crush_list/$', 'crush_list'),
+    url(r'^crush_list/$', 'views.crush_list'),
         
     # -- ADMIRER LIST --
-    url(r'^admirer_list/$', 'admirer_list'),
+    url(r'^admirer_list/$', 'views.admirer_list'),
     
     # -- NOT INTERESTED LIST --
-    url(r'^not_interested_list/$', 'not_interested_list'),
+    url(r'^not_interested_list/$', 'views.not_interested_list'),
     
     # -- ADMIRER LINEUP --
-    url(r'^admirer_lineup/$', 'admirer_lineup'),
+    url(r'^admirer_lineup/$', 'views.admirer_lineup'),
     
     # -- INVITE FRIENDS --
-    url(r'^invite/$', 'invite'),
+    url(r'^invite/$', 'views.invite'),
     
     # -- PROFILE --
-    url(r'^my_profile/$', 'my_profile'),
+    url(r'^my_profile/$', 'views.my_profile'),
 
     # -- CREDITS --
-    url(r'^my_credits/$', 'my_credits'),
+    url(r'^my_credits/$', 'views.my_credits'),
     
     # -- FAQ --
-    url(r'^FAQ/$', 'faq'),
+    url(r'^FAQ/$', 'views.faq'),
     
     # -- TERMS & CONDITIONS --
-    url(r'^terms/$', 'terms'),
+    url(r'^terms/$', 'views.terms'),
     
 )
 
