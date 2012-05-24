@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '../fbdater.sqlite',                      # Or path to database file if using sqlite3.
+        'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -109,7 +109,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "../templates"
+    "templates"
 )
 
 INSTALLED_APPS = (
@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'facebook',
     'crush',
 )
 
@@ -155,5 +156,14 @@ LOGGING = {
     }
 }
 
+# Facebook settings are set via environment variables
+FACEBOOK_APP_ID = '387261624645161' # Crush Discovery App on Facebook
+FACEBOOK_APP_SECRET = 'd08f30e546c10f68058ba0e6f09c3fbb'
+FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, email,publish_stream'
+
+AUTHENTICATION_BACKENDS = (
+    'facebook.backend.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 # define the custom user profile that is associated with django's User model
 AUTH_PROFILE_MODULE = "crush.UserProfile"
