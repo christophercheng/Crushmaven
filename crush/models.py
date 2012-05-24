@@ -94,18 +94,18 @@ class UserProfile(FacebookProfile):
                       (u'M', u'Male'),
                       (u'F', u'Female'),
                       )
-    gender = models.CharField(max_length=1, default='M', choices=GENDER_CHOICES, )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
     
     GENDER_PREF_CHOICES = (
                            (u'M',u'Male'),
                            (u'F',u'Female'),
                            (u'B',u'Both')
                            )
-    gender_pref=models.CharField(max_length=1, default='F', choices=GENDER_PREF_CHOICES)
+    gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES,null=True)
     
-    age = models.IntegerField(default=999)
-    age_pref_min=models.IntegerField(default=999)
-    age_pref_max=models.IntegerField(default=999)
+    age = models.IntegerField(null=True)
+    age_pref_min=models.IntegerField(null=True)
+    age_pref_max=models.IntegerField(null=True)
 
     # by default give every user X credits so that they can acquaint themselves with the payment process
     payment_credits = models.FloatField(default=3)

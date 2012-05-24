@@ -6,13 +6,14 @@ from django.template import RequestContext
 # handles both member and guest home page
 def home(request):
 #    return HttpResponse("You are at the home page.")
-    if request.user.is_anonymous():
-        return render(request,'home.html')
-    else:
+    if request.user.is_authenticated():
         facebook_profile = request.user.get_profile().get_facebook_profile()
         return render_to_response('home.html',
                               {'facebook_profile': facebook_profile},
                               context_instance=RequestContext(request))
+    else:
+        return render(request,'home.html')
+
 # -- Crush Search Page --
 def search(request):
     return HttpResponse("You are at the crush search page.")

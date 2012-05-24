@@ -1,7 +1,6 @@
-import urllib, json, urlparse, cgi
-# import cgi CHC cgi.parse_qa deprecated in pythong >=2.6
+import urllib, json, urlparse
 from django.conf import settings
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.db import IntegrityError
 #from django.core.urlresolvers import reverse CHC - reverse gives me problems
 
@@ -31,7 +30,7 @@ class FacebookBackend:
             access_token = response['access_token'][-1]
         # CHC they -1 index removes the start and end braces from the string, not sure why this works
         else:
-            return
+            return # no user so just stop the authentication process
         # Read the user's profile information
         fb_profile = urllib.urlopen(
                 'https://graph.facebook.com/me?access_token=%s' % access_token)
@@ -60,6 +59,18 @@ class FacebookBackend:
 
                 # Create the FacebookProfile
             fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
+            if fb_profile['gender']==u'male':
+                fb_user.gender=u'M'
+            elif fb_profile['gender']==u'female':
+                fb_user.gender=u'F'
+            if len(fb_profile['interested_in'])==1: 
+                if fb_profile['interested_in'][0]==u'female':
+                    fb_user.gender_pref=u'F'
+                else: 
+                    fb_user.gender_pref=u'M'
+            elif len(fb_profile['interested_in']) > 1:
+                fb_user.gender_pref=u'B'
+                
             fb_user.save()
 
         return user

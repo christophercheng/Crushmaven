@@ -23,6 +23,7 @@ def authentication_callback(request):
     code = request.GET.get('code')
     # call the django authentication middleware function
     user = authenticate(token=code, request=request)
-    auth_login(request, user)
+    if user!=None:
+        auth_login(request, user)
     #RETURN back to home directory
     return HttpResponseRedirect('/')

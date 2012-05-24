@@ -1,5 +1,7 @@
 # Django settings for fbdater project.
-
+import os
+# this will set the project path to /fbdater 
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__)) + '/..'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -12,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(PROJECT_PATH, 'fbdater.sqlite'),                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -109,7 +111,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "templates"
+    os.path.join(PROJECT_PATH, 'templates'), 
+    #"templates"
 )
 
 INSTALLED_APPS = (
