@@ -2,7 +2,7 @@
 import os, sys
 # this will set the project path to /fbdater 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
-print PROJECT_PATH
+
 sys.path.insert(0, PROJECT_PATH) 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -172,3 +172,4 @@ AUTHENTICATION_BACKENDS = (
 )
 # define the custom user profile that is associated with django's User model
 AUTH_PROFILE_MODULE = "crush.UserProfile"
+

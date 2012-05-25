@@ -14,7 +14,7 @@ urlpatterns += patterns('crush',
                        
     # -- HOME PAGE --
     # guest vs. member processing done at view module
-    url(r'^$', 'views_home.home', name='home'),
+    url(r'^$', 'views.home', name='home'),
     
     url(r'^home/$', 'views.home'),
     
