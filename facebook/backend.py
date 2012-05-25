@@ -30,7 +30,7 @@ class FacebookBackend:
             access_token = response['access_token'][-1]
         # CHC they -1 index removes the start and end braces from the string, not sure why this works
         else:
-            return # no user so just stop the authentication process
+            return None# no user so just stop the authentication process
         # Read the user's profile information
         fb_profile = urllib.urlopen(
                 'https://graph.facebook.com/me?access_token=%s' % access_token)

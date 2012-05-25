@@ -168,7 +168,7 @@ FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, em
 
 AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    #'django.contrib.auth.backends.ModelBackend',
 )
 # define the custom user profile that is associated with django's User model
 AUTH_PROFILE_MODULE = "crush.UserProfile"

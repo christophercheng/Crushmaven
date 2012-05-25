@@ -12,7 +12,7 @@
         <img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture" /><br />
         <pre>{{ facebook_profile|pprint }}</pre>
         {% else %}
-        <a href="/facebook/login/">Login via Facebook</a>
+        <a href="/facebook/login/"> <img src="https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png"></a>
         {% endif %}
         <hr />
         <a href="/admin/">Admin</a>
