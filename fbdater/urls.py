@@ -25,9 +25,12 @@ urlpatterns += patterns('crush',
     
     # -- CRUSH LIST --
     url(r'^crush_list/$', 'views.crush_list'),
+
+    # -- SECRET_ADMIRER LIST --
+    url(r'^secret_admirer_list/$', 'views.secret_admirer_list'),
         
-    # -- ADMIRER LIST --
-    url(r'^admirer_list/$', 'views.admirer_list'),
+    # -- NOT SO SECRET ADMIRER LIST --
+    url(r'^open_admirer_list/$', 'views.open_admirer_list'),
     
     # -- NOT INTERESTED LIST --
     url(r'^not_interested_list/$', 'views.not_interested_list'),

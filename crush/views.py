@@ -18,42 +18,75 @@ def home(request):
 # -- Crush Search Page --
 @login_required(redirect_field_name='/')
 def search(request):
-    return HttpResponse("You are at the crush search page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('search.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
+    
 
 # -- Crush List Page --
 @login_required
 def crush_list(request):
-    return HttpResponse("You are at the My Crush List page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('crush_list.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- Admirer List Page --
 @login_required
-def admirer_list(request):
-    return HttpResponse("You are at the My Admirer List page.")
+def secret_admirer_list(request):
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('secret_admirer_list.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
+
+# -- Not so Secret Admirer List Page --
+@login_required
+def open_admirer_list(request):
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('open_admirer_list.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- Not Interested List Page --
 @login_required
 def not_interested_list(request):
-    return HttpResponse("You are at the Not Interested List page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('not_interested_list.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- Admirer Lineup Page --
 @login_required
 def admirer_lineup(request):
-    return HttpResponse("You are at the Admirer Lineup page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('admirer_list.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- Invite Friends Page --
 @login_required
 def invite(request):
-    return HttpResponse("You are at the Invite Friends page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('invite.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- My Profile Page --
 @login_required
 def my_profile(request):
-    return HttpResponse("You are at the My Profile page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('my_profile.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- My Credits Page --
 @login_required
 def my_credits(request):
-    return HttpResponse("You are at the My Credits page.")
+    facebook_profile = request.user.get_profile().get_facebook_profile()
+    return render_to_response('my_credits.html',
+                              {'facebook_profile': facebook_profile},
+                              context_instance=RequestContext(request))
 
 # -- FAQ Page --
 def faq(request):
