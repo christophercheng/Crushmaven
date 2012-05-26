@@ -1,11 +1,5 @@
 {% load base_extras %}
-<html>
-    <head>
-        <title>Crush Discovery!</title>
-    </head>
-    <body>
-        <h1>Crush Discovery!</h1>
-{% if user.is_authenticated %}
+
 <div id="topbar">
 	<div class="navbar">
 		<div class="navbar-side navbar-left"></div>
@@ -38,20 +32,8 @@
 			<a class="{% navactive request 'my_credits' %}"
 				href="{% url crush.views.my_credits %}">Credits</a>
 
-			<a href="{% url django.contrib.auth.views.logout %}">Logout</a>
+			<a href="{% url crush.views.logout_view %}">Logout</a>
 		</div>	
 		<div class="navbar-side navbar-right"></div>
 	</div>
 </div>
-
-	<h2>You are logged in as: {{ user }}</h2>
-    <a href="/logout/">Logout</a>
-    <hr />
-    <h2>User info</h2>
-    <img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture" /><br />
-    <pre>{{ facebook_profile|pprint }}</pre>
-{% else %}
-    <a href="/facebook/login/"> <img src="https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png"></a>
-{% endif %}
-<hr />
-<a href="/admin/">Admin</a>

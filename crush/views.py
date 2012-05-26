@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 # -- Home Page --
 # handles both member and guest home page
@@ -87,6 +88,12 @@ def my_credits(request):
     return render_to_response('my_credits.html',
                               {'facebook_profile': facebook_profile},
                               context_instance=RequestContext(request))
+    
+# -- Logout --
+@login_required
+def logout_view(request):
+    logout(request)
+    return render(request,'home.html')
 
 # -- FAQ Page --
 def faq(request):

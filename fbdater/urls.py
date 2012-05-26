@@ -53,14 +53,15 @@ urlpatterns += patterns('crush',
     # -- TERMS & CONDITIONS --
     url(r'^terms/$', 'views.terms'),
     
+    # -- LOGOUT --
+    url(r'^logout_view/$', 'views.logout_view'),
+    
+    
 )
 
 urlpatterns += patterns('',
     # -- ADMIN PAGE -- #
     url(r'^admin/', include(admin.site.urls)),                        
-    url(r'^logout/$', 'django.contrib.auth.views.logout'),
-
-    
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
