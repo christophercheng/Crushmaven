@@ -56,7 +56,6 @@ urlpatterns += patterns('crush',
     # -- LOGOUT --
     url(r'^logout_view/$', 'views.logout_view'),
     
-    
 )
 
 urlpatterns += patterns('',

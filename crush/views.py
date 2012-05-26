@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -10,11 +10,11 @@ def home(request):
 #    return HttpResponse("You are at the home page.")
     if request.user.is_authenticated():
         facebook_profile = request.user.get_profile().get_facebook_profile()
-        return render_to_response('home.html',
+        return render_to_response('member_home.html',
                               {'facebook_profile': facebook_profile},
                               context_instance=RequestContext(request))
     else:
-        return render(request,'home.html')
+        return render(request,'guest_home.html')
 
 # -- Crush Search Page --
 @login_required(redirect_field_name='/')
@@ -93,7 +93,7 @@ def my_credits(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return render(request,'home.html')
+    return HttpResponseRedirect("/home/")
 
 # -- FAQ Page --
 def faq(request):
