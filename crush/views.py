@@ -3,6 +3,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.conf import settings
 
 # -- Home Page --
 # handles both member and guest home page
@@ -20,8 +21,17 @@ def home(request):
 @login_required(redirect_field_name='/')
 def search(request):
     facebook_profile = request.user.get_profile().get_facebook_profile()
+    # fb_redirect_uri is used by facebook request dialog to redirect back
+        # create it from scracth so that any get parameters (e.g. previously selected ID's) are removed
+    fb_redirect_uri='http://' + request.get_host()+'/search/'
+    crushee_id=''
+    if 'to[0]' in request.GET:
+        crushee_id=request.GET['to[0]']
     return render_to_response('search.html',
-                              {'facebook_profile': facebook_profile},
+                              {'facebook_profile': facebook_profile, 
+                               'facebook_app_id': settings.FACEBOOK_APP_ID, 
+                               'redirect_uri': fb_redirect_uri,
+                               'crushee_id':crushee_id},
                               context_instance=RequestContext(request))
     
 
