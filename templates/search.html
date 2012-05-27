@@ -2,27 +2,6 @@
 
 {% block content %}
 
- <div id="fb-root"></div>
-  <script>
-    (function() {
-      var e = document.createElement('script'); e.async = true;
-          e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-          document.getElementById('fb-root').appendChild(e);
-          }());
-  </script>
-  
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({ appId: {{facebook_app_id}}, 
-      status: true, 
-      cookie: true,
-      xfbml: true,
-      oauth: true});
- 
-     
-    };
-  </script>
-
   <a href="#" onclick="sendRequest();">Find Friend (via Javascript)</a><br>
   <script>
   function sendRequest() {
@@ -47,6 +26,9 @@
   }
   </script>
 
+{% if crushee_id %}
+WOW YOU HAVE A CRUSHEE: {{crushee_id}}
+{% endif %}
 <a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
 	message=Note: Your crush will not receive any notification.&
  	redirect_uri={{redirect_uri}}&max_recipients=1&title=Select a Friend To Add to your Crush List"> Find Friend (via direct)</a>

@@ -11,17 +11,17 @@ class CrushList(models.Model):
         # thus a many to many relationship between the crush list and the crushees
         # the special characteristics of each crush is described through the CrushRelationship class
     list_members = models.ManyToManyField(User, through='Relationship')
-    list_owner= models.OneToOneField(User, related_name='admirer') #the admirer
+    #list_owner= models.OneToOneField(User, related_name='admirer') #the admirer
 
-class MaybeList(CrushList):
+class MyMaybeList(CrushList):
     def __unicode__(self):
-        return str(self.list_owner.username) + ' Maybe List'
+        return str(self.list_owner.username) + ' My Maybe List'
 
-class FeaturedMaybeList(CrushList):
+class MyFeaturedMaybeList(CrushList):
     
     queued_admirers = models.ManyToManyField(User)
     def __unicode__(self):
-        return str(self.list_owner.username) + ' Featured Maybe List'  
+        return str(self.list_owner.username) + ' My Featured Maybe List'  
 
 class MyCrushList(CrushList):
     def __unicode__(self):
@@ -31,9 +31,9 @@ class MySecretAdmirerList(CrushList):
     def __unicode__(self):
         return str(self.list_owner.username) + ' My Secret Admirer List'  
     
-class MyNotSecretAdmirerList(CrushList):
+class MyOpenAdmirerList(CrushList):
     def __unicode__(self):
-        return str(self.list_owner.username) + ' My Not Secret List'  
+        return str(self.list_owner.username) + ' My Open Admirer List'  
     
 class MyNotInterestedList(CrushList):
     def __unicode__(self):
@@ -56,11 +56,11 @@ class Relationship(models.Model):
                          (u'NO_CRUSH', 'No Crush'),
                          )  
                         
-    crush_state=models.CharField(max_length=7,default='MAYBE', choices=CRUSH_STATE_CHOICES)
+    crush_state=models.CharField(max_length=7,default='WAITING', choices=CRUSH_STATE_CHOICES)
     
     # date_crush_status_changed keeps track of when the crush status was changed... 
     # e.g. date 'featured maybe' became a 'crush' or a 'no crush'
-    date_relationhsip_type_changed = models.DateTimeField(null=True)
+    date_relationhsip_type_changed = models.DateTimeField(auto_now_add=True)
     
     # how are the admirer and crushee connected
     FRIENDSHIP_TYPE_CHOICES = (
@@ -110,6 +110,15 @@ class UserProfile(FacebookProfile):
     # by default give every user X credits so that they can acquaint themselves with the payment process
     payment_credits = models.FloatField(default=3)
     total_credits_spent = models.FloatField(default=0)
+    
+    # each user has a set of lists
+    my_crush_list = models.OneToOneField(MyCrushList,null=True)
+    my_secret_admirer_list = models.OneToOneField(MySecretAdmirerList,null=True)
+    my_open_admirer_list = models.OneToOneField(MyOpenAdmirerList,null=True)
+    my_not_interested_list = models.OneToOneField(MyNotInterestedList,null=True)
+    my_featured_maybe_list = models.OneToOneField(MyFeaturedMaybeList,null=True)
+    my_maybe_list = models.OneToOneField(MyMaybeList,null=True)
+    
     
     # future data potential for:
         # facebook likes

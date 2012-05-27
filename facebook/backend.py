@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 #from django.core.urlresolvers import reverse CHC - reverse gives me problems
 
-from crush.models import UserProfile
+from crush.models import *
 
 class FacebookBackend:
 
@@ -43,16 +43,16 @@ class FacebookBackend:
             # Update access_token
             fb_user.access_token = access_token
             fb_user.save()
-
         # No existing user, create one
         except UserProfile.DoesNotExist:
-            
-            username = fb_profile.get('username', fb_profile['email'].split('@')[0])# Not all users have usernames
+
+            username = fb_profile.get('username', fb_profile['id'])# if no username then grab id
+            print username
+
             try:
-                user = User.objects.create_user(username=username, email=fb_profile['email'])
+                user = User.objects.create_user(username=username)
             except IntegrityError:
-                # Username already exists, make it unique
-                user = User.objects.create_user(username=username + fb_profile['id'], email = fb_profile['email'])
+                return #if there is already a user then get out of here - something catastrophic is happening!
             user.first_name = fb_profile['first_name']
             user.last_name = fb_profile['last_name']
             user.save()
@@ -71,9 +71,17 @@ class FacebookBackend:
                     else: 
                         fb_user.gender_pref=u'M'
                 elif len(fb_profile['interested_in']) > 1:
-                    fb_user.gender_pref=u'B'
+                    fb_user.gender_pref=u'B'   
+            
+            # Create all of the user's lists
+            fb_user.my_crush_list=MyCrushList.objects.create()
+            fb_user.my_secret_admirer_list=MySecretAdmirerList.objects.create()
+            fb_user.my_open_admirer_list=MyOpenAdmirerList.objects.create()
+            fb_user.my_not_interested_list=MyNotInterestedList.objects.create()
+            fb_user.my_maybe_list=MyMaybeList.objects.create()
+            fb_user.my_featured_maybe_list=MyFeaturedMaybeList.objects.create()
+            
             fb_user.save()
-
         return user
 
     def get_user(self, user_id):

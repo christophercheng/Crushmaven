@@ -6,9 +6,27 @@
 		font-color: red;
     	}
     	</style>
+    	
 		<title>CrushDiscovery | Anonymous discovery and connect with crushes and secret admirers</title>
     </head>
     <body>
+  
+ <div id="fb-root"></div>
+ <script>
+    (function() {
+      var e = document.createElement('script'); e.async = true;
+          e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+          document.getElementById('fb-root').appendChild(e);
+          }());
+
+    window.fbAsyncInit = function() {
+      FB.init({ appId: {{facebook_app_id}}, 
+      status: true, 
+      cookie: true,
+      xfbml: true,
+      oauth: true}); 
+    };
+  </script>  
         <h1><font color=red>crush</font><font><i>discovery</i></font></h1>
 		{% include "navigation.html" %}
 		<h2><img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture">
@@ -19,6 +37,6 @@
 {% block content %}
 {% endblock %}
 		
-		<hr>
-		  <fb:like></fb:like>
-		  <a href="/admin/">Admin</a>
+<hr>
+<fb:like></fb:like>
+<a href="/admin/">Admin</a>
