@@ -1,1 +1,14 @@
 {% extends "base.html" %}
+{% block content %}
+{% if crushee_list %}
+	THERE ARE CRUSHEES!
+	<ul>
+		{% for crushee in crushee_list %}
+			<li> {{crushee.username}} : {{crushee.first_name}} {{crushee.last_name}}
+		{% endfor %}
+	</ul>
+{% else %}
+	THERE ARE NO CRUSHEES!
+{% endif %}
+
+{% endblock %}

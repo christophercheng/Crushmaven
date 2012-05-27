@@ -94,9 +94,11 @@ def search(request):
 # -- Crush List Page --
 @login_required
 def crush_list(request):
-    facebook_profile = request.user.get_profile().get_facebook_profile()
+    my_profile = request.user.get_profile()
+    if (my_profile.my_crush_list.list_members):
+        all_members = my_profile.my_crush_list.list_members.all()
     return render_to_response('crush_list.html',
-                              {'facebook_profile': facebook_profile},
+                              {'facebook_profile': my_profile, 'crushee_list':all_members},
                               context_instance=RequestContext(request))
 
 # -- Admirer List Page --
