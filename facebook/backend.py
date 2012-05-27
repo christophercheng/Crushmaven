@@ -59,18 +59,19 @@ class FacebookBackend:
 
                 # Create the FacebookProfile
             fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
-            if fb_profile['gender']==u'male':
-                fb_user.gender=u'M'
-            elif fb_profile['gender']==u'female':
-                fb_user.gender=u'F'
-            if len(fb_profile['interested_in'])==1: 
-                if fb_profile['interested_in'][0]==u'female':
-                    fb_user.gender_pref=u'F'
-                else: 
-                    fb_user.gender_pref=u'M'
-            elif len(fb_profile['interested_in']) > 1:
-                fb_user.gender_pref=u'B'
-                
+            if ('gender' in fb_profile):
+                if fb_profile['gender']==u'male':
+                    fb_user.gender=u'M'
+                elif fb_profile['gender']==u'female':
+                        fb_user.gender=u'F'
+            if('interested_in' in fb_profile):
+                if len(fb_profile['interested_in'])==1: 
+                    if fb_profile['interested_in'][0]==u'female':
+                        fb_user.gender_pref=u'F'
+                    else: 
+                        fb_user.gender_pref=u'M'
+                elif len(fb_profile['interested_in']) > 1:
+                    fb_user.gender_pref=u'B'
             fb_user.save()
 
         return user

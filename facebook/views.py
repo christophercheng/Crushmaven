@@ -12,10 +12,10 @@ def login(request):
         'scope': settings.FACEBOOK_SCOPE,
         'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback'),
         }
- 
     # call facebook with the above settings; expect to receive http response with the access code as a GET parameter
     return HttpResponseRedirect('https://www.facebook.com/dialog/oauth?'
-                                                    + urllib.urlencode(args))
+                                                   + urllib.urlencode(args))
+    
     
 #Second step of the login process. It reads in a code from Facebook, then redirects back to the home page.
 def authentication_callback(request):
