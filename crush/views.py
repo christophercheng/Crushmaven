@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import UserProfile, CrushRelationship
+from crush.models import UserProfile, SecretCrushRelationship
 #from django.contrib.auth.models import User
 
 
@@ -36,16 +36,12 @@ def search(request):
         # called function is in a custom UserProfile manager because it is also used during login/authentication
         selected_user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
         
-        # now that the user is definitely on the system, add that user to the crush list
-        #check tht you don't have existing feelings for this user:
-        
-        # test if this relationship exists already before creating a new relationship
-        
+        # now that the user is definitely on the system, add that user to the crush list        
         # only create a new relationship if an exising one between the current user and the seleted user does not exist
         try:
-            my_profile.crush_list.target_persons.get(username=selected_user.username)
+            my_profile.crush_list.secret_target_persons.get(username=selected_user.username)
         except request.user.DoesNotExist:
-            CrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
+            SecretCrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
                                        friendship_type=u'FRIEND')
         else:
             print "Handle the duplicate crush addition attempt later!"       
@@ -62,7 +58,8 @@ def search(request):
 @login_required
 def crush_list(request):
     my_profile = request.user.get_profile() 
-    all_members = my_profile.crush_list.target_persons.all() 
+    #grab just the secret crushees for now; combine secret and open later
+    all_members = my_profile.crush_list.secret_target_persons.all() 
     return render_to_response('crush_list.html',
                               {'facebook_profile': my_profile, 'crushee_list':all_members},
                               context_instance=RequestContext(request))    
@@ -71,18 +68,18 @@ def crush_list(request):
 @login_required
 def secret_admirer_list(request):
     my_profile = request.user.get_profile() 
-    my_relationships=request.user.crushrelationship_set.filter(is_secret=True)
+    secret_admirers = request.user.secret_crushees_set.all()
     return render_to_response('secret_admirer_list.html',
-                              {'facebook_profile': my_profile,'admirer_relationships':my_relationships},
+                              {'facebook_profile': my_profile,'secret_admirers':secret_admirers},
                               context_instance=RequestContext(request)) 
 
 # -- Not so Secret Admirer List Page --
 @login_required
 def open_admirer_list(request):    
     my_profile = request.user.get_profile() 
-    my_relationships=request.user.crushrelationship_set.filter(is_secret=False)
+    open_admirers = request.user.open_crushees_set.all()
     return render_to_response('open_admirer_list.html',
-                              {'facebook_profile': my_profile,  'admirer_relationships':my_relationships},
+                              {'facebook_profile': my_profile,'open_admirers':open_admirers},
                               context_instance=RequestContext(request)) 
 
 # -- Not Interested List Page --

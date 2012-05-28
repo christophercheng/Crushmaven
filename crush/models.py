@@ -10,7 +10,9 @@ class CrushList(models.Model):
     # each crush list could have many users, who could also be part of other crush lists
         # thus a many to many relationship between the crush list and the crushees
         # the special characteristics of each crush is described through the CrushRelationship class
-    target_persons = models.ManyToManyField(User, through='CrushRelationship')
+    open_target_persons = models.ManyToManyField(User,through='OpenCrushRelationship',related_name='open_crushees_set')
+    secret_target_persons = models.ManyToManyField(User, through='SecretCrushRelationship',related_name='secret_crushees_set')
+    
     list_owner= models.OneToOneField(User,related_name='list_owner_set') #the admirer
   
     def __unicode__(self):
@@ -178,9 +180,6 @@ class CrushRelationship(BasicRelationship):
 
     date_status_changed=models.DateTimeField(null=True)
 
-    # by default, one's feelings for another are secret
-    is_secret = models.BooleanField(default=True)
-
     # -- CRUSH LIST - FEATURE ADD-ONS-- 
     # potentially both the admirer and the crusher can pay for a method to more easily determine a match
     is_lineup_paid_for=models.BooleanField(default=False)
@@ -189,9 +188,26 @@ class CrushRelationship(BasicRelationship):
     #admirer can pay to have his feature profiled on crushee's site
     is_feature_sneak_paid_for=models.BooleanField(default=False)
     
+    class Meta:
+        abstract=True
+        
     def __unicode__(self):
         return 'Feelings for:' + str(self.target_person.username)
-    
+
+class OpenCrushRelationship(CrushRelationship):    
+        # by default, one's feelings for another are secret
+    is_secret = models.BooleanField(default=False)
+    def __unicode__(self):
+        return 'Open Feelings for:' + str(self.target_person.username) 
+
+class SecretCrushRelationship(CrushRelationship):    
+        # by default, one's feelings for another are secret
+    is_secret = models.BooleanField(default=True)
+    def __unicode__(self):
+        return 'Secret Feelings for:' + str(self.target_person.username) 
+
+
+
     # details about each unique crush 
 class NoCrushRelationship(BasicRelationship):
 
