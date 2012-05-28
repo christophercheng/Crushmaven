@@ -4,11 +4,9 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import *
-from django.contrib.auth.models import User
-# for search
-import urllib, json, urlparse
-from django.db import IntegrityError
+from crush.models import UserProfile, CrushRelationship
+#from django.contrib.auth.models import User
+
 
 
 
@@ -36,12 +34,22 @@ def search(request):
         crushee_id=request.GET['to[0]']
         # find existing site user with this id or create a new user 
         # called function is in a custom UserProfile manager because it is also used during login/authentication
-        user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
+        selected_user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
         
         # now that the user is definitely on the system, add that user to the crush list
-        new_crush_relationship = Relationship(other_person=user,crush_list=my_profile.my_crush_list,crush_state=u'WAITING',
-                                                  friendship_type=u'FRIEND')
-        new_crush_relationship.save()
+        #check tht you don't have existing feelings for this user:
+        
+        # test if this relationship exists already before creating a new relationship
+        
+        # only create a new relationship if an exising one between the current user and the seleted user does not exist
+        try:
+            my_profile.crush_list.target_persons.get(username=selected_user.username)
+        except request.user.DoesNotExist:
+            CrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
+                                       friendship_type=u'FRIEND')
+        else:
+            print "Handle the duplicate crush addition attempt later!"       
+
      
     return render_to_response('search.html',
                               {'facebook_profile': my_profile, 
@@ -53,28 +61,29 @@ def search(request):
 # -- Crush List Page --
 @login_required
 def crush_list(request):
-    my_profile = request.user.get_profile()
-    if (my_profile.my_crush_list.list_members):
-        all_members = my_profile.my_crush_list.list_members.all()
+    my_profile = request.user.get_profile() 
+    all_members = my_profile.crush_list.target_persons.all() 
     return render_to_response('crush_list.html',
                               {'facebook_profile': my_profile, 'crushee_list':all_members},
-                              context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))    
 
 # -- Admirer List Page --
 @login_required
 def secret_admirer_list(request):
-    facebook_profile = request.user.get_profile().get_facebook_profile()
+    my_profile = request.user.get_profile() 
+    my_relationships=request.user.crushrelationship_set.filter(is_secret=True)
     return render_to_response('secret_admirer_list.html',
-                              {'facebook_profile': facebook_profile},
-                              context_instance=RequestContext(request))
+                              {'facebook_profile': my_profile,'admirer_relationships':my_relationships},
+                              context_instance=RequestContext(request)) 
 
 # -- Not so Secret Admirer List Page --
 @login_required
-def open_admirer_list(request):
-    facebook_profile = request.user.get_profile().get_facebook_profile()
+def open_admirer_list(request):    
+    my_profile = request.user.get_profile() 
+    my_relationships=request.user.crushrelationship_set.filter(is_secret=False)
     return render_to_response('open_admirer_list.html',
-                              {'facebook_profile': facebook_profile},
-                              context_instance=RequestContext(request))
+                              {'facebook_profile': my_profile,  'admirer_relationships':my_relationships},
+                              context_instance=RequestContext(request)) 
 
 # -- Not Interested List Page --
 @login_required

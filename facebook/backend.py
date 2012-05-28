@@ -1,10 +1,9 @@
 import urllib, json, urlparse
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import IntegrityError
 #from django.core.urlresolvers import reverse CHC - reverse gives me problems
 
-from crush.models import *
+from crush.models import UserProfile
 
 class FacebookBackend:
 
