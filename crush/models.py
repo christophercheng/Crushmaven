@@ -24,12 +24,6 @@ class NoCrushList(models.Model):
     def __unicode__(self):
         return ' Not Interested List' 
     
-class AdmirerList(models.Model): 
-    source_persons = models.ManyToManyField(User)
-    def __unicode__(self):
-        return ' Admirer List'  
-  
-    
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row level)
 class CustomProfileManager(models.Manager):
     
@@ -91,7 +85,6 @@ class CustomProfileManager(models.Manager):
 
             # Create all of the user's lists
             user_profile.crush_list=CrushList.objects.create(list_owner=user)
-            user_profile.admirer_list=AdmirerList.objects.create()
             user_profile.no_crush_list=NoCrushList.objects.create()
 
             user.save()
@@ -128,7 +121,6 @@ class UserProfile(FacebookProfile):
     # each user has a set of lists
     crush_list = models.OneToOneField(CrushList,null=True)
     no_crush_list = models.OneToOneField(NoCrushList,null=True)
-    admirer_list = models.OneToOneField(AdmirerList,null=True)
     
     # future data potential for:
         # facebook likes
@@ -206,8 +198,6 @@ class SecretCrushRelationship(CrushRelationship):
     def __unicode__(self):
         return 'Secret Feelings for:' + str(self.target_person.username) 
 
-
-
     # details about each unique crush 
 class NoCrushRelationship(BasicRelationship):
 
@@ -217,7 +207,6 @@ class NoCrushRelationship(BasicRelationship):
     def __unicode__(self):
         return 'No Feelings for:' + str(self.target_person.username)
     
-
 class CreditSpent(models.Model):
     # associate transaction with one particular user
     user=models.ForeignKey(User)
