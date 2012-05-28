@@ -32,57 +32,13 @@ class FacebookBackend:
         else:
             return None# no user so just stop the authentication process
         # Read the user's profile information
-        fb_profile = urllib.urlopen(
+        facebook_profile = urllib.urlopen(
                 'https://graph.facebook.com/me?access_token=%s' % access_token)
-        fb_profile = json.load(fb_profile)
-
-        try:
-        # Try and find existing user
-            fb_user = UserProfile.objects.get(facebook_id=fb_profile['id'])
-            user = fb_user.user
-            # Update access_token
-            fb_user.access_token = access_token
-            fb_user.save()
-        # No existing user, create one
-        except UserProfile.DoesNotExist:
-
-            username = fb_profile.get('username', fb_profile['id'])# if no username then grab id
-            print username
-
-            try:
-                user = User.objects.create_user(username=username)
-            except IntegrityError:
-                return #if there is already a user then get out of here - something catastrophic is happening!
-            user.first_name = fb_profile['first_name']
-            user.last_name = fb_profile['last_name']
-            user.save()
-
-                # Create the FacebookProfile
-            fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
-            if ('gender' in fb_profile):
-                if fb_profile['gender']==u'male':
-                    fb_user.gender=u'M'
-                elif fb_profile['gender']==u'female':
-                        fb_user.gender=u'F'
-            if('interested_in' in fb_profile):
-                if len(fb_profile['interested_in'])==1: 
-                    if fb_profile['interested_in'][0]==u'female':
-                        fb_user.gender_pref=u'F'
-                    else: 
-                        fb_user.gender_pref=u'M'
-                elif len(fb_profile['interested_in']) > 1:
-                    fb_user.gender_pref=u'B'   
-            
-            # Create all of the user's lists
-            fb_user.my_crush_list=MyCrushList.objects.create()
-            fb_user.my_secret_admirer_list=MySecretAdmirerList.objects.create()
-            fb_user.my_open_admirer_list=MyOpenAdmirerList.objects.create()
-            fb_user.my_not_interested_list=MyNotInterestedList.objects.create()
-            fb_user.my_maybe_list=MyMaybeList.objects.create()
-            fb_user.my_featured_maybe_list=MyFeaturedMaybeList.objects.create()
-            
-            fb_user.save()
-        return user
+        facebook_profile = json.load(facebook_profile)
+        
+        # find existing site user with this id or create a new user 
+        # called function is in a custom UserProfile manager because it is also used during login/authentication
+        return UserProfile.objects.find_or_create_user(fb_id=facebook_profile['id'], fb_access_token=access_token, fb_profile=facebook_profile, is_this_for_me=True)
 
     def get_user(self, user_id):
         """ Just returns the user of a given ID. """

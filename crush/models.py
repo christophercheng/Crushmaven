@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
 # use signal to create user profile automatically when user created
-from django.db.models.signals import post_save
 from facebook.models import FacebookProfile
-
+import urllib, json
+import datetime
+from django.db import IntegrityError
 # list of all the peeps I have crushes on     
 class CrushList(models.Model): 
     # each crush list could have many users, who could also be part of other crush lists
@@ -87,9 +87,90 @@ class Relationship(models.Model):
     def __unicode__(self):
         return 'Crush:' + str(self.crushee_list.admirer.username) + '-on-' + str(self.crushee.username)
 
+class CustomProfileManager(models.Manager):
+    def find_or_create_user(self, fb_id, fb_access_token,fb_profile,is_this_for_me):
+        try:
+        # Try and find existing user
+            user_profile = super(CustomProfileManager,self).get_query_set().get(facebook_id=fb_id)
+            user = user_profile.user
+            if (is_this_for_me): #if logging user in then update his/her token
+                user_profile.access_token=fb_access_token
+
+                if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
+                    user.is_active=True# then activate their account
+                    # and also update their gender preferences; they're not always obtained indirectly
+                    if ('birthday' in fb_profile):
+                        date_pieces=fb_profile['birthday'].split('/')
+                        if len(date_pieces)>2: # i only care to store birthday if it has a year
+                            user_profile.birthday= datetime.date(int(date_pieces[2]),int(date_pieces[0]),int(date_pieces[1]))   
+                    if ('gender' in fb_profile):
+                        if fb_profile['gender']==u'male':
+                            user_profile.gender=u'M'
+                        elif fb_profile['gender']==u'female':
+                            user_profile.gender=u'F'
+                    if('interested_in' in fb_profile):
+                        if len(fb_profile['interested_in'])==1: 
+                            if fb_profile['interested_in'][0]==u'female':
+                                    user_profile.gender_pref=u'F'
+                            else: 
+                                    user_profile.gender_pref=u'M'
+                        elif len(fb_profile['interested_in']) > 1:
+                            user_profile.gender_pref=u'B'
+                user_profile.save()
+        # No existing user, create one
+        except UserProfile.DoesNotExist:
+            if fb_profile == None:
+                fb_profile = urllib.urlopen('https://graph.facebook.com/' + fb_id + '/?access_token=%s' % fb_access_token)
+                fb_profile = json.load(fb_profile)
+          
+            username = fb_profile.get('username', fb_profile['id'])# if no username then grab id
+            try:
+                user = User.objects.create_user(username=username)
+            except IntegrityError:
+                return #this would be a bad database error (something out-a-sync!)
+            user.first_name = fb_profile['first_name']
+            user.last_name = fb_profile['last_name']
+            if not(is_this_for_me):
+                user.is_active=False
+
+            # Create the user's UserProfile
+            user_profile = UserProfile(user=user, facebook_id=fb_id)
+            if (is_this_for_me): #if logging user in then update his/her token
+                user_profile.access_token=fb_access_token
+            if ('birthday' in fb_profile):
+                date_pieces=fb_profile['birthday'].split('/')
+                if len(date_pieces)>2: # i only care to store birthday if it has a year
+                    user_profile.birthday= datetime.date(int(date_pieces[2]),int(date_pieces[0]),int(date_pieces[1]))         
+            if ('gender' in fb_profile):
+                if fb_profile['gender']==u'male':
+                    user_profile.gender=u'M'
+                elif fb_profile['gender']==u'female':
+                    user_profile.gender=u'F'
+            if('interested_in' in fb_profile):
+                if len(fb_profile['interested_in'])==1: 
+                    if fb_profile['interested_in'][0]==u'female':
+                        user_profile.gender_pref=u'F'
+                    else: 
+                        user_profile.gender_pref=u'M'
+                elif len(fb_profile['interested_in']) > 1:
+                    user_profile.gender_pref=u'B'
+            # Create all of the user's lists
+            user_profile.my_crush_list=MyCrushList.objects.create()
+            user_profile.my_secret_admirer_list=MySecretAdmirerList.objects.create()
+            user_profile.my_open_admirer_list=MyOpenAdmirerList.objects.create()
+            user_profile.my_not_interested_list=MyNotInterestedList.objects.create()
+            user_profile.my_maybe_list=MyMaybeList.objects.create()
+            user_profile.my_featured_maybe_list=MyFeaturedMaybeList.objects.create()
+            
+            user.save()
+            user_profile.save()
+        return user
+        
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class UserProfile(FacebookProfile):
 
+    objects = CustomProfileManager()
+    
     GENDER_CHOICES = (
                       (u'M', u'Male'),
                       (u'F', u'Female'),
@@ -103,6 +184,7 @@ class UserProfile(FacebookProfile):
                            )
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES,null=True)
     
+    birthday = models.DateField(null=True)
     age = models.IntegerField(null=True)
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)

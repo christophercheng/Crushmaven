@@ -169,7 +169,7 @@ LOGGING = {
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '387261624645161' # Crush Discovery App on Facebook
 FACEBOOK_APP_SECRET = 'd08f30e546c10f68058ba0e6f09c3fbb'
-FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, friends_relationship_details, email'
+FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, friends_relationship_details, email,user_birthday, friends_birthday'
 
 AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',
