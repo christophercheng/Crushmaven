@@ -17,7 +17,8 @@ def home(request):
 #    return HttpResponse("You are at the home page.")
     if request.user.is_authenticated():
         return render_to_response('member_home.html',
-                              {'profile': request.user.get_profile},
+                              {'profile': request.user.get_profile,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
     else:
         return render(request,'guest_home.html')
@@ -102,7 +103,8 @@ def crush_list(request):
     return render_to_response('crush_list.html',
                               {'profile': my_profile, 'secret_crush_relationships':secret_crush_relationships,
                                'open_crush_relationships':open_crush_relationships,
-                               'redirect_uri':redirect_uri},
+                               'redirect_uri':redirect_uri,
+                               'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))    
 
 # -- Admirer List Page --
@@ -111,7 +113,8 @@ def secret_admirer_list(request):
     my_profile = request.user.get_profile() 
     secret_admirers = request.user.secret_crushees_set.all()
     return render_to_response('secret_admirer_list.html',
-                              {'profile': my_profile,'secret_admirers':secret_admirers},
+                              {'profile': my_profile,'secret_admirers':secret_admirers,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request)) 
 
 # -- Not so Secret Admirer List Page --
@@ -120,7 +123,8 @@ def open_admirer_list(request):
     my_profile = request.user.get_profile() 
     open_admirers = request.user.open_crushees_set.all()
     return render_to_response('open_admirer_list.html',
-                              {'profile': my_profile,'open_admirers':open_admirers},
+                              {'profile': my_profile,'open_admirers':open_admirers,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request)) 
 
 # -- Not Interested List Page --
@@ -128,7 +132,8 @@ def open_admirer_list(request):
 def not_interested_list(request):
     facebook_profile = request.user.get_profile().get_facebook_profile()
     return render_to_response('not_interested_list.html',
-                              {'profile': facebook_profile},
+                              {'profile': facebook_profile,
+                               'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 
 # -- Admirer Lineup Page --
@@ -136,7 +141,8 @@ def not_interested_list(request):
 def admirer_lineup(request):
     facebook_profile = request.user.get_profile().get_facebook_profile()
     return render_to_response('admirer_list.html',
-                              {'profile': facebook_profile},
+                              {'profile': facebook_profile,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 
 # -- Invite Friends Page --
@@ -144,7 +150,8 @@ def admirer_lineup(request):
 def invite(request):
     facebook_profile = request.user.get_profile().get_facebook_profile()
     return render_to_response('invite.html',
-                              {'profile': facebook_profile},
+                              {'profile': facebook_profile,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 
 # -- My Profile Page --
@@ -152,7 +159,8 @@ def invite(request):
 def my_profile(request):
     facebook_profile = request.user.get_profile().get_facebook_profile()
     return render_to_response('my_profile.html',
-                              {'profile': facebook_profile},
+                              {'profile': facebook_profile,
+                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 
 # -- My Credits Page --
@@ -170,7 +178,8 @@ def site_credits(request):
         user_profile.save()
         notification_message = "You added " + str(new_credits) + " credits."
     return render_to_response('site_credits.html',
-                              {'profile': user_profile,notification_message:notification_message},
+                              {'profile': user_profile,notification_message:notification_message,
+                              'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
     
 # -- Logout --
