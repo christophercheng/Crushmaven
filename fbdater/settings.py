@@ -178,3 +178,5 @@ AUTHENTICATION_BACKENDS = (
 # define the custom user profile that is associated with django's User model
 AUTH_PROFILE_MODULE = "crush.UserProfile"
 
+NUM_MIN_DAYS_CRUSH = 7
+

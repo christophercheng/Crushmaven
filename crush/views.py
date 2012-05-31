@@ -34,7 +34,7 @@ def search(request):
     is_open=False;
     if 'open' in request.POST:
         is_open=True
-        
+    
     for key in request.POST:
         crushee_id=request.POST[key]
 
@@ -57,8 +57,7 @@ def search(request):
                     SecretCrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
                                                            friendship_type=u'FRIEND')
                 else:
-                    print "Handle the duplicate of " + crushee_id + "crush addition attempt later!"                 
-                
+                    print "Handle the duplicate of " + crushee_id + "crush addition attempt later!"                      
      
     return render_to_response('search.html',
                               {'token':csrf.get_token(request),
@@ -73,7 +72,23 @@ def search(request):
 def crush_list(request):
     my_profile = request.user.get_profile() 
     my_crush_list = my_profile.crush_list    
-
+    
+    if "delete_secret" in request.GET:
+        delete_username=request.GET["delete_secret"]
+        # find user
+        if my_crush_list.secret_target_persons.filter(username=delete_username).exists():
+            # delete crushrelationship; this should also delete the crushee from crush list
+            my_crush_list.secret_target_persons.get(username=delete_username).delete()
+            # update the crushee's relationship (if it exists)???
+    else:             
+        if "delete_open" in request.GET:
+            delete_username=request.GET["delete_open"]
+            # find user
+            if my_crush_list.open_target_persons.filter(username=delete_username).exists():
+                # delete crushee from crush list; this also deletes the relationship from the db
+                my_crush_list.open_target_persons.get(username=delete_username).delete()
+                # update the crushee's relationship (if it exists)???
+            
     # build a list of all crush relationship objects to send to the template file
     secret_crush_relationships = []
     open_crush_relationships = []
@@ -82,9 +97,12 @@ def crush_list(request):
     for crushee in my_crush_list.open_target_persons.all():
         open_crush_relationships.append(OpenCrushRelationship.objects.get(source_person_crush_list=my_crush_list,target_person=crushee))        
     
+    redirect_uri='http://' + request.get_host()+'/crush_list/'
+    
     return render_to_response('crush_list.html',
                               {'profile': my_profile, 'secret_crush_relationships':secret_crush_relationships,
-                               'open_crush_relationships':open_crush_relationships},
+                               'open_crush_relationships':open_crush_relationships,
+                               'redirect_uri':redirect_uri},
                               context_instance=RequestContext(request))    
 
 # -- Admirer List Page --
