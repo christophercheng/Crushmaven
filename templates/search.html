@@ -2,34 +2,88 @@
 
 {% block content %}
 
-  <a href="#" onclick="sendRequest();">Find Friend (via Javascript)</a><br>
-  <script>
-  function sendRequest() {
+<script>
+// bOpen boolean argument determines if the added crushes are open or not
+  function sendRequest(bOpen) 
+  {
+  	if (bOpen==null)
+  		bOpen=false;
     FB.ui({
       method: 'apprequests',
       message: 'After making your selection, you will confirm your choice.  Nothing will be sent to your friend.',
       title: 'Select a Friend to Add to your Crush List',
-      max_recipients: 1,
+      max_recipients: 10,
     }, 
     function(response) 
     {
-        if (response.request && response.to) 
-        	{	
-        		var redirect_url = '{{redirect_uri}}';
-        		for(i=0; i<response.to.length; i++) 
-                	redirect_url=redirect_url + '?to[' + i + ']='+response.to[i];
-                window.location = redirect_url; 
-              }
+		var form = document.createElement("form");
+		form.setAttribute("method", "POST");
+		form.setAttribute("action", "{{redirect_uri}}");
+		var hiddenField;
+		var cField;
+		cField =	document.createElement("div");
+		cField.setAttribute("style","display:none");
+		form.appendChild(cField);
+		var input_field;
+		input_field = document.createElement("input");
+		input_field.setAttribute("type", "hidden");
+		input_field.setAttribute("name","csrfmiddlewaretoken");
+		input_field.setAttribute("value","{{token}}");
+		form.appendChild(input_field);
 
-    }
+		var	key;
+		var id;
+
+		// add a special field if the added crushes are open
+		if (bOpen)
+		{
+			hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "open");
+            hiddenField.setAttribute("value", "true");
+            form.appendChild(hiddenField);
+		}
+		for(i=0; i<response.to.length; i++) 
+		{
+			
+			hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            key = "to[" + i + "]";
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", response.to[i]);
+            form.appendChild(hiddenField);
+		}
+		
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
+	}
     );
-  }
+ }
   </script>
 
-{% if crushee_id %}
-WOW YOU HAVE A CRUSHEE: {{crushee_id}}
+{% if userlist %}
+<h3>You added the following crushes:</h3>
+<ul>
+	{% for user in userlist %}
+		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
+	{% endfor %}
+</ul>
+{% else %}
+<BR><BR>
 {% endif %}
-<a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
+
+
+
+  <a href="#" onclick="sendRequest();">Find Secret Crush Friend (via Javascript)</a>
+  <a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
 	message=Note: Your crush will not receive any notification.&
- 	redirect_uri={{redirect_uri}}&max_recipients=1&title=Select a Friend To Add to your Crush List"> Find Friend (via direct)</a>
+ 	redirect_uri={{redirect_uri}}&max_recipients=10&title=Select a Friend To Add to your Crush List"> (via direct)</a>
+<BR><br>
+  <a href="#" onclick="sendRequest(true);">Find Open Crush Friend (via Javascript)</a>
+  <a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
+	message=Note: Your crush will not receive any notification.&
+ 	redirect_uri={{redirect_uri}}&max_recipients=10&title=Select a Friend To Add to your Crush List">(via direct)</a>
+
+ 
  {% endblock %}

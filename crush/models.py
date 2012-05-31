@@ -34,19 +34,21 @@ class CustomProfileManager(models.Manager):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
                 user_profile.birthday= datetime.date(int(date_pieces[2]),int(date_pieces[0]),int(date_pieces[1]))   
-            if ('gender' in fb_profile):
-                if fb_profile['gender']==u'male':
-                    user_profile.gender=u'M'
-                elif fb_profile['gender']==u'female':
-                    user_profile.gender=u'F'
-            if('interested_in' in fb_profile):
-                if len(fb_profile['interested_in'])==1: 
-                    if fb_profile['interested_in'][0]==u'female':
-                        user_profile.gender_pref=u'F'
-                    else: 
-                        user_profile.gender_pref=u'M'
-                elif len(fb_profile['interested_in']) > 1:
-                    user_profile.gender_pref=u'B'
+        if ('email' in fb_profile):
+            user_profile.email=fb_profile['email']
+        if ('gender' in fb_profile):
+            if fb_profile['gender']==u'male':
+                user_profile.gender=u'M'
+            elif fb_profile['gender']==u'female':
+                user_profile.gender=u'F'
+        if('interested_in' in fb_profile):
+            if len(fb_profile['interested_in'])==1: 
+                if fb_profile['interested_in'][0]==u'female':
+                    user_profile.gender_pref=u'F'
+                else: 
+                    user_profile.gender_pref=u'M'
+            elif len(fb_profile['interested_in']) > 1:
+                user_profile.gender_pref=u'B'
     
     def find_or_create_user(self, fb_id, fb_access_token,fb_profile,is_this_for_me):
         try:
@@ -110,12 +112,13 @@ class UserProfile(FacebookProfile):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES,null=True)
     
     birthday = models.DateField(null=True)
+    email = models.EmailField(null=True)
     age = models.IntegerField(null=True)
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)
 
-    # by default give every user X credits so that they can acquaint themselves with the payment process
-    payment_credits = models.FloatField(default=3)
+    # by default give every user 10 credits ($1) so that they can acquaint themselves with the payment process
+    site_credits = models.IntegerField(default=10) 
     total_credits_spent = models.FloatField(default=0)
     
     # each user has a set of lists
@@ -143,7 +146,18 @@ class BasicRelationship(models.Model):
     target_person=models.ForeignKey(User)
 
     # date_feelings_changed keeps track of when the crush list changed
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateField(auto_now_add=True)
+    
+    #save the target person's response as a lookup time optimization
+    TARGET_RESPONSE_CHOICES = (
+                               (0,'Waiting'),
+                               (1,'Interested'),
+                               (2, 'Not Interested'),
+                               )
+    target_person_response = models.IntegerField(default=0, choices=TARGET_RESPONSE_CHOICES)
+    
+    # crusher has to pay to see the results of the match results
+    is_results_paid = models.BooleanField(default=False)
     
     # how are the admirer and crushee connected
     FRIENDSHIP_TYPE_CHOICES = (

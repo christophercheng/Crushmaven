@@ -28,15 +28,17 @@
     };
   </script>  
         <h1><font color=red>crush</font><font><i>discovery</i></font></h1>
+        
 		{% include "navigation.html" %}
-		<h2><img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture">
-		{{ user.first_name }} {{user.last_name}},<BR><BR>Here is your Facebook information:</h2>
+		<BR>
+		<img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture">
+		<b>{{ user.first_name }} {{user.last_name}},</b>
 
-    	<!--<pre>{{ facebook_profile|pprint }}</pre>-->
-		<BR><BR>
 {% block content %}
 {% endblock %}
 		
 <hr>
 <fb:like></fb:like>
-<a href="/admin/">Admin</a>
+<a href="/admin/">Admin</a><br>
+User profile information:
+ <pre>{{ profile.get_facebook_profile|pprint }}</pre>

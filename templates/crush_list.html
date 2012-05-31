@@ -1,14 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-{% if crushee_list %}
-	THERE ARE CRUSHEES!
-	<ul>
-		{% for crushee in crushee_list %}
-			<li> {{crushee.username}} : {{crushee.first_name}} {{crushee.last_name}}
-		{% endfor %}
-	</ul>
+<h2>Secret Crushes:</h2>
+{% if secret_crush_relationships %}
+
+<TABLE width=700 >
+	<tr align="left" bgcolor="LightPink">
+		<th>Name</th>
+		<th>Date Added</th>
+		<th>Status</th>
+		<th>Options</th>
+	</tr>
+		{% for relationship in secret_crush_relationships %}
+	<tr> 
+		<td>{{relationship.target_person.first_name}} {{relationship.target_person.last_name}} <small>({{relationship.target_person.username}})</small></td>
+		<td>{{relationship.date_added}}</td>
+		<td>{{relationship.get_target_person_response_display}}</td>
+		<td ><a href="#" onclick="remove('{{relationship.target_person.username}}');">remove</a></td>
+	</tr>
+	{% endfor %}
+
+</TABLE>
+	
 {% else %}
-	THERE ARE NO CRUSHEES!
+	You have no secret crushes.  <a href="/search/">Click here</a> to find a friend of interest.
+{% endif %}
+
+<h2>Open Crushes:</h2>
+{% if open_crush_relationships %}
+
+<TABLE width=700>
+	<tr align="left" bgcolor="LightPink">
+		<th>Name</th>
+		<th>Date Added</th>
+		<th>Status</th>
+		<th>Options</th>
+	</tr>
+	{% for relationship in open_crush_relationships %}
+	<tr> 
+		<td>{{relationship.target_person.first_name}} {{relationship.target_person.last_name}} <small>({{relationship.target_person.username}})</small></td>
+		<td>{{relationship.date_added}}</td>
+		<td>{{relationship.get_target_person_response_display}}</td>
+		<td ><a href="#" onclick="remove('{{relationship.target_person.username}}');">remove</a></td>
+	</tr>
+	{% endfor %}
+</TABLE>
+{% else %}
+	You have no open crushes. <a href="/search/">Click here</a> to find someone of interest.
 {% endif %}
 
 {% endblock %}

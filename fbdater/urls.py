@@ -45,7 +45,7 @@ urlpatterns += patterns('crush',
     url(r'^my_profile/$', 'views.my_profile'),
 
     # -- CREDITS --
-    url(r'^my_credits/$', 'views.my_credits'),
+    url(r'^site_credits/$', 'views.site_credits'),
     
     # -- FAQ --
     url(r'^FAQ/$', 'views.faq'),
