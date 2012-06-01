@@ -3,35 +3,21 @@
 {% block content %}
 
 
-<script type="text/javascript">
-  jQuery(document).ready(function($) {
-  $(".bt-fs-dialog").fSelector({
-      excludeIds: [],
-      closeOverlayClick: true,
-      overlayOpacity: "0.3",
-      overlayColor: '#000',
-      closeOnSubmit: true,
-      showSelectedCount: false,
-      color: "default",
-      showRandom:false,
-      lang: {
-        title: "Friend Selector",
-        buttonSubmit: "Select",
-        buttonCancel: "Cancel",
-        summaryBoxResult: "{1} best results for {0}",
-        summaryBoxNoResult: "No results for {0}",
-        searchText: "Enter a friend's name",
-        fbConnectError: "You must connect to Facebook to see this.",
-        selectedCountResult: "You have choosen {0} people.",
-        selectedLimitResult: "Limit is {0} people."
-      },
-      onStart: function(response){ return null },
-      onClose: function(response){ return null },
-      onSubmit: function(response){
-      
-      	var bSecret=$(this).attr('secret');
-      
-       // response looks like a comma delimited list of facebook id's
+
+<script>
+// bOpen boolean argument determines if the added crushes are open or not
+  function sendRequest(bOpen) 
+  {
+  	if (bOpen==null)
+  		bOpen=false;
+    FB.ui({
+      method: 'apprequests',
+      message: 'After making your selection, you will confirm your choice.  Nothing will be sent to your friend.',
+      title: 'Select a Friend to Add to your Crush List',
+      max_recipients: 10,
+    }, 
+    function(response) 
+    {
 		var form = document.createElement("form");
 		form.setAttribute("method", "POST");
 		form.setAttribute("action", "{{redirect_uri}}");
@@ -51,7 +37,7 @@
 		var id;
 
 		// add a special field if the added crushes are open
-		if (!bSecret)
+		if (bOpen)
 		{
 			hiddenField = document.createElement("input");
             hiddenField.setAttribute("type", "hidden");
@@ -59,8 +45,8 @@
             hiddenField.setAttribute("value", "true");
             form.appendChild(hiddenField);
 		}
-
-		results = String(response).split(',');
+		var test = String(response);
+		alert(test);
 		
 		for(i=0; i<results.length; i++) 
 		{
@@ -72,14 +58,14 @@
             hiddenField.setAttribute("value", results[i]);
             form.appendChild(hiddenField);
 		}
+		
 		document.body.appendChild(form);
 		form.submit();
 		document.body.removeChild(form);
-
-      }
-    });
-  });
-</script>
+	}
+    );
+ }
+  </script>
 
 {% if userlist %}
 <h3>You added the following crushes:</h3>
@@ -92,8 +78,17 @@
 <BR><BR>
 {% endif %}
 
-  <a href="javascript:{}" class="bt-fs-dialog">Find Secret Crush Friend (via Javascript)</a>
-  <BR><BR>
-  <a href="javascript:{}" class="bt-fs-dialog" secret="true">Find Open Crush Friend (via Javascript)</a>
+
+
+  <a href="#" onclick="sendRequest();">Find Secret Crush Friend (via Javascript)</a>
+  <a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
+	message=Note: Your crush will not receive any notification.&
+ 	redirect_uri={{redirect_uri}}&max_recipients=10&title=Select a Friend To Add to your Crush List"> (via direct)</a>
+<BR><br>
+  <a href="#" onclick="sendRequest(true);">Find Open Crush Friend (via Javascript)</a>
+  <a href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&
+	message=Note: Your crush will not receive any notification.&
+ 	redirect_uri={{redirect_uri}}&max_recipients=10&title=Select a Friend To Add to your Crush List">(via direct)</a>
+
  
 {% endblock %}
