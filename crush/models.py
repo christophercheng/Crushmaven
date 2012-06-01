@@ -5,25 +5,8 @@ from facebook.models import FacebookProfile
 import urllib, json
 import datetime
 from django.db import IntegrityError
-
-class CrushList(models.Model): 
-    # each crush list could have many users, who could also be part of other crush lists
-        # thus a many to many relationship between the crush list and the crushees
-        # the special characteristics of each crush is described through the CrushRelationship class
-    open_target_persons = models.ManyToManyField(User,through='OpenCrushRelationship',related_name='open_crushees_set')
-    secret_target_persons = models.ManyToManyField(User, through='SecretCrushRelationship',related_name='secret_crushees_set')
-    
-    list_owner= models.OneToOneField(User,related_name='list_owner_set') #the admirer
-  
-    def __unicode__(self):
-        return 'Crush List' 
-        
-class NoCrushList(models.Model):
-    target_persons = models.ManyToManyField(User, through='NoCrushRelationship')
-    
-    def __unicode__(self):
-        return ' Not Interested List' 
-    
+from django.dispatch import receiver
+ 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row level)
 class CustomProfileManager(models.Manager):
     
@@ -85,10 +68,6 @@ class CustomProfileManager(models.Manager):
                 user_profile.access_token=fb_access_token
             self.update_profile(user_profile,fb_profile)
 
-            # Create all of the user's lists
-            user_profile.crush_list=CrushList.objects.create(list_owner=user)
-            user_profile.no_crush_list=NoCrushList.objects.create()
-
             user.save()
             user_profile.save()
         return user
@@ -117,47 +96,30 @@ class UserProfile(FacebookProfile):
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)
 
-    # by default give every user 10 credits ($1) so that they can acquaint themselves with the payment process
+    # by default give every user 10 credits ($1) so that they can acquaint themselves with the discovery lineup process
     site_credits = models.IntegerField(default=10) 
-    total_credits_spent = models.FloatField(default=0)
     
-    # each user has a set of lists
-    crush_list = models.OneToOneField(CrushList,null=True)
-    no_crush_list = models.OneToOneField(NoCrushList,null=True)
+    # each user has a set of user lists
+    open_crushees = models.ManyToManyField(User,through='OpenCrushRelationship',related_name='open_crushees_set')
+    secret_crushees = models.ManyToManyField(User, through='SecretCrushRelationship',related_name='secret_crushees_set')
+    no_crushees = models.ManyToManyField(User, through='NoCrushRelationship',related_name='no_crushees_set')
     
-    # future data potential for:
-        # facebook likes
-        # facebook interests
-        # geographic location
-        # list of ALL facebook friends 
-            # TBD: store the pics in a better deistributed file
-            # TBD: ensure MEDIA_ROOT AND MEDIA_URL settings have been configured properly in settings file
-        #pic_1 = models.ImageField(upload_to='profile_pics/%Y/%m/%d', null=True)
-        #pic_2 = models.ImageField(upload_to='profile_pics/%Y/%m/%d', null=True)
-        #pic_3 = models.ImageField(upload_to='profile_pics/%Y/%m/%d', null = True)
-        #pic_4 = models.ImageField(upload_to='profile_pics/%Y/%m/%d',null=True)
+    
         
     def __unicode__(self):
         return '(id:' + str(self.user.id) +') '+ self.user.username
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
-    # crushee is the user who is being desired
+
+    source_person_profile=models.ForeignKey(UserProfile)
     target_person=models.ForeignKey(User)
 
     # date_feelings_changed keeps track of when the crush list changed
     date_added = models.DateField(auto_now_add=True)
     
-    #save the target person's response as a lookup time optimization
-    TARGET_RESPONSE_CHOICES = (
-                               (0,'Waiting'),
-                               (1,'Interested'),
-                               (2, 'Not Interested'),
-                               )
-    target_person_response = models.IntegerField(default=0, choices=TARGET_RESPONSE_CHOICES)
-    
-    # crusher has to pay to see the results of the match results
-    is_results_paid = models.BooleanField(default=False)
+    # list of one or many mutual friends between the admirer and crushee
+    #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
     
     # how are the admirer and crushee connected
     FRIENDSHIP_TYPE_CHOICES = (
@@ -166,60 +128,113 @@ class BasicRelationship(models.Model):
                                (u'3RD_DEGREE_FRIEND', '3rd Degree Friend'), # this won't be used initially
                                (u'STRANGER', 'Stranger'),
                                )
-    
     friendship_type=models.CharField(max_length=20, default='FRIEND', choices=FRIENDSHIP_TYPE_CHOICES)
     
-    # list of one or many mutual friends between the admirer and crushee
-    mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
-    
     class Meta:
-        abstract = True
-    
+        abstract = True 
     def __unicode__(self):
-        return 'Relationship for:' + str(self.target_person.username)
+        return 'Basic relationship for:' + str(self.target_person.username)
 
-# details about each unique crush 
+class NoCrushRelationship(BasicRelationship): 
+    def __unicode__(self):
+        return 'No Feelings for:' + str(self.target_person.username)
+
+
 class CrushRelationship(BasicRelationship):
+    
+    #dynamically tie in the target person's response as a lookup time optimization (using django signals)
+    TARGET_ASSESSMENT_CHOICES = (
+                               (0,'Waiting'),
+                               (1,'Match'),
+                               (2, 'No Match'),
+                               )
+    target_person_assessment = models.IntegerField(default=0, choices=TARGET_ASSESSMENT_CHOICES) 
+    
+    def save(self,*args, **kwargs):  
+        # check to see if there is a reciprocal relationship
+        crusher = self.source_person_profile.user
+        crushee = self.target_person
+        crushee_profile=crushee.get_profile()
+    
+        if crusher in crushee_profile.secret_crushees.all():
+            #update the crushee's relationship with the crusher
+            crushee_relationship = crushee_profile.secretcrushrelationship_set.get(target_person=crusher)
+            if crushee_relationship.target_person_assessment!=1:
+                print "crushee : " + crushee.last_name + " secretly likes her crusher : " + crusher.last_name
+                crushee_relationship.target_person_assessment=1 #interested
+                crushee_relationship.save()
+            #update this relationship too
+            self.target_person_assessment=1
+        else: 
+            if crusher in crushee_profile.open_crushees.all():
+                crushee_relationship = crushee_profile.opencrushrelationship_set.get(target_person=crusher)
+                if crushee_relationship.target_person_assessment!=1:
+                    print "crushee : " + crushee.last_name + " secretly likes her crusher : " + crusher.last_name
+                    crushee_relationship.target_person_assessment=1 #interested
+                    crushee_relationship.save()
+                self.target_person_assessment=1
+        super(CrushRelationship, self).save(*args,**kwargs)
+        
+    def delete(self,*args, **kwargs):  
+        print "delete relationships fired"
+        # check to see if there is a reciprocal relationship
+        crusher = self.source_person_profile.user
+        crushee = self.target_person
+        crushee_profile=crushee.get_profile()
+    
+        if crusher in crushee_profile.secret_crushees.all():
 
-    # crush_list points to the admirer's crush list for easy crush list lookup
-    source_person_crush_list = models.ForeignKey(CrushList)
-
-    date_status_changed=models.DateTimeField(null=True)
-
-    # -- CRUSH LIST - FEATURE ADD-ONS-- 
-    # potentially both the admirer and the crusher can pay for a method to more easily determine a match
-    is_lineup_paid_for=models.BooleanField(default=False)
-    is_lineup_completed=models.BooleanField(default=False)
-    num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants, but for extra money this number can be configured.
-    #admirer can pay to have his feature profiled on crushee's site
-    is_feature_sneak_paid_for=models.BooleanField(default=False)
+            #update the crushee's relationship with the crusher
+            crushee_relationship = crushee_profile.secretcrushrelationship_set.get(target_person=crusher)
+            if crushee_relationship.target_person_assessment!=0:
+                print "crushee : " + crushee.last_name + " secretly likes her crusher who is deleting the crush: " + crusher.last_name
+                crushee_relationship.target_person_assessment=0 #waiting
+                crushee_relationship.target_person_assessment=0 #interested
+                super(CrushRelationship, self).delete(*args,**kwargs) 
+                crushee_relationship.save()
+                return
+        else: 
+            if crusher in crushee_profile.open_crushees.all():
+                crushee_relationship = crushee_profile.opencrushrelationship_set.get(target_person=crusher)
+                if crushee_relationship.target_person_assessment!=0:
+                    print "crushee : " + crushee.last_name + " openly likes her crusher who is deleting the crush : " + crusher.last_name
+                    crushee_relationship.target_person_assessment=0 #interested
+                    super(CrushRelationship, self).delete(*args,**kwargs) 
+                    crushee_relationship.save()
+                    return
+        super(CrushRelationship, self).delete(*args,**kwargs)        
     
     class Meta:
         abstract=True
-        
     def __unicode__(self):
         return 'Feelings for:' + str(self.target_person.username)
 
 class OpenCrushRelationship(CrushRelationship):    
-        # by default, one's feelings for another are secret
+        # by default, one's feelings for another are not secret
     is_secret = models.BooleanField(default=False)
+    
     def __unicode__(self):
         return 'Open Feelings for:' + str(self.target_person.username) 
 
 class SecretCrushRelationship(CrushRelationship):    
-        # by default, one's feelings for another are secret
+    # by default, one's feelings for another are secret
     is_secret = models.BooleanField(default=True)
-    def __unicode__(self):
-        return 'Secret Feelings for:' + str(self.target_person.username) 
-
-    # details about each unique crush 
-class NoCrushRelationship(BasicRelationship):
-
-    # crush_list points to the admirer's crush list for easy crush list lookup
-    source_person_no_crush_list = models.ForeignKey(NoCrushList)
+    
+    # -- PAYMENT CHECKS --
+    # crusher has to pay to see the results of the match results
+    is_results_paid = models.BooleanField(default=False)
+    # potentially both the admirer and the crusher can pay for a method to more easily determine a match
+    is_lineup_paid=models.BooleanField(default=False)
+    is_premium_lineup_paid=models.BooleanField(default=False)
+    #crusher can pay to have his crush completely hidden; crushee will have no option to take a discovery lineup test
+    is_no_lineup_paid=models.BooleanField(default=False)
+    is_lineup_completed=models.BooleanField(default=False)
+    num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants, but for extra money this number can be configured.
+    #admirer can pay to have his feature profiled on crushee's site
+    #is_feature_sneak_paid_for=models.BooleanField(default=False)
     
     def __unicode__(self):
-        return 'No Feelings for:' + str(self.target_person.username)
+        return 'Secret Feelings for:' + str(self.target_person.username) 
     
 class CreditSpent(models.Model):
     # associate transaction with one particular user
@@ -240,3 +255,4 @@ class CreditSpent(models.Model):
                        )
     
     service_payment_type=models.IntegerField(default=0,choices=SERVICE_PAYMENT_CHOICES)
+    

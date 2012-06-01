@@ -11,7 +11,7 @@
       overlayOpacity: "0.3",
       overlayColor: '#000',
       closeOnSubmit: true,
-      showSelectedCount: false,
+      showSelectedCount: true,
       color: "default",
       showRandom:false,
       lang: {
@@ -28,9 +28,40 @@
       onStart: function(response){ return null },
       onClose: function(response){ return null },
       onSubmit: function(response){
-      
-      	var bSecret=$(this).attr('secret');
-      
+		add_friends_to_db(response,false);
+      }
+    });
+      $(".bt-fs-open-dialog").fSelector({
+      excludeIds: [],
+      closeOverlayClick: true,
+      overlayOpacity: "0.3",
+      overlayColor: '#000',
+      closeOnSubmit: true,
+      showSelectedCount: true,
+      color: "default",
+      showRandom:false,
+      lang: {
+        title: "Friend Selector",
+        buttonSubmit: "Select",
+        buttonCancel: "Cancel",
+        summaryBoxResult: "{1} best results for {0}",
+        summaryBoxNoResult: "No results for {0}",
+        searchText: "Enter a friend's name",
+        fbConnectError: "You must connect to Facebook to see this.",
+        selectedCountResult: "You have choosen {0} people.",
+        selectedLimitResult: "Limit is {0} people."
+      },
+      onStart: function(response){ return null },
+      onClose: function(response){ return null },
+      onSubmit: function(response){
+		add_friends_to_db(response,true);
+      }
+    });
+  });
+  
+  function add_friends_to_db(response,bOpen)
+  {	      
+		// add a special field if the added crushes are open
        // response looks like a comma delimited list of facebook id's
 		var form = document.createElement("form");
 		form.setAttribute("method", "POST");
@@ -49,9 +80,9 @@
 
 		var	key;
 		var id;
+		
 
-		// add a special field if the added crushes are open
-		if (!bSecret)
+		if (bOpen)
 		{
 			hiddenField = document.createElement("input");
             hiddenField.setAttribute("type", "hidden");
@@ -75,25 +106,37 @@
 		document.body.appendChild(form);
 		form.submit();
 		document.body.removeChild(form);
-
-      }
-    });
-  });
+  }
 </script>
 
-{% if userlist %}
-<h3>You added the following crushes:</h3>
+{% if secret_userlist %}
+<h3>The following users were added to your secret crushlist:</h3>
 <ul>
-	{% for user in userlist %}
+	{% for user in secret_userlist %}
 		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
 	{% endfor %}
 </ul>
-{% else %}
-<BR><BR>
 {% endif %}
 
-  <a href="javascript:{}" class="bt-fs-dialog">Find Secret Crush Friend (via Javascript)</a>
+{% if open_userlist %}
+<h3>The following users were added to your open crush list:</h3>
+<ul>
+	{% for user in open_userlist %}
+		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if duplicate_userlist %}
+<h3>The following users are already on your crush list::</h3>
+<ul>
+	{% for user in duplicate_userlist %}
+		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
+	{% endfor %}
+</ul>
+{% endif %}
+  <BR><BR><a href="javascript:{}" class="bt-fs-dialog">Find Secret Crush Friend (via Javascript)</a>
   <BR><BR>
-  <a href="javascript:{}" class="bt-fs-dialog" secret="true">Find Open Crush Friend (via Javascript)</a>
+  <a href="javascript:{}" class="bt-fs-open-dialog" open="true">Find Open Crush Friend (via Javascript)</a>
  
 {% endblock %}

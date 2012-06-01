@@ -31,7 +31,9 @@ def search(request):
         # create it from scracth so that any get parameters (e.g. previously selected ID's) are removed
     fb_redirect_uri='http://' + request.get_host()+'/search/'
     crushee_id=''
-    userlist = []
+    secret_userlist = []
+    open_userlist=[]
+    duplicate_userlist=[]
     is_open=False;
     if 'open' in request.POST:
         is_open=True
@@ -39,64 +41,61 @@ def search(request):
     for key in request.POST:
         crushee_id=request.POST[key]
 
-        if key.startswith('to'):
-        
+        if key.startswith('to'):    
             # find existing site user with this id or create a new user 
             # called function is in a custom UserProfile manager because it is also used during login/authentication
             selected_user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
-            userlist.append(selected_user)
             # now that the user is definitely on the system, add that user to the crush list        
-            # only create a new relationship if an exising one between the current user and the seleted user does not exist
+            # only create a new relationship if an existing one between the current user and the selected user does not exist
             if is_open==True:
-                if not(my_profile.crush_list.open_target_persons.filter(username=selected_user.username).exists()):
-                    OpenCrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
+                if not(my_profile.open_crushees.filter(username=selected_user.username).exists()):
+                    OpenCrushRelationship.objects.create(target_person=selected_user,source_person_profile=my_profile,
                                                            friendship_type=u'FRIEND')
+                    open_userlist.append(selected_user)
                 else:
-                    print "Handle the duplicate of " + crushee_id + "crush addition attempt later!" 
+                    duplicate_userlist.append(selected_user)
+                    
             else:
-                if not(my_profile.crush_list.secret_target_persons.filter(username=selected_user.username).exists()):
-                    SecretCrushRelationship.objects.create(target_person=selected_user,source_person_crush_list=my_profile.crush_list,
+                if not(my_profile.secret_crushees.filter(username=selected_user.username).exists()):
+                    SecretCrushRelationship.objects.create(target_person=selected_user,source_person_profile=my_profile,
                                                            friendship_type=u'FRIEND')
+                    secret_userlist.append(selected_user)
                 else:
-                    print "Handle the duplicate of " + crushee_id + "crush addition attempt later!"                      
+                    duplicate_userlist.append(selected_user)          
      
     return render_to_response('search.html',
                               {'token':csrf.get_token(request),
                                'profile': my_profile, 
                                'facebook_app_id': settings.FACEBOOK_APP_ID, 
                                'redirect_uri': fb_redirect_uri,
-                               'userlist':userlist},
+                               'secret_userlist':secret_userlist,
+                               'open_userlist':open_userlist,
+                               'duplicate_userlist':duplicate_userlist},
                               context_instance=RequestContext(request))  
 
 # -- Crush List Page --
 @login_required
 def crush_list(request):
-    my_profile = request.user.get_profile() 
-    my_crush_list = my_profile.crush_list    
+    my_profile = request.user.get_profile()  
     
     if "delete_secret" in request.GET:
         delete_username=request.GET["delete_secret"]
-        # find user
-        if my_crush_list.secret_target_persons.filter(username=delete_username).exists():
-            # delete crushrelationship; this should also delete the crushee from crush list
-            my_crush_list.secret_target_persons.get(username=delete_username).delete()
-            # update the crushee's relationship (if it exists)???
+        # find the relationship and delete it!
+        delete_user=my_profile.secret_crushees.get(username=delete_username)
+        my_profile.secretcrushrelationship_set.get(target_person=delete_user).delete()
     else:             
         if "delete_open" in request.GET:
             delete_username=request.GET["delete_open"]
-            # find user
-            if my_crush_list.open_target_persons.filter(username=delete_username).exists():
-                # delete crushee from crush list; this also deletes the relationship from the db
-                my_crush_list.open_target_persons.get(username=delete_username).delete()
-                # update the crushee's relationship (if it exists)???
+            delete_user=my_profile.open_crushees.get(username=delete_username)
+            my_profile.opencrushrelationship_set.get(target_person=delete_user).delete()
             
     # build a list of all crush relationship objects to send to the template file
     secret_crush_relationships = []
     open_crush_relationships = []
-    for crushee in my_crush_list.secret_target_persons.all():
-        secret_crush_relationships.append(SecretCrushRelationship.objects.get(source_person_crush_list=my_crush_list,target_person=crushee))
-    for crushee in my_crush_list.open_target_persons.all():
-        open_crush_relationships.append(OpenCrushRelationship.objects.get(source_person_crush_list=my_crush_list,target_person=crushee))        
+    for crushee in my_profile.secret_crushees.all():
+        secret_crush_relationships.append(SecretCrushRelationship.objects.get(source_person_profile=my_profile,target_person=crushee))
+    for crushee in my_profile.open_crushees.all():
+        open_crush_relationships.append(OpenCrushRelationship.objects.get(source_person_profile=my_profile,target_person=crushee))        
     
     redirect_uri='http://' + request.get_host()+'/crush_list/'
     
@@ -111,9 +110,10 @@ def crush_list(request):
 @login_required
 def secret_admirer_list(request):
     my_profile = request.user.get_profile() 
-    secret_admirers = request.user.secret_crushees_set.all()
+    admirers= request.user.secret_crushees_set.all()
     return render_to_response('secret_admirer_list.html',
-                              {'profile': my_profile,'secret_admirers':secret_admirers,
+                              {'profile': my_profile,
+                               'admirers':admirers,
                                 'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request)) 
 
@@ -121,9 +121,10 @@ def secret_admirer_list(request):
 @login_required
 def open_admirer_list(request):    
     my_profile = request.user.get_profile() 
-    open_admirers = request.user.open_crushees_set.all()
+    admirers= request.user.open_crushees_set.all()
     return render_to_response('open_admirer_list.html',
-                              {'profile': my_profile,'open_admirers':open_admirers,
+                              {'profile': my_profile,
+                               'admirers':admirers,
                                 'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request)) 
 

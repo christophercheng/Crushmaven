@@ -52,6 +52,7 @@ $(document).ready(function()
 <TABLE width=700 >
 	<tr align="left" bgcolor="LightPink">
 		<th>Name</th>
+		<th>Friendship</th>
 		<th>Date Added</th>
 		<th>Status</th>
 		<th>Options</th>
@@ -59,8 +60,9 @@ $(document).ready(function()
 		{% for relationship in secret_crush_relationships %}
 	<tr> 
 		<td>{{relationship.target_person.first_name}} {{relationship.target_person.last_name}} <small>({{relationship.target_person.username}})</small></td>
+		<td>{{relationship.get_friendship_type_display}}</td>
 		<td>{{relationship.date_added}}</td>
-		<td>{{relationship.get_target_person_response_display}}</td>
+		<td>{{relationship.get_target_person_assessment_display}}</td>
 		<td ><a username="{{relationship.target_person.username}}" name= "{{relationship.target_person.first_name}} {{relationship.target_person.last_name}}" class="delete" secret="true" href="#" >remove</a></td>
 	</tr>
 	{% endfor %}
@@ -77,6 +79,7 @@ $(document).ready(function()
 <TABLE width=700 >
 	<tr align="left" bgcolor="LightPink">
 		<th>Name</th>
+		<th>Friendship</th>
 		<th>Date Added</th>
 		<th>Status</th>
 		<th>Options</th>
@@ -84,8 +87,9 @@ $(document).ready(function()
 		{% for relationship in open_crush_relationships %}
 	<tr> 
 		<td>{{relationship.target_person.first_name}} {{relationship.target_person.last_name}} <small>({{relationship.target_person.username}})</small></td>
+		<td>{{relationship.get_friendship_type_display}}</td>
 		<td>{{relationship.date_added}}</td>
-		<td>{{relationship.get_target_person_response_display}}</td>
+		<td>{{relationship.get_target_person_assessment_display}}</td>
 		<td ><a username="{{relationship.target_person.username}}" name= "{{relationship.target_person.first_name}} {{relationship.target_person.last_name}}" class="delete" secret="false" href="#" >remove</a></td>
 	</tr>
 	{% endfor %}
