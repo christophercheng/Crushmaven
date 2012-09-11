@@ -7,12 +7,13 @@ from django.conf import settings
 from crush.models import UserProfile, SecretCrushRelationship,CrushRelationship, OpenCrushRelationship
 from django.middleware import csrf
 #from django.contrib.auth.models import Use
-
-
+# to allow app to run in facebook canvas without csrf error:
+from django.views.decorators.csrf import csrf_exempt 
 
 
 # -- Home Page --
 # handles both member and guest home page
+@csrf_exempt
 def home(request):
 #    return HttpResponse("You are at the home page.")
     if request.user.is_authenticated():
