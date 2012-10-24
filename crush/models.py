@@ -5,11 +5,11 @@ from facebook.models import FacebookProfile
 import urllib, json
 import datetime
 from django.db import IntegrityError
-from django.dispatch import receiver
- 
-# a custom User Profile manager class to encapsulate common actions taken on a table level (not row level)
+
+# a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class CustomProfileManager(models.Manager):
     
+    # helper function used by find_or_create_user function to separate profile data extraction from facebook and insertion into the user profile object
     def update_profile(self,user_profile,fb_profile):
         user_profile.user.first_name = fb_profile['first_name']
         user_profile.user.last_name = fb_profile['last_name']
@@ -32,7 +32,8 @@ class CustomProfileManager(models.Manager):
                     user_profile.gender_pref=u'M'
             elif len(fb_profile['interested_in']) > 1:
                 user_profile.gender_pref=u'B'
-    
+                
+    # who calls this function? where/when is it used?
     def find_or_create_user(self, fb_id, fb_access_token,fb_profile,is_this_for_me):
         try:
         # Try and find existing user
@@ -43,9 +44,9 @@ class CustomProfileManager(models.Manager):
 
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
                     user.is_active=True# then activate their account
+                    user.save()  
                     # and also update their profile with facebook data; they're not always obtained indirectly
                     self.update_profile(user_profile, fb_profile)
-                    
                 user_profile.save()
         # No existing user, create one
         except UserProfile.DoesNotExist:
@@ -71,7 +72,7 @@ class CustomProfileManager(models.Manager):
             user.save()
             user_profile.save()
         return user
-        
+
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class UserProfile(FacebookProfile):
 
@@ -96,24 +97,44 @@ class UserProfile(FacebookProfile):
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)
 
-    # by default give every user 10 credits ($1) so that they can acquaint themselves with the discovery lineup process
-    site_credits = models.IntegerField(default=10) 
-    
-    # each user has a set of user lists
-    open_crushees = models.ManyToManyField(User,through='OpenCrushRelationship',related_name='open_crushees_set')
-    secret_crushees = models.ManyToManyField(User, through='SecretCrushRelationship',related_name='secret_crushees_set')
-    no_crushees = models.ManyToManyField(User, through='NoCrushRelationship',related_name='no_crushees_set')
+    # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
+    site_credits = models.IntegerField(default=1) 
     
     
-        
+    # each user has a set of user lists representing their 'just friends' and their crushes
+    # here is an idiosyncrasy of this implementation:
+        # to access a user's crushes, you need to go through the user's UserProfile object
+        # to access a user's admirers, you need to go through the user's User object
+
+    just_friends_targets = models.ManyToManyField(User, through='PlatonicRelationship',related_name='friends_not_into_me_set')
+    crush_targets = models.ManyToManyField(User, through='CrushRelationship',related_name='admirers_set')
+    
     def __unicode__(self):
         return '(id:' + str(self.user.id) +') '+ self.user.username
+
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
 
+
+    # QUESTION: why is the source person's user profile instead of the actual user himself not stored
+    # ANSWER: django disallows the creation of a model with two foreign keys of the same type
+    
+    # using the source person's profile as a foreign key is necessary because django requires that the intermediate 'through' 
+    # relationship must have one foreign key that points back to the target model
     source_person_profile=models.ForeignKey(UserProfile)
+    # to find the crush relationships of a given user (where they are the admirer):
+        # request.user.get_profile().user_is_source_person_relationship_set <= this makes sense but doesn't differentiate crushes from just-friends
+        # request.user.get_profile().crushrelationship_set.all() <= this is confusing
+    # to find the plutonic friendships of a given user:
+        # request.user.get_profile().nocrushrelationship_set.all() 
+            # this doesn't say whether the set is the set of relationships where user is source or target
+    
     target_person=models.ForeignKey(User)
+    # to find the relationships where a given user is the one being admired:
+        # request.user.target_person_relatioinship_set
+
+    
 
     # date_feelings_changed keeps track of when the crush list changed
     date_added = models.DateField(auto_now_add=True)
@@ -125,7 +146,6 @@ class BasicRelationship(models.Model):
     FRIENDSHIP_TYPE_CHOICES = (
                                (u'FRIEND','Friend'),
                                (u'FRIEND_OF_FRIEND','Friend of Friend'),
-                               (u'3RD_DEGREE_FRIEND', '3rd Degree Friend'), # this won't be used initially
                                (u'STRANGER', 'Stranger'),
                                )
     friendship_type=models.CharField(max_length=20, default='FRIEND', choices=FRIENDSHIP_TYPE_CHOICES)
@@ -135,7 +155,7 @@ class BasicRelationship(models.Model):
     def __unicode__(self):
         return 'Basic relationship for:' + str(self.target_person.username)
 
-class NoCrushRelationship(BasicRelationship): 
+class PlatonicRelationship(BasicRelationship): 
     def __unicode__(self):
         return 'No Feelings for:' + str(self.target_person.username)
 
@@ -143,98 +163,84 @@ class NoCrushRelationship(BasicRelationship):
 class CrushRelationship(BasicRelationship):
     
     #dynamically tie in the target person's response as a lookup time optimization (using django signals)
-    TARGET_ASSESSMENT_CHOICES = (
-                               (0,'Waiting'),
-                               (1,'Match'),
-                               (2, 'No Match'),
+    TARGET_FEELING_CHOICES = (
+                               (0,'Unknown'),
+                               (1,'Crush'),
+                               (2, 'Platonic'),
                                )
-    target_person_assessment = models.IntegerField(default=0, choices=TARGET_ASSESSMENT_CHOICES) 
+    TARGET_STATUS_CHOICES = (
+                           (0,'Invites Not Sent'),
+                           (1,'Invites Sent'),
+                           (2,'Signed Up'),
+                           (3,'Started Lineup'),
+                           (4,'Responded'),
+                           )
     
+    target_feeling = models.IntegerField(default=0, choices=TARGET_FEELING_CHOICES) 
+    target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
+    
+    # -- PAYMENT CHECKS --
+    # admirer has to pay to see the results of the match results
+    is_results_paid = models.BooleanField(default=False)
+    # the crush target (and potentially the admirer) will need to pay to activate the crush-line-up
+    is_lineup_paid=models.BooleanField(default=False)
+
+    is_lineup_completed=models.BooleanField(default=False)
+    num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants. in future, this number may be configurable (for a fee?)
+
+    # TODO!!! when/where this called?
     def save(self,*args, **kwargs):  
-        # check to see if there is a reciprocal relationship
-        crusher = self.source_person_profile.user
-        crushee = self.target_person
-        crushee_profile=crushee.get_profile()
+        # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
+        admirer = self.source_person_profile.user
+        crush = self.target_person
+        crush_profile=crush.get_profile()
     
-        if crusher in crushee_profile.secret_crushees.all():
-            #update the crushee's relationship with the crusher
-            crushee_relationship = crushee_profile.secretcrushrelationship_set.get(target_person=crusher)
-            if crushee_relationship.target_person_assessment!=1:
-                print "crushee : " + crushee.last_name + " secretly likes her crusher : " + crusher.last_name
-                crushee_relationship.target_person_assessment=1 #interested
-                crushee_relationship.save()
-            #update this relationship too
-            self.target_person_assessment=1
-        else: 
-            if crusher in crushee_profile.open_crushees.all():
-                crushee_relationship = crushee_profile.opencrushrelationship_set.get(target_person=crusher)
-                if crushee_relationship.target_person_assessment!=1:
-                    print "crushee : " + crushee.last_name + " secretly likes her crusher : " + crusher.last_name
-                    crushee_relationship.target_person_assessment=1 #interested
-                    crushee_relationship.save()
-                self.target_person_assessment=1
+        # check first to see if the admirer (source person) is in the crush's (target person's) just_friend_list; then check if in the target person's crush_list
+    
+        #if source person is in the target's just_friend_list, then we don't have a match
+        if admirer in crush_profile.just_friends_targets.all():
+            self.target_person_response=2   
+    
+        #if admirer is also a crush of the source person's crush list, then we have a match
+        else :
+            if admirer in crush_profile.crush_targets.all():
+                #update 1 of 2: the target person's relationship with the source person (the admirer)
+                crush_relationship = crush_profile.crushrelationship_set.get(target_person=admirer)
+                if crush_relationship.target_person_response!=1:
+                    print "crush : " + crush.last_name + " secretly likes her crusher : " + admirer.last_name
+                    crush_relationship.target_person_response=1 #interested
+                    crush_relationship.save()
+            # update 2 of 2: this relationship!!!
+                self.target_person_response=1
+ 
         super(CrushRelationship, self).save(*args,**kwargs)
         
+    # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
         print "delete relationships fired"
         # check to see if there is a reciprocal relationship
-        crusher = self.source_person_profile.user
-        crushee = self.target_person
-        crushee_profile=crushee.get_profile()
+        admirer = self.source_person_profile.user
+        crush = self.target_person
+        crush_profile=crush.get_profile()
     
-        if crusher in crushee_profile.secret_crushees.all():
+        if admirer in crush_profile.crush_targets.all():
 
-            #update the crushee's relationship with the crusher
-            crushee_relationship = crushee_profile.secretcrushrelationship_set.get(target_person=crusher)
-            if crushee_relationship.target_person_assessment!=0:
-                print "crushee : " + crushee.last_name + " secretly likes her crusher who is deleting the crush: " + crusher.last_name
-                crushee_relationship.target_person_assessment=0 #waiting
-                crushee_relationship.target_person_assessment=0 #interested
+            #update the target person's (crush's) relationship with the source person (admirer)
+            crush_relationship = crush_profile.crushrelationship_set.get(target_person=admirer)
+            if crush_relationship.target_person_response!=0:
+                print "crush : " + crush.last_name + " secretly likes her crusher who is deleting the crush: " + admirer.last_name
+                crush_relationship.target_person_response=0 #waiting
                 super(CrushRelationship, self).delete(*args,**kwargs) 
-                crushee_relationship.save()
+                # TODO!!! need to alert the target person of the change!
+                crush_relationship.save()
                 return
-        else: 
-            if crusher in crushee_profile.open_crushees.all():
-                crushee_relationship = crushee_profile.opencrushrelationship_set.get(target_person=crusher)
-                if crushee_relationship.target_person_assessment!=0:
-                    print "crushee : " + crushee.last_name + " openly likes her crusher who is deleting the crush : " + crusher.last_name
-                    crushee_relationship.target_person_assessment=0 #interested
-                    super(CrushRelationship, self).delete(*args,**kwargs) 
-                    crushee_relationship.save()
-                    return
+ 
         super(CrushRelationship, self).delete(*args,**kwargs)        
     
-    class Meta:
-        abstract=True
     def __unicode__(self):
         return 'Feelings for:' + str(self.target_person.username)
 
-class OpenCrushRelationship(CrushRelationship):    
-        # by default, one's feelings for another are not secret
-    is_secret = models.BooleanField(default=False)
-    
-    def __unicode__(self):
-        return 'Open Feelings for:' + str(self.target_person.username) 
 
-class SecretCrushRelationship(CrushRelationship):    
-    # by default, one's feelings for another are secret
-    is_secret = models.BooleanField(default=True)
-    
-    # -- PAYMENT CHECKS --
-    # crusher has to pay to see the results of the match results
-    is_results_paid = models.BooleanField(default=False)
-    # potentially both the admirer and the crusher can pay for a method to more easily determine a match
-    is_lineup_paid=models.BooleanField(default=False)
-    is_premium_lineup_paid=models.BooleanField(default=False)
-    #crusher can pay to have his crush completely hidden; crushee will have no option to take a discovery lineup test
-    is_no_lineup_paid=models.BooleanField(default=False)
-    is_lineup_completed=models.BooleanField(default=False)
-    num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants, but for extra money this number can be configured.
-    #admirer can pay to have his feature profiled on crushee's site
-    #is_feature_sneak_paid_for=models.BooleanField(default=False)
-    
-    def __unicode__(self):
-        return 'Secret Feelings for:' + str(self.target_person.username) 
     
 class CreditSpent(models.Model):
     # associate transaction with one particular user

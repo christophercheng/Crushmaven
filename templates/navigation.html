@@ -1,38 +1,112 @@
 {% load base_extras %}
 
+<script type="text/javascript">
+  jQuery(document).ready(function($) {
+  $(".bt-fs-dialog").fSelector({
+      excludeIds: [],
+      closeOverlayClick: true,
+      overlayOpacity: "0.3",
+      overlayColor: '#000',
+      closeOnSubmit: true,
+      showSelectedCount: true,
+      color: "default",
+      showRandom:false,
+      lang: {
+        title: "Crush Selector",
+        buttonSubmit: "Select",
+        buttonCancel: "Cancel",
+        summaryBoxResult: "{1} best results for {0}",
+        summaryBoxNoResult: "No results for {0}",
+        searchText: "Enter a friend's name",
+        fbConnectError: "You must connect to Facebook to see this.",
+        selectedCountResult: "You have choosen {0} people.",
+        selectedLimitResult: "Limit is {0} people."
+      },
+      onStart: function(response){ return null },
+      onClose: function(response){ return null },
+      onSubmit: function(response){
+		add_friends_to_db(response);
+      }
+    });
+  });
+  
+  function add_friends_to_db(response)
+  {	      
+		// add a special field if the added crushes are open
+       // response looks like a comma delimited list of facebook id's
+		var form = document.createElement("form");
+		form.setAttribute("method", "POST");
+		form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
+		var hiddenField;
+		var cField;
+		cField =	document.createElement("div");
+		cField.setAttribute("style","display:none");
+		form.appendChild(cField);
+		var input_field;
+		input_field = document.createElement("input");
+		input_field.setAttribute("type", "hidden");
+		input_field.setAttribute("name","csrfmiddlewaretoken");
+		input_field.setAttribute("value","{{csrf_token}}");
+		form.appendChild(input_field);
+	
+		var	key;
+		var id;
+
+		results = String(response).split(',');
+		
+		for(i=0; i<results.length; i++) 
+		{	
+			hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            key = "to[" + i + "]";
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", results[i]);
+            form.appendChild(hiddenField);
+		}
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
+  }
+</script>
+
 <div id="topbar">
 	<div class="navbar">
 		<div class="navbar-side navbar-left"></div>
 		<div class="navbar-content">
-		
+		<!-- Top Bar Links -->
 			<a class="{% navactive request 'accounts/login' %}"
-				href="{% url crush.views.home %}">Home</a>
-
+				href="{% url crush.views.home %}"><font color=red>Crush</font><font><i>Vibes</i></font></a>
+			<a href="javascript:{}" class="bt-fs-dialog">Add Crush</a>
+			<a class="{% navactive request 'help_how_it_works' %}"
+				href="{% url crush.views.help_how_it_works %}">How it Works</a>
+			<a class="{% navactive request 'settings_profile' %}"
+				href="{% url crush.views.settings_profile %}">Profile</a>
+			<a class="{% navactive request 'settings_credits' %}"
+				href="{% url crush.views.settings_credits %}">Credits</a>	
+			<a class="{% navactive request 'settings_notifications' %}"
+				href="{% url crush.views.settings_notifications %}">Notifications</a>
+			<a href="{% url crush.views.logout_view %}">Logout</a>
+<!--  
 			<a class="{% navactive request 'search' %}"
 				href="{% url crush.views.search %}">Search</a>
-		
-			<a class="{% navactive request 'crush_list' %}"
-				href="{% url crush.views.crush_list %}">Crushes</a>
+-->
+		<!-- Left Bar Links -->	
+			<BR>
+			<a class="{% navactive request 'crushes_in_progress' %}"
+				href="{% url crush.views.crushes_in_progress %}">Crushes</a>
 
-			<a class="{% navactive request 'secret_admirer_list' %}"
-				href="{% url crush.views.secret_admirer_list %}">Secret Admirers</a>
-				
-			<a class="{% navactive request 'open_admirer_list' %}"
-				href="{% url crush.views.open_admirer_list %}">Not-So-Secret Admirers</a>
+	
 
-			<a class="{% navactive request 'not_interested_list' %}"
-				href="{% url crush.views.not_interested_list %}">Not Interested</a>
+			<a class="{% navactive request 'admirers' %}"
+				href="{% url crush.views.admirers %}">Secret Admirers</a>
 
-			<a class="{% navactive request 'invite' %}"
-				href="{% url crush.views.invite %}">Invite Friends</a>
-				
-			<a class="{% navactive request 'my_profile' %}"
-				href="{% url crush.views.my_profile %}">Profile</a>
+			<a class="{% navactive request 'just_friends' %}"
+				href="{% url crush.views.just_friends %}">Just Friends</a>
 
-			<a class="{% navactive request 'site_credits' %}"
-				href="{% url crush.views.site_credits %}">Credits</a>
-
-			<a href="{% url crush.views.logout_view %}">Logout</a>
+			<a class="{% navactive request 'friends_with_admirers' %}"
+				href="{% url crush.views.friends_with_admirers %}">Friends with Admirers</a>
+			Add Crush
+			
 		</div>	
 		<div class="navbar-side navbar-right"></div>
 	</div>

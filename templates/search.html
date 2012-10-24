@@ -41,7 +41,7 @@
       color: "default",
       showRandom:false,
       lang: {
-        title: "Friend Selector",
+        title: "CrushVibes Friend Selector",
         buttonSubmit: "Select",
         buttonCancel: "Cancel",
         summaryBoxResult: "{1} best results for {0}",
@@ -80,16 +80,6 @@
 
 		var	key;
 		var id;
-		
-
-		if (bOpen)
-		{
-			hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", "open");
-            hiddenField.setAttribute("value", "true");
-            form.appendChild(hiddenField);
-		}
 
 		results = String(response).split(',');
 		
@@ -109,23 +99,15 @@
   }
 </script>
 
-{% if secret_userlist %}
+{% if userlist %}
 <h3>The following users were added to your secret crushlist:</h3>
 <ul>
-	{% for user in secret_userlist %}
+	{% for user in userlist %}
 		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
 	{% endfor %}
 </ul>
 {% endif %}
 
-{% if open_userlist %}
-<h3>The following users were added to your open crush list:</h3>
-<ul>
-	{% for user in open_userlist %}
-		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
-	{% endfor %}
-</ul>
-{% endif %}
 
 {% if duplicate_userlist %}
 <h3>The following users are already on your crush list::</h3>
@@ -136,7 +118,5 @@
 </ul>
 {% endif %}
   <BR><BR><a href="javascript:{}" class="bt-fs-dialog">Find Secret Crush Friend (via Javascript)</a>
-  <BR><BR>
-  <a href="javascript:{}" class="bt-fs-open-dialog" open="true">Find Open Crush Friend (via Javascript)</a>
  
 {% endblock %}
