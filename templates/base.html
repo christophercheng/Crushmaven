@@ -43,10 +43,9 @@
   </script>  
     
         
-		{% include "navigation.html" %}
-	
-		<img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture">
-		<b>{{ user.first_name }} {{user.last_name}},</b>
+{% include "navigation.html" %}
+<BR>	
+
 
 {% block content %}
 {% endblock %}

@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load fbdater_extras %}
+
+<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
+
+<style type="text/css">
+	table tr:nth-child(even) { background-color: #D9F0FF; } 
+</style>
+
+<div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() 
+{
+	$("#dialog").dialog({
+	    modal: true,
+	    autoOpen: false
+	});
+
+	$("a.delete").click(function(e) {
+		var name=$(this).attr('name');
+		var username=$(this).attr('username');
+		e.preventDefault();
+		$("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
+		$("#dialog").dialog('option', 'buttons', {
+        "Delete": function() {
+        	window.location = "{{request_uri}}" + '?delete=' + username;
+        },
+        "Cancel": function() {
+            $(this).dialog("close");
+        }
+    });
+
+	    $("#dialog").dialog("open");
+	    return false;
+	});
+
+});
+
+</script>
+{% if userlist %}
+<h3>The following users were added to your secret crushlist:</h3>
+<ul>
+	{% for user in userlist %}
+		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if duplicate_userlist %}
+<h3>The following users are already on your crush list::</h3>
+<ul>
+	{% for user in duplicate_userlist %}
+		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
+	{% endfor %}
+</ul>
+{% endif %}
+
+<!-- ALWAYS display resonded crush relationships on top of page, if they exist -->
+
+{% if responded_relationships %}
+	<font color="red"><b>You have responses!</b></font>
+	{% for crush in responded_relationships %}
+		<div>
+		<HR>	
+		<!-- start: crush first and last name -->
+		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
+		&nbsp;&nbsp;&nbsp;
+		<!-- end: crush first and last name -->
+
+		<!-- start: crush status graphic -->	
+		<font color="dark red">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+		<!--  end: crush status graphic -->
+		<BR>		
+		<!-- start: crush pic -->
+		<img src="{{crush.target_person.get_profile.get_facebook_picture }}" height=80 width=80>
+		<!-- end: crush pic -->
+		<BR>
+		
+		<!--  start: bullet points -->
+		* responded to your crush<br>
+		<!--  end: bullet points -->
+		
+		<!-- start: response button -->
+			&nbsp;&nbsp;&nbsp;<B>[View Response]</B>
+		<!-- end: response button -->
+		
+		<!-- start: secondary data -->
+		<br>
+		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp;
+		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
+		&nbsp;|&nbsp;
+		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} {{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
+		<!-- end: secondary data -->
+	</div>
+	{% endfor %} 
+{% endif %} 
+
+<!-- Display the crush type navigation widget -->  
+<HR>
+<b><font color="gray">Crushes in Progress</b>&nbsp;&nbsp;<a href="crushes_matched">Successful Crushes</a>&nbsp;&nbsp;<a href="crushes_not_matched">Unsuccessful Crushes</a></font>
+  
+<! -- End of crush type navigation widget -->  
+
+{% if crush_relationships %}
+
+	{% for crush in crush_relationships %}
+	
+	<div>
+		<HR>
+<!-- Display NEW or UPDATED if relevant -->  
+		{% if crush.updated_flag == 1 %}
+			{% if crush.target_status == 0 %}
+				(New)
+				{% else %}
+					(Updated)
+			{% endif %}
+		{% endif %}
+		
+<!-- start: crush first and last name -->
+		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
+		&nbsp;&nbsp;&nbsp;
+<!-- end: crush first and last name -->
+
+<!-- start: crush status graphic -->	
+		{% if crush.target_status < 2 %}
+			<font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;finished crush line-up</font>
+			{% elif crush.target_status == 2 %}
+				<font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;finished crush line-up</font>
+				{% elif crush.target_status == 3 %}
+					<font color="dark red">signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>finished crush line-up</font>
+					{% else %}	
+						<font color="dark red">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+		{% endif %}
+		<!--  end: crush status graphic -->
+		<BR>		
+		<!-- start: crush pic -->
+		<img src="{{crush.target_person.get_profile.get_facebook_picture }}" height=80 width=80>
+		<!-- end: crush pic -->
+
+		<BR>
+		
+		<!--  start: bullet points -->
+		{% if crush.target_status == 0 %}
+		* not signed up {% if crush.updated_flag == 0 %}(since {{ crush.date_added|datetime_since }} ago) {% endif %}<br>
+		* needs an email invitation from you
+		{% elif crush.target_status == 1 %}
+		* not signed up (added {{ crush.date_added|datetime_since }} ago)<br>
+		* email app invite(s) sent x/xx  [send more invites]
+		{% elif crush.target_status == 2 %}
+		{% if crush.date_target_signed_up %}
+		* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
+		{% else %}
+		* is an existing member<BR>
+		{% endif %}
+		* must start your crush line-up to assess your relationship
+		{% else %}	
+		* started crush line-up<br>
+		* response expected soon
+		{% endif %}
+		<!--  end: bullet points -->
+		
+		<!-- start: conditional button: send invite -->
+		{% if crush.target_status == 0 %}
+			&nbsp;&nbsp;&nbsp;<B>[Send App Invite]</B>
+		{% endif %}
+		<!-- end: conditional button: send invite -->
+		
+		<!-- start: secondary data -->
+		<br>
+		
+		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
+		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
+		&nbsp;|&nbsp;
+		
+		<!-- check if deletion is possible -->
+		<!--  deletion condition 1: crush line-up has not been started -->
+		{% if crush.target_status > 2 %}
+			deletion not possible cause crush line-up started
+		<!-- deletion condition 2: at least x days have transpired -->
+		{% else %}
+			<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+			{{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
+		{% endif %}
+		<!-- end: secondary data -->
+	</div>
+		{% if crush.updated_flag == 1 %}
+			{{ crush.resetUpdatedFlag }}
+		{% endif %}
+	{% endfor %}
+
+<!-- 
+<TABLE width=700 >
+	<tr align="left" bgcolor="LightPink">
+		<th>Name</th>
+		<th>Friendship</th>
+		<th>Date Added</th>
+		<th>Response</th>
+		<th>Status</th>
+		<th>Options</th>
+	</tr>
+		{% for crush in crush_relationships %}
+	<tr> 
+		<td>{{crush.target_person.first_name}} {{crush.target_person.last_name}} <small>({{crush.target_person.username}})</small></td>
+		<td>{{crush.get_friendship_type_display}}</td>
+		<td>{{crush.date_added}}</td>
+		<td>{{crush.get_target_feeling_display}}</td>
+		<td>{{crush.get_target_status_display}}</td>
+		<td ><a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} {{crush.target_person.last_name}}" class="delete" href="#" >remove</a></td>
+	</tr>
+	{% endfor %}
+</TABLE>
+-->
+	
+{% elif responded_relationships.count == 0 %}
+	<HR>You have no secret crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+{% endif %}
+{% endblock %}
+

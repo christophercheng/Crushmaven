@@ -15,9 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 # handles both member and guest home page
 @csrf_exempt
 def home(request):
-
+    
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/crushes_matched/')
+        return HttpResponseRedirect('/crushes_in_progress/')
 
     else:
         return render(request,'guest_home.html')
@@ -47,7 +47,8 @@ def search(request):
 
             if not(my_profile.crush_targets.filter(username=selected_user.username).exists()):
                 CrushRelationship.objects.create(target_person=selected_user,source_person_profile=my_profile,
-                                                           friendship_type=u'FRIEND')
+                                                              target_starting_active_status=selected_user.is_active,
+                                                              friendship_type=u'FRIEND')
                 userlist.append(selected_user)
             else:
                 duplicate_userlist.append(selected_user)          
@@ -61,11 +62,16 @@ def search(request):
                                'duplicate_userlist':duplicate_userlist},
                               context_instance=RequestContext(request))  
 
+
+
+
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
-    
     my_profile = request.user.get_profile() 
+    
+    # obtain the results of any crush additions or deletions
+        # later I can move this into a separate view function
     
     if request.method == "POST":
         crushee_id=''
@@ -80,12 +86,11 @@ def crushes_in_progress(request):
                 # called function is in a custom UserProfile manager because it is also used during login/authentication
                 selected_user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
                 # now that the user is definitely on the system, add that user to the crush list        
-                # only create a new relationship if an existing one between the current user and the selected user does not exist
-    
+                # only create a new relationship if an existing one between the current user and the selected user does not exist 
     
                 if not(my_profile.crush_targets.filter(username=selected_user.username).exists()):
                     CrushRelationship.objects.create(target_person=selected_user,source_person_profile=my_profile,
-                                                               friendship_type=u'FRIEND')
+                                                               friendship_type=u'FRIEND', updated_flag=True)
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)
@@ -99,17 +104,20 @@ def crushes_in_progress(request):
         except CrushRelationship.DoesNotExist:
             delete_username=''
         return HttpResponseRedirect('/crushes_in_progress/')
+        
 
     # obtain a query set of all CrushRelationship objects from the user profile where the target's feeling is unknown (0)
         # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
         # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
-    crush_relationships = my_profile.crushrelationship_set.filter(target_feeling=0)
+        
+    responded_relationships = my_profile.crushrelationship_set.exclude(target_feeling = 0).exclude(is_results_paid=True)
+    
+    crush_relationships = my_profile.crushrelationship_set.filter(target_feeling=0,).order_by('-updated_flag','target_status','target_person__last_name')
     
     return render_to_response('crushes_in_progress.html',
                               {'profile': my_profile, 
+                               'responded_relationships':responded_relationships,
                                'crush_relationships':crush_relationships,
-                              # 'userlist':userlist,
-                              # 'duplicate_userlist':duplicate_userlist,
                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))    
     

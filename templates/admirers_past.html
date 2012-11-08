@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if admirers %}
+	YOU HAVE OPEN ADMIRERS - WOOOO!  :)
+	<ul>
+		{% for admirer in admirers %}
+			<li> {{admirer.user.first_name}} {{admirer.user.last_name}} <small>({{admirer.user.username}})</small>
+		{% endfor %}
+	</ul>
+{% else %}
+	THERE ARE NO OPEN ADMIRERS!
+{% endif %}
+
+{% endblock %}

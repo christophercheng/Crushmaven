@@ -6,8 +6,9 @@ from django.contrib.auth.models import User
 # This is the base class for User Profile
 class FacebookProfile(models.Model):
     user = models.OneToOneField(User)
+    # this will be populated by the facebook username first, then the facebook id if username is non-existant
     facebook_id = models.BigIntegerField(default=0)
-    access_token = models.CharField(max_length=150)
+    access_token = models.CharField(max_length=50)
 
     def get_facebook_profile(self):
         fb_profile = urllib.urlopen(
@@ -22,6 +23,7 @@ class FacebookProfile(models.Model):
                                                             % self.facebook_id
 
     def save(self):
+        print "FacebookProfile save() called"
         # updates user avatar
         super(FacebookProfile, self).save()
         self.user.save()
