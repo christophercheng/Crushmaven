@@ -5,47 +5,54 @@
 
 <meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
-
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
 
-<style type="text/css">
-	table tr:nth-child(even) { background-color: #D9F0FF; } 
-</style>
-
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
-
 
 <script type="text/javascript">
 
 $(document).ready(function() 
 {
-	$("#dialog").dialog({
-	    modal: true,
-	    autoOpen: false
-	});
+        $("#dialog").dialog({modal: true, autoOpen: false});
 
-	$("a.delete").click(function(e) {
-		var name=$(this).attr('name');
-		var username=$(this).attr('username');
-		e.preventDefault();
-		$("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
-		$("#dialog").dialog('option', 'buttons', {
-        "Delete": function() {
-        	window.location = "{{request_uri}}" + '?delete=' + username;
-        },
-        "Cancel": function() {
-            $(this).dialog("close");
-        }
-    });
-
-	    $("#dialog").dialog("open");
-	    return false;
-	});
-
+        $("a.delete").click(function(e) {
+        	var name=$(this).attr('name');	
+            var username=$(this).attr('username');
+            e.preventDefault();
+            $("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
+            $("#dialog").dialog('option', 'buttons', {
+       			"Delete": function() {window.location = "/crushes_in_progress" + '?delete=' + username;},
+        		"Cancel": function() {$(this).dialog("close");
+        		}
+    		});
+            $("#dialog").dialog("open");
+            return false;
+        });
+        
+        $("a.modal_ajax_test").click(function(e) {
+        	var content="yo";
+            e.preventDefault();
+            // Ajax
+			$.get('/modal_delete_crush', function(data){
+   	 		
+            	$("#dialog").text(data);
+            	$("#dialog").dialog('option', 'buttons', {
+       				"OK": function() {window.location = "/crushes_in_progress"},
+        			"Cancel": function() {$(this).dialog("close");
+        			}
+    			});
+            	$("#dialog").dialog("open");
+            	return false;
+        	});
+        });
 });
-
 </script>
+
+<!-- Test of an ajax modal dialog 
+<a href="#" class="modal_ajax_test">Ajax Modal Test</a><br>
+ End Test -->
+
 {% if userlist %}
 <h3>The following users were added to your secret crushlist:</h3>
 <ul>
@@ -98,7 +105,8 @@ $(document).ready(function()
 		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp;
 		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
 		&nbsp;|&nbsp;
-		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} {{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
+		
+		<b title= "Sorry, you can no longer remove this person since they have already responded to your crush.">remove as crush</b>		
 		<!-- end: secondary data -->
 	</div>
 	{% endfor %} 
@@ -106,7 +114,15 @@ $(document).ready(function()
 
 <!-- Display the crush type navigation widget -->  
 <HR>
-<b><font color="gray">Crushes in Progress</b>&nbsp;&nbsp;<a href="crushes_matched">Successful Crushes</a>&nbsp;&nbsp;<a href="crushes_not_matched">Unsuccessful Crushes</a></font>
+<font color="gray">
+{% if crush_type = 0 %}
+<b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_matched">Successful Crushes ({{crushes_matched_count}})</a>&nbsp;&nbsp;<a href="/crushes_not_matched">Unsuccessful Crushes ({{crushes_not_matched_count}}))</a>
+{% elif crush_type = 1 %}
+<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Successful Crushes ({{crushes_matched_count}})</b>&nbsp;&nbsp;<a href="/crushes_not_matched">Unsuccessful Crushes ({{crushes_not_matched_count}}))</a>
+{% else %}
+<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><a href="/crushes_matched">&nbsp;&nbsp;Successful Crushes ({{crushes_matched_count}})</a>&nbsp;&nbsp;<b>Unsuccessful Crushes ({{crushes_not_matched_count}}))</b>
+{% endif %}
+</font>
   
 <! -- End of crush type navigation widget -->  
 
@@ -126,7 +142,8 @@ $(document).ready(function()
 		{% endif %}
 		
 <!-- start: crush first and last name -->
-		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
+		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b> 
+		{% if crush_type = 1 %} <b>(YES)</b> {% elif crush_type = 2 %} <b>(NO)</b>{% endif %}
 		&nbsp;&nbsp;&nbsp;
 <!-- end: crush first and last name -->
 
@@ -150,11 +167,10 @@ $(document).ready(function()
 		
 		<!--  start: bullet points -->
 		{% if crush.target_status == 0 %}
-		* not signed up {% if crush.updated_flag == 0 %}(since {{ crush.date_added|datetime_since }} ago) {% endif %}<br>
-		* needs an email invitation from you
+		* needs an email invitation from you to sign up and consider your relationship
 		{% elif crush.target_status == 1 %}
-		* not signed up (added {{ crush.date_added|datetime_since }} ago)<br>
-		* email app invite(s) sent x/xx  [send more invites]
+		* not a member<br>
+		* app invite(s) sent {{crush.date_invite_last_sent|date_since}} ago [send more invites]
 		{% elif crush.target_status == 2 %}
 		{% if crush.date_target_signed_up %}
 		* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
@@ -162,9 +178,14 @@ $(document).ready(function()
 		* is an existing member<BR>
 		{% endif %}
 		* must start your crush line-up to assess your relationship
-		{% else %}	
+		{% elif crush.target_status == 3 %}
 		* started crush line-up<br>
 		* response expected soon
+		{% elif crush.target_status == 4 %}
+		* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
+		* [send a message]
+		{% else %}
+		* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})		
 		{% endif %}
 		<!--  end: bullet points -->
 		
@@ -174,6 +195,8 @@ $(document).ready(function()
 		{% endif %}
 		<!-- end: conditional button: send invite -->
 		
+			
+		
 		<!-- start: secondary data -->
 		<br>
 		
@@ -181,14 +204,20 @@ $(document).ready(function()
 		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
 		&nbsp;|&nbsp;
 		
-		<!-- check if deletion is possible -->
-		<!--  deletion condition 1: crush line-up has not been started -->
+		<!-- Conditional Delete Functionality -->
+			
+		<!-- If relationship status > 2 then prevent deletion and inform user that crush already started line-up -->
 		{% if crush.target_status > 2 %}
-			deletion not possible cause crush line-up started
-		<!-- deletion condition 2: at least x days have transpired -->
-		{% else %}
-			<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-			{{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
+			<b title= "Sorry, you can no longer remove this person since they have already started your crush line-up.">remove as crush</b>	
+
+		<!-- If timesince crush added < 7 days then prevent deletion and inform user that they must wait (in order to prevent system gaming) -->
+			{% elif crush.date_added|days_since < 7 %}
+				<b title= "Sorry, you can not remove this person yet.  To prevent system gaming, you must wait at least 7 days after adding your crush.">remove as crush</b>	
+			
+		<!-- If previous two conditions met, then allow deletion but confirm it first -->
+			{% else %}
+				<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+				{{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
 		{% endif %}
 		<!-- end: secondary data -->
 	</div>
@@ -197,31 +226,9 @@ $(document).ready(function()
 		{% endif %}
 	{% endfor %}
 
-<!-- 
-<TABLE width=700 >
-	<tr align="left" bgcolor="LightPink">
-		<th>Name</th>
-		<th>Friendship</th>
-		<th>Date Added</th>
-		<th>Response</th>
-		<th>Status</th>
-		<th>Options</th>
-	</tr>
-		{% for crush in crush_relationships %}
-	<tr> 
-		<td>{{crush.target_person.first_name}} {{crush.target_person.last_name}} <small>({{crush.target_person.username}})</small></td>
-		<td>{{crush.get_friendship_type_display}}</td>
-		<td>{{crush.date_added}}</td>
-		<td>{{crush.get_target_feeling_display}}</td>
-		<td>{{crush.get_target_status_display}}</td>
-		<td ><a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} {{crush.target_person.last_name}}" class="delete" href="#" >remove</a></td>
-	</tr>
-	{% endfor %}
-</TABLE>
--->
 	
 {% elif responded_relationships.count == 0 %}
-	<HR>You have no secret crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+	<HR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
 {% endif %}
 {% endblock %}
 

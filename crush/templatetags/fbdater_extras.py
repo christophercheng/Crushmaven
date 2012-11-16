@@ -10,6 +10,7 @@ from django.utils.timesince import timesince
 
 register = template.Library()
 
+# don't return any value if less than 2 minutes have not passed
 @register.filter
 def datetime_since(value): 
     #   now = datetime.now()
@@ -19,7 +20,19 @@ def datetime_since(value):
 #       return value
 #    if difference <= timedelta(minutes=1):
 #        return 'just now'
-    return '%(time)s' % {'time': timesince(value).split(', ')[0]}
+    return_value = '%(time)s' % {'time': timesince(value).split(', ')[0]}
+    if '0 minutes' in return_value:
+        return '1 minute'
+    else:
+        return return_value
+    
+# this is used to determine if crushes can be deleted - if they've been added > 7 days ago    
+@register.filter
+def days_since(value): 
+    naive = value.replace(tzinfo=None)
+    return (datetime.now() - naive).days
+ 
+
 
 @register.filter
 def date_since(value): 
@@ -31,3 +44,17 @@ def date_since(value):
     if difference < timedelta(hours=24):
         return 'hi'
     return '%(time)s' % {'time': timesince(value).split(', ')[0]}
+
+
+"""
+Usage:
+{% if text|contains:"http://" %}
+This is a link.
+{% else %}
+Not a link.
+{% endif %}
+"""
+@register.filter()
+def contains(value, arg):
+    return arg in value
+

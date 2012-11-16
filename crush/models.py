@@ -128,7 +128,6 @@ class UserProfile(FacebookProfile):
 # details about each unique crush 
 class BasicRelationship(models.Model):
 
-
     # QUESTION: why is the source person's user profile instead of the actual user himself not stored
     # ANSWER: django disallows the creation of a model with two foreign keys of the same type
     
@@ -146,12 +145,13 @@ class BasicRelationship(models.Model):
     # to find the relationships where a given user is the one being admired:
         # request.user.target_person_relatioinship_set
 
-    # date_feelings_changed keeps track of when the crush list changed
     date_added = models.DateTimeField(auto_now_add=True)
     
     # keeps track of when the crush signed up
     date_target_signed_up = models.DateTimeField(null=True)
-    
+
+    # keeps track of when the crush responded
+    date_target_responded = models.DateField(null=True)    
     
     # list of one or many mutual friends between the admirer and crushee
     #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
@@ -172,27 +172,56 @@ class BasicRelationship(models.Model):
 class PlatonicRelationship(BasicRelationship):
     # will have to write an overloaded save function here that checks to see if the platonic friend has a crush
         # if so, then modify that person's target_feeilng and target_status 
+    
+        # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
+        # this method avoids receiprocal relationship checking which could lead to infinite loop checking
+    def save_wo_reciprocity_check(self,*args, **kwargs):
+        super(PlatonicRelationship, self).save(*args,**kwargs) 
+    
+    def save(self,*args, **kwargs):  
+        print "saving crush relationship object"
+        # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
+        source_user = self.source_person_profile.user
+        target_user = self.target_person
+        target_user_profile=target_user.get_profile()
+    
+        #if target platonic friend has a crush on this user, then there is no match and platonic friend must be informed
+        try:
+            targets_crush_relationship = target_user_profile.crushrelationship_set.get(target_person=source_user)
+            # if there is a crush match, then update both relationships' target_status
+            targets_crush_relationship.target_status=5 # responded-crush status
+            targets_crush_relationship.date_target_responded=datetime.date.today()
+            targets_crush_relationship.updated_flag = True # show 'updated' on target's crush relation block
+            targets_crush_relationship.save_wo_reciprocity_check()
+
+        except PlatonicRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
+            super(PlatonicRelationship, self).save(*args,**kwargs)
+            return
+                
+        super(PlatonicRelationship, self).save(*args,**kwargs)
+        return
+        
+# consider putting in a delete function later
+          
+    
     def __unicode__(self):
         return 'No Feelings for:' + str(self.target_person.username)
+    
+# need to override the save method 
+    # check to see if the platonic friend has a crush on me, if so, then let them know of my evaluation
 
 
 class CrushRelationship(BasicRelationship):
     
     #dynamically tie in the target person's response as a lookup time optimization (using django signals)
-    TARGET_FEELING_CHOICES = (
-                               (0,'Unknown'),
-                               (1,'Crush'),
-                               (2, 'Platonic'),
-                               )
-    target_feeling = models.IntegerField(default=0, choices=TARGET_FEELING_CHOICES) 
-        
+      
     TARGET_STATUS_CHOICES = (
                            (0,'Not Invited (not member)'),
                            (1,'Invited (not member)'),
                            (2,'Not Started Lineup'),
                            (3,'Started Lineup'),
-                           (4,'Responded'),
-                           (5,'Finished Lineup')
+                           (4,'Responded-crush'),
+                           (5,'Responded-platonic'),
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
     
@@ -205,6 +234,9 @@ class CrushRelationship(BasicRelationship):
     is_lineup_paid=models.BooleanField(default=False)
 
     is_lineup_completed=models.BooleanField(default=False)
+    
+    date_invite_last_sent=models.DateTimeField(null=True)
+    
     num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants. in future, this number may be configurable (for a fee?)
 
     # need to know whether to display a 'new' or 'updated' ribbon on the crush content block
@@ -228,31 +260,26 @@ class CrushRelationship(BasicRelationship):
         target_user_profile=target_user.get_profile()
     
         #if admirer is also a crush of the source person's crush list, then we have a match
-            # update the target_feeling_choice and the target_status_choices
-        
+            # update the target_status_choices
         try:
             targets_crush_relationship = target_user_profile.crushrelationship_set.get(target_person=source_user)
-            targets_crush_relationship.target_feeling=1
-            targets_crush_relationship.target_status=4
-            
+            # if there is a crush match, then update both relationships' target_status
+            targets_crush_relationship.target_status=4 # responded-crush status
+            targets_crush_relationship.date_target_responded=datetime.date.today()
             targets_crush_relationship.updated_flag = True # show 'updated' on target's crush relation block
             targets_crush_relationship.save_wo_reciprocity_check()
-                # update 2 of 2: this relationship!!!
-            self.target_feeling=1
             self.target_status=4
+            self.date_target_responded=datetime.date.today()
             self.updated_flag = True #show 'new' or 'updated' on crush relation block
             
         except CrushRelationship.DoesNotExist:
-            print "no reciprocal crush relationship found, looking for platonic relationships"
             try:
                 target_user_profile.platonicrelationship_set.get(target_person=source_user)
-                # update 2 of 2: this relationship!!!
-                self.target_feeling=2
-                self.target_status=4
+                # if there is a platonic match, then update this relationships' target_status (other user can't know what this user thinks of them)
+                self.target_status=5
+                self.date_target_responded=datetime.date.today()
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
             except PlatonicRelationship.DoesNotExist:
-                print "no reciprocal nor platnoic relationship found, set setting crush sign-up status"
-                self.target_feeling=0 # target's feelings are not known
                 # target status is either 0 (not member, not invited) or 2 (member)
                 if target_user.is_active == True:
                     self.target_status = 2
@@ -269,27 +296,25 @@ class CrushRelationship(BasicRelationship):
         source_user = self.source_person_profile.user
         target_user = self.target_person
         target_user_profile=target_user.get_profile()
-        super(CrushRelationship, self).delete(*args,**kwargs) 
-            #update the target person's (crush's) relationship with the source person (admirer)
+            # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
         try:
             targets_crush_relationship = target_user_profile.crushrelationship_set.get(target_person=source_user)
             if targets_crush_relationship.target_status > 2:
                 # once a target has started a crush line-up, the crush can no longer be deleted
                 return
-            targets_crush_relationship.target_feeling=0
             targets_crush_relationship.target_status=2
-            targets_crush_relationship.save()
+            targets_crush_relationship.save_wo_reciprocity_check()
         except CrushRelationship.DoesNotExist:
-            print "no reciprocal crush relationship found prior to deletion attempt"
-
+            super(CrushRelationship, self).delete(*args,**kwargs)
+            return
+        super(CrushRelationship, self).delete(*args,**kwargs)
         return
       
-    
     def __unicode__(self):
         return 'Feelings for:' + str(self.target_person.username)
 
 # 10/27/12 couldn't get this class to work cause the UserProfile object was a foreign key on the original model
-    # attempts to use a backwards relation fetc through the model (profile.defaultorderedrelationship_set) failed
+    # attempts to use a backwards relation fetch through the model (profile.defaultorderedrelationship_set) failed
 # use this class instead of CrushRelaionship object when obtaining a sorted list
     # by default the relationship objects will be in the order that they are added, i think :)
 #class DefaultOrderedCrushRelationship(CrushRelationship):

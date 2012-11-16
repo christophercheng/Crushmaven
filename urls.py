@@ -35,6 +35,10 @@ urlpatterns += patterns('crush',
 
     url(r'^friends_with_admirers/$', 'views.friends_with_admirers'),
     
+    # -- MODAL DIALOG PROCESSING & CONTENT --
+    
+    url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
+    
     # -- SETTINGS PAGES --
     
     url(r'^settings_profile/$', 'views.settings_profile'),
