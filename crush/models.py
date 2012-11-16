@@ -14,7 +14,7 @@ class CustomProfileManager(models.Manager):
     def update_profile(self,user_profile,fb_profile):
         user_profile.user.first_name = fb_profile['first_name']
         user_profile.user.last_name = fb_profile['last_name']
-        user_profile.facebook_username=fb_profile['username']
+        user_profile.facebook_username=fb_profile.get('username', fb_profile['id'])
         if ('birthday' in fb_profile):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
@@ -67,6 +67,7 @@ class CustomProfileManager(models.Manager):
                 fb_profile = json.load(fb_profile)
           
             username = fb_profile.get('username', fb_profile['id'])# if no username then grab id
+            print "creating username: " + username
             try:
                 user = User.objects.create_user(username=username)
             except IntegrityError:
