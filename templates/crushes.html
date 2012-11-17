@@ -139,6 +139,7 @@ $(document).ready(function()
 				{% else %}
 					(Updated)
 			{% endif %}
+			{{ crush.resetUpdatedFlag }}
 		{% endif %}
 		
 <!-- start: crush first and last name -->
@@ -221,9 +222,6 @@ $(document).ready(function()
 		{% endif %}
 		<!-- end: secondary data -->
 	</div>
-		{% if crush.updated_flag == 1 %}
-			{{ crush.resetUpdatedFlag }}
-		{% endif %}
 	{% endfor %}
 
 	

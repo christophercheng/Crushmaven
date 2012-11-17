@@ -119,7 +119,7 @@ class UserProfile(FacebookProfile):
         # to access a user's crushes, you need to go through the user's UserProfile object
         # to access a user's admirers, you need to go through the user's User object
 
-    just_friends_targets = models.ManyToManyField(User, through='PlatonicRelationship',related_name='friends_not_into_me_set')
+    just_friends_targets = models.ManyToManyField(User, through='PlatonicRelationship',related_name='platonic_friends_set')
     crush_targets = models.ManyToManyField(User, through='CrushRelationship',related_name='admirers_set')
     
     def __unicode__(self):
@@ -157,6 +157,14 @@ class BasicRelationship(models.Model):
     # list of one or many mutual friends between the admirer and crushee
     #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
     
+    # need to know whether to display a 'new' or 'updated' ribbon on the crush content block
+    updated_flag = models.BooleanField(default=True) # default True so status is New by default
+    def resetUpdatedFlag(self):      
+        self.updated_flag = False
+        # save the change to the database, but don't call this level's save function cause it does too much.
+        super(BasicRelationship, self).save()
+        return "" # if I don't return "" then for some reason None is actually returned
+    
     # how are the admirer and crushee connected
     FRIENDSHIP_TYPE_CHOICES = (
                                (u'FRIEND','Friend'),
@@ -180,13 +188,13 @@ class PlatonicRelationship(BasicRelationship):
         super(PlatonicRelationship, self).save(*args,**kwargs) 
     
     def save(self,*args, **kwargs):  
-        print "saving crush relationship object"
-        # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
+        print "saving platonic relationship object"
+        # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
         source_user = self.source_person_profile.user
         target_user = self.target_person
         target_user_profile=target_user.get_profile()
     
-        #if target platonic friend has a crush on this user, then there is no match and platonic friend must be informed
+        #if target platonic friend has a crush on this user, then platonic friend must be informed
         try:
             targets_crush_relationship = target_user_profile.crushrelationship_set.get(target_person=source_user)
             # if there is a crush match, then update both relationships' target_status
@@ -195,7 +203,7 @@ class PlatonicRelationship(BasicRelationship):
             targets_crush_relationship.updated_flag = True # show 'updated' on target's crush relation block
             targets_crush_relationship.save_wo_reciprocity_check()
 
-        except PlatonicRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
+        except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
             super(PlatonicRelationship, self).save(*args,**kwargs)
             return
                 
@@ -239,14 +247,6 @@ class CrushRelationship(BasicRelationship):
     date_invite_last_sent=models.DateTimeField(null=True)
     
     num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants. in future, this number may be configurable (for a fee?)
-
-    # need to know whether to display a 'new' or 'updated' ribbon on the crush content block
-    updated_flag = models.BooleanField(default=True) # default True so status is New by default
-    def resetUpdatedFlag(self):      
-        self.updated_flag = False
-        # save the change to the database, but don't call this level's save function cause it does too much.
-        super(CrushRelationship, self).save()
-        return ""
  
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
