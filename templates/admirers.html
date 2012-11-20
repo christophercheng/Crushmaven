@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% if admirers %}
-	YOU HAVE SECRET ADMIRERS - WOOOO!  :)
+<!-- Display the crush type navigation widget -->  
+<HR>
+<font color="gray">
+{% if admirer_type = 0 %}
+<b>Secret Admirers ({{admirer_relationships.count}})</b>&nbsp;&nbsp;<a href="/admirers_past">Past Admirers ({{past_admirers_count}})</a>
+{% else %}
+<a href="/admirers">Secret Admirers ({{progressing_admirers_count}})</a><b>&nbsp;&nbsp;Past Admirers ({{admirer_relationships.count}})</b>
+{% endif %}
+</font>
+<BR><BR>
+  
+<! -- End of crush type navigation widget -->  
+
+{% if admirer_relationships %}
 	<ul>
-		{% for admirer in admirers %}
-			<li> {{admirer.user.first_name}} {{admirer.user.last_name}} <small>({{admirer.user.username}})</small>
+		{% for admirer in admirer_relationships %}
+			<li> {{admirer.source_person_profile.user.first_name}} {{admirer.source_person_profile.user.last_name}}  <small>({{admirer.source_person_profile.user.username}})</small>
 		{% endfor %}
 	</ul>
 {% else %}
-	THERE ARE NO SECRET ADMIRERS!
+	THERE ARE NO {% if admirer_type = 0 %} CURRENT {% else %} PAST {% endif %} SECRET ADMIRERS!
 {% endif %}
 
 {% endblock %}

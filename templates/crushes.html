@@ -134,7 +134,7 @@ $(document).ready(function()
 		<HR>
 <!-- Display NEW or UPDATED if relevant -->  
 		{% if crush.updated_flag == 1 %}
-			{% if crush.target_status == 0 %}
+			{% if crush.date_added|datetime_since == '1 minute' %}
 				(New)
 				{% else %}
 					(Updated)

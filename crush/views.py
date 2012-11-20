@@ -114,7 +114,6 @@ def crushes_in_progress(request):
     crush_relationships = my_profile.crushrelationship_set
 
     crush_progressing_relationships = crush_relationships.filter(target_status__lt = 4).order_by('-updated_flag','target_status','target_person__last_name')
-    crushes_in_progress_count = crush_relationships.count() + responded_relationships.count()
     crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
     crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
     
@@ -124,7 +123,7 @@ def crushes_in_progress(request):
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crush_progressing_relationships,
                                'facebook_app_id': settings.FACEBOOK_APP_ID,
-                               'crushes_in_progress_count': crushes_in_progress_count,
+                               'crushes_in_progress_count': crush_progressing_relationships.count(),
                                'crushes_matched_count': crushes_matched_count,
                                'crushes_not_matched_count': crushes_not_matched_count},
                               context_instance=RequestContext(request))    
@@ -140,7 +139,7 @@ def crushes_matched(request):
     crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
     crushes_matched_count = crush_matched_relationships.count()
     crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
-    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count() + responded_relationships.count()
+    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
     
     return render_to_response('crushes.html',
                               {'profile': my_profile, 
@@ -164,7 +163,7 @@ def crushes_not_matched(request):
     crush_not_matched_relationships = crush_relationships.filter(target_status = 5).filter(is_results_paid=True).order_by('target_person__last_name')
     crushes_not_matched_count = crush_not_matched_relationships.count()
     crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
-    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count() + responded_relationships.count()
+    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
     
     return render_to_response('crushes.html',
                               {'profile': my_profile, 
@@ -180,24 +179,48 @@ def crushes_not_matched(request):
 # -- Admirer List Page --
 @login_required
 def admirers(request):
-    my_profile = request.user.get_profile() 
-    admirers= request.user.secret_crushees_set.all()
+
+    me = request.user 
+   
+    admirer_relationships = me.crushrelationship_set
+
+    # obtain a query set of all CrushRelationship objects from the user profile where the target's feeling is unknown (0)
+        # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
+        # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
+
+    admirer_progressing_relationships = admirer_relationships.filter(is_lineup_completed=False).order_by('target_status','date_added')
+    past_admirers_count = admirer_relationships.filter(is_lineup_completed=True).count()
+    
     return render_to_response('admirers.html',
-                              {'profile': my_profile,
-                               'admirers':admirers,
-                                'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request)) 
+                              {'profile': me.get_profile, 
+                               'admirer_type': 0, # 0 is in progress, 1 completed
+                               'admirer_relationships':admirer_progressing_relationships,
+                               'facebook_app_id': settings.FACEBOOK_APP_ID,
+                               'past_admirers_count': past_admirers_count},
+                              context_instance=RequestContext(request))    
+    
 
 # -- Past Admirers Page --
 @login_required
 def admirers_past(request):
-    my_profile = request.user.get_profile() 
-    admirers= request.user.secret_crushees_set.all()
-    return render_to_response('admirers_past.html',
-                              {'profile': my_profile,
-                               'admirers':admirers,
-                                'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request)) 
+    me = request.user 
+   
+    admirer_relationships = me.crushrelationship_set
+
+    # obtain a query set of all CrushRelationship objects from the user profile where the target's feeling is unknown (0)
+        # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
+        # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
+
+    admirer_completed_relationships = admirer_relationships.filter(is_lineup_completed=True).order_by('date_added')
+    progressing_admirers_count = admirer_relationships.filter(is_lineup_completed=False).count()
+    
+    return render_to_response('admirers.html',
+                              {'profile': me.get_profile, 
+                               'admirer_type': 1, # 0 is in progress, 1 completed
+                               'admirer_relationships':admirer_completed_relationships,
+                               'facebook_app_id': settings.FACEBOOK_APP_ID,
+                               'progressing_admirers_count': progressing_admirers_count},
+                              context_instance=RequestContext(request))    
 
 # -- Just Friends Page --
 @login_required
