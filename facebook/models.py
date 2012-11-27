@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class FacebookProfile(models.Model):
     user = models.OneToOneField(User)
     # this will be populated by the facebook username first, then the facebook id if username is non-existant
-    facebook_id = models.BigIntegerField(default=0)
+    facebook_id = models.BigIntegerField(default=0) # why is this not a character field?
     access_token = models.CharField(max_length=50)
 
     def get_facebook_profile(self):

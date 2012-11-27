@@ -17,11 +17,13 @@
 {% if admirer_relationships %}
 	<ul>
 		{% for admirer in admirer_relationships %}
-			<li> {{admirer.source_person_profile.user.first_name}} {{admirer.source_person_profile.user.last_name}}  <small>({{admirer.source_person_profile.user.username}})</small>
+			<li> {{admirer.source_person_profile.user.first_name}} {{admirer.source_person_profile.user.last_name}}  <small>({{admirer.source_person_profile.user.username}})</small> 
+			<img src="http://graph.facebook.com/{{ admirer.lineup_member0}}/picture" height=40 width=40> <img src="http://graph.facebook.com/{{ admirer.lineup_member1}}/picture" height=40 width=40>
 		{% endfor %}
 	</ul>
 {% else %}
 	THERE ARE NO {% if admirer_type = 0 %} CURRENT {% else %} PAST {% endif %} SECRET ADMIRERS!
 {% endif %}
+
 
 {% endblock %}

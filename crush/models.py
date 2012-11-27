@@ -248,6 +248,18 @@ class CrushRelationship(BasicRelationship):
     
     num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants. in future, this number may be configurable (for a fee?)
  
+    # first two lineup members are previewed by default, actual crush could be anyone of these guys
+    lineup_member0 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member1 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member2 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member3 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member4 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member5 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member6 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member7 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member8 = models.CharField(max_length=60, default='chris.h.cheng') 
+    lineup_member9 = models.CharField(max_length=60, default='chris.h.cheng') 
+    
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save_wo_reciprocity_check(self,*args, **kwargs):

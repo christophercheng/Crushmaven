@@ -80,7 +80,7 @@
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
 		new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
-		new admirers(<a href="/admirers/">{{num_incomplete_admirers}}</a>)
+		new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
 		
  <!-- END NOTIFICAIONS -->
 			&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;&nbsp;
@@ -108,7 +108,7 @@
 	
 
 			<a class="{% navactive request 'admirers' %}"
-				href="{% url crush.views.admirers %}">Secret Admirers ({{num_incomplete_admirers}})</a>
+				href="{% url crush.views.admirers %}">Secret Admirers ({{num_admirers_in_progress}})</a>
 
 			<a class="{% navactive request 'just_friends' %}"
 				href="{% url crush.views.just_friends %}">Just Friends ({{num_platonic_friends}})</a>

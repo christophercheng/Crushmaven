@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 from crush.models import UserProfile,CrushRelationship,PlatonicRelationship
 from django.middleware import csrf
+import urllib, json
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
@@ -191,6 +192,13 @@ def admirers(request):
     admirer_progressing_relationships = admirer_relationships.filter(is_lineup_completed=False).order_by('target_status','date_added')
     past_admirers_count = admirer_relationships.filter(is_lineup_completed=True).count()
     
+    fql_query = "SELECT name, birthday FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND substr(sex, 0, 1) = 'f' ORDER BY name"
+    friend_results = urllib.urlopen(
+                        'https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,me.get_profile().access_token)
+                        )
+    data = json.load(friend_results)
+    print data
+    
     return render_to_response('admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -206,11 +214,6 @@ def admirers_past(request):
     me = request.user 
    
     admirer_relationships = me.crushrelationship_set
-
-    # obtain a query set of all CrushRelationship objects from the user profile where the target's feeling is unknown (0)
-        # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
-        # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
-
     admirer_completed_relationships = admirer_relationships.filter(is_lineup_completed=True).order_by('date_added')
     progressing_admirers_count = admirer_relationships.filter(is_lineup_completed=False).count()
     
