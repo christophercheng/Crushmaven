@@ -76,7 +76,7 @@
 		<div class="navbar-content">
 		<!-- Top Bar Links -->
 			<a class="{% navactive request 'accounts/login' %}"
-				href="{% url crush.views.home %}"><font color=red>Crush</font><font><i>Vibes</i></font></a>
+				href="{% url 'crush.views.home' %}"><font color=red>Crush</font><font><i>Vibes</i></font></a>
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
 		new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
@@ -85,14 +85,14 @@
  <!-- END NOTIFICAIONS -->
 			&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;&nbsp;
 			<a class="{% navactive request 'help_how_it_works' %}"
-				href="{% url crush.views.help_how_it_works %}">How it Works</a>
+				href="{% url 'crush.views.help_how_it_works' %}">How it Works</a>
 			<a class="{% navactive request 'settings_profile' %}"
-				href="{% url crush.views.settings_profile %}">Profile</a>
+				href="{% url 'crush.views.settings_profile' %}">Profile</a>
 			<a class="{% navactive request 'settings_credits' %}"
-				href="{% url crush.views.settings_credits %}">Credits</a>	
+				href="{% url 'crush.views.settings_credits' %}">Credits</a>	
 			<a class="{% navactive request 'settings_notifications' %}"
-				href="{% url crush.views.settings_notifications %}">Notifications</a>
-			<a href="{% url crush.views.logout_view %}">Logout</a>
+				href="{% url 'crush.views.settings_notifications' %}">Notifications</a>
+			<a href="{% url 'crush.views.logout_view' %}">Logout</a>
 
 		<!-- Left Bar Links -->	
 			<BR>
@@ -100,18 +100,18 @@
 			<img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture" height=40 width=40>
 			<b>{{ user.first_name }} {{user.last_name}},</b>
 			<a class="{% navactive request 'crushes_in_progress' %}"
-				href="{% url crush.views.crushes_in_progress %}">Crushes ({{num_crushes_in_progress}})</a>
+				href="{% url 'crush.views.crushes_in_progress' %}">Crushes ({{num_crushes_in_progress}})</a>
 
 	
 
 			<a class="{% navactive request 'admirers' %}"
-				href="{% url crush.views.admirers %}">Secret Admirers ({{num_admirers_in_progress}})</a>
+				href="{% url 'crush.views.admirers' %}">Secret Admirers ({{num_admirers_in_progress}})</a>
 
 			<a class="{% navactive request 'just_friends' %}"
-				href="{% url crush.views.just_friends %}">Just Friends ({{num_platonic_friends}})</a>
+				href="{% url 'crush.views.just_friends' %}">Just Friends ({{num_platonic_friends}})</a>
 
 			<a class="{% navactive request 'friends_with_admirers' %}"
-				href="{% url crush.views.friends_with_admirers %}">Friends with Admirers</a>
+				href="{% url 'crush.views.friends_with_admirers' %}">Friends with Admirers</a>
 			<a href="javascript:{}" class="bt-fs-dialog">Add Crush</a>
 			
 		</div>	
