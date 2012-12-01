@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
 from crush.models import UserProfile,CrushRelationship,PlatonicRelationship
-from django.middleware import csrf
 import urllib, json
+import random 
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
@@ -22,48 +22,6 @@ def home(request):
 
     else:
         return render(request,'guest_home.html')
-
-# -- Crush Search Page --
-@login_required
-#(redirect_field_name='/')
-def search(request):
-    my_profile = request.user.get_profile()
-    # fb_redirect_uri is used by facebook request dialog to redirect back
-        # create it from scracth so that any get parameters (e.g. previously selected ID's) are removed
-    fb_redirect_uri='http://' + request.get_host()+'/search/'
-    crushee_id=''
-    userlist = []
-    duplicate_userlist=[]
-    
-    for key in request.POST:
-        crushee_id=request.POST[key]
-
-        if key.startswith('to'):    
-            # find existing site user with this id or create a new user 
-            # called function is in a custom UserProfile manager because it is also used during login/authentication
-            selected_user=UserProfile.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.get_profile().access_token, fb_profile=None, is_this_for_me=False)
-            # now that the user is definitely on the system, add that user to the crush list        
-            # only create a new relationship if an existing one between the current user and the selected user does not exist
-
-
-            if not(my_profile.crush_targets.filter(username=selected_user.username).exists()):
-                CrushRelationship.objects.create(target_person=selected_user,source_person_profile=my_profile,
-                                                              target_starting_active_status=selected_user.is_active,
-                                                              friendship_type=u'FRIEND')
-                userlist.append(selected_user)
-            else:
-                duplicate_userlist.append(selected_user)          
-     
-    return render_to_response('search.html',
-                              {'token':csrf.get_token(request),
-                               'profile': my_profile, 
-                               'facebook_app_id': settings.FACEBOOK_APP_ID, 
-                               'redirect_uri': fb_redirect_uri,
-                               'userlist':userlist,
-                               'duplicate_userlist':duplicate_userlist},
-                              context_instance=RequestContext(request))  
-
-
 
 
 # -- Crush List Page --
@@ -98,11 +56,14 @@ def crushes_in_progress(request):
         return HttpResponseRedirect('/crushes_in_progress')
     
     if "delete" in request.GET:
+        
         delete_username=request.GET["delete"]
+        print "attempting to delete: " + delete_username
             # find the relationship and delete it!
         try:
             my_profile.crushrelationship_set.get(target_person__username=delete_username).delete()
         except CrushRelationship.DoesNotExist:
+            "can't find crush relationship to delete!"
             delete_username=''
         return HttpResponseRedirect('/crushes_in_progress/')
         
@@ -189,16 +150,20 @@ def admirers(request):
         # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
         # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
 
-    admirer_progressing_relationships = admirer_relationships.filter(is_lineup_completed=False).order_by('target_status','date_added')
-    past_admirers_count = admirer_relationships.filter(is_lineup_completed=True).count()
+    admirer_progressing_relationships = admirer_relationships.filter(date_lineup_finished=None).order_by('target_status','date_added')
+    past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     
-    fql_query = "SELECT name, birthday FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND substr(sex, 0, 1) = 'f' ORDER BY name"
-    friend_results = urllib.urlopen(
-                        'https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,me.get_profile().access_token)
-                        )
-    data = json.load(friend_results)
-    print data
-    
+    # initialize the lineups of any new admirer relationships
+        # filter out the new relationships whose lineup member 1 is empty
+        
+        
+    if admirer_progressing_relationships:
+        uninitialized_relationships = admirer_progressing_relationships.exclude(lineupmember__position__gt = 0) #get all relationships that don't have a lineup member at position 0 (non inititialized)
+        if (uninitialized_relationships):
+            print "found an uninitialized relationship"
+            for relationship in uninitialized_relationships:
+                initialize_lineup(request,relationship)
+
     return render_to_response('admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -207,6 +172,64 @@ def admirers(request):
                                'past_admirers_count': past_admirers_count},
                               context_instance=RequestContext(request))    
     
+#relationship_id is unique integer id representing the crush relationship, fql_query is the fql query string that the function should use to
+def initialize_lineup(request, relationship):
+    print "initializing relationship for admirer: " + relationship.source_person_profile.user.username
+    me = request.user
+    # get sex of admirer
+    admirer_gender= 'Male' if relationship.source_person_profile.gender == 'M'  else 'Female'
+    # get relationship status of admirer
+    #admirer_is_single=relationship.source_person_profile.is_single
+    
+    # build up a list of all the existing users
+    
+    #fql_query = "SELECT name, birthday FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND substr(sex, 0, 1) = 'f' ORDER BY name"
+    # list all friends usernames who do not have a family relationship with me and are of a certain gender 
+    #fql_query = "SELECT username, relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())))) AND sex = 'female' ORDER_BY friend_count"
+    # list all friends usernames who do not have a family relationship with me and are of a certain gender and are not
+    #fql_query = "SELECT username, relationship_status, friend_count FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())))) AND sex = '" + admirer_gender + "'  AND NOT (relationship_status IN ('Married', 'Engaged', 'In a relationship', 'In a domestic partnership', 'In a civil union'))  ORDER BY friend_count DESC"
+    # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 30 results
+    exclude_facebook_ids = "'" + str(relationship.source_person_profile.facebook_id) + "'"
+    fql_query = "SELECT username, relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+   
+    print "fql query to send out: " + fql_query
+    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,me.get_profile().access_token))
+    #print fql_query_results.read()
+    try:
+        print "attempoting to load the json results"
+        data = json.load(fql_query_results)['data']
+        print "data: " + str(data)
+        if (len(data) == 0):
+            data = [{u'username':u'zuck'}]
+    except ValueError:
+        print "ValueError on Fql Query Fetch read!"
+        return False
+    # determine where the admirer should randomly fall into the lineup
+    admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
+    print "admirer_position: " + str(admirer_position)
+    index = 0
+    rel_id = relationship.id
+    for fql_user in data:
+        # if the current lineup position is where the admirer should go, then insert the admirer
+        if index==admirer_position:
+            new_member_id = rel_id + (.1 * index)
+            relationship.lineupmember_set.create(position=new_member_id,username=relationship.source_person_profile.user.username)
+            print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
+            index = index + 1            
+            # create a lineup member with the given username      
+        new_member_id = rel_id + (.1 * index)
+        relationship.lineupmember_set.create(position=new_member_id, username=fql_user['username'])
+        print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
+        index = index + 1
+    if len(data)==admirer_position:
+        new_member_id = rel_id + (len(data) * .1)
+        relationship.lineupmember_set.create(position=new_member_id,username=relationship.source_person_profile.user.username)
+        print "put crush in position: " + str(new_member_id)        
+
+#    print "Number of results: " + str((data['data']).__len__())
+    
+    return True
+
 
 # -- Past Admirers Page --
 @login_required
@@ -214,8 +237,8 @@ def admirers_past(request):
     me = request.user 
    
     admirer_relationships = me.crushrelationship_set
-    admirer_completed_relationships = admirer_relationships.filter(is_lineup_completed=True).order_by('date_added')
-    progressing_admirers_count = admirer_relationships.filter(is_lineup_completed=False).count()
+    admirer_completed_relationships = admirer_relationships.exclude(date_lineup_finished=None).order_by('date_added')
+    progressing_admirers_count = admirer_relationships.filter(date_lineup_finished=None).count()
     
     return render_to_response('admirers.html',
                               {'profile': me.get_profile, 

@@ -9,7 +9,7 @@ class FacebookProfile(models.Model):
     # this will be populated by the facebook username first, then the facebook id if username is non-existant
     facebook_id = models.BigIntegerField(default=0) # why is this not a character field?
     access_token = models.CharField(max_length=50)
-
+    facebook_username = models.CharField(max_length=60)
     def get_facebook_profile(self):
         fb_profile = urllib.urlopen(
                         'https://graph.facebook.com/me?access_token=%s'
@@ -20,7 +20,7 @@ class FacebookProfile(models.Model):
 
     def get_facebook_picture(self):
         return u'http://graph.facebook.com/%s/picture?type=large' \
-                                                            % self.facebook_id
+                                                            % self.user.username
 
     def save(self):
         print "FacebookProfile save() called"

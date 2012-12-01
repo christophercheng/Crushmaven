@@ -26,6 +26,11 @@ class CustomProfileManager(models.Manager):
                 user_profile.gender=u'M'
             elif fb_profile['gender']==u'female':
                 user_profile.gender=u'F'
+        if ('relationship_status' in fb_profile):            
+            rel_stat = fb_profile['relationship_status']
+            if ((rel_stat == u'Married') | (rel_stat==u'In a relationship') | (rel_stat==u'Engaged') | (rel_stat==u'In a civil union') | (rel_stat==u'In a domestic partnership')):
+                user_profile.is_single=False
+            else: user_profile.is_single=True
         if('interested_in' in fb_profile):
             if len(fb_profile['interested_in'])==1: 
                 if fb_profile['interested_in'][0]==u'female':
@@ -65,8 +70,9 @@ class CustomProfileManager(models.Manager):
             if fb_profile == None:
                 fb_profile = urllib.urlopen('https://graph.facebook.com/' + fb_id + '/?access_token=%s' % fb_access_token)
                 fb_profile = json.load(fb_profile)
-          
-            username = fb_profile.get('username', fb_profile['id'])# if no username then grab id
+            self.facebook_id=fb_profile['id']
+            username = fb_profile.get('username', self.facebook_id)# if no username then grab id
+            
             print "creating username: " + username
             try:
                 user = User.objects.create_user(username=username)
@@ -105,10 +111,12 @@ class UserProfile(FacebookProfile):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES,null=True)
     
     birthday = models.DateField(null=True)
+    is_single = models.BooleanField(default=True)
     email = models.EmailField(null=True)
     age = models.IntegerField(null=True)
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)
+
 
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
     site_credits = models.IntegerField(default=1) 
@@ -124,7 +132,6 @@ class UserProfile(FacebookProfile):
     
     def __unicode__(self):
         return '(id:' + str(self.user.id) +') '+ self.user.username
-
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -240,25 +247,15 @@ class CrushRelationship(BasicRelationship):
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
     # the crush target (and potentially the admirer) will need to pay to activate the crush-line-up
-    is_lineup_paid=models.BooleanField(default=False)
-
-    is_lineup_completed=models.BooleanField(default=False)
-    
+        
     date_invite_last_sent=models.DateTimeField(null=True)
     
-    num_lineup_contestants=models.IntegerField(default=10) # basic lineup has 10 contestants. in future, this number may be configurable (for a fee?)
+    # actual lineup members have a foreign key to a Crush Lineup
+    is_lineup_paid=models.BooleanField(default=False)
+    # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
+    date_lineup_started = models.DateTimeField(default=None, null=True)
+    date_lineup_finished = models.DateTimeField(default=None, null=True)
  
-    # first two lineup members are previewed by default, actual crush could be anyone of these guys
-    lineup_member0 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member1 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member2 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member3 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member4 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member5 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member6 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member7 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member8 = models.CharField(max_length=60, default='chris.h.cheng') 
-    lineup_member9 = models.CharField(max_length=60, default='chris.h.cheng') 
     
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
@@ -298,7 +295,7 @@ class CrushRelationship(BasicRelationship):
                     self.target_status = 2
                 else:
                     self.target_status = 0
-                
+        print "calling super(CrushRElationship)"        
         super(CrushRelationship, self).save(*args,**kwargs)
         return
         
@@ -311,20 +308,38 @@ class CrushRelationship(BasicRelationship):
         target_user_profile=target_user.get_profile()
             # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
         try:
+            print "attempting to find the crush relationship"
             targets_crush_relationship = target_user_profile.crushrelationship_set.get(target_person=source_user)
             if targets_crush_relationship.target_status > 2:
                 # once a target has started a crush line-up, the crush can no longer be deleted
-                return
+                if not (source_user.username == 'chris.h.cheng' | source_user.username == 'chris.schmack'):
+                    return
             targets_crush_relationship.target_status=2
             targets_crush_relationship.save_wo_reciprocity_check()
         except CrushRelationship.DoesNotExist:
+            print "ugh oh - can't find the crush relationship to delete!"
             super(CrushRelationship, self).delete(*args,**kwargs)
             return
+        print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
         super(CrushRelationship, self).delete(*args,**kwargs)
         return
-      
+            
     def __unicode__(self):
         return 'Feelings for:' + str(self.target_person.username)
+
+# details about each crush's secret admirer lineup (SAL)
+class LineupMember(models.Model):
+    # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
+    LineupRelationship = models.ForeignKey(CrushRelationship)
+    
+    # instead of letting Django auto create a primary ID, let's create a custom one so we can track the sequential position of each member in lineup using the id
+    position = models.FloatField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
+    position.primary_key=True
+    
+    # facebook username of lineup member
+    username = models.CharField(max_length=55)
+    # crush's decision about this person, default is none - so there are actually 2.5 states
+    decision = models.NullBooleanField()
 
 # 10/27/12 couldn't get this class to work cause the UserProfile object was a foreign key on the original model
     # attempts to use a backwards relation fetch through the model (profile.defaultorderedrelationship_set) failed
