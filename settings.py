@@ -184,8 +184,8 @@ AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',
     #'django.contrib.auth.backends.ModelBackend',
 )
-# define the custom user profile that is associated with django's User model
-AUTH_PROFILE_MODULE = "crush.UserProfile"
+# define the custom user that inherits from Django's User model
+AUTH_USER_MODEL = 'crush.FacebookUser'
 
 NUM_MIN_DAYS_CRUSH = 7
 

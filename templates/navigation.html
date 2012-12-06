@@ -99,7 +99,7 @@
 		<!-- Left Bar Links -->	
 			<BR>
 			
-			<img src="http://graph.facebook.com/{{ user.get_profile.facebook_id }}/picture" height=40 width=40>
+			<img src="http://graph.facebook.com/{{ user.username }}/picture" height=40 width=40>
 			<b>{{ user.first_name }} {{user.last_name}},</b>
 			<a class="{% navactive request 'crushes_in_progress' %}"
 				href="{% url 'crush.views.crushes_in_progress' %}">Crushes ({{num_crushes_in_progress}})</a>

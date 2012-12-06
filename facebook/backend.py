@@ -1,9 +1,8 @@
 import urllib, json, urlparse
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from crush.models import FacebookUser
 #from django.core.urlresolvers import reverse CHC - reverse gives me problems
-
-from crush.models import UserProfile
 
 class FacebookBackend:
 
@@ -37,13 +36,13 @@ class FacebookBackend:
         
         # find existing site user with this id or create a new user 
         # called function is in a custom UserProfile manager because it is also used during login/authentication
-        return UserProfile.objects.find_or_create_user(fb_id=facebook_profile['id'], fb_access_token=access_token, fb_profile=facebook_profile, is_this_for_me=True)
+        return get_user_model().objects.find_or_create_user(fb_id=facebook_profile['id'], fb_access_token=access_token, fb_profile=facebook_profile, is_this_for_me=True)
 
     def get_user(self, user_id):
         """ Just returns the user of a given ID. """
         try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+            return get_user_model().objects.get(pk=user_id)
+        except FacebookUser.DoesNotExist:
             return None
 
     supports_object_permissions = False
