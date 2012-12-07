@@ -316,6 +316,15 @@ def friends_with_admirers(request):
                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 
+# -- Single Lineup (Ajax Content) Page --
+@login_required
+def lineup(request,rel_id):
+    print "calling lineup in view with rel_id: " + rel_id
+    return render_to_response('lineup.html',
+                              {'rel_id': rel_id,
+                               'facebook_app_id': settings.FACEBOOK_APP_ID},
+                              context_instance=RequestContext(request))
+
 
 # -- Notification settings --
 @login_required
