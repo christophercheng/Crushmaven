@@ -318,10 +318,16 @@ def friends_with_admirers(request):
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
-def lineup(request,rel_id):
-    print "calling lineup in view with rel_id: " + rel_id
+def lineup(request,admirer_id):
+    try:
+        admirer_rel = request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
+    except CrushRelationship.DoesNotExist:
+        print "could not find an admirer relationship for the lineup"
+    lineup_set = admirer_rel.lineupmember_set.all()
     return render_to_response('lineup.html',
-                              {'rel_id': rel_id,
+                              {
+                               'admirer_rel':admirer_rel,
+                               'lineup_set': lineup_set,
                                'facebook_app_id': settings.FACEBOOK_APP_ID},
                               context_instance=RequestContext(request))
 

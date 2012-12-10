@@ -7,7 +7,7 @@ Created on Nov 1, 2012
 from datetime import datetime, timedelta
 from django import template
 from django.utils.timesince import timesince
-from crush.models import LineupMember
+from crush.models import LineupMember, FacebookUser,CrushRelationship,PlatonicRelationship
 
 register = template.Library()
 
@@ -49,6 +49,7 @@ def date_since(value):
 
 # value is the admirer instance, arg is the lineup position (0-9)
 # returns the username of the admirer lineup at that position
+# ? WHERE IS THIS CALLED FROM?
 @register.filter
 def admirer_lineup_username(value, arg): 
     print "looking for username at position " + arg
@@ -57,6 +58,30 @@ def admirer_lineup_username(value, arg):
     except LineupMember.DoesNotExist:
         return "no_user"
     return member.username
+
+# called from lineup.html to add a member to either the crush list or the platonic friend list
+@register.filter
+def add_user_as_crush(source_user, target_username): 
+    print "adding username as crush: " + target_username
+    try:
+        target_user=FacebookUser.objects.get(username=target_username)
+        CrushRelationship.objects.create(source_person=source_user, target_person=target_user)
+    except FacebookUser.DoesNotExist:
+        print "failed to add lineup member as crush: " + target_username
+        return False
+    return True
+
+# called from lineup.html to add a member to either the crush list or the platonic friend list
+@register.filter
+def add_user_as_platonic_friend(source_user, target_username): 
+    print "adding username as platonic friend: " + target_username
+    try:
+        target_user=FacebookUser.objects.get(username=target_username)
+        PlatonicRelationship.objects.create(source_person=source_user, target_person=target_user)
+    except FacebookUser.DoesNotExist:
+        print "failed to add lineup member as crush: " + target_username
+        return False
+    return True
 
 """
 Usage:

@@ -251,6 +251,9 @@ class CrushRelationship(BasicRelationship):
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
     date_lineup_started = models.DateTimeField(default=None, null=True)
     date_lineup_finished = models.DateTimeField(default=None, null=True)
+
+    # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
+    admirer_display_id = models.IntegerField(default=0)
  
     
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
@@ -260,13 +263,14 @@ class CrushRelationship(BasicRelationship):
     
     def save(self,*args, **kwargs):  
         print "saving crush relationship object"
-        # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
-
-        #if admirer is also a crush of the source person's crush list, then we have a match
-            # update the target_status_choices
- 
+        # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
+            # get total previous admirers (past and present) and add 1
+        self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
+        
         try:
-            #reciprocal_relationship=CrushRelationship.objects.get(source_person=self.target_person,target_person=self.source_person)
+            # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
+            #if admirer is also a crush of the source person's crush list, then we have a match
+            # update the target_status_choices
             reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
             print "found a reciprocal relationship"
             reciprocal_relationship.target_status=4 # responded-crush status

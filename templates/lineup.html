@@ -2,7 +2,126 @@
 
 {% block content %}
 
+{% load fbdater_extras %}
 
-<h2>This is the lineup page and the relationship id is {{rel_id}}</h2>
+<script>
+  jQuery(document).ready(function($) {
+  $(".bt-fs-dialog").fSelector({
+      excludeIds: [],
+      closeOverlayClick: true,
+      overlayOpacity: "0.3",
+      overlayColor: '#000',
+      closeOnSubmit: true,
+      showSelectedCount: true,
+      color: "default",
+      showRandom:false,
+      lang: {
+        title: "Crush Selector",
+        buttonSubmit: "Select",
+        buttonCancel: "Cancel",
+        summaryBoxResult: "{1} best results for {0}",
+        summaryBoxNoResult: "No results for {0}",
+        searchText: "Enter a friend's name",
+        fbConnectError: "You must connect to Facebook to see this.",
+        selectedCountResult: "You have choosen {0} people.",
+        selectedLimitResult: "Limit is {0} people."
+      },
+      onStart: function(response){ return null },
+      onClose: function(response){ return null },
+      onSubmit: function(response){
+		add_friends_to_db(response);
+      }
+    });
+  });
+
+$(document).ready(function() 
+{
+        $("#dialog").dialog({modal: true, autoOpen: false});
+
+        $("a.crush_add").click(function(e) {
+        	var name=$(this).attr('name');	
+            var username=$(this).attr('username');
+            e.preventDefault();
+            $("#dialog").text("Are you sure you want to add " + name + " as a crush?");
+            $("#dialog").dialog('option', 'buttons', {
+       			"Add": function() {window.location = "/crushes_in_progress" + '?delete=' + username;},
+        		"Cancel": function() {$(this).dialog("close");
+        		}
+    		});
+            $("#dialog").dialog("open");
+            return false;
+        });
+        
+        $("a.platonic_add").click(function(e) {
+        	var name=$(this).attr('name');	
+            var username=$(this).attr('username');
+            e.preventDefault();
+            $("#dialog").text("Are you sure you want to add " + name + " as a platonic friend?");
+            $("#dialog").dialog('option', 'buttons', {
+       			"Add": function() { {{request.user|add_user_as_crush username}} },
+        		"Cancel": function() {$(this).dialog("close");
+        		}
+    		});
+            $("#dialog").dialog("open");
+            return false;
+        });
+        
+});
+
+  function add_friends_to_db(response,is_crush)
+  {	      
+		// add a special field if the added crushes are open
+       // response looks like a comma delimited list of facebook id's
+		var form = document.createElement("form");
+		form.setAttribute("method", "POST");
+		//form.setAttribute("action", "http://{{request.get_host}}/just_friends/");
+		if (is_crush)
+			form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
+		else 
+			form.setAttribute("action","http://{{request.get_host}}/just_friends/");
+		var hiddenField;
+		var cField;
+		cField =	document.createElement("div");
+		cField.setAttribute("style","display:none");
+		form.appendChild(cField);
+		var input_field;
+		input_field = document.createElement("input");
+		input_field.setAttribute("type", "hidden");
+		input_field.setAttribute("name","csrfmiddlewaretoken");
+		input_field.setAttribute("value","{{csrf_token}}");
+		form.appendChild(input_field);
+	
+		var	key;
+		var id;
+
+		results = String(response).split(',');
+		
+		for(i=0; i<results.length; i++) 
+		{	
+			hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            key = "to[" + i + "]";
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", results[i]);
+            form.appendChild(hiddenField);
+		}
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
+  };
+</script>
+
+
+<h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
+
+{% for member in lineup_set %}
+	<div id=lineup{{member.position}}>
+		{{member.position}}: {{member.username}} <img src="http://graph.facebook.com/{{member.username}}/picture?type=large" width=60 height=60>
+		<div id=choice>
+			<a href="#" id="crush_add">Add as crush</a> <a href="#" id="platonic_add">Add as platonic friend</a>
+		</div>
+	</div>
+{% endfor %}
+
 
 {% endblock %}

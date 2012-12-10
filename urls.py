@@ -35,7 +35,7 @@ urlpatterns += patterns('crush',
 
     url(r'^friends_with_admirers/$', 'views.friends_with_admirers'),
     
-    url(r'^lineup/(?P<rel_id>\d+)/$','views.lineup'), 
+    url(r'^lineup/(?P<admirer_id>\d+)/$','views.lineup'), 
     
     # -- MODAL DIALOG PROCESSING & CONTENT --
     

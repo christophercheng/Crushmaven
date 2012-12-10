@@ -18,16 +18,16 @@
 {% if admirer_relationships %}
 	<ul>
 		{% for admirer in admirer_relationships %}
-			<li> {{admirer.source_person.first_name}} {{admirer.source_person.last_name}}  <small>({{admirer.source_person.facebook_username}})</small> 
+			<li> Secret Admirer #{{admirer.admirer_display_id}} ({{admirer.source_person.first_name}} {{admirer.source_person.last_name}} - <small>{{admirer.source_person.facebook_username}})</small> 
 			<BR><img src="http://graph.facebook.com/{{ admirer|admirer_lineup_username:"0" }}/picture" height=40 width=40> <img src="http://graph.facebook.com/{{ admirer|admirer_lineup_username:"1" }}/picture" height=40 width=40>
 			{% for x in "xxxxxxxx" %}
 				<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>
 			{% endfor %}
 			<BR>
 			{% if admirer.is_lineup_paid %}
-				<a href="/lineup/{{admirer.id}}/">Finish Lineup</a>
+				<a href="/lineup/{{admirer.admirer_display_id}}/">Finish Lineup</a>
 			{% else %}
-				<a href="/lineup/{{admirer.id}}/">Start Lineup</a>
+				<a href="/lineup/{{admirer.admirer_display_id}}/">Start Lineup</a>
 			{% endif %}
 			<BR><BR>
 		{% endfor %}
