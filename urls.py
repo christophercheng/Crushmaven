@@ -40,7 +40,8 @@ urlpatterns += patterns('crush',
     # -- MODAL DIALOG PROCESSING & CONTENT --
     
     url(r'^ajax_add_as_crush/(?P<crush_id>\d+)/$','views.ajax_add_as_crush'),
-                        
+    url(r'^ajax_add_as_platonic_friend/(?P<facebook_id>\d+)/$','views.ajax_add_as_platonic_friend'),
+                           
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     
     # -- SETTINGS PAGES --

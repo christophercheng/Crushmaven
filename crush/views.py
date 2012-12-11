@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember
 import urllib, json
 import random 
 #from django.contrib.auth.models import Use
@@ -322,14 +322,38 @@ def ajax_add_as_crush(request,crush_id):
     try:
         target_user=FacebookUser.objects.get(username=crush_id)
         new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+        try:
+            member=target_user.lineupmember_set.get(LineupUser=target_user)
+            member.decision=True
+            member.save()
+        except LineupMember.DoesNotExist:
+            print "could not find lineup member"
+            
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member as crush: " + crush_id
-        return "Server Error: Could not add friend as crush"
+        return HttpResponse("Server Error: Could not add user as crush")
     print "successfully added user: " + target_user.first_name + " as a crush"
     ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as your crush on " + str(new_relationship.date_added) + "</div>"
     print "ajax: " + ajax_response
     return HttpResponse(ajax_response)
 
+@login_required
+def ajax_add_as_platonic_friend(request,facebook_id):
+    # called from lineup.html to add a member to either the crush list or the platonic friend list
+    try:
+        target_user=FacebookUser.objects.get(username=facebook_id)
+        new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+        try:
+            member=target_user.lineupmember_set.get(LineupUser=target_user)
+            member.decision=False
+            member.save()
+        except LineupMember.DoesNotExist:
+            print "could not find lineup member"
+    except FacebookUser.DoesNotExist:
+        print "failed to add lineup member as crush: " + facebook_id
+        return HttpResponse("Server Error: Could not add user as platonic friend")
+    ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
+    return HttpResponse(ajax_response)
     
 
 # -- Notification settings --

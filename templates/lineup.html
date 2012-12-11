@@ -10,28 +10,25 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
 
 
-<div id="dialog_crush" title="Add As Crush">Are you sure you want to remove this person from your crush list?</div>
-<div id="dialog_friend" title="Add As Platonic Friend">Are you sure you want to remove this person from your crush list?</div>
+<div id="dialog_crush" title="Add As Crush">Are you sure you want to add this person as a crush?</div>
+<div id="dialog_friend" title="Add As Platonic Friend">Are you sure you want to add this person as just-a-friend?</div>
+
 <script type="text/javascript">
 $(document).ready(function() 
 {
         $("#dialog_crush").dialog({modal: true, autoOpen: false});
-
         $("a.crush_add").click(function(e) {
-
      		var parent = $(this).parent();				
         	var name=$(this).attr('name');	
             var username=$(this).attr('username');    
             var url="/ajax_add_as_crush/" + username + " #choice"; 
             e.preventDefault();
- 
             $("#dialog_crush").text("Are you sure you want to add " + name + " as a crush?");
             $("#dialog_crush").dialog('option', 'buttons', {
        			"Add": function() { 
        				parent.load(url);
 					$(this).dialog("close");
-				},
-       
+				},   
         		"Cancel": function() {$(this).dialog("close");
         		}
     		});
@@ -39,7 +36,25 @@ $(document).ready(function()
             return false;
         });
         
-
+        $("#dialog_friend").dialog({modal: true, autoOpen: false});
+        $("a.platonic_add").click(function(e) {
+     		var parent = $(this).parent();				
+        	var name=$(this).attr('name');	
+            var username=$(this).attr('username');    
+            var url="/ajax_add_as_platonic_friend/" + username + " #choice"; 
+            e.preventDefault();
+            $("#dialog_friend").text("Are you sure you want to add " + name + " as just-a-friend?");
+            $("#dialog_friend").dialog('option', 'buttons', {
+       			"Add": function() { 
+       				parent.load(url);
+					$(this).dialog("close");
+				},   
+        		"Cancel": function() {$(this).dialog("close");
+        		}
+    		});
+            $("#dialog_friend").dialog("open");
+            return false;
+        });
 });
 
 </script>
@@ -50,9 +65,15 @@ $(document).ready(function()
 {% for member in lineup_set %}
 	<div id="lineup{{member.position}}">
 		{{member.position}}: {{member.LineupUser.username}} <img src="http://graph.facebook.com/{{member.LineupUser.username}}/picture?type=large" width=60 height=60>
-		<div id="choice" name="hi">
-			<a href="#" class="crush_add" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as crush</a> 
-			<a href="#" class="platonic_add" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
+		<div id="choice">
+			{% if member.decision = True %}
+				You added {{member.LineupUser.first_name}} {{member.LineupUser.last_name}} as a crush!
+			{% elif member.decision = False %}
+				You added {{member.Lineup.first_name}} {{member.LineupUser.last_name}} as just-a-friend.
+			{% else %}
+				<a href="#" class="crush_add" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as crush</a> 
+				<a href="#" class="platonic_add" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
+			{% endif %}
 		</div>
 	</div>
 {% endfor %}
