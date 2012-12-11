@@ -27,7 +27,7 @@
       onStart: function(response){ return null },
       onClose: function(response){ return null },
       onSubmit: function(response){
-		add_friends_to_db(response);
+			add_friends_to_db(response);
       }
     });
   });
@@ -38,8 +38,12 @@
        // response looks like a comma delimited list of facebook id's
 		var form = document.createElement("form");
 		form.setAttribute("method", "POST");
-		//form.setAttribute("action", "http://{{request.get_host}}/just_friends/");
-		form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
+		{% if add_as_platonic_friends %}
+			form.setAttribute("action", "http://{{request.get_host}}/just_friends/");
+		{% else %} 
+			form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
+		{% endif %}
+		
 		var hiddenField;
 		var cField;
 		cField =	document.createElement("div");

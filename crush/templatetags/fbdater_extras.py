@@ -57,31 +57,8 @@ def admirer_lineup_username(value, arg):
         member = value.lineupmember_set.get(position=(value.id + (.1 * int(arg))))
     except LineupMember.DoesNotExist:
         return "no_user"
-    return member.username
+    return member.LineupUser.username
 
-# called from lineup.html to add a member to either the crush list or the platonic friend list
-@register.filter
-def add_user_as_crush(source_user, target_username): 
-    print "adding username as crush: " + target_username
-    try:
-        target_user=FacebookUser.objects.get(username=target_username)
-        CrushRelationship.objects.create(source_person=source_user, target_person=target_user)
-    except FacebookUser.DoesNotExist:
-        print "failed to add lineup member as crush: " + target_username
-        return False
-    return True
-
-# called from lineup.html to add a member to either the crush list or the platonic friend list
-@register.filter
-def add_user_as_platonic_friend(source_user, target_username): 
-    print "adding username as platonic friend: " + target_username
-    try:
-        target_user=FacebookUser.objects.get(username=target_username)
-        PlatonicRelationship.objects.create(source_person=source_user, target_person=target_user)
-    except FacebookUser.DoesNotExist:
-        print "failed to add lineup member as crush: " + target_username
-        return False
-    return True
 
 """
 Usage:

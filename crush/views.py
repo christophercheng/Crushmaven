@@ -1,6 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
@@ -79,7 +78,7 @@ def crushes_in_progress(request):
     crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
     crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
     
-    return render_to_response('crushes.html',
+    return render(request,'crushes.html',
                               {
                                'crush_type': 0, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
@@ -88,22 +87,21 @@ def crushes_in_progress(request):
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
                                'crushes_matched_count': crushes_matched_count,
                                'crushes_not_matched_count': crushes_not_matched_count
-                               },
-                              context_instance=RequestContext(request))    
+                               })    
     
 # -- Crushes Matched Page --
 @login_required
 def crushes_matched(request):
    
-    responded_relationships = request.user.admirer_set.filter(target_status__gt = 3).exclude(is_results_paid=True)
-    crush_relationships = request.user.admirer_set
-
+    crush_relationships = request.user.crush_relationship_set_from_source   
+    responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
+    
     crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
     crushes_matched_count = crush_matched_relationships.count()
     crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
     crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
     
-    return render_to_response('crushes.html',
+    return render(request,'crushes.html',
                               {
                                'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
@@ -112,22 +110,21 @@ def crushes_matched(request):
                                'crushes_in_progress_count': crushes_in_progress_count,
                                'crushes_matched_count': crushes_matched_count,
                                'crushes_not_matched_count': crushes_not_matched_count
-                               },
-                              context_instance=RequestContext(request))    
+                               })    
 
 # -- Crushes Not Matched Page --
 @login_required
 def crushes_not_matched(request):
-
-    responded_relationships = request.user.admirer_set.filter(target_status__gt = 3).exclude(is_results_paid=True)
-    crush_relationships = request.user.admirer_set
+    
+    crush_relationships = request.user.crush_relationship_set_from_source
+    responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
 
     crush_not_matched_relationships = crush_relationships.filter(target_status = 5).filter(is_results_paid=True).order_by('target_person__last_name')
     crushes_not_matched_count = crush_not_matched_relationships.count()
     crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
     crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
     
-    return render_to_response('crushes.html',
+    return render(request,'crushes.html',
                               {
                                'crush_type': 2, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
@@ -136,8 +133,7 @@ def crushes_not_matched(request):
                                'crushes_in_progress_count': crushes_in_progress_count,
                                'crushes_matched_count': crushes_matched_count,
                                'crushes_not_matched_count': crushes_not_matched_count
-                               },
-                              context_instance=RequestContext(request))
+                               })
 
 # -- Admirer List Page --
 @login_required
@@ -145,19 +141,12 @@ def admirers(request):
 
     me = request.user 
    
-    admirer_relationships = me.crush_relationship_set_from_target.all()
-
-    # obtain a query set of all CrushRelationship objects from the user profile where the target's feeling is unknown (0)
-        # obtaining CrushRelationship objects backwards and from the user profile generates crush relationships where given user is admirer
-        # obtaining CrushRelationship objects backwards from the user object generates crush relationships where given user is admired
-
+    admirer_relationships = me.crush_relationship_set_from_target
     admirer_progressing_relationships = admirer_relationships.filter(date_lineup_finished=None).order_by('target_status','date_added')
     past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     
     # initialize the lineups of any new admirer relationships
         # filter out the new relationships whose lineup member 1 is empty
-        
-        
     if admirer_progressing_relationships:
         uninitialized_relationships = admirer_progressing_relationships.exclude(lineupmember__position__gt = 0) #get all relationships that don't have a lineup member at position 0 (non inititialized)
         if (uninitialized_relationships):
@@ -165,13 +154,12 @@ def admirers(request):
             for relationship in uninitialized_relationships:
                 initialize_lineup(request,relationship)
 
-    return render_to_response('admirers.html',
+    return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':admirer_progressing_relationships,
                                'facebook_app_id': settings.FACEBOOK_APP_ID,
-                               'past_admirers_count': past_admirers_count},
-                              context_instance=RequestContext(request))    
+                               'past_admirers_count': past_admirers_count})    
     
 #relationship_id is unique integer id representing the crush relationship, fql_query is the fql query string that the function should use to
 def initialize_lineup(request, relationship):
@@ -219,17 +207,19 @@ def initialize_lineup(request, relationship):
         # if the current lineup position is where the admirer should go, then insert the admirer
         if index==admirer_position:
             new_member_id = rel_id + (.1 * index)
-            relationship.lineupmember_set.create(position=new_member_id,username=relationship.source_person.username)
+            relationship.lineupmember_set.create(position=new_member_id,LineupUser=relationship.source_person)
             print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
             index = index + 1            
             # create a lineup member with the given username      
         new_member_id = rel_id + (.1 * index)
-        relationship.lineupmember_set.create(position=new_member_id, username=fql_user['uid'])
+        lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=request.user.access_token,is_this_for_me=False)
+        relationship.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
         print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
         index = index + 1
+        
     if len(data)==admirer_position:
         new_member_id = rel_id + (len(data) * .1)
-        relationship.lineupmember_set.create(position=new_member_id,username=relationship.source_person.username)
+        relationship.lineupmember_set.create(position=new_member_id,LineupUser=relationship.source_person)
         print "put crush in position: " + str(new_member_id)        
 
 #    print "Number of results: " + str((data['data']).__len__())
@@ -242,18 +232,17 @@ def initialize_lineup(request, relationship):
 def admirers_past(request):
     me = request.user 
    
-    admirer_relationships = me.crush_relationship_set_from_target.all()
+    admirer_relationships = me.crush_relationship_set_from_target
     admirer_completed_relationships = admirer_relationships.exclude(date_lineup_finished=None).order_by('date_added')
     progressing_admirers_count = admirer_relationships.filter(date_lineup_finished=None).count()
     
-    return render_to_response('admirers.html',
+    return render(request,'admirers.html',
                               {
                                'admirer_type': 1, # 0 is in progress, 1 completed
                                'admirer_relationships':admirer_completed_relationships,
                                'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'progressing_admirers_count': progressing_admirers_count
-                               },
-                              context_instance=RequestContext(request))    
+                               })    
 
 # -- Just Friends Page --
 @login_required
@@ -270,7 +259,8 @@ def just_friends(request):
             if key.startswith('to'):    
                 # find existing site user with this id or create a new user 
                 # called function is in a custom UserProfile manager because it is also used during login/authentication
-                selected_user=request.user.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
+                print "trying to get a platonic friend user for id=" + crushee_id            
+                selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
                 # now that the user is definitely on the system, add that user to the crush list        
                 # only create a new relationship if an existing one between the current user and the selected user does not exist 
     
@@ -279,8 +269,7 @@ def just_friends(request):
                                                                friendship_type=u'FRIEND', updated_flag=True)
                         userlist.append(selected_user)
         return HttpResponseRedirect('/just_friends')
-    
-    
+
     # obtain the results of any crush additions or deletions
         # later I can move this into a separate view function
     
@@ -288,33 +277,28 @@ def just_friends(request):
         delete_username=request.GET["delete"]
             # find the relationship and delete it!
         try:
-            request.user.platonic_friend_set.get(target_person__username=delete_username).delete()
+            request.user.platonic_relationship_set_from_source.get(target_person__username=delete_username).delete()
         except PlatonicRelationship.DoesNotExist:
             delete_username=''
         return HttpResponseRedirect('/just_friends')
-        
 
-    # obtain a query set of all PlatonicRelationship objects from the user profile 
-        # obtaining PlatonicRelationship objects backwards and from the user profile generates Platonic relationships where given user is source
-        # obtaining PlatonicRelationship objects backwards from the user object generates platonic relationships where given user is the target
-
-    platonic_relationships = request.me.platonic_friend_set.order_by('-updated_flag','target_person__last_name')
+    platonic_relationships = request.user.platonic_relationship_set_from_source.order_by('-updated_flag','target_person__last_name')
     
-    return render_to_response('just_friends.html',
+    return render(request,'just_friends.html',
                               {
                                'platonic_relationships':platonic_relationships,
+                               'add_as_platonic_friends':True,
                                'facebook_app_id': settings.FACEBOOK_APP_ID
-                               },
-                              context_instance=RequestContext(request))    
+                               })    
 
 # -- Friends with Admirers Page --
 @login_required
 def friends_with_admirers(request):
 
-    return render_to_response('friends_with_admirers.html',
+    return render(request,'friends_with_admirers.html',
                               {
-                               'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request))
+                               'facebook_app_id': settings.FACEBOOK_APP_ID}
+                  )
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
@@ -324,13 +308,29 @@ def lineup(request,admirer_id):
     except CrushRelationship.DoesNotExist:
         print "could not find an admirer relationship for the lineup"
     lineup_set = admirer_rel.lineupmember_set.all()
-    return render_to_response('lineup.html',
+    return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
                                'lineup_set': lineup_set,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request))
+                               'facebook_app_id': settings.FACEBOOK_APP_ID})
 
+@login_required
+def ajax_add_as_crush(request,crush_id):
+    # called from lineup.html to add a member to either the crush list or the platonic friend list
+
+    print "adding username as crush: " + crush_id
+    try:
+        target_user=FacebookUser.objects.get(username=crush_id)
+        new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+    except FacebookUser.DoesNotExist:
+        print "failed to add lineup member as crush: " + crush_id
+        return "Server Error: Could not add friend as crush"
+    print "successfully added user: " + target_user.first_name + " as a crush"
+    ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as your crush on " + str(new_relationship.date_added) + "</div>"
+    print "ajax: " + ajax_response
+    return HttpResponse(ajax_response)
+
+    
 
 # -- Notification settings --
 @login_required
@@ -342,10 +342,9 @@ def modal_delete_crush(request):
 @login_required
 def settings_profile(request):
 
-    return render_to_response('settings_profile.html',
+    return render(request,'settings_profile.html',
                               {
-                                'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request))
+                                'facebook_app_id': settings.FACEBOOK_APP_ID})
 
 # -- Credit Settings Page --
 @login_required
@@ -361,15 +360,14 @@ def settings_credits(request):
             request.user.site_credits += new_credits
         request.user.save()
         notification_message = "You added " + str(new_credits) + " credits."
-    return render_to_response('settings_credits.html',
+    return render(request,'settings_credits.html',
                               {notification_message:notification_message,
-                              'facebook_app_id': settings.FACEBOOK_APP_ID},
-                              context_instance=RequestContext(request))
+                              'facebook_app_id': settings.FACEBOOK_APP_ID})
 
 # -- Notification settings --
 @login_required
 def settings_notifications(request):
-    return HttpResponse("You are at the Notification Settings Page.")
+    return HttpResponse(request,"You are at the Notification Settings Page.")
     
 # -- Logout --
 @login_required

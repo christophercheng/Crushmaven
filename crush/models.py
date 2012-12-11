@@ -41,7 +41,7 @@ class FacebookUserManager(UserManager):
     # find_or_create_user called in two cases:
     # 1) after someone adds a crush from the friend selector dialog (is_this_for_me = false)
     # 2) when facebook authenticates a user (is_this_for_me = true
-    def find_or_create_user(self, fb_id, fb_access_token,fb_profile,is_this_for_me):
+    def find_or_create_user(self, fb_id, fb_access_token,is_this_for_me,fb_profile=None):
         print "find_or_create_user called"
         try:
         # Try and find existing user
@@ -65,7 +65,7 @@ class FacebookUserManager(UserManager):
         # No existing user, create one
         except FacebookUser.DoesNotExist:
             if fb_profile == None:
-                fb_profile = urllib.urlopen('https://graph.facebook.com/' + fb_id + '/?access_token=%s' % fb_access_token)
+                fb_profile = urllib.urlopen('https://graph.facebook.com/' + str(fb_id) + '/?access_token=%s' % fb_access_token)
                 fb_profile = json.load(fb_profile)
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
@@ -329,13 +329,12 @@ class CrushRelationship(BasicRelationship):
 class LineupMember(models.Model):
     # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
     LineupRelationship = models.ForeignKey(CrushRelationship)
+    LineupUser=models.ForeignKey(FacebookUser)
     
     # instead of letting Django auto create a primary ID, let's create a custom one so we can track the sequential position of each member in lineup using the id
     position = models.FloatField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
     position.primary_key=True
     
-    # facebook username of lineup member
-    username = models.CharField(max_length=55)
     # crush's decision about this person, default is none - so there are actually 2.5 states
     decision = models.NullBooleanField()
 

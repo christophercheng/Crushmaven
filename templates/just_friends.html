@@ -20,7 +20,7 @@ $(document).ready(function()
             e.preventDefault();
             $("#dialog").text("Are you sure you want to remove " + name + " from your 'just friends' list?");
             $("#dialog").dialog('option', 'buttons', {
-       			"Delete": function() {window.location = "/crushes_in_progress" + '?delete=' + username;},
+       			"Delete": function() {window.location = "/just_friends/" + '?delete=' + username;},
         		"Cancel": function() {$(this).dialog("close");
         		}
     		});
@@ -33,7 +33,7 @@ $(document).ready(function()
 </script>
 
 <!-- Display the Page Title -->  
-<H3>Just Friends</h3> (testing: <a href="#" class="bt-fs-dialog">add platonic friend</a>)<BR><BR>
+<H3>Just Friends</h3> (testing: <a href="javascript:{}" class="bt-fs-dialog">add platonic friend</a>)<BR><BR>
 <! -- End title -->  
 
 {% if platonic_relationships %}
@@ -49,7 +49,7 @@ $(document).ready(function()
 		{% endif %}
 		
 		
-		<img src="{{friendship.target_person.get_profile.get_facebook_picture }}" height=40 width=40>
+		<img src="{{friendship.target_person.get_facebook_picture }}" height=40 width=40>
 		&nbsp;&nbsp;&nbsp;
 		<b><i>{{friendship.target_person.first_name}} {{friendship.target_person.last_name}}</i></b> 
 		&nbsp;&nbsp;&nbsp;
