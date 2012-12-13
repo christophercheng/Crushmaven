@@ -22,10 +22,12 @@ urlpatterns += patterns('crush',
     url(r'^accounts/login/$', 'views.home'),
  
     url(r'^crushes_in_progress/$', 'views.crushes_in_progress'),
+
+    url(r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','views.crushes_completed'),
     
-    url(r'^crushes_matched/$','views.crushes_matched'),
+   # url(r'^crushes_matched/$','views.crushes_matched'),
     
-    url(r'^crushes_not_matched/$','views.crushes_not_matched'),
+   # url(r'^crushes_not_matched/$','views.crushes_not_matched'),
 
     url(r'^admirers/$', 'views.admirers'),
         
@@ -39,8 +41,7 @@ urlpatterns += patterns('crush',
     
     # -- MODAL DIALOG PROCESSING & CONTENT --
     
-    url(r'^ajax_add_as_crush/(?P<crush_id>\d+)/$','views.ajax_add_as_crush'),
-    url(r'^ajax_add_as_platonic_friend/(?P<facebook_id>\d+)/$','views.ajax_add_as_platonic_friend'),
+    url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<facebook_id>\d+)/$','views.ajax_add_lineup_member'),
                            
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     

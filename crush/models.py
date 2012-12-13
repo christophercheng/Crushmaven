@@ -150,18 +150,13 @@ class BasicRelationship(models.Model):
 
     date_added = models.DateTimeField(auto_now_add=True)
     
-    # keeps track of when the crush signed up
-    date_target_signed_up = models.DateTimeField(null=True)
-
-    # keeps track of when the crush responded
-    date_target_responded = models.DateField(null=True)    
-    
     # list of one or many mutual friends between the admirer and crushee
     #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
     
     # need to know whether to display a 'new' or 'updated' ribbon on the crush content block
     updated_flag = models.BooleanField(default=True) # default True so status is New by default
     def resetUpdatedFlag(self):      
+        print "attempting to reset the update flag"
         self.updated_flag = False
         # save the change to the database, but don't call this level's save function cause it does too much.
         super(BasicRelationship, self).save()
@@ -199,14 +194,14 @@ class PlatonicRelationship(BasicRelationship):
     
         #if target platonic friend has a crush on this user, then platonic friend must be informed
         try:
-            reciprocal_relationship = self.target_person.platonic_relationship_set_from_source.get(target_person=self.source_person)
+            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
             # if there is a reciprocal relationship, then update both relationships' target_status
             reciprocal_relationship.target_status=5 # responded-crush status
-            reciprocal_relationship.date_target_responded=datetime.date.today()
+            reciprocal_relationship.date_target_responded=datetime.datetime.now()
             reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
             reciprocal_relationship.save_wo_reciprocity_check()
 
-        except PlatonicRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
+        except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
             super(PlatonicRelationship, self).save(*args,**kwargs)
             return
                 
@@ -251,6 +246,10 @@ class CrushRelationship(BasicRelationship):
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
     date_lineup_started = models.DateTimeField(default=None, null=True)
     date_lineup_finished = models.DateTimeField(default=None, null=True)
+        # keeps track of when the crush signed up
+    date_target_signed_up = models.DateTimeField(null=True)
+    # keeps track of when the crush responded
+    date_target_responded = models.DateTimeField(null=True)    
 
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0)
@@ -261,24 +260,32 @@ class CrushRelationship(BasicRelationship):
     def save_wo_reciprocity_check(self,*args, **kwargs):
         super(CrushRelationship, self).save(*args,**kwargs) 
     
+    def create(self,*args,**kwargs):
+       
+        
+        super(CrushRelationship,self).create(*args,**kwargs)
+    
     def save(self,*args, **kwargs):  
         print "saving crush relationship object"
-        # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
+        
+        if not self.pk:#do this only the first time object is created    
+            # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
             # get total previous admirers (past and present) and add 1
-        self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
+            print "creating the admirer_display_id"
+            self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
         
         try:
             # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
             #if admirer is also a crush of the source person's crush list, then we have a match
             # update the target_status_choices
             reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            print "found a reciprocal relationship"
             reciprocal_relationship.target_status=4 # responded-crush status
-            reciprocal_relationship.date_target_responded=datetime.date.today()
+            reciprocal_relationship.date_target_responded=datetime.datetime.now()
             reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
             reciprocal_relationship.save_wo_reciprocity_check()
             self.target_status=4
-            self.date_target_responded=datetime.date.today()
+            # massage the date_target_responded for the crush recipient since we want to mask the initiator
+            self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
             self.updated_flag = True #show 'new' or 'updated' on crush relation block
         except CrushRelationship.DoesNotExist:
             print "did not find an existing reciprocal crush relationship"

@@ -94,10 +94,12 @@ $(document).ready(function()
 		
 		<!--  start: bullet points -->
 		* responded to your crush<br>
+		* {{crush.date_target_responded|datetime_since}} ago<BR>
 		<!--  end: bullet points -->
 		
 		<!-- start: response button -->
-			&nbsp;&nbsp;&nbsp;<B>[View Response]</B>
+			&nbsp;&nbsp;&nbsp;<a href="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+			
 		<!-- end: response button -->
 		
 		<!-- start: secondary data -->
@@ -118,11 +120,9 @@ $(document).ready(function()
 <HR>
 <font color="gray">
 {% if crush_type = 0 %}
-<b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_matched">Successful Crushes ({{crushes_matched_count}})</a>&nbsp;&nbsp;<a href="/crushes_not_matched">Unsuccessful Crushes ({{crushes_not_matched_count}}))</a>
+<b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_completed">Completed Crushes ({{crushes_completed_count}})</a>
 {% elif crush_type = 1 %}
-<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Successful Crushes ({{crushes_matched_count}})</b>&nbsp;&nbsp;<a href="/crushes_not_matched">Unsuccessful Crushes ({{crushes_not_matched_count}}))</a>
-{% else %}
-<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><a href="/crushes_matched">&nbsp;&nbsp;Successful Crushes ({{crushes_matched_count}})</a>&nbsp;&nbsp;<b>Unsuccessful Crushes ({{crushes_not_matched_count}}))</b>
+<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Completed Crushes ({{crushes_completed_count}})</b>
 {% endif %}
 </font>
   
@@ -135,11 +135,11 @@ $(document).ready(function()
 	<div>
 		<HR>
 <!-- Display NEW or UPDATED if relevant -->  
-		{% if crush.updated_flag == 1 %}
-			{% if crush.date_added|datetime_since == '1 minute' %}
+		{% if crush.updated_flag == True %}
+			{% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
 				(New)
-				{% else %}
-					(Updated)
+			{% else %}
+				(Updated)
 			{% endif %}
 			{{ crush.resetUpdatedFlag }}
 		{% endif %}
@@ -230,7 +230,11 @@ $(document).ready(function()
 
 	
 {% elif responded_relationships.count == 0 %}
-	<HR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+	{% if crush_type = 0 %}
+		<HR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+	{% else %}
+		<HR>You have no completed crushes.
+	{% endif %}
 {% endif %}
 {% endblock %}
 

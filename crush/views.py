@@ -75,8 +75,9 @@ def crushes_in_progress(request):
     responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
 
     crush_progressing_relationships = crush_relationships.filter(target_status__lt = 4).order_by('-updated_flag','target_status','target_person__last_name')
-    crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
-    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
+    crushes_completed_count = crush_relationships.filter(is_results_paid=True).count()
+#    crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
+#    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
     
     return render(request,'crushes.html',
                               {
@@ -85,55 +86,49 @@ def crushes_in_progress(request):
                                'crush_relationships':crush_progressing_relationships,
                                'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'crushes_matched_count': crushes_matched_count,
-                               'crushes_not_matched_count': crushes_not_matched_count
+                               'crushes_completed_count':crushes_completed_count
+#                               'crushes_matched_count': crushes_matched_count,
+#                               'crushes_not_matched_count': crushes_not_matched_count
                                })    
-    
-# -- Crushes Matched Page --
+
+# -- Crushes Completed Page --
 @login_required
-def crushes_matched(request):
+def crushes_completed(request,reveal_crush_id):
+    
+    crush_relationships = request.user.crush_relationship_set_from_source 
+    
+    if (reveal_crush_id and request.user.site_credits>0):
+        try:
+            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
+            reveal_crush_relationship.is_results_paid=True
+            reveal_crush_relationship.updated_flag=True
+            reveal_crush_relationship.save_wo_reciprocity_check()
+            request.user.site_credits = request.user.site_credits - 1
+            request.user.save()
+        except CrushRelationship.DoesNotExist:
+            print("Could not find the relationship to reveal")
    
-    crush_relationships = request.user.crush_relationship_set_from_source   
     responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
     
-    crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
-    crushes_matched_count = crush_matched_relationships.count()
-    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
+#    crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
+#    crushes_matched_count = crush_matched_relationships.count()
+#    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
+    crushes_completed_relationships = crush_relationships.filter(is_results_paid=True).order_by('target_person__last_name')
     crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
     
     return render(request,'crushes.html',
                               {
                                'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
-                               'crush_relationships':crush_matched_relationships,
+                               'crush_relationships':crushes_completed_relationships,
                                'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_matched_count': crushes_matched_count,
-                               'crushes_not_matched_count': crushes_not_matched_count
-                               })    
-
-# -- Crushes Not Matched Page --
-@login_required
-def crushes_not_matched(request):
+                               'crushes_completed_count' : crushes_completed_relationships.count
+#                               'crushes_matched_count': crushes_matched_count,
+#                               'crushes_not_matched_count': crushes_not_matched_count
+                               })   
     
-    crush_relationships = request.user.crush_relationship_set_from_source
-    responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
 
-    crush_not_matched_relationships = crush_relationships.filter(target_status = 5).filter(is_results_paid=True).order_by('target_person__last_name')
-    crushes_not_matched_count = crush_not_matched_relationships.count()
-    crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
-    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
-    
-    return render(request,'crushes.html',
-                              {
-                               'crush_type': 2, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crush_not_matched_relationships,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_matched_count': crushes_matched_count,
-                               'crushes_not_matched_count': crushes_not_matched_count
-                               })
 
 # -- Admirer List Page --
 @login_required
@@ -315,34 +310,17 @@ def lineup(request,admirer_id):
                                'facebook_app_id': settings.FACEBOOK_APP_ID})
 
 @login_required
-def ajax_add_as_crush(request,crush_id):
-    # called from lineup.html to add a member to either the crush list or the platonic friend list
-
-    print "adding username as crush: " + crush_id
-    try:
-        target_user=FacebookUser.objects.get(username=crush_id)
-        new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
-        try:
-            member=target_user.lineupmember_set.get(LineupUser=target_user)
-            member.decision=True
-            member.save()
-        except LineupMember.DoesNotExist:
-            print "could not find lineup member"
-            
-    except FacebookUser.DoesNotExist:
-        print "failed to add lineup member as crush: " + crush_id
-        return HttpResponse("Server Error: Could not add user as crush")
-    print "successfully added user: " + target_user.first_name + " as a crush"
-    ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as your crush on " + str(new_relationship.date_added) + "</div>"
-    print "ajax: " + ajax_response
-    return HttpResponse(ajax_response)
-
-@login_required
-def ajax_add_as_platonic_friend(request,facebook_id):
+def ajax_add_lineup_member(request,add_type,facebook_id):
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
-        new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+        if add_type=='crush':
+            new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
+        else:
+            new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
+    
         try:
             member=target_user.lineupmember_set.get(LineupUser=target_user)
             member.decision=False
@@ -350,9 +328,8 @@ def ajax_add_as_platonic_friend(request,facebook_id):
         except LineupMember.DoesNotExist:
             print "could not find lineup member"
     except FacebookUser.DoesNotExist:
-        print "failed to add lineup member as crush: " + facebook_id
-        return HttpResponse("Server Error: Could not add user as platonic friend")
-    ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
+        print "failed to add lineup member: " + facebook_id
+        return HttpResponse("Server Error: Could not add given lineup user")  
     return HttpResponse(ajax_response)
     
 

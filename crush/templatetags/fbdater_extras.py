@@ -7,7 +7,7 @@ Created on Nov 1, 2012
 from datetime import datetime, timedelta
 from django import template
 from django.utils.timesince import timesince
-from crush.models import LineupMember, FacebookUser,CrushRelationship,PlatonicRelationship
+from crush.models import LineupMember
 
 register = template.Library()
 
@@ -32,15 +32,17 @@ def datetime_since(value):
 def days_since(value): 
     naive = value.replace(tzinfo=None)
     return (datetime.now() - naive).days
- 
 
 
 @register.filter
 def date_since(value): 
-
+    difference = ""
     try:
-        difference = datetime.now - value
+        print "datetime.now: " + str(datetime.now())
+        print "value: " + str(value)
+        difference = datetime.now() - value
     except:
+        print "difference: " + difference
         return 'exception'
     if difference < timedelta(hours=24):
         return 'hi'
