@@ -1,0 +1,17 @@
+<div id="credit_check_content">
+
+Description: {{ feature_name }}<br>
+Cost: {{ feature_cost }} 
+{% if feature_cost == 1 %}
+credit
+{% else %}
+credits
+{% endif %}<BR>
+<BR>Credit Available: {{ credit_available }} 
+<BR>Credit Remaining after Purchase: {{ credit_remaining }}
+<BR><BR>
+<button onclick="$('#credit_check_modal').dialog('close');">Cancel</button> 
+<button onclick="window.location.href='{{success_url}}';">Ok</button> 
+
+</form>
+</div>
