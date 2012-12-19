@@ -48,6 +48,7 @@ $(document).ready(function()
 
 
 <h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
+
 {% for member in lineup_set %}
 
 	<img src="http://graph.facebook.com/{{member.LineupUser.username}}/picture?type=large" width=40 height=40>

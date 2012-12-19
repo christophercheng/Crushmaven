@@ -42,7 +42,6 @@ def date_since(value):
         print "value: " + str(value)
         difference = datetime.now() - value
     except:
-        print "difference: " + difference
         return 'exception'
     if difference < timedelta(hours=24):
         return 'hi'

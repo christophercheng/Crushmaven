@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-You currently have {{ profile.site_credits }} credits.
+You currently have {{ request.user.site_credits }} 
+{% if request.user.site_credits == 1 %}
+credit.
+{% else %}
+credit.
+{% endif %}
 
 <h3>Add More Credits:</h3>
 <form method="post">{% csrf_token %}

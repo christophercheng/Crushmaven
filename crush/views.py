@@ -106,7 +106,7 @@ def crushes_completed(request,reveal_crush_id):
             request.user.site_credits = request.user.site_credits - 1
             request.user.save()
         except CrushRelationship.DoesNotExist:
-            print("Could not find the relationship to reveal")
+            print("Could not find the relationship to reveal or not enough credit")
    
     responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
     
@@ -301,7 +301,16 @@ def lineup(request,admirer_id):
     try:
         admirer_rel = request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
     except CrushRelationship.DoesNotExist:
-        print "could not find an admirer relationship for the lineup"
+        return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
+    # detract credit if lineup not already paid for
+    if (not admirer_rel.is_lineup_paid):
+        if (request.user.site_credits > 0):
+            request.user.site_credits -= 1
+            request.user.save() 
+            admirer_rel.is_lineup_paid=True
+            admirer_rel.save()
+        else:
+            return HttpResponse("Error: not enough credits to see lineup")
     lineup_set = admirer_rel.lineupmember_set.all()
     return render(request,'lineup.html',
                               {
