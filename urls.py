@@ -24,6 +24,7 @@ urlpatterns += patterns('crush',
     url(r'^crushes_in_progress/$', 'views.crushes_in_progress'),
 
     url(r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','views.crushes_completed'),
+    url(r'^crushes_completed/$','views.crushes_completed'),
     
    # url(r'^crushes_matched/$','views.crushes_matched'),
     

@@ -8,6 +8,26 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
 
+<div id="credit_check_modal" title="Premium Feature Purchase"></div>
+
+<script type="text/javascript">
+
+$(document).ready(function() 
+{
+        $("#credit_check_modal").dialog({modal: true, autoOpen: false});
+
+        $("a.check_credit").click(function(e) {
+        	var success_url=$(this).attr('success_url');	
+        	var feature_id=$(this).attr('feature_id');
+        	load_url="/credit_checker/" + feature_id + "/?success_url=" + success_url;
+            e.preventDefault();
+			$("#credit_check_modal").load(load_url)   	
+            $("#credit_check_modal").dialog("open");
+            return false;
+        });
+});
+</script>
+
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
 
 <script type="text/javascript">
@@ -98,7 +118,9 @@ $(document).ready(function()
 		<!--  end: bullet points -->
 		
 		<!-- start: response button -->
-			&nbsp;&nbsp;&nbsp;<a href="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+			&nbsp;&nbsp;&nbsp;
+			<a href="#" class="check_credit" feature_id="2" success_url="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+			{% comment %}<a href="/crushes_completed/{{crush.target_person.username}}">View Response</a>{% endcomment %}
 			
 		<!-- end: response button -->
 		

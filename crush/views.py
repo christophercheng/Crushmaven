@@ -93,11 +93,11 @@ def crushes_in_progress(request):
 
 # -- Crushes Completed Page --
 @login_required
-def crushes_completed(request,reveal_crush_id):
+def crushes_completed(request,reveal_crush_id=None):
     
     crush_relationships = request.user.crush_relationship_set_from_source 
     
-    if (reveal_crush_id and request.user.site_credits>0):
+    if (( reveal_crush_id) and request.user.site_credits > 0):
         try:
             reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
             reveal_crush_relationship.is_results_paid=True

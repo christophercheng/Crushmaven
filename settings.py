@@ -192,7 +192,7 @@ FEATURES = {
     },
     '2': {
         'NAME':'View Crush Response',
-        'COST': 1,
+        'COST': 2,
     }
 }
 # define the custom user that inherits from Django's User model
