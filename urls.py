@@ -49,6 +49,8 @@ urlpatterns += patterns('crush',
     
     url(r'^settings_profile/$', 'views.settings_profile'),
     
+    url(r'^credit_checker/(?P<feature_id>\d+)/$','views.credit_checker'),
+    
     url(r'^settings_credits/$', 'views.settings_credits'),
     
     url(r'^settings_notifications/$','views.settings_notifications'),

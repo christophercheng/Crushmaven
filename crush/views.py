@@ -356,6 +356,38 @@ def settings_profile(request):
                               {
                                 'facebook_app_id': settings.FACEBOOK_APP_ID})
 
+# -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
+@login_required
+def credit_checker(request,feature_id):
+    # obtain feature data from feature_id and settings
+    features_data=settings.FEATURES[feature_id]
+    feature_cost = features_data['COST']
+    feature_name = features_data['NAME']
+                        
+    # obtain total credits
+    credit_available = request.user.site_credits
+    credit_remaining = credit_available - feature_cost
+    
+    success_url = request.GET.get('success_url',"home")
+
+    # perform conditional logic to determine which dialog to display
+    
+    if (credit_available < feature_cost):
+        return render(request,'dialog_credit_insufficient.html',
+                      {
+                       'feature_cost':feature_cost,
+                       'feature_name':feature_name,
+                       'credit_available':credit_available})
+    else:
+        return render(request,'dialog_credit_sufficient.html',
+                      {'feature_cost':feature_cost,
+                       'feature_name':feature_name,
+                       'credit_available':credit_available,
+                       'credit_remaining': credit_remaining,
+                       'success_url':success_url})
+    
+
+
 # -- Credit Settings Page --
 @login_required
 def settings_credits(request):

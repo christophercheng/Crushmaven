@@ -184,6 +184,17 @@ AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',
     #'django.contrib.auth.backends.ModelBackend',
 )
+
+FEATURES = {
+    '1': {
+        'NAME': 'View Secret Admirer Lineup', 
+        'COST': 1,      
+    },
+    '2': {
+        'NAME':'View Crush Response',
+        'COST': 1,
+    }
+}
 # define the custom user that inherits from Django's User model
 AUTH_USER_MODEL = 'crush.FacebookUser'
 
