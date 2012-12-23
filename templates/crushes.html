@@ -17,9 +17,12 @@ $(document).ready(function()
         $("#credit_check_modal").dialog({modal: true, autoOpen: false});
 
         $("a.check_credit").click(function(e) {
-        	var success_url=$(this).attr('success_url');	
+        	var success_path=$(this).attr('success_path');	
+        	var cancel_url = $(this).attr('cancel_url');
+        	if(cancel_url.substr(-1) == '/') 	
+        		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
         	var feature_id=$(this).attr('feature_id');
-        	load_url="/credit_checker/" + feature_id + "/?success_url=" + success_url;
+        	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
             e.preventDefault();
 			$("#credit_check_modal").load(load_url)   	
             $("#credit_check_modal").dialog("open");
@@ -119,8 +122,9 @@ $(document).ready(function()
 		
 		<!-- start: response button -->
 			&nbsp;&nbsp;&nbsp;
-			<a href="#" class="check_credit" feature_id="2" success_url="/crushes_completed/{{crush.target_person.username}}">View Response</a>
-			{% comment %}<a href="/crushes_completed/{{crush.target_person.username}}">View Response</a>{% endcomment %}
+			
+			<a href="#" class="check_credit" feature_id="2" cancel_url = "{{request.build_absolute_uri}}" success_path="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+
 			
 		<!-- end: response button -->
 		

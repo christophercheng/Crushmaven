@@ -33,7 +33,7 @@ DATABASES = {
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = 'America/New_York'
-
+USE_TZ = False # enables timezone support
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
@@ -49,7 +49,7 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+USE_TZ = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -175,6 +175,11 @@ LOGGING = {
     }
 }
 
+# define the custom user that inherits from Django's User model
+AUTH_USER_MODEL = 'crush.FacebookUser'
+
+NUM_MIN_DAYS_CRUSH = 7
+
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '387261624645161' # Crush Discovery App on Facebook
 FACEBOOK_APP_SECRET = '6345441a2465ba85844916375bbc88aa'
@@ -192,11 +197,24 @@ FEATURES = {
     },
     '2': {
         'NAME':'View Crush Response',
-        'COST': 2,
+        'COST': 1,
     }
 }
-# define the custom user that inherits from Django's User model
-AUTH_USER_MODEL = 'crush.FacebookUser'
 
-NUM_MIN_DAYS_CRUSH = 7
+# TODO - THESE MUST BE SET
+#RESOURCES_DIR = '/media/shared/src/django-paypal-store-example/samplesite/resources/'
+PAYPAL_PDT_TOKEN = 'HBfJRGv3GKoo9zF1_5t3uA12VlNyvALbtai1rgbZMrYT3wWGcMeuRMpp324'
+#PAYPAL_EMAIL = 'buyer1_1344811410_per@gmail.com'
+PAYPAL_EMAIL =  'seller_1344811486_biz@gmail.com'
+PAYPAL_RETURN_URL = 'http://142.255.66.205:443/paypal_purchase'
+PAYPAL_NOTIFY_URL = 'http://142.255.66.205:443/paypal_ipn_listener/'
+# sandbox
+PAYPAL_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
+PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
+
+# live
+#PAYPAL_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
+#PAYPAL_PDT_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
+
+
 

@@ -95,7 +95,7 @@
 			<a class="{% navactive request 'settings_profile' %}"
 				href="{% url 'crush.views.settings_profile' %}">Profile</a>
 			<a class="{% navactive request 'settings_credits' %}"
-				href="{% url 'crush.views.settings_credits' %}">Credits</a>	
+				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>	
 			<a class="{% navactive request 'settings_notifications' %}"
 				href="{% url 'crush.views.settings_notifications' %}">Notifications</a>
 			<a href="{% url 'crush.views.logout_view' %}">Logout</a>

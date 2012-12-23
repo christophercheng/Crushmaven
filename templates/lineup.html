@@ -22,11 +22,11 @@ $(document).ready(function()
             var text= "Are you sure you want to add " + $(this).attr('name') + " as a ";
             
             if ($(this).attr('add_type') == "crush")    {
-            	url="/ajax_add_lineup_member/crush/" + $(this).attr('username') + " #choice"; 
+            	url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + " #choice"; 
             	text = text + "crush?";
             	}
             else {
-            	url="/ajax_add_lineup_member/platonic/" + $(this).attr('username') + " #choice"; 
+            	url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + " #choice"; 
             	text = text + "platonic_friend?";
             	}
             e.preventDefault();

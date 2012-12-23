@@ -114,7 +114,7 @@ class FacebookUser(AbstractUser):
     age_pref_min=models.IntegerField(null=True)
     age_pref_max=models.IntegerField(null=True)
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
-    site_credits = models.IntegerField(default=1) 
+    site_credits = models.IntegerField(default=1000) 
     
     # each user has a set of user lists representing their 'just friends' and their crushes
     # here is an idiosyncrasy of this implementation:
@@ -245,11 +245,12 @@ class CrushRelationship(BasicRelationship):
     is_lineup_paid=models.BooleanField(default=False)
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
     date_lineup_started = models.DateTimeField(default=None, null=True)
+    number_unrated_lineup_members = models.IntegerField(default=10)
     date_lineup_finished = models.DateTimeField(default=None, null=True)
         # keeps track of when the crush signed up
-    date_target_signed_up = models.DateTimeField(null=True)
+    date_target_signed_up = models.DateTimeField(default=None,null=True)
     # keeps track of when the crush responded
-    date_target_responded = models.DateTimeField(null=True)    
+    date_target_responded = models.DateTimeField(default=None,null=True)    
 
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0)
@@ -258,6 +259,7 @@ class CrushRelationship(BasicRelationship):
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save_wo_reciprocity_check(self,*args, **kwargs):
+        print "saving without reciprocity check"
         super(CrushRelationship, self).save(*args,**kwargs) 
     
     def create(self,*args,**kwargs):
@@ -275,6 +277,7 @@ class CrushRelationship(BasicRelationship):
             self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
         
         try:
+
             # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
             #if admirer is also a crush of the source person's crush list, then we have a match
             # update the target_status_choices
@@ -282,7 +285,7 @@ class CrushRelationship(BasicRelationship):
             reciprocal_relationship.target_status=4 # responded-crush status
             reciprocal_relationship.date_target_responded=datetime.datetime.now()
             reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-            reciprocal_relationship.save_wo_reciprocity_check()
+            reciprocal_relationship.save_wo_reciprocity_check(force_update=True)
             self.target_status=4
             # massage the date_target_responded for the crush recipient since we want to mask the initiator
             self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
@@ -294,7 +297,7 @@ class CrushRelationship(BasicRelationship):
                 print "found a reciprocal platonic relationship"
                 # if there is a platonic match, then update this relationships' target_status (other user can't know what this user thinks of them)
                 self.target_status=5
-                self.date_target_responded=datetime.date.today()
+                self.date_target_responded=datetime.datetime.now()
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
             except PlatonicRelationship.DoesNotExist:
                 print "did not find a reciprocal platonic relationship"
@@ -345,6 +348,24 @@ class LineupMember(models.Model):
     # crush's decision about this person, default is none - so there are actually 2.5 states
     decision = models.NullBooleanField()
 
+
+class Purchase(models.Model):
+    credit_total = models.IntegerField(default=0) # e.g. 100
+    price = models.DecimalField( decimal_places=2, max_digits=7 )
+    purchaser = models.ForeignKey(FacebookUser)
+    purchased_at = models.DateTimeField(auto_now_add=True)
+    tx = models.CharField( max_length=250 )
+    
+    def save(self,*args, **kwargs):  
+        print "saving purchase  object"
+        
+        if not self.pk:#do this only the first time object is created    
+            # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
+            # get total previous admirers (past and present) and add 1
+            self.purchaser.site_credits = self.credit_total + self.purchaser.site_credits
+            self.purchaser.save()      
+        return super(Purchase, self).save(*args,**kwargs)
+    
 # 10/27/12 couldn't get this class to work cause the UserProfile object was a foreign key on the original model
     # attempts to use a backwards relation fetch through the model (profile.defaultorderedrelationship_set) failed
 # use this class instead of CrushRelaionship object when obtaining a sorted list
@@ -353,41 +374,3 @@ class LineupMember(models.Model):
 #        class Meta:
 #            proxy = True
 #            ordering = ['target_status']
-    
-class RelationshipLogBook(models.Model): 
-    # a rudimentary log of user initiated transactions specific to a crush
-        # simple array of strings
-        # purpose: display to user a history of what he's done
-    # data includes:
-        # 1) date relationship added (plutonic or crush)
-        # 2) any sent app invites: when and to whom
-        # 3) any credit donations to crush
-        # 4) any messages sent to crush
-        # 5) date changed from plutonic to crush (expect this to be a rare event)
-    relationship = models.OneToOneField(CrushRelationship)
-
-class RelationshipLogEntry(models.Model):
-    date = models.DateField(auto_now_add=True)
-    description = models.CharField(max_length=140) # have a twitter character limit :)
-    Log = models.ForeignKey(RelationshipLogBook)
-    
-class CreditSpent(models.Model):
-    # associate transaction with one particular user
-    user=models.ForeignKey(FacebookUser)
-    # datetimefield when credit was spent
-    date_spent=models.DateTimeField(auto_now_add=True)
-    # amount for 
-    amount_spent=models.FloatField(default=0)
-    # activity for
-    SERVICE_PAYMENT_CHOICES = (
-                       (0,u'Secret Admirer List Addition'),
-                       (1,u'No Secret Admirer List Initiation'),
-                       (2,u'Early Crush List Removal'),
-                       (3,u'Basic Lineup Initiation'),
-                       (4,u'Custom Lineup Initiation'),
-                       (5,u'Feature List Sneak'),
-                       (6,u'Crush Invisibility'),
-                       )
-    
-    service_payment_type=models.IntegerField(default=0,choices=SERVICE_PAYMENT_CHOICES)
-    

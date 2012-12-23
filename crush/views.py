@@ -1,11 +1,15 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember, Purchase
 import urllib, json
 import random 
+import paypal
+from django.views.decorators.http import require_POST
+from datetime import datetime
+
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
@@ -102,9 +106,9 @@ def crushes_completed(request,reveal_crush_id=None):
             reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
             reveal_crush_relationship.is_results_paid=True
             reveal_crush_relationship.updated_flag=True
-            reveal_crush_relationship.save_wo_reciprocity_check()
+            reveal_crush_relationship.save_wo_reciprocity_check(update_fields=['is_results_paid','updated_flag'])
             request.user.site_credits = request.user.site_credits - 1
-            request.user.save()
+            request.user.save(update_fields=['site_credits'])
         except CrushRelationship.DoesNotExist:
             print("Could not find the relationship to reveal or not enough credit")
    
@@ -216,6 +220,10 @@ def initialize_lineup(request, relationship):
         new_member_id = rel_id + (len(data) * .1)
         relationship.lineupmember_set.create(position=new_member_id,LineupUser=relationship.source_person)
         print "put crush in position: " + str(new_member_id)        
+        
+    relationship.number_unrated_lineup_members = relationship.lineupmember_set.count()
+    print "number lineup members: " + str(relationship.lineupmember_set.count())
+    relationship.save_wo_reciprocity_check(update_fields=['number_unrated_lineup_members'])
 
 #    print "Number of results: " + str((data['data']).__len__())
     
@@ -306,9 +314,10 @@ def lineup(request,admirer_id):
     if (not admirer_rel.is_lineup_paid):
         if (request.user.site_credits > 0):
             request.user.site_credits -= 1
-            request.user.save() 
+            request.user.save(update_fields=['site_credits']) 
             admirer_rel.is_lineup_paid=True
-            admirer_rel.save()
+            admirer_rel.target_status=3
+            admirer_rel.save_wo_reciprocity_check(update_fields=['is_lineup_paid','target_status'])
         else:
             return HttpResponse("Error: not enough credits to see lineup")
     lineup_set = admirer_rel.lineupmember_set.all()
@@ -319,23 +328,33 @@ def lineup(request,admirer_id):
                                'facebook_app_id': settings.FACEBOOK_APP_ID})
 
 @login_required
-def ajax_add_lineup_member(request,add_type,facebook_id):
+def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
+        try:
+            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_display_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponse("Server Error: Could not add given lineup user")
+        try:
+            member=target_user.lineupmember_set.get(LineupUser=target_user,LineupRelationship=admirer_rel)
+
+        except LineupMember.DoesNotExist:
+            print "could not find lineup member"
+            return HttpResponse("Server Error: Could not add given lineup user")
         if add_type=='crush':
             new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
+            member.decision=True
         else:
             new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
-    
-        try:
-            member=target_user.lineupmember_set.get(LineupUser=target_user)
             member.decision=False
-            member.save()
-        except LineupMember.DoesNotExist:
-            print "could not find lineup member"
+        member.save(update_fields=['decision'])
+        admirer_rel.number_unrated_lineup_members=admirer_rel.number_unrated_lineup_members - 1
+        if admirer_rel.number_unrated_lineup_members == 0:
+                admirer_rel.date_lineup_finished= datetime.now()
+        admirer_rel.save_wo_reciprocity_check(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
@@ -368,8 +387,13 @@ def credit_checker(request,feature_id):
     credit_available = request.user.site_credits
     credit_remaining = credit_available - feature_cost
     
-    success_url = request.GET.get('success_url',"home")
-
+    success_path = request.GET.get('success_path',"home")
+    print "success_path: " + success_path
+    cancel_url = request.GET.get('cancel_url',"home")
+    print "cancel_url: " + cancel_url
+    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?success_path=" + success_path
+    paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
+    
     # perform conditional logic to determine which dialog to display
     
     if (credit_available < feature_cost):
@@ -377,35 +401,109 @@ def credit_checker(request,feature_id):
                       {
                        'feature_cost':feature_cost,
                        'feature_name':feature_name,
-                       'credit_available':credit_available})
+                       'credit_available':credit_available,
+                       'paypal_url': settings.PAYPAL_URL, 
+                       'paypal_email': settings.PAYPAL_EMAIL, 
+                       'paypal_success_url': paypal_success_url,
+                       'paypal_cancel_url': cancel_url,
+                       'paypal_notify_url':paypal_notify_url})
     else:
         return render(request,'dialog_credit_sufficient.html',
                       {'feature_cost':feature_cost,
                        'feature_name':feature_name,
                        'credit_available':credit_available,
                        'credit_remaining': credit_remaining,
-                       'success_url':success_url})
-    
+                       'success_path':success_path})
+@login_required    
+@csrf_exempt # this is needed so that paypal success redirect from payment page works 
+def paypal_purchase(request):
 
+    method_dict=request.GET
+    success_path = method_dict.get('success_path',"home")
+    credit_amount = method_dict.get('credit_amount', 10)
+    price=method_dict.get('amt',9)
+    print "printing out pdt get variables:"
+    for element in method_dict:
+        print "element: " + element + " -> " + method_dict[element]
+#    resource = get_object_or_404( models.Resource, pk=id )
+#    user = get_object_or_404( User, pk=uid )
+    if request.REQUEST.has_key('tx'):
+        tx = request.REQUEST['tx']
+        try:
+            existing = Purchase.objects.get( tx=tx )
+            print "duplicate transaction found when processing PAYPAL PDT Handler"
+            return HttpResponseRedirect(success_path)
+        except Purchase.DoesNotExist:
+            result = paypal.Verify(tx)
+            if result.success(): # valid
+                Purchase.objects.create(purchaser=request.user, tx=tx, credit_total=int(credit_amount),price= price)
+                
+                return HttpResponseRedirect(success_path)
+            else: # didn't validate
+                return render(request, 'error.html', { 'error': "Failed to validate payment" } )
+    else: # no tx
+        return render(request, 'error.html', { 'error': "No transaction specified" } )
+
+@require_POST
+@csrf_exempt
+def paypal_ipn_listener(request,username,credit_amount):
+    print "  I P N    L I S T N E R    C A L L E D !!!!"
+    print "username: " + username
+    print "credit amount: " + str(credit_amount)
+    method_dict=request.POST
+    print "printing out ipn variables:"
+    price=method_dict.get('payment_gross',9)
+        
+    if request.REQUEST.has_key('txn_id'):
+        txn_id = request.REQUEST['txn_id']
+        try:
+            facebook_user = FacebookUser.objects.get(username=username)
+            print "facebook user found with first name: " + facebook_user.first_name
+            
+        except FacebookUser.DoesNotExist:
+            # evetually Log and error tell PAYPAL that something went wrong and step sending ipn messages
+            pass
+        try:
+            existing = Purchase.objects.get( tx=txn_id )
+            print "existing purchase found. transaction id: " + txn_id
+            pass
+        except Purchase.DoesNotExist:
+            print "verify paypal IPN"
+            result = paypal.Verify_IPN(method_dict)
+            print "paypal IPN verified"
+            if result.success(): # valid
+                purchase = Purchase(purchaser=facebook_user, tx=txn_id, credit_total=int(credit_amount),price=price)   
+                print "payment made with credit_amount: " + str(credit_amount) + " price: " + str(price)
+            else:
+                print "paypal IPN was a failure"
+    return HttpResponse("OKAY")
 
 # -- Credit Settings Page --
 @login_required
 def settings_credits(request):
 
-    notification_message=""
     if 'amount' in request.POST:
         new_credits = int(request.POST['amount'])
-        print "added credits: " + str(new_credits)
         if new_credits==0:
             request.user.site_credits = 0
-        else:
-            request.user.site_credits += new_credits
-        request.user.save()
-        notification_message = "You added " + str(new_credits) + " credits."
+            request.user.save(update_fields=['site_credits'])
+                          
+    # obtain total credits
+    credit_available = request.user.site_credits
+    
+    success_path = '/settings_credits'
+    cancel_url = success_path
+    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?success_path=" + success_path
+    paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
+    
     return render(request,'settings_credits.html',
-                              {notification_message:notification_message,
-                              'facebook_app_id': settings.FACEBOOK_APP_ID})
-
+                      {'facebook_app_id': settings.FACEBOOK_APP_ID,
+                       'credit_available':credit_available,
+                       'paypal_url': settings.PAYPAL_URL, 
+                       'paypal_email': settings.PAYPAL_EMAIL, 
+                       'paypal_success_url': paypal_success_url,
+                       'paypal_cancel_url': cancel_url,
+                       'paypal_notify_url':paypal_notify_url})
 # -- Notification settings --
 @login_required
 def settings_notifications(request):

@@ -4,30 +4,39 @@ You currently have {{ request.user.site_credits }}
 {% if request.user.site_credits == 1 %}
 credit.
 {% else %}
-credit.
+credits.
 {% endif %}
 
+
 <h3>Add More Credits:</h3>
-<form method="post">{% csrf_token %}
+<form method="post" action='{{ paypal_url }}'>{% csrf_token %}
 
-<input type = "radio" name="amount" value="10"/>10 credits - $1 USD
+<input type = "radio" name="amount" value="5" onClick="document.getElementById('item_name_field').value='5 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=5';document.getElementById('notify_url').value='{{paypal_notify_url}}5/'">5 credits - $5 USD
 </br>
-<input type = "radio" name="amount" value="55"/>55 credits - $5 USD <small>(10% bonus)</small>
+<input type = "radio" name="amount" value="9" checked onClick="document.getElementById('item_name_field').value='10 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=10';document.getElementById('notify_url').value='{{paypal_notify_url}}10/'">10 credits - $9 USD <small>(10% bonus)</small>
 </br>
-<input type = "radio" name="amount" value="115"/>115 credits - $10 USD <small>(15% bonus)</small>
+<input type = "radio" name="amount" value="17" onClick="document.getElementById('item_name_field').value='20 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=20';document.getElementById('notify_url').value='{{paypal_notify_url}}20/'">20 credits - $17 USD <small>(15% bonus)</small>
 </br>
-<input type = "radio" name="amount" value="240"/>240 credits - $20 USD <small>(20% bonus)</small>
+<input type = "radio" name="amount" value="32" onClick="document.getElementById('item_name_field').value='40 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=40';document.getElementById('notify_url').value='{{paypal_notify_url}}40/'">40 credits - $32 USD <small>(20% bonus)</small>
 </br>
-<input type = "radio" name="amount" value="625"checked/>625 credits - $50 USD <small>(25% bonus)</small>
-</br>
-<input type = "radio" name="amount" value="1300"/>1300 credits - $100 USD <small>(30% bonus)</small>
-</br>
-<input type = "radio" name="amount" value="2025"/>2025 credits - $150 <small>($35% bonus)</small>
+<input type = "radio" name="amount" value="72" onClick="document.getElementById('item_name_field').value='100 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=100';document.getElementById('notify_url').value='{{paypal_notify_url}}100/'">100 credits - $72 USD <small>(27% bonus)</small>
 </br><br>
-<small>
+
+  <input type="hidden" name="cmd" value="_xclick">
+  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
+  <input type="hidden" name="business" value="{{ paypal_email }}">
+  <input type="hidden" id="item_name_field" name="item_name" value="10 Credits">
+  <input type="hidden" name="currency_code" value="USD">
+  <input type="hidden" name="return" id="return" value="{{paypal_success_url}}&credit_amount=10">
+  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
+  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
+
+<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" onclick="alert(document.getElementById('notify_url').value)" >
+</form>
+  
+<h2> Temporary Admin Functionality</h2>
+<form method="post">{% csrf_token %}
 <input type = "radio" name="amount" value="0"/>(admin - zero out credits)</small>
-
-
 <br><br><input type='submit' value="submit">
 </form>
 {% endblock %}

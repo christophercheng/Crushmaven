@@ -42,7 +42,7 @@ urlpatterns += patterns('crush',
     
     # -- MODAL DIALOG PROCESSING & CONTENT --
     
-    url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<facebook_id>\d+)/$','views.ajax_add_lineup_member'),
+    url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','views.ajax_add_lineup_member'),
                            
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     
@@ -51,6 +51,10 @@ urlpatterns += patterns('crush',
     url(r'^settings_profile/$', 'views.settings_profile'),
     
     url(r'^credit_checker/(?P<feature_id>\d+)/$','views.credit_checker'),
+    
+    url(r'^paypal_purchase/$', 'views.paypal_purchase'),
+    
+    url(r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','views.paypal_ipn_listener'),
     
     url(r'^settings_credits/$', 'views.settings_credits'),
     
