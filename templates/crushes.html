@@ -9,6 +9,9 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
+<div id="app_invite_modal" title="Send Application Invites"></div>
+
+
 
 <script type="text/javascript">
 
@@ -24,9 +27,26 @@ $(document).ready(function()
         	var feature_id=$(this).attr('feature_id');
         	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
             e.preventDefault();
-			$("#credit_check_modal").load(load_url)   	
+					$("#credit_check_modal").load(load_url)   	
             $("#credit_check_modal").dialog("open");
             return false;
+        });
+});
+</script>
+
+<!-- FOR THE EMAIL INVITE POPUP -->
+<script type="text/javascript">
+$(document).ready(function() 
+{
+        $("#app_invite_modal").dialog({modal: true, autoOpen: false});
+
+        $("a.app_invite").click(function(e) {
+        	var crush_username=$(this).attr('crush_username');	
+        	load_url="/app_invite_form/" + crush_username + "/";
+          e.preventDefault();
+					$("#app_invite_modal").load(load_url)   	
+          $("#app_invite_modal").dialog("open");
+          return false;
         });
 });
 </script>
@@ -199,7 +219,7 @@ $(document).ready(function()
 		* needs an email invitation from you to sign up and consider your relationship
 		{% elif crush.target_status == 1 %}
 		* not a member<br>
-		* app invite(s) sent {{crush.date_invite_last_sent|date_since}} ago [send more invites]
+		* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a>
 		{% elif crush.target_status == 2 %}
 		{% if crush.date_target_signed_up %}
 		* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
@@ -220,7 +240,7 @@ $(document).ready(function()
 		
 		<!-- start: conditional button: send invite -->
 		{% if crush.target_status == 0 %}
-			&nbsp;&nbsp;&nbsp;<B>[Send App Invite]</B>
+			&nbsp;&nbsp;&nbsp;<B><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></B>
 		{% endif %}
 		<!-- end: conditional button: send invite -->
 		

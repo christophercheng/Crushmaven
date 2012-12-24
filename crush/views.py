@@ -1,19 +1,23 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember, Purchase
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember, Purchase, EmailRecipient
 import urllib, json
 import random 
 import paypal
 from django.views.decorators.http import require_POST
 from datetime import datetime
+from crush.appinviteform import AppInviteForm
+
+from smtplib import SMTPException
 
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
-
+# for mail testing 
+from django.core.mail import send_mass_mail
 
 # -- Home Page --
 # handles both member and guest home page
@@ -131,8 +135,61 @@ def crushes_completed(request,reveal_crush_id=None):
 #                               'crushes_matched_count': crushes_matched_count,
 #                               'crushes_not_matched_count': crushes_not_matched_count
                                })   
-    
 
+@login_required    
+def app_invite_form(request, crush_username):
+    print "APP INVITE FORM!"
+    # crush_name should be first name last name
+    if request.method == 'POST': # if the form has been submitted...
+        print "METHOD IS POST"
+        form = AppInviteForm(request.POST)
+
+        if form.is_valid():
+            # send out the emails here
+            crush_email_list=form.cleaned_data['crush_emails']
+            friend_email_list=form.cleaned_data['friend_emails']
+            try:
+                crush_user = FacebookUser.objects.get(username=crush_username)
+            except FacebookUser.DoesNotExist:
+                return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Plese try again later." })
+            
+            crush_name = crush_user.first_name + " " + crush_user.last_name
+            crush_subject = 'Your Facebook friend is attracted to you - find out who.'
+            crush_body='Visit http://crushvibes.com to find out whom.'
+            friend_subject = 'Your friend ' + crush_name + ' has a secret admirer and needs your help.'
+            friend_body='Please forward this message to your friend, ' + crush_name + ':\n\n' + crush_body
+
+            message_list = []
+            for email in crush_email_list:
+                message_list.append((crush_subject, crush_body, 'info@crushvibes.com',[email]))
+            for email in friend_email_list:
+                message_list.append((friend_subject, friend_body, 'info@crushvibes.com',[email]))
+            print str(message_list)
+            try:
+                send_mass_mail(message_list,fail_silently=False)
+                try: 
+                    crush_relationship = request.user.crush_relationship_set_from_source.get(target_person=crush_user)
+                    crush_relationship.date_invite_last_sent=datetime.now()
+                    crush_relationship.target_status = 1
+                    crush_relationship.save_wo_reciprocity_check(update_fields=['date_invite_last_sent','target_status'])
+                    for email in crush_email_list:
+                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.now(),is_email_crush=True)
+                        
+                    for email in friend_email_list:
+                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.now(),is_email_crush=False)                    
+                except CrushRelationship.DoesNotExist:
+                    pass #the database won't store app invite history, but that's ok as long as the actual emails were successfully sent
+            except SMTPException:
+                return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Plese try again later." })
+            if request.is_ajax():
+                print "sucess!!!!!"
+                return render(request,'app_invite_success.html',{'crush_email_list':crush_email_list,
+                                                                 'friend_email_list':friend_email_list})
+            else:
+                return redirect('app_invite_success')
+    else:
+        form=AppInviteForm()
+    return render(request, 'app_invite_form.html',{'form':form,'crush_username':crush_username})
 
 # -- Admirer List Page --
 @login_required
@@ -492,7 +549,8 @@ def settings_credits(request):
     credit_available = request.user.site_credits
     
     success_path = '/settings_credits'
-    cancel_url = success_path
+    cancel_url = 'http://' + request.get_host() + success_path
+    
     paypal_success_url = settings.PAYPAL_RETURN_URL + "/?success_path=" + success_path
     paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
     

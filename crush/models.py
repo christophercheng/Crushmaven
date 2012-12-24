@@ -141,7 +141,7 @@ class FacebookUser(AbstractUser):
     
     def __unicode__(self):
         return '(id:' + str(self.username) +') ' + self.facebook_username
-
+    
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -238,8 +238,8 @@ class CrushRelationship(BasicRelationship):
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
     # the crush target (and potentially the admirer) will need to pay to activate the crush-line-up
-        
-    date_invite_last_sent=models.DateTimeField(null=True)
+    
+    date_invite_last_sent=models.DateTimeField(null=True,default=None) 
     
     # actual lineup members have a foreign key to a Crush Lineup
     is_lineup_paid=models.BooleanField(default=False)
@@ -334,6 +334,13 @@ class CrushRelationship(BasicRelationship):
             
     def __unicode__(self):
         return 'CrushRelationship with:' + str(self.target_person.facebook_username)
+
+class EmailRecipient(models.Model):
+    crush_relationship = models.ForeignKey(CrushRelationship)
+    recipient_address=models.CharField(max_length=200) # is this long enough?
+    date_sent=models.DateTimeField(auto_now_add=True)
+    is_email_crush=models.BooleanField(default=True) # if false, then the email was sent to a mutual friend
+
 
 # details about each crush's secret admirer lineup (SAL)
 class LineupMember(models.Model):

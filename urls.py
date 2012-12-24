@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -26,9 +27,10 @@ urlpatterns += patterns('crush',
     url(r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','views.crushes_completed'),
     url(r'^crushes_completed/$','views.crushes_completed'),
     
-   # url(r'^crushes_matched/$','views.crushes_matched'),
+    url(r'^app_invite_form/(?P<crush_username>\w+)/$','views.app_invite_form'),
     
-   # url(r'^crushes_not_matched/$','views.crushes_not_matched'),
+    url(r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html'),
+        name="app_invite_success"),
 
     url(r'^admirers/$', 'views.admirers'),
         

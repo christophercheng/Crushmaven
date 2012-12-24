@@ -23,15 +23,16 @@ credits.
 </br><br>
 
   <input type="hidden" name="cmd" value="_xclick">
+  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
   <input type="hidden" id="credit_amount" name="credit_amount" value="10">
   <input type="hidden" name="business" value="{{ paypal_email }}">
   <input type="hidden" id="item_name_field" name="item_name" value="10 Credits">
   <input type="hidden" name="currency_code" value="USD">
   <input type="hidden" name="return" id="return" value="{{paypal_success_url}}&credit_amount=10">
   <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
-  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
 
-<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" onclick="alert(document.getElementById('notify_url').value)" >
+
+<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" >
 </form>
   
 <h2> Temporary Admin Functionality</h2>
