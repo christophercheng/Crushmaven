@@ -4,6 +4,7 @@ import urllib, json
 import datetime
 from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
+from django.db.models import F
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -12,7 +13,6 @@ class FacebookUserManager(UserManager):
     def update_user(self,facebook_user,fb_profile):
         facebook_user.first_name = fb_profile['first_name']
         facebook_user.last_name = fb_profile['last_name']
-        facebook_user.facebook_username=fb_profile.get('username', fb_profile['id'])
         if ('birthday_date' in fb_profile):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
@@ -61,7 +61,8 @@ class FacebookUserManager(UserManager):
                         # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
                         relation.target_status = 2
                         relation.date_target_signed_up = datetime.datetime.now()
-                        relation.save_wo_reciprocity_check()
+                        relation.save(update_fields=['target_status','date_target_signed_up'])
+                user.save(update_fields=['is_active','access_token','birthday_date','email','gender','is_single','gender_pref','first_name','last_name'])
         # No existing user, create one
         except FacebookUser.DoesNotExist:
             if fb_profile == None:
@@ -81,7 +82,7 @@ class FacebookUserManager(UserManager):
                 return #this would be a bad database error (something out-a-sync!)
             print "calling the update_user function"
             self.update_user(user,fb_profile)
-        user.save()
+            user.save(update_fields=['is_active','access_token','birthday_date','email','gender','is_single','gender_pref','first_name','last_name'])
         return user
 
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
@@ -159,7 +160,7 @@ class BasicRelationship(models.Model):
         print "attempting to reset the update flag"
         self.updated_flag = False
         # save the change to the database, but don't call this level's save function cause it does too much.
-        super(BasicRelationship, self).save()
+        super(BasicRelationship, self).save(updated_flags='updated_flag')
         return "" # if I don't return "" then for some reason None is actually returned
     
     # how are the admirer and crushee connected
@@ -182,28 +183,22 @@ class PlatonicRelationship(BasicRelationship):
     target_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_target')
     # will have to write an overloaded save function here that checks to see if the platonic friend has a crush
         # if so, then modify that person's target_feeilng and target_status 
-    
-        # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
-        # this method avoids receiprocal relationship checking which could lead to infinite loop checking
-    def save_wo_reciprocity_check(self,*args, **kwargs):
-        super(PlatonicRelationship, self).save(*args,**kwargs) 
-    
+ 
     def save(self,*args, **kwargs):  
-        print "saving platonic relationship object"
-        # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
+        #  print "saving platonic relationship object"
+        if (not self.pk):
+            # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
+            #if target platonic friend has a crush on this user, then platonic friend must be informed
+            try:
+                reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
+                # if there is a reciprocal relationship, then update both relationships' target_status
+                reciprocal_relationship.target_status=5 # responded-crush status
+                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
+                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
     
-        #if target platonic friend has a crush on this user, then platonic friend must be informed
-        try:
-            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            # if there is a reciprocal relationship, then update both relationships' target_status
-            reciprocal_relationship.target_status=5 # responded-crush status
-            reciprocal_relationship.date_target_responded=datetime.datetime.now()
-            reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-            reciprocal_relationship.save_wo_reciprocity_check()
-
-        except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
-            super(PlatonicRelationship, self).save(*args,**kwargs)
-            return
+            except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
+                pass
                 
         super(PlatonicRelationship, self).save(*args,**kwargs)
         return
@@ -258,57 +253,43 @@ class CrushRelationship(BasicRelationship):
     
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
-    def save_wo_reciprocity_check(self,*args, **kwargs):
-        print "saving without reciprocity check"
-        super(CrushRelationship, self).save(*args,**kwargs) 
-    
-    def create(self,*args,**kwargs):
-       
+    def save(self,*args,**kwargs):
         
-        super(CrushRelationship,self).create(*args,**kwargs)
-    
-    def save(self,*args, **kwargs):  
-        print "saving crush relationship object"
-        
-        if not self.pk:#do this only the first time object is created    
+        if (not self.pk):
             # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
             # get total previous admirers (past and present) and add 1
-            print "creating the admirer_display_id"
             self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
         
-        try:
-
-            # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
-            #if admirer is also a crush of the source person's crush list, then we have a match
-            # update the target_status_choices
-            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            reciprocal_relationship.target_status=4 # responded-crush status
-            reciprocal_relationship.date_target_responded=datetime.datetime.now()
-            reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-            reciprocal_relationship.save_wo_reciprocity_check(force_update=True)
-            self.target_status=4
-            # massage the date_target_responded for the crush recipient since we want to mask the initiator
-            self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
-            self.updated_flag = True #show 'new' or 'updated' on crush relation block
-        except CrushRelationship.DoesNotExist:
-            print "did not find an existing reciprocal crush relationship"
             try:
-                self.target_person.platonic_relationship_set_from_source.get(target_person=self.source_person)
-                print "found a reciprocal platonic relationship"
-                # if there is a platonic match, then update this relationships' target_status (other user can't know what this user thinks of them)
-                self.target_status=5
-                self.date_target_responded=datetime.datetime.now()
+                # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
+                #if admirer is also a crush of the source person's crush list, then we have a match
+                # update the target_status_choices
+                reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
+                reciprocal_relationship.target_status=4 # responded-crush status
+                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
+                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
+                self.target_status=4
+                # massage the date_target_responded for the crush recipient since we want to mask the initiator
+                self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
-            except PlatonicRelationship.DoesNotExist:
-                print "did not find a reciprocal platonic relationship"
-                # target status is either 0 (not member, not invited) or 2 (member)
-                if self.target_person.is_active == True:
-                    self.target_status = 2
-                else:
-                    self.target_status = 0
-        print "calling super(CrushRElationship)"        
-        super(CrushRelationship, self).save(*args,**kwargs)
-        return
+            except CrushRelationship.DoesNotExist:
+                # did not find an existing reciprocal crush relationship"
+                try:
+                    self.target_person.platonic_relationship_set_from_source.get(target_person=self.source_person)
+                    # print "found a reciprocal platonic relationship"
+                    # if there is a platonic match, then update this relationships' target_status (other user can't know what this user thinks of them)
+                    self.target_status=5
+                    self.date_target_responded=datetime.datetime.now()
+                    self.updated_flag = True #show 'new' or 'updated' on crush relation block
+                except PlatonicRelationship.DoesNotExist:
+                    # print "did not find a reciprocal platonic or crush relationship"
+                    # target status is either 0 (not member, not invited) or 2 (member)
+                    if self.target_person.is_active == True:
+                        self.target_status = 2
+                    else:
+                        self.target_status = 0
+        super(CrushRelationship,self).save(*args,**kwargs)
         
     # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
@@ -323,11 +304,10 @@ class CrushRelationship(BasicRelationship):
                 if not ( (self.source_person.facebook_username == u'chris.h.cheng') | (self.source_person.facebook_username == u'chris.schmack')):
                     return # change this to: if user is not a staff (admin) member then return
             reciprocal_relationship.target_status=2
-            reciprocal_relationship.save_wo_reciprocity_check()
+            reciprocal_relationship.save(update_fields=['target_status'])
         except CrushRelationship.DoesNotExist:
             print "ugh oh - can't find the crush relationship to delete!"
-            super(CrushRelationship, self).delete(*args,**kwargs)
-            return
+            pass
         print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
         super(CrushRelationship, self).delete(*args,**kwargs)
         return
@@ -363,14 +343,17 @@ class Purchase(models.Model):
     purchased_at = models.DateTimeField(auto_now_add=True)
     tx = models.CharField( max_length=250 )
     
-    def save(self,*args, **kwargs):  
-        print "saving purchase  object"
-        
-        if not self.pk:#do this only the first time object is created    
+  
+    def save(self,*args, **kwargs): 
+        print "purchase save overridden function called" 
+        if not self.pk:
+            print "creating purchase  object with new credit total: " + str(self.credit_total)
+            print "SERIOUSLY CREATE THIS DAMN PURCHASE OBJECT!"
             # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
             # get total previous admirers (past and present) and add 1
-            self.purchaser.site_credits = self.credit_total + self.purchaser.site_credits
-            self.purchaser.save()      
+            current_user = self.purchaser
+            current_user.site_credits = F('site_credits') + self.credit_total     
+            current_user.save(update_fields = ['site_credits']) 
         return super(Purchase, self).save(*args,**kwargs)
     
 # 10/27/12 couldn't get this class to work cause the UserProfile object was a foreign key on the original model

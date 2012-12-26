@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
@@ -10,6 +10,7 @@ import paypal
 from django.views.decorators.http import require_POST
 from datetime import datetime
 from crush.appinviteform import AppInviteForm
+from django.db.models import F
 
 from smtplib import SMTPException
 
@@ -105,13 +106,13 @@ def crushes_completed(request,reveal_crush_id=None):
     
     crush_relationships = request.user.crush_relationship_set_from_source 
     
-    if (( reveal_crush_id) and request.user.site_credits > 0):
+    if (( reveal_crush_id) and request.user.site_credits >= settings.FEATURES['2']['COST']):
         try:
             reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
             reveal_crush_relationship.is_results_paid=True
             reveal_crush_relationship.updated_flag=True
-            reveal_crush_relationship.save_wo_reciprocity_check(update_fields=['is_results_paid','updated_flag'])
-            request.user.site_credits = request.user.site_credits - 1
+            reveal_crush_relationship.save(update_fields=['is_results_paid','updated_flag'])
+            request.user.site_credits -=  settings.FEATURES['2']['COST']
             request.user.save(update_fields=['site_credits'])
         except CrushRelationship.DoesNotExist:
             print("Could not find the relationship to reveal or not enough credit")
@@ -171,7 +172,7 @@ def app_invite_form(request, crush_username):
                     crush_relationship = request.user.crush_relationship_set_from_source.get(target_person=crush_user)
                     crush_relationship.date_invite_last_sent=datetime.now()
                     crush_relationship.target_status = 1
-                    crush_relationship.save_wo_reciprocity_check(update_fields=['date_invite_last_sent','target_status'])
+                    crush_relationship.save(update_fields=['date_invite_last_sent','target_status'])
                     for email in crush_email_list:
                         EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.now(),is_email_crush=True)
                         
@@ -280,7 +281,7 @@ def initialize_lineup(request, relationship):
         
     relationship.number_unrated_lineup_members = relationship.lineupmember_set.count()
     print "number lineup members: " + str(relationship.lineupmember_set.count())
-    relationship.save_wo_reciprocity_check(update_fields=['number_unrated_lineup_members'])
+    relationship.save(update_fields=['number_unrated_lineup_members'])
 
 #    print "Number of results: " + str((data['data']).__len__())
     
@@ -369,12 +370,12 @@ def lineup(request,admirer_id):
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
     # detract credit if lineup not already paid for
     if (not admirer_rel.is_lineup_paid):
-        if (request.user.site_credits > 0):
-            request.user.site_credits -= 1
+        if (request.user.site_credits >= settings.FEATURES['1']['COST']):
+            request.user.site_credits -= int(settings.FEATURES['1']['COST'])
             request.user.save(update_fields=['site_credits']) 
             admirer_rel.is_lineup_paid=True
             admirer_rel.target_status=3
-            admirer_rel.save_wo_reciprocity_check(update_fields=['is_lineup_paid','target_status'])
+            admirer_rel.save(update_fields=['is_lineup_paid','target_status'])
         else:
             return HttpResponse("Error: not enough credits to see lineup")
     lineup_set = admirer_rel.lineupmember_set.all()
@@ -408,10 +409,10 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
             member.decision=False
         member.save(update_fields=['decision'])
-        admirer_rel.number_unrated_lineup_members=admirer_rel.number_unrated_lineup_members - 1
+        admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
         if admirer_rel.number_unrated_lineup_members == 0:
                 admirer_rel.date_lineup_finished= datetime.now()
-        admirer_rel.save_wo_reciprocity_check(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
+        admirer_rel.save(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
@@ -491,10 +492,11 @@ def paypal_purchase(request):
             print "duplicate transaction found when processing PAYPAL PDT Handler"
             return HttpResponseRedirect(success_path)
         except Purchase.DoesNotExist:
+            print "processing pdt transaction"
             result = paypal.Verify(tx)
             if result.success(): # valid
                 Purchase.objects.create(purchaser=request.user, tx=tx, credit_total=int(credit_amount),price= price)
-                
+                print "just created a new purchase"
                 return HttpResponseRedirect(success_path)
             else: # didn't validate
                 return render(request, 'error.html', { 'error': "Failed to validate payment" } )
@@ -508,7 +510,6 @@ def paypal_ipn_listener(request,username,credit_amount):
     print "username: " + username
     print "credit amount: " + str(credit_amount)
     method_dict=request.POST
-    print "printing out ipn variables:"
     price=method_dict.get('payment_gross',9)
         
     if request.REQUEST.has_key('txn_id'):
@@ -529,7 +530,7 @@ def paypal_ipn_listener(request,username,credit_amount):
             result = paypal.Verify_IPN(method_dict)
             print "paypal IPN verified"
             if result.success(): # valid
-                purchase = Purchase(purchaser=facebook_user, tx=txn_id, credit_total=int(credit_amount),price=price)   
+                Purchase.objects.create(purchaser=facebook_user, tx=txn_id, credit_total=int(credit_amount),price=price)   
                 print "payment made with credit_amount: " + str(credit_amount) + " price: " + str(price)
             else:
                 print "paypal IPN was a failure"
