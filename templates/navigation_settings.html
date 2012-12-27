@@ -18,10 +18,10 @@
 				href="{% url 'crush.views.help_how_it_works' %}">How it Works</a>
 			<a class="{% navactive request 'settings_profile' %}"
 				href="{% url 'crush.views.settings_profile' %}">Profile</a>
-			<a class="{% navactive request 'settings_credits' %}"
-				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>	
 			<a class="{% navactive request 'settings_notifications' %}"
 				href="{% url 'crush.views.settings_notifications' %}">Notifications</a>
+			<a class="{% navactive request 'settings_credits' %}"
+				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>	
 			<a href="{% url 'crush.views.logout_view' %}">Logout</a>
 
 		<!-- Left Bar Links -->	
@@ -29,20 +29,19 @@
 			
 			<img src="http://graph.facebook.com/{{ user.username }}/picture" height=40 width=40>
 			<b>{{ user.first_name }} {{user.last_name}},</b>
+
+			Settings:
+
+			<a class="{% navactive request 'settings_profile' %}"	
+							href="{% url 'crush.views.settings_profile' %}">Profile</a>
+			<a class="{% navactive request 'settings_notifications' %}"
+				href="{% url 'crush.views.settings_notifications' %}">Notifications</a>
+			<a class="{% navactive request 'settings_credits' %}"
+				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>		
+				
 			<a class="{% navactive request 'crushes_in_progress' %}"
-				href="{% url 'crush.views.crushes_in_progress' %}">Crushes ({{num_crushes_in_progress}})</a>
-
-	
-
-			<a class="{% navactive request 'admirers' %}"
-				href="{% url 'crush.views.admirers' %}">Secret Admirers ({{num_admirers_in_progress}})</a>
-
-			<a class="{% navactive request 'just_friends' %}"
-				href="{% url 'crush.views.just_friends' %}">Just Friends ({{num_platonic_friends}})</a>
-
-			<a class="{% navactive request 'friends_with_admirers' %}"
-				href="{% url 'crush.views.friends_with_admirers' %}">Friends with Admirers</a>
-			<a href="javascript:{}" class="bt-fs-dialog">Add Crush</a>
+				href="{% url 'crush.views.crushes_in_progress' %}"> Back to Crushes</a>
+				
 			
 		</div>	
 		<div class="navbar-side navbar-right"></div>

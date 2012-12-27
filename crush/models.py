@@ -7,8 +7,14 @@ from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
 
 from smtplib import SMTPException
-from django.core.mail import send_mail
+from django.core.mail import send_mail,send_mass_mail
 
+class NotificationSettings(models.Model):
+    bNotify_crush_signed_up = models.BooleanField(default=True)
+    bNotify_crush_signup_reminder = models.BooleanField(default=True)
+    bNotify_crush_started_lineup = models.BooleanField(default=True)
+    bNotify_crush_responded = models.BooleanField(default=True)
+    bNotify_new_admirer = models.BooleanField(default=True)
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
     
@@ -72,12 +78,13 @@ class FacebookUserManager(UserManager):
                 fb_profile = json.load(fb_profile)
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
-            
+            default_notification_settings=NotificationSettings.objects.create()
             try:
                 print "creating username - please fucking work: " + fb_username
-                user = self.create_user(username=fb_id)
+                user = self.create_user(username=fb_id,notification_settings=default_notification_settings)
                 user.access_token=fb_access_token
                 user.is_active=is_this_for_me
+
                 print "completed creation call"
             except IntegrityError:
                 print "unable to create a new user for some odd reason"
@@ -92,6 +99,9 @@ class FacebookUser(AbstractUser):
     
     # ------- START OF REQUIRED FIELDS
     access_token = models.CharField(max_length=50)
+    
+    notification_settings=models.OneToOneField(NotificationSettings)
+    
     # this will be populated by the facebook username first, then the facebook id if username is non-existant
     facebook_username = models.CharField(max_length=60) 
     
@@ -289,8 +299,11 @@ class CrushRelationship(BasicRelationship):
                     # target status is either 0 (not member, not invited) or 2 (member)
                     if self.target_person.is_active == True:
                         self.target_status = 2
+                        # notify the target_person that they have a new admirer
+                        self.notify_target_person(crush_relationship=self)
                     else:
                         self.target_status = 0
+                   
         else:
             # check if the target status is being changed so that a possible notification can be sent out
             original_relationship = CrushRelationship.objects.get(pk=self.pk)
@@ -299,10 +312,27 @@ class CrushRelationship(BasicRelationship):
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
         super(CrushRelationship,self).save(*args,**kwargs)
 
+    def notify_target_person(self,crush_relationship):
+        print "notifying the target person of a new admirer: "
+        target_person=crush_relationship.target_person
+        target_person_email=target_person.email
+        if (not target_person_email):
+                return
+        settings=target_person.notification_settings
+        from_email="info@crushdiscovery.com"
+        try:
+            if (settings.bNotify_new_admirer== True):
+                subject= "You have a new secret admirer!"
+                message="You have a new secret admirer!\nLog in now to find out who it is: " 
+                send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[target_person_email])
+        except SMTPException:
+            print "crap: could not send notification email"
+            
     def notify_source_person(self,crush_relationship,target_status):
         print "notifying the source person of a change in target status: " + str(target_status)
         source_person=crush_relationship.source_person
         source_person_email=source_person.email
+        settings=source_person.notification_settings
         if (not source_person_email):
                 return
         from_email="info@crushdiscovery.com"
@@ -310,17 +340,19 @@ class CrushRelationship(BasicRelationship):
         target_person_name = target_person.first_name + " " + target_person.last_name
         
         try:
-           
-            if target_status==2: # user signed up
+            subject=""
+            if (target_status==2 and settings.bNotify_crush_signed_up==True): # user signed up
                 subject= target_person_name + " signed up!"
                 message=target_person_name + " signed up!"
-            elif target_status==3: # user started line up
+            elif (target_status==3 and settings.bNotify_crush_started_lineup==True): # user started line up
                 subject= target_person_name + " started your secret admirer lineup!"
                 message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
-            else: # user responded
+            elif (target_status > 3 and settings.bNotify_crush_responded==True): # user responded
                 subject= target_person_name + " responded to your crush!"
                 message=target_person_name + " responded to your crush.  Continue to app to find out what they think of you."
-            send_mail(subject,message,from_email,[source_person_email],fail_silently=False)
+            if subject !="":
+                print "attemping to send email to " + str([source_person_email])
+                send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
         except SMTPException:
             print "crap: could not send notification email"
         

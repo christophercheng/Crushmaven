@@ -50,6 +50,10 @@ urlpatterns += patterns('crush',
     
     # -- SETTINGS PAGES --
     
+        url(r'^settings_credits/$', 'views.settings_credits'),
+    
+    url(r'^settings_notifications/$','views.settings_notifications'),
+    
     url(r'^settings_profile/$', 'views.settings_profile'),
     
     url(r'^credit_checker/(?P<feature_id>\d+)/$','views.credit_checker'),
@@ -58,9 +62,6 @@ urlpatterns += patterns('crush',
     
     url(r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','views.paypal_ipn_listener'),
     
-    url(r'^settings_credits/$', 'views.settings_credits'),
-    
-    url(r'^settings_notifications/$','views.settings_notifications'),
     
     # -- HELP --
     url(r'^help_FAQ/$', 'views.help_faq'),

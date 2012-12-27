@@ -10,6 +10,7 @@ import paypal
 from django.views.decorators.http import require_POST
 from datetime import datetime
 from crush.appinviteform import AppInviteForm
+from crush.notification_settings_form import NotificationSettingsForm
 from django.db.models import F
 
 from smtplib import SMTPException
@@ -93,7 +94,6 @@ def crushes_in_progress(request):
                                'crush_type': 0, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crush_progressing_relationships,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
                                'crushes_completed_count':crushes_completed_count
 #                               'crushes_matched_count': crushes_matched_count,
@@ -130,7 +130,6 @@ def crushes_completed(request,reveal_crush_id=None):
                                'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crushes_completed_relationships,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'crushes_in_progress_count': crushes_in_progress_count,
                                'crushes_completed_count' : crushes_completed_relationships.count
 #                               'crushes_matched_count': crushes_matched_count,
@@ -215,7 +214,6 @@ def admirers(request):
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':admirer_progressing_relationships,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'past_admirers_count': past_admirers_count})    
     
 #relationship_id is unique integer id representing the crush relationship, fql_query is the fql query string that the function should use to
@@ -301,7 +299,6 @@ def admirers_past(request):
                               {
                                'admirer_type': 1, # 0 is in progress, 1 completed
                                'admirer_relationships':admirer_completed_relationships,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID,
                                'progressing_admirers_count': progressing_admirers_count
                                })    
 
@@ -348,8 +345,7 @@ def just_friends(request):
     return render(request,'just_friends.html',
                               {
                                'platonic_relationships':platonic_relationships,
-                               'add_as_platonic_friends':True,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID
+                               'add_as_platonic_friends':True
                                })    
 
 # -- Friends with Admirers Page --
@@ -357,8 +353,7 @@ def just_friends(request):
 def friends_with_admirers(request):
 
     return render(request,'friends_with_admirers.html',
-                              {
-                               'facebook_app_id': settings.FACEBOOK_APP_ID}
+                              {}
                   )
 
 # -- Single Lineup (Ajax Content) Page --
@@ -382,8 +377,7 @@ def lineup(request,admirer_id):
     return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
-                               'lineup_set': lineup_set,
-                               'facebook_app_id': settings.FACEBOOK_APP_ID})
+                               'lineup_set': lineup_set})
 
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
@@ -431,8 +425,41 @@ def modal_delete_crush(request):
 def settings_profile(request):
 
     return render(request,'settings_profile.html',
-                              {
-                                'facebook_app_id': settings.FACEBOOK_APP_ID})
+                              {})
+    
+# -- Notification settings --
+@login_required
+def settings_notifications(request):
+
+    print "Settings Notification Form!"
+    # crush_name should be first name last name
+    if request.method == 'POST': # if the form has been submitted...
+        print "METHOD IS POST"
+        data=request.POST
+        if 'cancel' in data:
+            return redirect('/settings_notifications/')
+        else:
+            form = NotificationSettingsForm(request.POST)
+            if form.is_valid():
+                for element in request.POST:
+                    print str(element) + " value: " + str(request.POST[element])
+                request.user.email=data['email']
+                settings=request.user.notification_settings
+                settings.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
+                settings.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
+                settings.bNotify_crush_signup_reminder = data.get('bNotify_crush_signup_reminder',False)
+                settings.bNotify_crush_started_lineup=data.get('bNotify_crush_started_lineup',False)
+                settings.bNotify_crush_responded=data.get('bNotify_crush_responded',False)  
+                settings.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
+                request.user.save(update_fields=['email'])
+                settings.save()                               
+                    
+                return redirect('/settings_notifications/')
+    else:
+        print "instantiating notifications form"
+        form=NotificationSettingsForm(instance=request.user.notification_settings, initial={'email':request.user.email})
+    return render(request,'settings_notifications.html',
+                              { 'form': form})
 
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
@@ -557,17 +584,12 @@ def settings_credits(request):
     paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
     
     return render(request,'settings_credits.html',
-                      {'facebook_app_id': settings.FACEBOOK_APP_ID,
-                       'credit_available':credit_available,
+                      {'credit_available':credit_available,
                        'paypal_url': settings.PAYPAL_URL, 
                        'paypal_email': settings.PAYPAL_EMAIL, 
                        'paypal_success_url': paypal_success_url,
                        'paypal_cancel_url': cancel_url,
                        'paypal_notify_url':paypal_notify_url})
-# -- Notification settings --
-@login_required
-def settings_notifications(request):
-    return HttpResponse(request,"You are at the Notification Settings Page.")
     
 # -- Logout --
 @login_required

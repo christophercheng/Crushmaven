@@ -28,6 +28,7 @@ DATABASES = {
 # for testing I am running a temporary python "dumb" SMTP server that receives emails locally and displays them to the terminal
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = '1025'
+#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend' # temporary
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

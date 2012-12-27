@@ -1,1 +1,12 @@
 {% extends "base.html" %}
+{% block content %}
+<h2>Notification Settings</h2>
+
+<form action="/settings_notifications/" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input name="cancel" type="submit" value="Cancel">
+		<input type="submit" value="Update"/>
+	</form>
+
+{% endblock %}
