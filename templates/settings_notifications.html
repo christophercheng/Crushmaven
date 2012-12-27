@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Notification Settings</h2>
-
+{% if updated %}
+Changes Saved
+{% endif %}
 <form action="/settings_notifications/" method="post">
 		{% csrf_token %}
 		{{ form.as_p }}

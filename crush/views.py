@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from datetime import datetime
 from crush.appinviteform import AppInviteForm
 from crush.notification_settings_form import NotificationSettingsForm
+from crush.profile_settings_form import ProfileSettingsForm
 from django.db.models import F
 
 from smtplib import SMTPException
@@ -438,9 +439,46 @@ def modal_delete_crush(request):
 # -- Profile Settings Page --
 @login_required
 def settings_profile(request):
-
+    print "Settings Profile Form!"
+    # crush_name should be first name last name
+    if request.method == 'POST': # if the form has been submitted...
+        print "METHOD IS POST"
+        data=request.POST
+        if 'cancel' in data:
+            return redirect('/settings_profile/')
+        else:
+            form = ProfileSettingsForm(request.POST)
+            if form.is_valid():
+                me=request.user
+                for element in data:
+                    print "element: " + str(element) + " value: " + str(data[element])
+                updated_fields=[]
+                if 'gender' in data: 
+                    me.gender=data['gender']
+                    updated_fields.append('gender')                    
+                if 'gender_pref' in data: 
+                    me.gender_pref=data['gender_pref']
+                    updated_fields.append('gender_pref')
+                me.is_single=data.get('is_single',False)
+                updated_fields.append('is_single')
+                if 'birthday_year' in data and data['birthday_year']:
+                    me.birthday_year=data['birthday_year']
+                    updated_fields.append('birthday_year')
+                if 'age_pref_min' in data and data['age_pref_min']: 
+                    me.age_pref_min=data['age_pref_min']
+                    updated_fields.append('age_pref_min')
+                if 'age_pref_max' in data and data['age_pref_max']:
+                    me.age_pref_max=data['age_pref_max']
+                    updated_fields.append('age_pref_max')
+                me.save(update_fields=updated_fields)
+                #return redirect('/settings_profile/')
+                return render(request,'settings_profile.html',
+                              { 'form': form,'updated':True})
+    else:
+        print "instantiating profile form"
+        form=ProfileSettingsForm(instance=request.user)
     return render(request,'settings_profile.html',
-                              {})
+                              { 'form': form})
     
 # -- Notification settings --
 @login_required
@@ -468,8 +506,8 @@ def settings_notifications(request):
                 settings.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
                 request.user.save(update_fields=['email'])
                 settings.save()                               
-                    
-                return redirect('/settings_notifications/')
+                return render(request,'settings_notifications.html',
+                              { 'form': form,'updated':True})
     else:
         print "instantiating notifications form"
         form=NotificationSettingsForm(instance=request.user.notification_settings, initial={'email':request.user.email})

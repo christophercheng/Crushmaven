@@ -1,4 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Profile Settings</h2>
+{% if updated %}
+Changes Saved
+{% endif %}
+<form action="/settings_profile/" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input name="cancel" type="submit" value="Cancel">
+		<input type="submit" value="Update"/>
+	</form>
+
 {% endblock %}

@@ -22,13 +22,13 @@ class FacebookUserManager(UserManager):
     def update_user(self,facebook_user,fb_profile):
         facebook_user.first_name = fb_profile['first_name']
         facebook_user.last_name = fb_profile['last_name']
-        if ('birthday_date' in fb_profile):
+        if (facebook_user.birthday_year==None and 'birthday' in fb_profile):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
-                facebook_user.birthday_date= datetime.date(int(date_pieces[2]),int(date_pieces[0]),int(date_pieces[1]))   
-        if ('email' in fb_profile):
+                facebook_user.birthday_year= int(date_pieces[2])   
+        if (facebook_user.email=='' and 'email' in fb_profile):
             facebook_user.email=fb_profile['email']
-        if ('gender' in fb_profile):
+        if (facebook_user.gender=='' and 'gender' in fb_profile):
             if fb_profile['gender']==u'male':
                 facebook_user.gender=u'M'
             elif fb_profile['gender']==u'female':
@@ -38,7 +38,7 @@ class FacebookUserManager(UserManager):
             if ((rel_stat == u'Married') | (rel_stat==u'In a relationship') | (rel_stat==u'Engaged') | (rel_stat==u'In a civil union') | (rel_stat==u'In a domestic partnership')):
                 facebook_user.is_single=False
             else: facebook_user.is_single=True
-        if('interested_in' in fb_profile):
+        if(facebook_user.gender_pref == '' and 'interested_in' in fb_profile):
             if len(fb_profile['interested_in'])==1: 
                 if fb_profile['interested_in'][0]==u'female':
                     facebook_user.gender_pref=u'F'
@@ -71,7 +71,7 @@ class FacebookUserManager(UserManager):
                         relation.updated_flag=True
                         relation.date_target_signed_up = datetime.datetime.now()
                         relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
-                user.save(update_fields=['is_active','access_token','birthday_date','email','gender','is_single','gender_pref','first_name','last_name'])
+                user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
         # No existing user, create one
         except FacebookUser.DoesNotExist:
             if fb_profile == None:
@@ -92,7 +92,7 @@ class FacebookUserManager(UserManager):
                 return #this would be a bad database error (something out-a-sync!)
             print "calling the update_user function"
             self.update_user(user,fb_profile)
-            user.save(update_fields=['is_active','access_token','birthday_date','email','gender','is_single','gender_pref','first_name','last_name'])
+            user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
         return user
 
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
@@ -110,23 +110,27 @@ class FacebookUser(AbstractUser):
                       (u'M', u'Male'),
                       (u'F', u'Female'),
                       )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     
     GENDER_PREF_CHOICES = (
                            (u'M',u'Male'),
                            (u'F',u'Female'),
                            (u'B',u'Both')
                            )
-    gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES,null=True)
+    gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
     # --------  END OF REQUIRED FIELDS
     
     # ----------  START OF OPTIONAL FIELDS
-    birthday_date = models.DateField(null=True)
-    age = models.IntegerField(null=True)
-    age_pref_min=models.IntegerField(null=True)
-    age_pref_max=models.IntegerField(null=True)
+  #  year = 1920
+  #  YEARS = []
+  #  while year < 2007:
+  #      YEARS.append(year)
+  #      year +=1
+    birthday_year = models.IntegerField(null=True,blank=True,max_length=4,choices=[(y,y) for y in range(1920,datetime.datetime.now().year-6)])
+    age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(7,80)])
+    age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(7,100)])
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
     site_credits = models.IntegerField(default=1000) 
     
