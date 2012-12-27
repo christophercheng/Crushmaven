@@ -387,6 +387,7 @@ def lineup(request,admirer_id):
 
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
+    print "adding member to a list"
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)

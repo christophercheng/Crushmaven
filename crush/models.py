@@ -6,6 +6,9 @@ from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
 
+from smtplib import SMTPException
+from django.core.mail import send_mail
+
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
     
@@ -54,7 +57,6 @@ class FacebookUserManager(UserManager):
                     user.is_active=True# then activate their account
                     # update their profile with facebook data; they're not always obtained indirectly
                     self.update_user(user,fb_profile)
-                    # MAY NEED TO DELETE the reciprocal check cause it should be in the overridden save function
                     # look for any admirers at this point so their relationships can get updated
                     admirer_relationships = user.crush_relationship_set_from_target.all()
                     for relation in admirer_relationships:
@@ -160,7 +162,7 @@ class BasicRelationship(models.Model):
         print "attempting to reset the update flag"
         self.updated_flag = False
         # save the change to the database, but don't call this level's save function cause it does too much.
-        super(BasicRelationship, self).save(updated_flags='updated_flag')
+        super(BasicRelationship, self).save(update_fields=['updated_flag'])
         return "" # if I don't return "" then for some reason None is actually returned
     
     # how are the admirer and crushee connected
@@ -206,7 +208,7 @@ class PlatonicRelationship(BasicRelationship):
 # consider putting in a delete function later
           
     def __unicode__(self):
-        return 'Platonic relationship with:' + str(self.target_person.facebook_username)
+        return 'Platonic relationship with:' + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
     
 # need to override the save method 
     # check to see if the platonic friend has a crush on me, if so, then let them know of my evaluation
@@ -254,7 +256,7 @@ class CrushRelationship(BasicRelationship):
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save(self,*args,**kwargs):
-        
+        print "calling save on crush relationship"
         if (not self.pk):
             # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
             # get total previous admirers (past and present) and add 1
@@ -289,8 +291,40 @@ class CrushRelationship(BasicRelationship):
                         self.target_status = 2
                     else:
                         self.target_status = 0
+        else:
+            # check if the target status is being changed so that a possible notification can be sent out
+            original_relationship = CrushRelationship.objects.get(pk=self.pk)
+            if 'update_fields' in kwargs and 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
+                print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.first_name + " " + self.source_person.last_name + " and target: " + self.target_person.first_name + " " + self.target_person.last_name
+                self.notify_source_person(crush_relationship=self,target_status=self.target_status)
         super(CrushRelationship,self).save(*args,**kwargs)
+
+    def notify_source_person(self,crush_relationship,target_status):
+        print "notifying the source person of a change in target status: " + str(target_status)
+        source_person=crush_relationship.source_person
+        source_person_email=source_person.email
+        if (not source_person_email):
+                return
+        from_email="info@crushdiscovery.com"
+        target_person=crush_relationship.target_person
+        target_person_name = target_person.first_name + " " + target_person.last_name
         
+        try:
+           
+            if target_status==2: # user signed up
+                subject= target_person_name + " signed up!"
+                message=target_person_name + " signed up!"
+            elif target_status==3: # user started line up
+                subject= target_person_name + " started your secret admirer lineup!"
+                message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
+            else: # user responded
+                subject= target_person_name + " responded to your crush!"
+                message=target_person_name + " responded to your crush.  Continue to app to find out what they think of you."
+            send_mail(subject,message,from_email,[source_person_email],fail_silently=False)
+        except SMTPException:
+            print "crap: could not send notification email"
+        
+
     # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
         print "delete relationships fired"
@@ -301,19 +335,19 @@ class CrushRelationship(BasicRelationship):
             reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
             if reciprocal_relationship.target_status > 2:
                 # once a target has started a crush line-up, the crush can no longer be deleted
-                if not ( (self.source_person.facebook_username == u'chris.h.cheng') | (self.source_person.facebook_username == u'chris.schmack')):
+                if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
                     return # change this to: if user is not a staff (admin) member then return
             reciprocal_relationship.target_status=2
             reciprocal_relationship.save(update_fields=['target_status'])
         except CrushRelationship.DoesNotExist:
-            print "ugh oh - can't find the crush relationship to delete!"
+            print "cannot find a reciprocal crush relationship to delete!"
             pass
         print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
         super(CrushRelationship, self).delete(*args,**kwargs)
         return
             
     def __unicode__(self):
-        return 'CrushRelationship with:' + str(self.target_person.facebook_username)
+        return 'CrushRelationship with:' + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
 
 class EmailRecipient(models.Model):
     crush_relationship = models.ForeignKey(CrushRelationship)
