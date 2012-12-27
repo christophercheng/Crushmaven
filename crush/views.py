@@ -196,24 +196,32 @@ def app_invite_form(request, crush_username):
 def admirers(request):
 
     me = request.user 
-   
+
+    # get list of responded (so we can filter them out the admirers )
+    progressing_crush_list = me.crush_targets.filter(crush_relationship_set_from_target__target_status__gt = 3,crush_relationship_set_from_target__is_results_paid=False)   
+    
+    # build a list of incomplete admirer relationship by filtering them in the following order:
+    #     filter through only those admirer relationships who have not finished their lineup (progressing relationships)
+    #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
+    #        if they are also a progressing crush, but a lineup has already been created, then don't filter them out
     admirer_relationships = me.crush_relationship_set_from_target
-    admirer_progressing_relationships = admirer_relationships.filter(date_lineup_finished=None).order_by('target_status','date_added')
+    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,is_lineup_initialized=False).order_by('target_status','date_added') # valid progressing relationships 
+
     past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     
     # initialize the lineups of any new admirer relationships
         # filter out the new relationships whose lineup member 1 is empty
-    if admirer_progressing_relationships:
-        uninitialized_relationships = admirer_progressing_relationships.exclude(lineupmember__position__gt = 0) #get all relationships that don't have a lineup member at position 0 (non inititialized)
-        if (uninitialized_relationships):
-            print "found an uninitialized relationship"
-            for relationship in uninitialized_relationships:
-                initialize_lineup(request,relationship)
+    
+    uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
+    if (uninitialized_relationships):
+        print "found an uninitialized relationship"
+        for relationship in uninitialized_relationships:
+            initialize_lineup(request,relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
-                               'admirer_relationships':admirer_progressing_relationships,
+                               'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count})    
     
 #relationship_id is unique integer id representing the crush relationship, fql_query is the fql query string that the function should use to
@@ -279,7 +287,8 @@ def initialize_lineup(request, relationship):
         
     relationship.number_unrated_lineup_members = relationship.lineupmember_set.count()
     print "number lineup members: " + str(relationship.lineupmember_set.count())
-    relationship.save(update_fields=['number_unrated_lineup_members'])
+    relationship.is_lineup_initialized = True
+    relationship.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
 
 #    print "Number of results: " + str((data['data']).__len__())
     
@@ -359,21 +368,26 @@ def friends_with_admirers(request):
 # -- Single Lineup (Ajax Content) Page --
 @login_required
 def lineup(request,admirer_id):
+    me = request.user
     try:
-        admirer_rel = request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
+        admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
     # detract credit if lineup not already paid for
     if (not admirer_rel.is_lineup_paid):
-        if (request.user.site_credits >= settings.FEATURES['1']['COST']):
-            request.user.site_credits -= int(settings.FEATURES['1']['COST'])
-            request.user.save(update_fields=['site_credits']) 
+        if (me.site_credits >= settings.FEATURES['1']['COST']):
+            me.site_credits -= int(settings.FEATURES['1']['COST'])
+            me.save(update_fields=['site_credits']) 
             admirer_rel.is_lineup_paid=True
             admirer_rel.target_status=3
-            admirer_rel.save(update_fields=['is_lineup_paid','target_status'])
+            admirer_rel.updated_flag=True
+            admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
         else:
             return HttpResponse("Error: not enough credits to see lineup")
     lineup_set = admirer_rel.lineupmember_set.all()
+    # need to cleanse the lineup members each time the lineup is run 
+    #    reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
+        
     return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
@@ -404,7 +418,8 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
             member.decision=False
         member.save(update_fields=['decision'])
-        admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
+        #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
+        admirer_rel.number_unrated_lineup_members -= 1
         if admirer_rel.number_unrated_lineup_members == 0:
                 admirer_rel.date_lineup_finished= datetime.now()
         admirer_rel.save(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])

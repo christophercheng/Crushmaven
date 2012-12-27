@@ -68,8 +68,9 @@ class FacebookUserManager(UserManager):
                     for relation in admirer_relationships:
                         # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
                         relation.target_status = 2
+                        relation.updated_flag=True
                         relation.date_target_signed_up = datetime.datetime.now()
-                        relation.save(update_fields=['target_status','date_target_signed_up'])
+                        relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
                 user.save(update_fields=['is_active','access_token','birthday_date','email','gender','is_single','gender_pref','first_name','last_name'])
         # No existing user, create one
         except FacebookUser.DoesNotExist:
@@ -248,6 +249,7 @@ class CrushRelationship(BasicRelationship):
     
     date_invite_last_sent=models.DateTimeField(null=True,default=None) 
     
+    is_lineup_initialized=models.BooleanField(default=False)
     # actual lineup members have a foreign key to a Crush Lineup
     is_lineup_paid=models.BooleanField(default=False)
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
@@ -285,6 +287,7 @@ class CrushRelationship(BasicRelationship):
                 # massage the date_target_responded for the crush recipient since we want to mask the initiator
                 self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
+                
             except CrushRelationship.DoesNotExist:
                 # did not find an existing reciprocal crush relationship"
                 try:
