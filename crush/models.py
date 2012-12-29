@@ -156,13 +156,41 @@ class FacebookUser(AbstractUser):
     def get_facebook_picture(self):
         return u'http://graph.facebook.com/%s/picture?type=large' \
                                                             % self.username
+                                                            
+    #=========  Crush Filters =========
     
+    def get_all_incomplete_crush_relations(self):
+        return self.crush_relationship_set_from_source.filter(is_results_paid=False)
+    
+    def get_nonresponded_incomplete_crush_relations(self):
+        return self.crush_relationship_set_from_source.filter(target_status__lt = 4)
+    
+    def get_responded_incomplete_crush_relations(self):
+        return self.crush_relationship_set_from_source.filter(target_status__gt = 3, is_results_paid=False)
+    
+    def get_completed_crush_relations(self):
+        return self.crush_relationship_set_from_source.filter(is_results_paid=True)
+    
+    #=========  Admirer Filters =========
+        
+    def get_all_incomplete_admirer_relations(self):
+        return self.crush_relationship_set_from_target.filter(date_lineup_finished = None)
+    
+    def get_all_new_incomplete_admirer_relations(self):
+        return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
+        
+    def get_all_completed_admirer_relations(self):
+        return self.crush_relationship_set_from_target.exclude(date_lineup_finished = None)
+    
+    #=========  Debug Self Reference Function =========
     def __unicode__(self):
         return '(id:' + str(self.username) +') ' + self.facebook_username
     
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
+    class Meta:
+        abstract = True 
     # to find the relationships where a given user is the one being admired:
         # request.user.target_person_relatioinship_set
 
@@ -187,9 +215,13 @@ class BasicRelationship(models.Model):
                                (u'STRANGER', 'Stranger'),
                                )
     friendship_type=models.CharField(max_length=20, default='FRIEND', choices=FRIENDSHIP_TYPE_CHOICES)
-    
-    class Meta:
-        abstract = True 
+        
+    def get_reciprocal_nonresponded_incomplete_crush_relation(self):
+        try:
+            return self.target_person.get_incomplete_crush_relations().get(target_person=self.source_person)
+        except CrushRelationship.DoesNotExist:
+            return False
+        
     def __unicode__(self):
         return 'Basic relationship for:' + str(self.target_person.facebook_username)
 

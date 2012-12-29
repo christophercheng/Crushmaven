@@ -55,9 +55,9 @@ $(document).ready(function()
 			{% endfor %}
 			<BR>
 			
-			
 			{% if admirer_rel.is_lineup_paid %}
 				{% if admirer_rel.date_lineup_finished %}
+					Line-up completed {{ admirer_rel.date_lineup_finished }}
 					<a href="/lineup/{{admirer_rel.admirer_display_id}}/">View Completed Lineup</a>
 				{% else %}
 					<a href="/lineup/{{admirer_rel.admirer_display_id}}/">Finish Lineup</a>
