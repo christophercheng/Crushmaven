@@ -19,7 +19,7 @@
 				 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		
 		<!-- Add Facebook Friend Selector JS -->
-		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
     	
 		<title>CrushVibes | Anonymous discovery and connect with crushes and secret admirers</title>
 
@@ -47,8 +47,12 @@
 
 <script type="text/javascript">
   jQuery(document).ready(function($) {
-  $(".bt-fs-dialog").fSelector({
-      excludeIds: [],
+  $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
+	  accessToken: "{{request.user.access_token}}",
+	  facebookID: "{{request.user.username}}",
+	  malePref: {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+      max:10,
+	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
       closeOverlayClick: true,
       overlayOpacity: "0.3",
       overlayColor: '#000',
@@ -63,7 +67,7 @@
         summaryBoxResult: "{1} best results for {0}",
         summaryBoxNoResult: "No results for {0}",
         searchText: "Enter a friend's name",
-        fbConnectError: "You must connect to Facebook to see this.",
+        fbConnectError: "Sorry, there is a problem connecting to Facebook's server. Please try again later.",
         selectedCountResult: "You have choosen {0} people.",
         selectedLimitResult: "Limit is {0} people."
       },

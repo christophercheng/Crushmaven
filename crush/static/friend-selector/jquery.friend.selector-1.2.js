@@ -13,7 +13,9 @@
   running = false, isShowSelectedActive = false,
   windowWidth = 0, windowHeight = 0, selected_friend_count = 1,
   search_text_base = '',
-
+  
+  num_connect_tries = 0, // for facebook connect to try mutliple times if errors
+  
   content, wrap, overlay,
   fbDocUri = 'http://developers.facebook.com/docs/reference/javascript/',
 
@@ -147,7 +149,8 @@
 
 
     content.html(container);
-    _getFacebookFriend();
+    $('#fs-user-list').append('<div id="fs-loading"></div>');
+    _getFacebookFriends();
     _resize(true);
     _initEvent();
     _selectAll();
@@ -157,77 +160,83 @@
     });
 
   },
+  
+  _getFacebookFriends  = function(){
+	  
+	  	// process the ids of excluded friends into a syntax that FQL understands (comma delimited list)
+	    
+	    var fql_query = "";
 
-  _getFacebookFriend = function() {
-
-    $('#fs-user-list').append('<div id="fs-loading"></div>');
-
-    FB.api("/me/friends", function(response){
-
-      if ( response.error ){
-        alert(fsOptions.lang.fbConnectError);
-        _close();
-        return false;
-      }
-
-
+	    if (fsOptions.excludeIds !==""){
+	    	alert (fsOptions.excludeIds);
+	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + " AND NOT (uid2 IN (" + fsOptions.excludeIds + ")))";	
+	    }
+	    else {
+	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + ")";
+	    }
+	    	
+	    if (fsOptions.malePref !== null){
+		    var genderPref = "Female";
+	    	if (fsOptions.malePref===true)
+	    		genderPref="Male";
+	    	fql_query += " AND sex='" + genderPref + "'";
+	    }
+	    
+	    // add order info
+	    fql_query += " ORDER BY name";
+	   
+	    
+	  alert("fql_query_string: " + fql_query);
+	  
+	  FB.api('fql',{q:fql_query}, function(response) {
+	  		if ( response.error ) {
+	  			alert ("error: " + response.error); // temporary
+	  			num_connect_tries+=1;
+	  			if (num_connect_tries < 1) 	
+	  				setTimeout(function () {
+	  					_getFacebookFriends();
+	  				}, 400); // if error connecting to facebook, wait .4 milliseconds before trying again
+	  			else // too many tries - give up
+	  			{
+	  		        alert(fsOptions.lang.fbConnectError);
+	  		        _close();
+	  		        return false;
+	  			}
+	  		}
+	  		else {
+	  			_buildFacebookFriendGrid(response);  	
+	  	    	}
+	  }); // close fb.api call 
+  },
+    
+  _buildFacebookFriendGrid = function(response) {
+	  console.log(response);//remove this later
+	  
       var facebook_friends = response.data;
-      var max_friend_control = fsOptions.maxFriendsCount !== null && fsOptions.maxFriendsCount > 0;
-      if ( fsOptions.showRandom === true || max_friend_control === true ){
-        facebook_friends = _shuffleData(response.data);
-      }
-
-      for (var i = 0, k = 0; i < facebook_friends.length; i++) {
-        if ( max_friend_control && fsOptions.maxFriendsCount <= k ){
-          break;
-        }
-
-        if ($.inArray(parseInt(facebook_friends[i].id, 10), fsOptions.getStoredFriends) >= 0) {
-          _setFacebookFriends(i, facebook_friends, true);
-          k++;
-        }
-      }
-
+      var item,person,link;
+      
       for (var j = 0; j < facebook_friends.length; j++) {
 
-        if ( max_friend_control && fsOptions.maxFriendsCount <=  j + fsOptions.getStoredFriends.length){
-          break;
-        }
-
-        if ($.inArray(parseInt(facebook_friends[j].id, 10), fsOptions.excludeIds) >= 0) {
+        if ($.inArray(parseInt(facebook_friends[j], 10), fsOptions.excludeIds) >= 0) 
           continue;
-        }
-        
-        if ($.inArray(parseInt(facebook_friends[j].id, 10), fsOptions.getStoredFriends) <= -1) {
-          _setFacebookFriends(j, facebook_friends, false);
-        }
+
+          item = $('<li/>');
+          person = facebook_friends[j]
+          link =  '<a class="fs-anchor" href="javascript://">' +
+                        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
+                        '<input class="fs-friends" type="checkbox" name="friend[]" value="fs-'+person.uid+'" />' +
+                        '<img class="fs-thumb" src="https://graph.facebook.com/'+person.uid+'/picture" />' +
+                        '<span class="fs-name">' + _charLimit(person.name, 15) + '</span>' +
+                      '</a>';
+
+          item.append(link);
+
+          $('#fs-user-list ul').append(item);
 
       }
 
       $('#fs-loading').remove();
 
-    });
-
-  },
-
-  _setFacebookFriends = function (k, v, predefined) {
-
-    var item = $('<li/>');
-
-    var link =  '<a class="fs-anchor" href="javascript://">' +
-                  '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+v[k].name.toLowerCase().replace(/\s/gi, "+")+'" />' +
-                  '<input class="fs-friends" type="checkbox" name="friend[]" value="fs-'+v[k].id+'" />' +
-                  '<img class="fs-thumb" src="https://graph.facebook.com/'+v[k].id+'/picture" />' +
-                  '<span class="fs-name">' + _charLimit(v[k].name, 15) + '</span>' +
-                '</a>';
-
-    item.append(link);
-
-    $('#fs-user-list ul').append(item);
-
-    if (predefined) {
-      _click(item);
-    }
 
   },
 
@@ -539,8 +548,11 @@
   },
   
   defaults = {
+	accessToken: null, // used to get facebook graph api data
+	facebookID:null,
+    malePref: false, // pass in values: true (male), false (female), null (both)
     max: null,
-    excludeIds: [],
+    excludeIds: "",
     getStoredFriends: [],
     closeOverlayClick: true,
     enableEscapeButton: true,
@@ -548,7 +560,7 @@
     overlayColor: '#000',
     closeOnSubmit: false,
     showSelectedCount: true,
-    showButtonSelectAll: true,
+    showButtonSelectAll: false,
     color: "default",
     lang: {
       title: "Friend Selector",
@@ -561,7 +573,7 @@
       summaryBoxResult: "{1} best results for {0}",
       summaryBoxNoResult: "No results for {0}",
       searchText: "Enter a friend's name",
-      fbConnectError: "You must connect to Facebook to see this.",
+      fbConnectError: "Sorry, there is a problem connecting to Facebook.  Please try again later.",
       selectedCountResult: "You have choosen {0} people.",
       selectedLimitResult: "Limit is {0} people.",
       facebookInviteMessage: "Invite message"
