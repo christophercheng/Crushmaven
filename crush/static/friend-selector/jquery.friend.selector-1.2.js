@@ -166,7 +166,7 @@
 	  	// process the ids of excluded friends into a syntax that FQL understands (comma delimited list)
 	    
 	    var fql_query = "";
-
+	    // initialize fql query and add any exclude ids if provided as an argument
 	    if (fsOptions.excludeIds !==""){
 	    	alert (fsOptions.excludeIds);
 	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + " AND NOT (uid2 IN (" + fsOptions.excludeIds + ")))";	
@@ -174,25 +174,23 @@
 	    else {
 	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + ")";
 	    }
-	    	
+	    // add gender preference
 	    if (fsOptions.malePref !== null){
 		    var genderPref = "Female";
 	    	if (fsOptions.malePref===true)
 	    		genderPref="Male";
 	    	fql_query += " AND sex='" + genderPref + "'";
-	    }
-	    
+	    }	    
 	    // add order info
 	    fql_query += " ORDER BY name";
-	   
-	    
-	  alert("fql_query_string: " + fql_query);
+	 	    
+	  //alert("fql_query_string: " + fql_query);
 	  
 	  FB.api('fql',{q:fql_query}, function(response) {
 	  		if ( response.error ) {
 	  			alert ("error: " + response.error); // temporary
 	  			num_connect_tries+=1;
-	  			if (num_connect_tries < 1) 	
+	  			if (num_connect_tries < 5) 	
 	  				setTimeout(function () {
 	  					_getFacebookFriends();
 	  				}, 400); // if error connecting to facebook, wait .4 milliseconds before trying again
