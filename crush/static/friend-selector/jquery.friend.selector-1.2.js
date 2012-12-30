@@ -168,7 +168,7 @@
 	    var fql_query = "";
 	    // initialize fql query and add any exclude ids if provided as an argument
 	    if (fsOptions.excludeIds !==""){
-	    	alert (fsOptions.excludeIds);
+	    	//alert (fsOptions.excludeIds);
 	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + " AND NOT (uid2 IN (" + fsOptions.excludeIds + ")))";	
 	    }
 	    else {

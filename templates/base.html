@@ -122,7 +122,13 @@
 		document.body.removeChild(form);
   };
 </script>
-    
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+  $(".inactive_crushed_friends").load('/friends_with_admirers_section');
+
+});
+
+</script>
 {% if request.path == '/settings_profile/' or request.path == '/settings_notifications/' or request.path == '/settings_credits/' %}
 	{% include "navigation_settings.html" %}
 {% else %}
