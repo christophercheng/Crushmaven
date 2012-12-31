@@ -40,6 +40,8 @@ urlpatterns += patterns('crush',
 
     url(r'^friends_with_admirers/$', 'views.friends_with_admirers'),
     
+    url(r'^friends_with_admirers_section/$', 'views.friends_with_admirers_section'), # right bar called via ajax    
+    
     url(r'^lineup/(?P<admirer_id>\d+)/$','views.lineup'), 
     
     # -- MODAL DIALOG PROCESSING & CONTENT --

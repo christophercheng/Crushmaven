@@ -145,6 +145,67 @@ class FacebookUser(AbstractUser):
     # ----------- END  OF OPTIONAL FIELDS
     objects = FacebookUserManager()
     
+    # for friends with admirers processing
+    
+    # many-to-many relationship with other friends with admirers
+    friends_with_admirers = models.ManyToManyField('self',symmetrical=False,related_name='friends_with_admirers_set')
+    def add_inactive_crushed_friend_by_id(self, friend_id):
+        print "adding inactive crushed friend: " + friend_id
+        # get user with friend id
+        try:
+            user = FacebookUser.objects.get(username=friend_id)
+            self.friends_with_admirers.add(user)
+        except FacebookUser.DoesNotExist:
+            return False
+        return
+
+    processed_activated_friends_admirers = models.DateField(null=True,default=None)
+    #call this asynchronously after a user first logs in.
+    def find_inactive_friends_of_activated_user(self):
+    # this is done whenever an active user is first created
+
+        # get all inactive users into a queryset result but filter out users who are also crushes of user
+        all_inactive_crush_relationships = CrushRelationship.objects.filter(target_status__lt=2).exclude(source_person=self)
+        print "list of all inactive crush relationships: " + str(all_inactive_crush_relationships)
+        # build list of all inactive users
+        all_inactive_user_list=[]
+        for crush_rel in all_inactive_crush_relationships:
+            all_inactive_user_list.append(int(crush_rel.target_person.username))
+        print "list of all site inactive users: " + str(all_inactive_user_list)        
+
+        fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me())"
+   
+        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token))
+        print "attempting to load the json results"
+        fql_query_results = json.load(fql_query_results)['data']
+    
+        # loop through all friends.  if any friend is in inactive user results, then add them to the friends_with_admirers list.
+        for friend in fql_query_results:
+            if friend['uid'] in all_inactive_user_list:
+                self.add_inactive_crushed_friend_by_id(str(friend['uid']))
+        # mark the function complete flag so that future users/pages won't reprocess the user
+        self.processed_activated_friends_admirers = datetime.date.today()
+        self.save(update_fields=['processed_activated_friends_admirers'])
+        return
+    
+    #processed_inactivated_friends_admirers = models.BooleanField(default=False)
+    #def find_active_friends_of_inactivated_user(self):
+                
+        # initialize a batch json argument for use in graph api batch request
+            # batch format: https://graph.facebook.com/?access_token=31235234123&batch=[{"METHOD":"GET","relative_url","me/friends?limit=50"},{-second request}]
+        #fb_batch_url="https://graph.facebook.com/?access_token=" + self.access_token + "&batch=["
+        #request = "{'METHOD':'GET','RELATIVE_URL':me/friends?uid=";
+        # loop through all inactive users.  within each loop, build up the batch request json
+        #index=0;
+        #for inactive_user in inactive_users:
+            
+        # break up batch into multiple batch requests if there are more than 50 requests per call
+        
+        # go through the results and for each result item, add user to the friends_with_admirers list.
+       
+        #self.processed_inactivated_friends_admirers=True
+        #return
+    
     def get_facebook_profile(self):
         fb_profile = urllib.urlopen(
                         'https://graph.facebook.com/me?access_token=%s'

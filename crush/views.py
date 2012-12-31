@@ -8,7 +8,7 @@ import urllib, json
 import random 
 import paypal
 from django.views.decorators.http import require_POST
-from datetime import datetime
+import datetime
 from crush.appinviteform import AppInviteForm
 from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
@@ -365,6 +365,24 @@ def friends_with_admirers(request):
     return render(request,'friends_with_admirers.html',
                               {}
                   )
+
+# -- Friends with Admirers Section (Ajax Content) --
+@login_required
+def friends_with_admirers_section(request):
+    print " called friends-with-admirers-section"
+    ajax_response=""
+    me=request.user
+
+    if  (me.processed_activated_friends_admirers != datetime.date.today()):
+        me.find_inactive_friends_of_activated_user()
+    for counter,inactive_crush_friend in enumerate(me.friends_with_admirers.all()):
+        print "creating html for: " + inactive_crush_friend.username
+        ajax_response+="<div id='friend_admirer" + str(counter) + "'>"
+        ajax_response +="<img src='" + inactive_crush_friend.get_facebook_picture() + "' width=20 height=20>" + inactive_crush_friend.first_name + "&nbsp;&nbsp;" + inactive_crush_friend.last_name
+        ajax_response+="</div>"
+    if ajax_response=="":
+        ajax_response="You have no friends with admirers."
+    return HttpResponse(ajax_response)
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
