@@ -7,7 +7,7 @@ from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
 
 from smtplib import SMTPException
-from django.core.mail import send_mail,send_mass_mail
+from django.core.mail import send_mail
 
 class NotificationSettings(models.Model):
     bNotify_crush_signed_up = models.BooleanField(default=True)
@@ -123,11 +123,7 @@ class FacebookUser(AbstractUser):
     # --------  END OF REQUIRED FIELDS
     
     # ----------  START OF OPTIONAL FIELDS
-  #  year = 1920
-  #  YEARS = []
-  #  while year < 2007:
-  #      YEARS.append(year)
-  #      year +=1
+
     birthday_year = models.IntegerField(null=True,blank=True,max_length=4,choices=[(y,y) for y in range(1920,datetime.datetime.now().year-6)])
     age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(7,80)])
     age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(7,100)])
@@ -271,11 +267,11 @@ class BasicRelationship(models.Model):
     
     # how are the admirer and crushee connected
     FRIENDSHIP_TYPE_CHOICES = (
-                               (u'FRIEND','Friend'),
-                               (u'FRIEND_OF_FRIEND','Friend of Friend'),
-                               (u'STRANGER', 'Stranger'),
+                               (0,'Friend'),
+                               (1,'Friend of Friend'),
+                               (2,'Stranger'),
                                )
-    friendship_type=models.CharField(max_length=20, default='FRIEND', choices=FRIENDSHIP_TYPE_CHOICES)
+    friendship_type=models.IntegerField(max_length=1, default=0, choices=FRIENDSHIP_TYPE_CHOICES)
         
     def get_reciprocal_nonresponded_incomplete_crush_relation(self):
         try:

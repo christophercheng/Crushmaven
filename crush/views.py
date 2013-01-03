@@ -10,10 +10,9 @@ import paypal
 from django.views.decorators.http import require_POST
 import datetime
 from crush.appinviteform import AppInviteForm
+from crush.select_crush_by_id_form import SelectCrushIDForm
 from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
-from django.db.models import F
-
 from smtplib import SMTPException
 
 #from django.contrib.auth.models import Use
@@ -170,14 +169,14 @@ def app_invite_form(request, crush_username):
                 send_mass_mail(message_list,fail_silently=False)
                 try: 
                     crush_relationship = request.user.crush_relationship_set_from_source.get(target_person=crush_user)
-                    crush_relationship.date_invite_last_sent=datetime.now()
+                    crush_relationship.date_invite_last_sent=datetime.datetime.now()
                     crush_relationship.target_status = 1
                     crush_relationship.save(update_fields=['date_invite_last_sent','target_status'])
                     for email in crush_email_list:
-                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.now(),is_email_crush=True)
+                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.datetime.now(),is_email_crush=True)
                         
                     for email in friend_email_list:
-                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.now(),is_email_crush=False)                    
+                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.datetime.now(),is_email_crush=False)                    
                 except CrushRelationship.DoesNotExist:
                     pass #the database won't store app invite history, but that's ok as long as the actual emails were successfully sent
             except SMTPException:
@@ -215,7 +214,7 @@ def admirers(request):
     
     uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
-        print "found an uninitialized relationship"
+        print "hey, found an uninitialized relationship"
         for relationship in uninitialized_relationships:
             initialize_lineup(request,relationship)
 
@@ -229,6 +228,7 @@ def admirers(request):
 def initialize_lineup(request, relationship):
     print "initializing relationship for admirer: " + relationship.source_person.facebook_username
     me = request.user
+    admirer_id = relationship.source_person.username
     # get sex of admirer
     admirer_gender= 'Male' if relationship.source_person.gender == 'M'  else 'Female'
     # get relationship status of admirer
@@ -243,14 +243,14 @@ def initialize_lineup(request, relationship):
     #fql_query = "SELECT username, relationship_status, friend_count FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())))) AND sex = '" + admirer_gender + "'  AND NOT (relationship_status IN ('Married', 'Engaged', 'In a relationship', 'In a domestic partnership', 'In a civil union'))  ORDER BY friend_count DESC"
     # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 30 results
     exclude_facebook_ids = "'" + str(relationship.source_person.username) + "'"
-    fql_query = "SELECT uid, relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-   
+    fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+
     print "fql query to send out: " + fql_query
     
     fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,me.access_token))
     #print fql_query_results.read()
     try:
-        print "attempting to load the json results"
+        print "json results: " + str(fql_query_results)
         data = json.load(fql_query_results)['data']
        
         if (len(data) == 0):
@@ -259,7 +259,7 @@ def initialize_lineup(request, relationship):
             else:
                 data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
         print "data: " + str(data)
-    except ValueError:
+    except KeyError, ValueError:
         print "ValueError on Fql Query Fetch read!"
         return False
     # determine where the admirer should randomly fall into the lineup
@@ -295,6 +295,68 @@ def initialize_lineup(request, relationship):
     
     return True
 
+# -- Single Lineup (Ajax Content) Page --
+@login_required
+def lineup(request,admirer_id):
+    me = request.user
+    try:
+        admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
+    # detract credit if lineup not already paid for
+    if (not admirer_rel.is_lineup_paid):
+        if (me.site_credits >= settings.FEATURES['1']['COST']):
+            me.site_credits -= int(settings.FEATURES['1']['COST'])
+            me.save(update_fields=['site_credits']) 
+            admirer_rel.is_lineup_paid=True
+            admirer_rel.target_status=3
+            admirer_rel.updated_flag=True
+            admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
+        else:
+            return HttpResponse("Error: not enough credits to see lineup")
+    lineup_set = admirer_rel.lineupmember_set.all()
+    # need to cleanse the lineup members each time the lineup is run 
+    #    reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
+        
+    return render(request,'lineup.html',
+                              {
+                               'admirer_rel':admirer_rel,
+                               'lineup_set': lineup_set})
+
+@login_required
+def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
+    print "adding member to a list"
+    # called from lineup.html to add a member to either the crush list or the platonic friend list
+    try:
+        target_user=FacebookUser.objects.get(username=facebook_id)
+        try:
+            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_display_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponse("Server Error: Could not add given lineup user")
+        try:
+            member=target_user.lineupmember_set.get(LineupUser=target_user,LineupRelationship=admirer_rel)
+
+        except LineupMember.DoesNotExist:
+            print "could not find lineup member"
+            return HttpResponse("Server Error: Could not add given lineup user")
+        if add_type=='crush':
+            new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
+            member.decision=True
+        else:
+            new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
+            member.decision=False
+        member.save(update_fields=['decision'])
+        #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
+        admirer_rel.number_unrated_lineup_members -= 1
+        if admirer_rel.number_unrated_lineup_members == 0:
+                admirer_rel.date_lineup_finished= datetime.datetime.now()
+        admirer_rel.save(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
+    except FacebookUser.DoesNotExist:
+        print "failed to add lineup member: " + facebook_id
+        return HttpResponse("Server Error: Could not add given lineup user")  
+    return HttpResponse(ajax_response)
 
 # -- Past Admirers Page --
 @login_required
@@ -384,70 +446,29 @@ def friends_with_admirers_section(request):
         ajax_response="You have no friends with admirers."
     return HttpResponse(ajax_response)
 
-# -- Single Lineup (Ajax Content) Page --
+# -- Temporary content for select crush by id --
 @login_required
-def lineup(request,admirer_id):
-    me = request.user
-    try:
-        admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
-    except CrushRelationship.DoesNotExist:
-        return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
-    # detract credit if lineup not already paid for
-    if (not admirer_rel.is_lineup_paid):
-        if (me.site_credits >= settings.FEATURES['1']['COST']):
-            me.site_credits -= int(settings.FEATURES['1']['COST'])
-            me.save(update_fields=['site_credits']) 
-            admirer_rel.is_lineup_paid=True
-            admirer_rel.target_status=3
-            admirer_rel.updated_flag=True
-            admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
-        else:
-            return HttpResponse("Error: not enough credits to see lineup")
-    lineup_set = admirer_rel.lineupmember_set.all()
-    # need to cleanse the lineup members each time the lineup is run 
-    #    reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
-        
-    return render(request,'lineup.html',
-                              {
-                               'admirer_rel':admirer_rel,
-                               'lineup_set': lineup_set})
-
-@login_required
-def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
-    print "adding member to a list"
-    # called from lineup.html to add a member to either the crush list or the platonic friend list
-    try:
-        target_user=FacebookUser.objects.get(username=facebook_id)
-        try:
-            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_display_id)
-        except CrushRelationship.DoesNotExist:
-            return HttpResponse("Server Error: Could not add given lineup user")
-        try:
-            member=target_user.lineupmember_set.get(LineupUser=target_user,LineupRelationship=admirer_rel)
-
-        except LineupMember.DoesNotExist:
-            print "could not find lineup member"
-            return HttpResponse("Server Error: Could not add given lineup user")
-        if add_type=='crush':
-            new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
-            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
-            member.decision=True
-        else:
-            new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
-            ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
-            member.decision=False
-        member.save(update_fields=['decision'])
-        #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
-        admirer_rel.number_unrated_lineup_members -= 1
-        if admirer_rel.number_unrated_lineup_members == 0:
-                admirer_rel.date_lineup_finished= datetime.now()
-        admirer_rel.save(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
-    except FacebookUser.DoesNotExist:
-        print "failed to add lineup member: " + facebook_id
-        return HttpResponse("Server Error: Could not add given lineup user")  
-    return HttpResponse(ajax_response)
+def select_crush_by_id(request):
+    # contains form which accepts as input a facebook uid
+    # validates the uid 
+        # cannot be a previously crushed ID
+        # fetch it via facebook graph api
+    # if successful fetch, then display the contents, else display error message
     
+    print "SELECT CRUSH BY ID FORM!"
+    # crush_name should be first name last name
+    if request.method == 'POST': # if the form has been submitted...
+        print "METHOD IS POST"
+        form = SelectCrushIDForm(request.POST,request=request)
 
+        if form.is_valid():
+            # the work to find/create the user and add the was moved to the overriden form clean function for efficiency sake
+                # since it has to make a call to facebook graph api to validate username already
+            return redirect('/crushes_in_progress')
+    else:
+        form=SelectCrushIDForm(request=request)
+    return render(request, 'select_crush_by_id_form.html',{'form':form})
+    
 # -- Notification settings --
 @login_required
 def modal_delete_crush(request):
@@ -587,7 +608,7 @@ def paypal_purchase(request):
     if request.REQUEST.has_key('tx'):
         tx = request.REQUEST['tx']
         try:
-            existing = Purchase.objects.get( tx=tx )
+            Purchase.objects.get( tx=tx )
             print "duplicate transaction found when processing PAYPAL PDT Handler"
             return HttpResponseRedirect(success_path)
         except Purchase.DoesNotExist:
@@ -621,7 +642,7 @@ def paypal_ipn_listener(request,username,credit_amount):
             # evetually Log and error tell PAYPAL that something went wrong and step sending ipn messages
             pass
         try:
-            existing = Purchase.objects.get( tx=txn_id )
+            Purchase.objects.get( tx=txn_id )
             print "existing purchase found. transaction id: " + txn_id
             pass
         except Purchase.DoesNotExist:

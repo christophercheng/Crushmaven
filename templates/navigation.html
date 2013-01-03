@@ -13,7 +13,7 @@
 		new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
 		
  <!-- END NOTIFICAIONS -->
-			&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;&nbsp;
+			&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;<a href="{% url 'crush.views.select_crush_by_id' %}" >Add Other</a>&nbsp;&nbsp;
 			<a class="{% navactive request 'help_how_it_works' %}"
 				href="{% url 'crush.views.help_how_it_works' %}">How it Works</a>
 			<a class="{% navactive request 'settings_profile' %}"
