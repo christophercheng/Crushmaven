@@ -49,7 +49,11 @@ urlpatterns += patterns('crush',
     # -- MODAL DIALOG PROCESSING & CONTENT --
     
     url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','views.ajax_add_lineup_member'),
-                           
+    
+    url(r'^ajax_update_num_crushes_in_progress/$','views.ajax_update_num_crushes_in_progress'),
+    
+    url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
+                               
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     
     # -- SETTINGS PAGES --

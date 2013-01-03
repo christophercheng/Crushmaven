@@ -20,7 +20,7 @@ $(document).ready(function()
      		var parent = $(this).parent();				
             var url;
             var text= "Are you sure you want to add " + $(this).attr('name') + " as a ";
-            
+            var bIsCrush=true;
             if ($(this).attr('add_type') == "crush")    {
             	url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + " #choice"; 
             	text = text + "crush?";
@@ -28,13 +28,20 @@ $(document).ready(function()
             else {
             	url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + " #choice"; 
             	text = text + "platonic_friend?";
+            	bIsCrush=false;
             	}
             e.preventDefault();
             $("#dialog_member_add").text(text);
             $("#dialog_member_add").dialog('option', 'buttons', {
        			"Add": function() { 
-       				parent.load(url);
-					$(this).dialog("close");
+       				parent.load(url, function(){
+       				       				// call an ajax function on the elements which display number of crushes or platonics
+       					if (bIsCrush) 
+	       					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress");
+       					else 
+       						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends");   				
+       				});
+       				$(this).dialog("close");
 				},   
         		"Cancel": function() {$(this).dialog("close");
         		}

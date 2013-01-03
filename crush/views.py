@@ -15,6 +15,7 @@ from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
 from smtplib import SMTPException
 
+
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
@@ -285,6 +286,16 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
+    return HttpResponse(ajax_response)
+
+@login_required
+def ajax_update_num_platonic_friends(request):
+
+    ajax_response = str(request.user.just_friends_targets.all().count())
+    return HttpResponse(ajax_response)
+@login_required
+def ajax_update_num_crushes_in_progress(request):
+    ajax_response = str(request.user.crush_targets.all().count())
     return HttpResponse(ajax_response)
 
 # -- Past Admirers Page --

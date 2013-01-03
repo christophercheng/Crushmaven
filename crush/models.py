@@ -487,6 +487,7 @@ class CrushRelationship(BasicRelationship):
             if 'update_fields' in kwargs and 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                 print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.first_name + " " + self.source_person.last_name + " and target: " + self.target_person.first_name + " " + self.target_person.last_name
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
+        print "finished saving crush relationship object"
         super(CrushRelationship,self).save(*args,**kwargs)
 
     def notify_target_person(self,crush_relationship):
