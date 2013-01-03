@@ -5,6 +5,7 @@ import datetime
 from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
+import random
 
 from smtplib import SMTPException
 from django.core.mail import send_mail
@@ -357,7 +358,87 @@ class CrushRelationship(BasicRelationship):
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0)
  
+    # returns true if successful, false otherwise
+    def initialize_lineup(self):
+        print "initializing relationship for admirer: " + self.source_person.facebook_username
+        # get sex of admirer
+        admirer_gender= 'Male' if self.source_person.gender == 'M'  else 'Female'
+        if self.friendship_type == 0:
+            builder_user = self.target_person # crush is building lineup from his friend list
+        else:
+            builder_user = self.source_person # admirer is building lineup from his friend list
+        exclude_facebook_ids=""
+        # loop through all their just_friends_targets and all their crush_targets and add their ids to a fql friendlist list
+        builder_crushes = builder_user.crush_targets.all()
+        builder_just_friends = builder_user.just_friends_targets.all()
+        for crush in builder_crushes:
+            exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
+        for just_friend in builder_just_friends:
+            exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend + "',"
+        # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
+        if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
+            # if building from crush perspective, then exclude pulling from fb 
+                # -the source person (they will get inserted manually)
+                # anyone already on their crush list or their platonic friend list
+            if exclude_facebook_ids == "":
+                exclude_facebook_ids = "'" + str(self.source_person.username) + "'"
+            else:
+                exclude_facebook_ids = exclude_facebook_ids + "'" + str(self.source_person.username) + "'"
+        
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+        else: # the admirer must build the lineup from his friend list
+            if exclude_facebook_ids != "": # remove the trailing comma
+                exclude_facebook_ids = exclude_facebook_ids[:-1]
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (" + exclude_facebook_ids + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+        print "fql_query string: " + str(fql_query)
+        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
+        try:
+            print "json results: " + str(fql_query_results)
+            data = json.load(fql_query_results)['data']     
+            if (len(data) == 0):
+                if admirer_gender=='Male':
+                    data = [{u'username':u'zuck', 'uid':u'zuck'}]
+                else:
+                    data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
+            print "data: " + str(data)
+        except ValueError:
+            print "ValueError on Fql Query Fetch read!"
+            return False
+        except KeyError:
+            print "KeyError on FQL Query Fetch read"
+            return False
+        # determine where the admirer should randomly fall into the lineup
+        admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
+        print "admirer_position: " + str(admirer_position)
+        index = 0
+        rel_id = self.id
+        for fql_user in data:
+            # if the current lineup position is where the admirer should go, then insert the admirer
+            if index==admirer_position:
+                new_member_id = rel_id + (.1 * index)
+                self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
+                print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
+                index = index + 1            
+                # create a lineup member with the given username      
+            new_member_id = rel_id + (.1 * index)
+            lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=builder_user.access_token,is_this_for_me=False)
+            self.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
+            print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
+            index = index + 1
+            
+        if len(data)==admirer_position:
+            new_member_id = rel_id + (len(data) * .1)
+            self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
+            print "put crush in position: " + str(new_member_id)        
+            
+        self.number_unrated_lineup_members = self.lineupmember_set.count()
+        print "number lineup members: " + str(self.lineupmember_set.count())
+        self.is_lineup_initialized = True
+        self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
     
+    #    print "Number of results: " + str((data['data']).__len__())
+        
+        return True
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save(self,*args,**kwargs):

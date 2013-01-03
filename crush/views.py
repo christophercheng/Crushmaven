@@ -60,7 +60,7 @@ def crushes_in_progress(request):
                 print "successfully got a new crush user with username: " + selected_user.facebook_username
                 if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
                     CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
-                                                               friendship_type=u'FRIEND', updated_flag=True)
+                                                               friendship_type=0, updated_flag=True)
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)
@@ -216,84 +216,13 @@ def admirers(request):
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
         for relationship in uninitialized_relationships:
-            initialize_lineup(request,relationship)
+            relationship.initialize_lineup()
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count})    
-    
-#relationship_id is unique integer id representing the crush relationship, fql_query is the fql query string that the function should use to
-def initialize_lineup(request, relationship):
-    print "initializing relationship for admirer: " + relationship.source_person.facebook_username
-    me = request.user
-    admirer_id = relationship.source_person.username
-    # get sex of admirer
-    admirer_gender= 'Male' if relationship.source_person.gender == 'M'  else 'Female'
-    # get relationship status of admirer
-    #admirer_is_single=relationship.source_person_profile.is_single
-    
-    # build up a list of all the existing users
-    
-    #fql_query = "SELECT name, birthday FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND substr(sex, 0, 1) = 'f' ORDER BY name"
-    # list all friends usernames who do not have a family relationship with me and are of a certain gender 
-    #fql_query = "SELECT username, relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())))) AND sex = 'female' ORDER_BY friend_count"
-    # list all friends usernames who do not have a family relationship with me and are of a certain gender and are not
-    #fql_query = "SELECT username, relationship_status, friend_count FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())))) AND sex = '" + admirer_gender + "'  AND NOT (relationship_status IN ('Married', 'Engaged', 'In a relationship', 'In a domestic partnership', 'In a civil union'))  ORDER BY friend_count DESC"
-    # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 30 results
-    exclude_facebook_ids = "'" + str(relationship.source_person.username) + "'"
-    fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-
-    print "fql query to send out: " + fql_query
-    
-    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,me.access_token))
-    #print fql_query_results.read()
-    try:
-        print "json results: " + str(fql_query_results)
-        data = json.load(fql_query_results)['data']
-       
-        if (len(data) == 0):
-            if admirer_gender=='Male':
-                data = [{u'username':u'zuck', 'uid':u'zuck'}]
-            else:
-                data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
-        print "data: " + str(data)
-    except KeyError, ValueError:
-        print "ValueError on Fql Query Fetch read!"
-        return False
-    # determine where the admirer should randomly fall into the lineup
-    admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
-    print "admirer_position: " + str(admirer_position)
-    index = 0
-    rel_id = relationship.id
-    for fql_user in data:
-        # if the current lineup position is where the admirer should go, then insert the admirer
-        if index==admirer_position:
-            new_member_id = rel_id + (.1 * index)
-            relationship.lineupmember_set.create(position=new_member_id,LineupUser=relationship.source_person)
-            print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
-            index = index + 1            
-            # create a lineup member with the given username      
-        new_member_id = rel_id + (.1 * index)
-        lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=request.user.access_token,is_this_for_me=False)
-        relationship.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
-        print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
-        index = index + 1
-        
-    if len(data)==admirer_position:
-        new_member_id = rel_id + (len(data) * .1)
-        relationship.lineupmember_set.create(position=new_member_id,LineupUser=relationship.source_person)
-        print "put crush in position: " + str(new_member_id)        
-        
-    relationship.number_unrated_lineup_members = relationship.lineupmember_set.count()
-    print "number lineup members: " + str(relationship.lineupmember_set.count())
-    relationship.is_lineup_initialized = True
-    relationship.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
-
-#    print "Number of results: " + str((data['data']).__len__())
-    
-    return True
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
@@ -396,7 +325,7 @@ def just_friends(request):
     
                 if not(request.user.just_friends_targets.filter(username=selected_user.username).exists()):
                         PlatonicRelationship.objects.create(target_person=selected_user,source_person=request.user,
-                                                               friendship_type=u'FRIEND', updated_flag=True)
+                                                               friendship_type=0, updated_flag=True)
                         userlist.append(selected_user)
         return HttpResponseRedirect('/just_friends')
 
