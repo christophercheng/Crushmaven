@@ -374,7 +374,12 @@ class CrushRelationship(BasicRelationship):
         for crush in builder_crushes:
             exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
         for just_friend in builder_just_friends:
-            exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend + "',"
+            exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
+        builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
+        for rel in builder_incomplete_admirer_rels:
+            builder_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
+            for lineup_member in builder_undecided_lineup_members:
+                exclude_facebook_ids = exclude_facebook_ids + "'" + lineup_member.LineupUser.username + "',"
         # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
         if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
             # if building from crush perspective, then exclude pulling from fb 
