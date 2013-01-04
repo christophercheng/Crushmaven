@@ -467,8 +467,11 @@
     }
     else{
 
-      if ( search_text_base === '' ){
-        $('#fs-summary-box').remove();
+     if ( search_text_base === '' ){
+    	 var container = $('#fs-user-list ul');
+    	   container.children().show();
+
+    	 $('#fs-summary-box').remove();
       }
       else{
         $('.fs-limit').remove();
