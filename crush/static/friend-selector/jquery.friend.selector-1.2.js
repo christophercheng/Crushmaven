@@ -130,21 +130,15 @@
                           '<a href="javascript:{}" id="fs-reset">Reset</a>' +
                         '</div>' +
                       '</div>' +
-
+                      
                       '<div id="fs-user-list">' +
                         '<ul></ul>' +
                       '</div>' +
-
-                      '<div id="fs-filters-buttons">' +
-                        '<div id="fs-filters">' +
-                          '<a href="javascript:{}" id="fs-show-selected"><span>'+fsOptions.lang.buttonShowSelected+'</span></a>' +
-                        '</div>' +
       
                         '<div id="fs-dialog-buttons">' +
                           '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>'+fsOptions.lang.buttonSubmit+'</span></a>' +
                           '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
                         '</div>' +
-                      '</div>' +
                     '</div>';
 
 
@@ -276,10 +270,16 @@
       _click($(this));
     });
     
+    $('#fs-dialog').on("click","#fs-show-selected", function(e){
+        _showSelected($(this));
+      });
+    
+    /*
     $('#fs-show-selected').click(function(){
+    	alert("hi");
       _showSelected($(this));
     });
-
+*/
     $(document).keyup(function(e) {
       if (e.which === 27 && fsOptions.enableEscapeButton === true) {
         _close();
@@ -455,7 +455,8 @@
       var selected_count_text = fsOptions.lang.selectedCountResult.replace('{0}', (selected_friend_count-1));
 
       if ( !$('#fs-dialog').has('#fs-summary-box').length ) {
-        $('#fs-filter-box').after('<div id="fs-summary-box"><span class="fs-limit fs-count">'+selected_count_text+'</span></div>');
+        $('#fs-filter-box').after('<div id="fs-summary-box"><span class="fs-limit fs-count">'+selected_count_text+'</span><a href="javascript:{}" id="fs-show-selected">'+fsOptions.lang.buttonShowSelected+'</a></div>');
+      
       }
       else if ( !$('#fs-dialog').has('.fs-limit.fs-count').length ) {
         $('#fs-summary-box').append('<span class="fs-limit fs-count">'+selected_count_text+'</span>');
@@ -518,7 +519,6 @@
   },
 
   _showSelected = function(t) {
-  
     var container = $('#fs-user-list ul'),
         allElements = container.find('li'),
         selectedElements = container.find('li.checked');
