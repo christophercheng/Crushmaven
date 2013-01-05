@@ -33,7 +33,6 @@ def home(request):
     else:
         return render(request,'guest_home.html')
 
-
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
@@ -191,6 +190,33 @@ def app_invite_form(request, crush_username):
     else:
         form=AppInviteForm()
     return render(request, 'app_invite_form.html',{'form':form,'crush_username':crush_username})
+
+@login_required
+def ajax_find_fb_user(request):
+    response_data = dict()
+    try:
+        username=''
+        username=request.REQUEST['username'] 
+        me=request.user
+        access_token = me.access_token
+
+        print "accessing user: " + username
+        # call fb api to get user info and put it in the cleaned_data function
+        fb_profile = urllib.urlopen('https://graph.facebook.com/' + username + '/?access_token=%s' % access_token)
+        fb_profile = json.load(fb_profile)
+        print "resulant profile: " + str(fb_profile)   
+
+        fb_profile['id'] #raises KeyError if no id key/value pair exists in the fb_profile dictionary
+        try:
+            me.crush_targets.get(username=fb_profile['id'])
+            response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as a crush.'
+        except FacebookUser.DoesNotExist:
+            response_data['id']=fb_profile['id']
+            response_data['name']=fb_profile['name']
+    except KeyError: # username not found on fb
+        response_data['error_message'] = 'Invalid facebook username: ' + username     
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+ 
 
 # -- Admirer List Page --
 @login_required

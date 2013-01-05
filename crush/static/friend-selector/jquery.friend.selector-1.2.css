@@ -42,11 +42,10 @@
 
 /* @end of Title */
 
-#fs-filter-box {
+#fs-filter-box, #nfs-input-box {
   background: #f2f2f2;
   border: 1px solid #ccc;
   border-top: none;
-  
   padding: 10px
 }
 
@@ -58,18 +57,26 @@
   
   position: relative
 }
-#fs-input-text {
+
+#nfs-input-wrap {
+  background: red;//#fff;
+  border: 1px solid #bdc7d8;
+  //position: relative;
+  margin: 3px 50px 3px 130px;//chc
+}
+
+#fs-input-text{
   background: #fff;
   border: 0;
   
   color: #333;
   font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
   font-size: 11px;
-  
   padding: 3px;
-  margin: 0;
-  width: 95%
+  margin: 3px;
+  width: 95% //chc originally 95%
 }
+
 #fs-reset {
   background: url(friend-selector-erase.png) no-repeat 0 0 #adbdd6;
   
@@ -137,7 +144,7 @@
 
 /* @group User List */
 
-#fs-user-list {
+#fs-user-list,#nfs-user-list {
   border-bottom: 1px solid #ccc;
   
   height: 353px;
@@ -276,17 +283,17 @@ li.checked .fs-anchor {
     padding: 3px 6px 4px;
     position: relative
   }
-  #fs-submit-button {
+  #fs-submit-button, #fs-select-button {
     background-color: #5b74a8;
     border-color: #29447e #29447e #1a356e;
 
     color: #fff
   }
-  #fs-submit-button:active {
+  #fs-submit-button:active, #fs-select-button:active {
     background-color: #4f6aa3;
     border-color: #29447e
   }
-  #fs-submit-button:active span {
+  #fs-submit-button:active span, #fs-select-button:active span{
     border-top: 1px solid #4f6aa3
   }
   

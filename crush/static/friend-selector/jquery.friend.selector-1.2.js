@@ -40,6 +40,37 @@
 
   },
 
+  _selectUsername = function() {
+	$("#nfs-user-list").append('<div id="fs-loading"></div>');
+    var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
+    // see if user exists
+    $.get("/ajax_find_fb_user/", {username:username},
+    	  function(response){
+    		console.log(response);
+    		if ('error_message' in response) {
+    			alert(response.error_message);
+    	        $('#fs-loading').remove();
+    			return false;
+    		}
+    		else {
+    			_addValidUsername(response);
+    			$('#nfs-input-text').val("");
+    	        $('#fs-loading').remove();
+    		} 			
+    });
+},
+
+  _addValidUsername  = function(userData){
+        var item = $('<li/>');
+        var link = userData.name;
+
+        var link =  '<img class="fs-thumb" src="https://graph.facebook.com/'+ userData.id + '/picture" />' +
+                     '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>'
+
+        item.append(link);
+        $('#nfs-user-list ul').append(item);
+	  },
+    
   _close = function() {
 
     wrap.fadeOut(400, function(){
@@ -123,26 +154,55 @@
     var container = '<div id="fs-dialog" class="fs-color-'+fsOptions.color+'">' +
                       '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span></h2>' +
 
-                      '<div id="fs-filter-box">' +
-                        '<div id="fs-input-wrap">' +
-                          '<input type="text" id="fs-input-text" title="'+fsOptions.lang.searchText+'" />' +
-
-                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
-                        '</div>' +
-                      '</div>' +
+                      '<div id="fs-tab-container">' +
                       
-                      '<div id="fs-user-list">' +
-                        '<ul></ul>' +
-                      '</div>' +
-      
-                        '<div id="fs-dialog-buttons">' +
-                          '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>'+fsOptions.lang.buttonSubmit+'</span></a>' +
-                          '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
-                        '</div>' +
-                    '</div>';
+	                    '<a href="javascript:{}" id="fs-tab" class="fs-button"><span>Friend</span></a>' +
+	                    '<a href="javascript:{}" id="nfs-tab" class="fs-button"><span>Non-Friend</span></a>' +
+           
+                      	'<div id="fs-tab-view">' +
+                      
+		                      '<div id="fs-filter-box">' +
+		                        '<div id="fs-input-wrap">' +
+		                          '<input type="text" id="fs-input-text" title="'+fsOptions.lang.searchText+'" />' +
+		                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
+		                        '</div>' +
+		                      '</div>' +
+		                      
+		                      '<div id="fs-user-list">' +
+		                        '<ul></ul>' +
+		                      '</div>' +
+		                      
+		                  '</div>' +  // close fs-tab-view
+	
+	                      '<div id="nfs-tab-view">' +
+	                        
+		                      '<div id="nfs-input-box">' +
+		                      	'Enter Crush\'s Facebook Username:' + '<a href="#" id="nfs-help">what\'s this?</a>' +
+		                        '<div id="anfs-input-wrap">' +
+		                          '<span>https://facebook.com/</span>' +
+		                          '<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
+		                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
+		                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +
+		                        '</div>' +
+		                      '</div>' +
+			                      
+		                      '<div id="nfs-user-list">' +
+		                        '<ul></ul>' +
+		                      '</div>' + // close nfs-user-list
+		                      
+		                  '</div>' +  // close nfs-tab-view
+		                  
+	                  '</div>' + // close fs-tab-container
+	                      
+                    '<div id="fs-dialog-buttons">' +
+                      '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>'+fsOptions.lang.buttonSubmit+'</span></a>' +
+                      '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
+                    '</div>' +
+                '</div>';
 
 
     content.html(container);
+    $('#fs-tab-view').children().hide();
     $('#fs-user-list').append('<div id="fs-loading"></div>');
     _getFacebookFriends();
     _resize(true);
@@ -182,7 +242,7 @@
 	  
 	  FB.api('fql',{q:fql_query}, function(response) {
 	  		if ( response.error ) {
-	  			alert ("error: " + response.error); // temporary
+	  			//alert ("error: " + response.error); // temporary
 	  			num_connect_tries+=1;
 	  			if (num_connect_tries < 5) 	
 	  				setTimeout(function () {
@@ -242,6 +302,17 @@
       _submit();
     });
     
+    wrap.delegate('#fs-select-button', 'click.fs', function(){
+        _selectUsername();
+      });
+    
+    $('#fs-dialog').on("click","#nfs-tab", function(e){
+        _showNfsTab($(this));
+      });
+    
+    $('#fs-dialog').on("click","#fs-tab", function(e){
+        _showFsTab($(this));
+      });
     
     $('#fs-dialog input').focus(function(){
       if ($(this).val() === $(this)[0].title){
@@ -254,14 +325,14 @@
     }).blur();
 
 
-    $('#fs-dialog input').keyup(function(){
+    $('#fs-tab-view input').keyup(function(){
       _find($(this));
     });
 
 
     wrap.delegate('#fs-reset', 'click.fs', function() {
       $('#fs-input-text').val('');
-      _find($('#fs-dialog input'));
+      _find($('#fs-tab-view input'));
       $('#fs-input-text').blur();
     });
 
@@ -274,12 +345,7 @@
         _showSelected($(this));
       });
     
-    /*
-    $('#fs-show-selected').click(function(){
-    	alert("hi");
-      _showSelected($(this));
-    });
-*/
+
     $(document).keyup(function(e) {
       if (e.which === 27 && fsOptions.enableEscapeButton === true) {
         _close();
@@ -293,6 +359,19 @@
     }
 
   },
+  
+  _showFsTab = function() {
+
+	    $('#fs-tab-view').children().show();
+	    $('#nfs-tab-view').children().hide();
+
+	  },
+  _showNfsTab = function() {
+
+	    $('#fs-tab-view').children().hide();
+	    $('#nfs-tab-view').children().show();
+
+	  },
 
   _click = function(th) {
     var btn = th;
@@ -348,20 +427,23 @@
   },
 
   _find = function(t) {
-
+	  
     var fs_dialog = $('#fs-dialog');
 
     search_text_base = $.trim(t.val());
+    	
     var search_text = search_text_base.toLowerCase().replace(/\s/gi, '+');
-
-    var elements = $('#fs-user-list .fs-fullname[value*='+search_text+']');
-
     var container = $('#fs-user-list ul');
-    container.children().hide();
-    $.each(elements, function(){
-      $(this).parents('li').show();
-    });
-
+    var elements =[]
+    if (search_text=="")
+    	container.children().show();
+    else{
+    	var elements = $('#fs-user-list .fs-fullname[value*='+search_text+']');
+    	container.children().hide();
+    	$.each(elements, function(){
+    		$(this).parents('li').show();
+    	});
+    }
     var result_text = '';
     if ( elements.length > 0 && search_text_base > '' ){
       result_text = fsOptions.lang.summaryBoxResult.replace("{0}", '"'+t.val()+'"');
@@ -528,20 +610,20 @@
     
     if (selectedElements.length !== 0 && selectedElements.length !== allElements.length || isShowSelectedActive === true) {
       if (isShowSelectedActive === true) {
-        t.removeClass('active').text(fsOptions.lang.buttonShowSelected);
-        
-        container.children().show();
-        
+        t.removeClass('active').text(fsOptions.lang.buttonShowSelected);   
+        var text_box_value=$('#fs-input-text').val();
+        if (text_box_value!==fsOptions.lang.searchText)
+        	_find($('#fs-tab-view input'));
+        else
+        	container.children().show();
         isShowSelectedActive = false;
       }
       else {
-        t.addClass('active').text(fsOptions.lang.buttonShowAll);
-        
+        t.addClass('active').text(fsOptions.lang.buttonShowAll);    
         container.children().hide();
         $.each(selectedElements, function(){
           $(this).show();
-        });
-        
+        });  
         isShowSelectedActive = true;
       }
     }
@@ -574,6 +656,7 @@
       summaryBoxResult: "{1} best results for {0}",
       summaryBoxNoResult: "No results for {0}",
       searchText: "Enter a friend's name",
+      nonFriendSearchText: "username",
       fbConnectError: "Sorry, there is a problem connecting to Facebook.  Please try again later.",
       selectedCountResult: "You have choosen {0} people.",
       selectedLimitResult: "Limit is {0} people.",

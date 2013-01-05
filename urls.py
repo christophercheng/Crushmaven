@@ -53,6 +53,8 @@ urlpatterns += patterns('crush',
     url(r'^ajax_update_num_crushes_in_progress/$','views.ajax_update_num_crushes_in_progress'),
     
     url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
+    
+    url(r'^ajax_find_fb_user/$','views.ajax_find_fb_user'),
                                
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     
