@@ -144,25 +144,41 @@
 
 /* @group User List */
 
-#fs-user-list,#nfs-user-list {
+ #fs-selected-user-list {
+  border-bottom: 2px solid #ccc;  
+  overflow: auto;
+  position: relative;
+
+}
+
+#fs-user-list {
   border-bottom: 1px solid #ccc;
   
   height: 353px;
   overflow: auto;
   position: relative
 }
-#fs-user-list ul {
+
+#fs-user-list ul, #fs-selected-user-list ul {
   list-style: none;
   
   margin: 0;
   padding: 0;
   overflow: hidden
 }
-#fs-user-list li {
+#fs-user-list li,#fs-selected-user-list li {
   float: left;
   padding: 5px 0 0 5px;
   width: 173px;
   overflow: hidden
+}
+
+#fs-confirm-user-list {
+  border-bottom: 1px solid #ccc;
+  
+  height: 435px;
+  overflow: auto;
+  position: relative
 }
 
 .fs-anchor {
@@ -187,6 +203,11 @@
 li.checked .fs-anchor {
   background-color: #d8dfea;
   border-color: #c3cce1
+}
+
+#fs-selected-user-list input[type="checkbox"] {
+  float: left;
+  margin: 6px 6px 0
 }
 
 #fs-user-list input[type="checkbox"] {
@@ -283,7 +304,7 @@ li.checked .fs-anchor {
     padding: 3px 6px 4px;
     position: relative
   }
-  #fs-submit-button, #fs-select-button {
+  #fs-submit-button, #fs-select-button,#fs-continue-button {
     background-color: #5b74a8;
     border-color: #29447e #29447e #1a356e;
 
@@ -315,6 +336,13 @@ li.checked .fs-anchor {
     border-top: 1px solid #ddd
   }
   
+  #fs-terms-checkbox {
+
+  }
+  
+  #fs-back-button {
+  
+  }
   /* @end Submit and Cancel Buttons */
 
 /* @end Filters and Buttons */

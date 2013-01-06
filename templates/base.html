@@ -52,7 +52,7 @@
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
 	  malePref: {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
-      max:10,
+      max:18,
 	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
       closeOverlayClick: true,
       overlayOpacity: "0.3",
@@ -62,7 +62,7 @@
       color: "default",
       showRandom:false,
       lang: {
-        title: "Crush Selector",
+        title: "Select Your Crushes step 1 of 2",
         buttonSubmit: "Select",
         buttonCancel: "Cancel",
         summaryBoxResult: "{1} best results for {0}",
@@ -126,7 +126,6 @@
 <script type="text/javascript">
 jQuery(document).ready(function($) {
   $(".inactive_crushed_friends").load('/friends_with_admirers_section');
-  $(".bt-fs-dialog").click();
 
 });
 

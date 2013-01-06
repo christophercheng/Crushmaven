@@ -41,18 +41,34 @@
   },
 
   _selectUsername = function() {
+	  var limit_state = _limitText();
+      
+     if (limit_state === false) {
+        return false;
+      }
 	$("#nfs-user-list").append('<div id="fs-loading"></div>');
     var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
     // see if user exists
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
-    		console.log(response);
     		if ('error_message' in response) {
     			alert(response.error_message);
     	        $('#fs-loading').remove();
     			return false;
     		}
     		else {
+    			//_checkForDuplicate() // check both tabs
+
+    	    	// find the original user in hte old container
+    	    	var selected_id = "fs-" +response.id;
+    			var duplicate_element = $('#fs-selected-user-list .fs-friends[value='+selected_id+']');
+
+    	    	if ($(duplicate_element).length > 0){
+    	    		alert("You already selected this person");
+    	    		$('#fs-loading').remove();
+    	    		return false;
+    			}
+
     			_addValidUsername(response);
     			$('#nfs-input-text').val("");
     	        $('#fs-loading').remove();
@@ -61,14 +77,20 @@
 },
 
   _addValidUsername  = function(userData){
-        var item = $('<li/>');
+        var item = $('<li class="checked selected" id="friend-type' + userData.friend_type + '"/>');
         var link = userData.name;
 
-        var link =  '<img class="fs-thumb" src="https://graph.facebook.com/'+ userData.id + '/picture" />' +
-                     '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>'
+        var link =  '<a class="fs-anchor"  href="javascript://">' +
+		        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+userData.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
+		        '<input class="fs-friends" type="checkbox" checked="checked" name="friend[]" value="fs-'+ userData.id+'" />' +
+		      //  '<input class="fs-friend-type" type="hidden" name="nfs-friend-type" value="'+ userData.friend_type +'" />' +
+		        '<img class="fs-thumb" src="https://graph.facebook.com/'+userData.id+'/picture" />' +
+		        '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>' +
+		      '</a>';
 
         item.append(link);
-        $('#nfs-user-list ul').append(item);
+        $('#fs-selected-user-list ul').append(item);
+        selected_friend_count++;
 	  },
     
   _close = function() {
@@ -86,6 +108,56 @@
     isShowSelectedActive = false;
     fsOptions.onClose();
 
+  },
+  
+  _continue = function() {
+
+	  /*
+	        '<div id="fs-dialog-buttons">' +
+	              '<a href="javascript:{}" id="fs-continue-button" class="fs-button"><span>Continue</span></a>' +
+	              '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
+	          '</div>' +
+	   */
+	  
+	  // change title to 'confirm your crush additions step 2 of 2'
+
+      $('#fs-dialog-title').html("<span>Confirm your selections step 2 of 2</span>");
+      $('#fs-continue-button').hide();
+      $('#fs-submit-button').show();
+      $('#fs-terms-checkbox').show();
+      $('#fs-terms-checkbox').next().show();
+      $('#fs-back-button').show();
+      $('#fs-select-view').hide();
+      $('#fs-confirm-view').show();
+      _buildConfirmView();
+	  
+	  // and the big one, show all of the selected users broken out into friend type
+	  
+  },
+  
+  _back = function() {
+
+	  /*
+	        '<div id="fs-dialog-buttons">' +
+	              '<a href="javascript:{}" id="fs-continue-button" class="fs-button"><span>Continue</span></a>' +
+	              '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
+	          '</div>' +
+	   */
+	  
+	  // change title to 'confirm your crush additions step 2 of 2'
+
+      $('#fs-dialog-title').html("<span>" + fsOptions.lang.title + "</span>");
+      $('#fs-continue-button').show();
+      $('#fs-submit-button').hide();
+      $('#fs-terms-checkbox').hide();
+      $('#fs-terms-checkbox').next().hide();
+      $('#fs-back-button').hide();
+      $('#fs-select-view').show();
+      $('#fs-confirm-view').hide();
+      $('#fs-confirm-user-list').children().remove();
+	  
+	  // and the big one, show all of the selected users broken out into friend type
+	  
   },
 
   _submit = function() {
@@ -153,56 +225,66 @@
 
     var container = '<div id="fs-dialog" class="fs-color-'+fsOptions.color+'">' +
                       '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span></h2>' +
-
-                      '<div id="fs-tab-container">' +
                       
-	                    '<a href="javascript:{}" id="fs-tab" class="fs-button"><span>Friend</span></a>' +
-	                    '<a href="javascript:{}" id="nfs-tab" class="fs-button"><span>Non-Friend</span></a>' +
-           
-                      	'<div id="fs-tab-view">' +
                       
-		                      '<div id="fs-filter-box">' +
-		                        '<div id="fs-input-wrap">' +
-		                          '<input type="text" id="fs-input-text" title="'+fsOptions.lang.searchText+'" />' +
-		                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
-		                        '</div>' +
-		                      '</div>' +
-		                      
-		                      '<div id="fs-user-list">' +
-		                        '<ul></ul>' +
-		                      '</div>' +
-		                      
-		                  '</div>' +  // close fs-tab-view
-	
-	                      '<div id="nfs-tab-view">' +
-	                        
-		                      '<div id="nfs-input-box">' +
-		                      	'Enter Crush\'s Facebook Username:' + '<a href="#" id="nfs-help">what\'s this?</a>' +
-		                        '<div id="anfs-input-wrap">' +
-		                          '<span>https://facebook.com/</span>' +
-		                          '<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
-		                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
-		                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +
-		                        '</div>' +
-		                      '</div>' +
-			                      
-		                      '<div id="nfs-user-list">' +
-		                        '<ul></ul>' +
-		                      '</div>' + // close nfs-user-list
-		                      
-		                  '</div>' +  // close nfs-tab-view
-		                  
-	                  '</div>' + // close fs-tab-container
+                      '<div id="fs-select-view">' +
+                      
+	                      '<a href="javascript:{}" id="fs-tab" class="fs-button"><span>Friend</span></a>' +
+		                  '<a href="javascript:{}" id="nfs-tab" class="fs-button"><span>Non-Friend</span></a>' +
 	                      
-                    '<div id="fs-dialog-buttons">' +
-                      '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>'+fsOptions.lang.buttonSubmit+'</span></a>' +
-                      '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
-                    '</div>' +
-                '</div>';
+	                      '<div id="fs-filter-box">' +
+	                        '<div id="fs-input-wrap">' +
+	                          '<input type="text" id="fs-input-text" title="'+fsOptions.lang.searchText+'" />' +
+	                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
+	                        '</div>' +
+	                      '</div>' +
+	                      
+	                      
+	                      '<div id="nfs-input-box">' +
+	                      	'Enter Crush\'s Facebook Username:' + '<a href="#" id="nfs-help">what\'s this?</a>' +
+	                        '<div id="anfs-input-wrap">' +
+	                          '<span>https://facebook.com/</span>' +
+	                          '<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
+	                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
+	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +
+	                        '</div>' +
+	                      '</div>' +
+	                      
+	                      '<div id="fs-selected-user-list">' +
+	                      	'<ul></ul>' +
+	                      '</div>' +    
+	                      
+	                      '<div id="fs-user-list">' +
+	                        '<ul></ul>' +
+	                      '</div>' +
+     
+	                  '</div>' +// close off fs-select-view +
+	                  
+	                  '<div id="fs-confirm-view">' +
+	                      	'<div id="fs-confirm-user-list">' +
+	                    	'</div>' +
+	                  '</div>' + // close off fs-confirm view
+		                      
+	                  '<div id="fs-dialog-buttons">' +
+	                  
+	                  		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the terms & conditions</span>' +
+	                  		'<a id="fs-back-button"  href="javascript://">Back</a>' +
+	                  
+	                      '<a href="javascript:{}" id="fs-continue-button" class="fs-button"><span>Confirm</span></a>' +
+	                      '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
+	                      '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
+	                  '</div>' +
+     
+	                '</div>'; // close off fs-dialog
 
 
     content.html(container);
-    $('#fs-tab-view').children().hide();
+    $('#nfs-input-box').hide();
+    $('#fs-terms-checkbox').hide();
+    $('#fs-terms-checkbox').next().hide();
+    $('#fs-back-button').hide();
+    $('#fs-submit-button').hide();
+    $('#fs-confirm-view').hide();
     $('#fs-user-list').append('<div id="fs-loading"></div>');
     _getFacebookFriends();
     _resize(true);
@@ -262,7 +344,6 @@
   },
     
   _buildFacebookFriendGrid = function(response) {
-	  console.log(response);//remove this later
 	  
       var facebook_friends = response.data;
       var item,person,link;
@@ -276,7 +357,7 @@
           person = facebook_friends[j]
           link =  '<a class="fs-anchor" href="javascript://">' +
                         '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
-                        '<input class="fs-friends" type="checkbox" name="friend[]" value="fs-'+person.uid+'" />' +
+                        '<input class="fs-friends" type="checkbox" name="friend[]" value="fs-'+ person.uid+'" />' +
                         '<img class="fs-thumb" src="https://graph.facebook.com/'+person.uid+'/picture" />' +
                         '<span class="fs-name">' + _charLimit(person.name, 15) + '</span>' +
                       '</a>';
@@ -291,6 +372,56 @@
 
 
   },
+  
+  _buildConfirmView = function() {
+		
+	  var friend1_elements = $('#fs-selected-user-list li').filter('#friend-type1');
+	  var friend2_elements = $('#fs-selected-user-list li').filter('#friend-type2');
+	  var friend0_elements = $('#fs-selected-user-list li').not('#friend-type2').not('#friend-type1');
+	  //alert("friend-count:" + $(friend0_elements).length + " friend_of_Friend_count:" + $(friend1_elements).length + " non_Friend_count:" + $(friend2_elements).length);
+	  
+	  var container = $('#fs-confirm-user-list'); 
+	// build friend list  
+	  if (friend0_elements.length > 0) {
+		  var new_html = '<h2>Selected Friends (' + friend0_elements.length + ')</h2><ul>';
+	
+		  $.each(friend0_elements, function(){
+	    		var duplicate = $(this).clone();
+	    		duplicate.find('input').remove();
+	    		new_html += duplicate.html();
+	    	});
+		  new_html+='</ul>';
+		  container.append(new_html);
+	  }
+	  
+  	// build friend-of-friend list
+	  if (friend1_elements.length > 0) {
+		  var new_html = '<h2>Selected Friends-of-Friends (' + friend1_elements.length + ')</h2><ul>';
+			
+		  $.each(friend1_elements, function(){
+	    		var duplicate = $(this).clone();
+	    		duplicate.find('input').remove();
+	    		new_html += duplicate.html();
+	    	});
+		  new_html+='</ul>';
+		  container.append(new_html);
+	  }
+	  
+  	
+  	// build non-friend list
+	  if (friend2_elements.length > 0) {
+		  var new_html = '<h2>Selected Non-Friend Users (' + friend2_elements.length + ')</h2><ul>';
+			
+		  $.each(friend2_elements, function(){
+	    		var duplicate = $(this).clone();
+	    		duplicate.find('input').remove();
+	    		new_html += duplicate.html();
+	    	});
+		  new_html+='</ul>';
+		  container.append(new_html);
+	  }
+
+  },
 
   _initEvent = function() {
   
@@ -302,19 +433,27 @@
       _submit();
     });
     
+    wrap.delegate('#fs-continue-button', 'click.fs', function(){
+        _continue();
+      });
+    
+    wrap.delegate('#fs-back-button', 'click.fs', function(){
+        _back();
+      });
+    
     wrap.delegate('#fs-select-button', 'click.fs', function(){
         _selectUsername();
       });
     
     $('#fs-dialog').on("click","#nfs-tab", function(e){
-        _showNfsTab($(this));
+        _showNfsInputBox($(this));
       });
     
     $('#fs-dialog').on("click","#fs-tab", function(e){
-        _showFsTab($(this));
+        _showFsInputBox($(this));
       });
     
-    $('#fs-dialog input').focus(function(){
+    $('#fs-filter-box input').focus(function(){
       if ($(this).val() === $(this)[0].title){
         $(this).val('');
       }
@@ -323,16 +462,33 @@
         $(this).val($(this)[0].title);
       }
     }).blur();
+    
+    $('#nfs-input-box input').focus(function(){
+        if ($(this).val() === $(this)[0].title){
+          $(this).val('');
+        }
+      }).blur(function(){
+        if ($(this).val() === ''){
+          $(this).val($(this)[0].title);
+        }
+      }).blur();
 
 
-    $('#fs-tab-view input').keyup(function(){
+    $('#fs-filter-box input').keyup(function(){
       _find($(this));
     });
 
+    $('#nfs-input-box').keypress(function(event) {
+    	  if (event.keyCode == '13') {
+    	    $('#fs-select-button').click();
+    	    event.preventDefault();
+    	  }
+    });
+    
 
     wrap.delegate('#fs-reset', 'click.fs', function() {
       $('#fs-input-text').val('');
-      _find($('#fs-tab-view input'));
+      _find($('#fs-filter-box input'));
       $('#fs-input-text').blur();
     });
 
@@ -340,11 +496,16 @@
     wrap.delegate('#fs-user-list li', 'click.fs', function() {
       _click($(this));
     });
-    
+
+    wrap.delegate('#fs-selected-user-list li', 'click.fs', function() {
+        _click($(this));
+      });
+  
+    /*
     $('#fs-dialog').on("click","#fs-show-selected", function(e){
         _showSelected($(this));
       });
-    
+    */
 
     $(document).keyup(function(e) {
       if (e.which === 27 && fsOptions.enableEscapeButton === true) {
@@ -360,26 +521,42 @@
 
   },
   
-  _showFsTab = function() {
+  _showFsInputBox = function() {
 
-	    $('#fs-tab-view').children().show();
-	    $('#nfs-tab-view').children().hide();
+	    $('#fs-filter-box').show();
+	    $('#nfs-input-box').hide();
+	    if ($('#fs-dialog').has('#fs-summary-box').length  ) 
+	    	$('#fs-summary-box').show();
+	    //$('#fs-user-list ul').show();
+	  },
+  _showNfsInputBox = function() {
+
+	    $('#fs-filter-box').hide();
+	    $('#nfs-input-box').show();
+	    if ($('#fs-dialog').has('#fs-summary-box').length ){
+	    	$('#fs-summary-box').hide();
+	  }
+	    	//$('#fs-user-list ul').hide();
 
 	  },
-  _showNfsTab = function() {
-
-	    $('#fs-tab-view').children().hide();
-	    $('#nfs-tab-view').children().show();
-
-	  },
-
+// called when a click on li is done
   _click = function(th) {
+
     var btn = th;
 
+       		
     if ( btn.hasClass('checked') ) {
 
-      btn.removeClass('checked');
-      btn.find('input.fs-friends').attr('checked', false);
+    	// find the original user in hte old container
+    	var selected_id = $(btn).find('.fs-friends').val();
+		var hidden_element = $('#fs-user-list .fs-friends[value='+selected_id+']');
+
+    	// show the original user in the old container
+		$(hidden_element).parents('li').removeClass('selected').show();
+		
+
+    	// compltely remove the copied user from the new container
+    	btn.remove();
 
       selected_friend_count--;
 
@@ -398,11 +575,17 @@
 
       selected_friend_count++;
 
-      btn.addClass('checked');
-      btn.find('input.fs-friends').attr('checked', true);
+      // add a 'checked' copy to the new container
+      var element_copy= btn.clone();
+      element_copy.addClass('checked');
+      element_copy.find('input.fs-friends').attr('checked', true);
+      $('#fs-selected-user-list ul').append(element_copy);
+      // hide the  user from the main container
+      btn.addClass('selected');
+      btn.hide();
     }
 
-    _showFriendCount();
+    //_showFriendCount();
   },
 
   _stopEvent = function() {
@@ -427,7 +610,7 @@
   },
 
   _find = function(t) {
-	  
+
     var fs_dialog = $('#fs-dialog');
 
     search_text_base = $.trim(t.val());
@@ -436,12 +619,12 @@
     var container = $('#fs-user-list ul');
     var elements =[]
     if (search_text=="")
-    	container.children().show();
+    	container.children().not(".selected").show();
     else{
     	var elements = $('#fs-user-list .fs-fullname[value*='+search_text+']');
     	container.children().hide();
     	$.each(elements, function(){
-    		$(this).parents('li').show();
+    		$(this).parents('li').not(".selected").show();
     	});
     }
     var result_text = '';
@@ -465,14 +648,14 @@
     }
 
     if ( search_text_base === '' ){
-      if ( fs_dialog.has('#fs-summary-box').length ){
 
-        if ( selected_friend_count === 1 ){
+      if ( fs_dialog.has('#fs-summary-box').length ){
+     //   if ( selected_friend_count === 1 ){
           $('#fs-summary-box').remove();
-        }
-        else{
-          $('#fs-result-text').remove();
-        }
+     //   }
+     //   else{
+     //     $('#fs-result-text').remove();
+     //   }
 
       }
     }
@@ -531,6 +714,7 @@
     }
   },
 
+  /*
   _showFriendCount = function() {
     if ( selected_friend_count > 1 && fsOptions.showSelectedCount === true ){
     
@@ -561,14 +745,17 @@
 
     }
   },
-
+*/
+  /*
   _resetSelection = function() {
     $('#fs-user-list li').removeClass('checked');
     $('#fs-user-list input.fs-friends').attr('checked', false);
     
     selected_friend_count = 1;
   },
+  */
 
+  /*
   _selectAll = function() {
     if (fsOptions.showButtonSelectAll === true && fsOptions.max === null) {
       $('#fs-show-selected').before('<a href="javascript:{}" id="fs-select-all"><span>'+fsOptions.lang.buttonSelectAll+'</span></a> - ');
@@ -594,7 +781,7 @@
         else {
           _resetSelection();
           
-          _showFriendCount();
+          //_showFriendCount();
           
           $('#fs-select-all').text(fsOptions.lang.buttonSelectAll);
         }
@@ -602,7 +789,8 @@
       
     }
   },
-
+*/
+  /*
   _showSelected = function(t) {
     var container = $('#fs-user-list ul'),
         allElements = container.find('li'),
@@ -619,6 +807,7 @@
         isShowSelectedActive = false;
       }
       else {
+
         t.addClass('active').text(fsOptions.lang.buttonShowAll);    
         container.children().hide();
         $.each(selectedElements, function(){
@@ -629,7 +818,7 @@
     }
      
   },
-  
+  */
   defaults = {
 	accessToken: null, // used to get facebook graph api data
 	facebookID:null,

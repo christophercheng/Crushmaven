@@ -196,23 +196,38 @@ def ajax_find_fb_user(request):
     response_data = dict()
     try:
         username=''
-        username=request.REQUEST['username'] 
-        me=request.user
+        username=request.REQUEST['username']
+        me=request.user 
         access_token = me.access_token
-
         print "accessing user: " + username
         # call fb api to get user info and put it in the cleaned_data function
         fb_profile = urllib.urlopen('https://graph.facebook.com/' + username + '/?access_token=%s' % access_token)
         fb_profile = json.load(fb_profile)
         print "resulant profile: " + str(fb_profile)   
 
-        fb_profile['id'] #raises KeyError if no id key/value pair exists in the fb_profile dictionary
+        #raises KeyError if no id key/value pair exists in the fb_profile dictionary
+        crush_id = fb_profile['id']
+        if crush_id==me.username:
+            response_data['error_message']='Invalid user: you cannot add yourself'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
         try:
             me.crush_targets.get(username=fb_profile['id'])
             response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as a crush.'
         except FacebookUser.DoesNotExist:
+            friend_profile = urllib.urlopen('https://graph.facebook.com/' + me.username + '/friends/' + crush_id + '/?access_token=%s' % access_token)
+            friend_profile = json.load(friend_profile)
+            if len(friend_profile['data'])>0:
+                friend_type=0
+            else:
+                friend_profile = urllib.urlopen('https://graph.facebook.com/' + me.username + '/mutualfriends/' + crush_id + '/?access_token=%s' % access_token)
+                friend_profile = json.load(friend_profile)
+                if len(friend_profile['data'])>0:
+                    friend_type=1
+                else:
+                    friend_type=2
             response_data['id']=fb_profile['id']
             response_data['name']=fb_profile['name']
+            response_data['friend_type']=friend_type
     except KeyError: # username not found on fb
         response_data['error_message'] = 'Invalid facebook username: ' + username     
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
