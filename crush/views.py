@@ -46,7 +46,8 @@ def crushes_in_progress(request):
         duplicate_userlist=[]
         
         for key in request.POST:
-            crushee_id=request.POST[key]
+            crushee_id=request.POST[key][:-1] #handle a hack where last character is the friend type
+            friend_type=request.POST[key][-1]
     
             if key.startswith('to'):    
                 # find existing site user with this id or create a new user 
@@ -60,7 +61,7 @@ def crushes_in_progress(request):
                 print "successfully got a new crush user with username: " + selected_user.facebook_username
                 if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
                     CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
-                                                               friendship_type=0, updated_flag=True)
+                                                               friendship_type=friend_type, updated_flag=True)
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)

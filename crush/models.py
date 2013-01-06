@@ -452,7 +452,7 @@ class CrushRelationship(BasicRelationship):
             # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
             # get total previous admirers (past and present) and add 1
             self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
-        
+          
             try:
                 # check to see if there is a reciprocal relationship i.e. is the crush also an admirer of the admirer?
                 #if admirer is also a crush of the source person's crush list, then we have a match
@@ -494,6 +494,8 @@ class CrushRelationship(BasicRelationship):
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
         print "finished saving crush relationship object"
         super(CrushRelationship,self).save(*args,**kwargs)
+        if self.friendship_type>0 and self.is_lineup_initialized ==False:
+            self.initialize_lineup() # if crush is not on friend, must build lineup with admirer friends asap cause crush can't access admirer's friends
 
     def notify_target_person(self,crush_relationship):
         print "notifying the target person of a new admirer: "
