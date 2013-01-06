@@ -495,8 +495,8 @@ class CrushRelationship(BasicRelationship):
         print "finished saving crush relationship object"
         super(CrushRelationship,self).save(*args,**kwargs)
         if self.friendship_type>0 and self.is_lineup_initialized ==False:
-            self.initialize_lineup() # if crush is not on friend, must build lineup with admirer friends asap cause crush can't access admirer's friends
-
+            if self.initialize_lineup() == False: # if crush is not on friend, must build lineup with admirer friends asap cause crush can't access admirer's friends
+                self.delete()# if lineup failed, then don't allow this relationship
     def notify_target_person(self,crush_relationship):
         print "notifying the target person of a new admirer: "
         target_person=crush_relationship.target_person
