@@ -162,6 +162,12 @@
 
   _submit = function() {
 
+	// ensure the terms & conditions checkbox is checked
+	 
+	if (!$('#fs-terms-checkbox').is(':checked')){
+		alert("You can proceed without agreeing to the Terms & Conditions.");
+		return false;
+  }
     var selected_friends = [];
     $('input.fs-friends:checked').each(function(){
       var splitId = $(this).val().split('-');
@@ -241,7 +247,7 @@
 	                      
 	                      
 	                      '<div id="nfs-input-box">' +
-	                      	'Enter Crush\'s Facebook Username:' + '<a href="#" id="nfs-help">what\'s this?</a>' +
+	                      	'Enter Crush\'s Facebook Username:' +
 	                        '<div id="anfs-input-wrap">' +
 	                          '<span>https://facebook.com/</span>' +
 	                          '<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
@@ -255,9 +261,19 @@
 	                      '</div>' +    
 	                      
 	                      '<div id="fs-user-list">' +
+	                        '<div id="fs-nonuser-help">' +
+	                        '<h3>Where is the facebook user id?</h3>' +
+	                        '1) Navigate to your crush\'s facebook page (on facebook.com)<br>' +
+	                        '2) Locate the navigation / address bar at the top of your browser<br>' + 
+	                        '3) Extract the text following \'www.facebook.com/\'.<br>' +
+
+	                        'In the above example, the Facebook user id is \'JessicaAlba\' (highlighted in red).' +
+	                      '</div>' +
 	                        '<ul></ul>' +
 	                      '</div>' +
      
+
+	                      
 	                  '</div>' +// close off fs-select-view +
 	                  
 	                  '<div id="fs-confirm-view">' +
@@ -267,19 +283,21 @@
 		                      
 	                  '<div id="fs-dialog-buttons">' +
 	                  
-	                  		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the terms & conditions</span>' +
+	                  		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the <a href="/terms" target="_blank">terms & conditions</a></span>' +
 	                  		'<a id="fs-back-button"  href="javascript://">Back</a>' +
 	                  
-	                      '<a href="javascript:{}" id="fs-continue-button" class="fs-button"><span>Confirm</span></a>' +
+	                      '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
 	                      '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
 	                      '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
 	                  '</div>' +
      
 	                '</div>'; // close off fs-dialog
 
+    //
 
     content.html(container);
     $('#nfs-input-box').hide();
+    $('#fs-nonuser-help').hide();
     $('#fs-terms-checkbox').hide();
     $('#fs-terms-checkbox').next().hide();
     $('#fs-back-button').hide();
@@ -527,7 +545,9 @@
 	    $('#nfs-input-box').hide();
 	    if ($('#fs-dialog').has('#fs-summary-box').length  ) 
 	    	$('#fs-summary-box').show();
-	    //$('#fs-user-list ul').show();
+	    $('#fs-nonuser-help').hide();
+	    $('#fs-user-list ul').show();
+	    
 	  },
   _showNfsInputBox = function() {
 
@@ -536,7 +556,9 @@
 	    if ($('#fs-dialog').has('#fs-summary-box').length ){
 	    	$('#fs-summary-box').hide();
 	  }
-	    	//$('#fs-user-list ul').hide();
+	   
+	    $('#fs-user-list ul').hide();
+	    $('#fs-nonuser-help').show();
 
 	  },
 // called when a click on li is done
@@ -584,9 +606,17 @@
       btn.addClass('selected');
       btn.hide();
     }
-
+    _enableContinueButton();
     //_showFriendCount();
   },
+  
+  _enableContinueButton = function() {
+	  if (selected_friend_count>1)
+		  $('#fs-continue-button').removeAttr('disabled');
+	  else
+		  $('#fs-continue-button').attr('disabled','disabled');
+
+	  },
 
   _stopEvent = function() {
 
