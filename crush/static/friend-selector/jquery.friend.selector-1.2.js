@@ -46,7 +46,7 @@
      if (limit_state === false) {
         return false;
       }
-	$("#nfs-user-list").append('<div id="fs-loading"></div>');
+	$("#fs-user-list").append('<div id="fs-loading"></div>');
     var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
     // see if user exists
     $.get("/ajax_find_fb_user/", {username:username},
@@ -70,6 +70,8 @@
     			}
 
     			_addValidUsername(response);
+    	        selected_friend_count++;
+    	        _enableContinueButton();
     			$('#nfs-input-text').val("");
     	        $('#fs-loading').remove();
     		} 			
@@ -90,7 +92,7 @@
 
         item.append(link);
         $('#fs-selected-user-list ul').append(item);
-        selected_friend_count++;
+
 	  },
     
   _close = function() {
