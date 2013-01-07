@@ -82,7 +82,7 @@
 
         var link =  '<a class="fs-anchor"  href="javascript://">' +
 		        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+userData.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
-		        '<input class="fs-friends" type="checkbox" checked="checked" name="friend[]" value="fs-'+ userData.id+'" />' +
+		        '<input class="fs-friends" type="checkbox" checked="checked" name="friend[]" value="' + userData.id+ userData.friend_type + '" />' +
 		      //  '<input class="fs-friend-type" type="hidden" name="nfs-friend-type" value="'+ userData.friend_type +'" />' +
 		        '<img class="fs-thumb" src="https://graph.facebook.com/'+userData.id+'/picture" />' +
 		        '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>' +
@@ -170,8 +170,7 @@
   }
     var selected_friends = [];
     $('input.fs-friends:checked').each(function(){
-      var splitId = $(this).val().split('-');
-      var id = splitId[1];
+      var id = $(this).val();
       selected_friends.push(parseInt(id, 10));
     });
 
@@ -375,7 +374,7 @@
           person = facebook_friends[j]
           link =  '<a class="fs-anchor" href="javascript://">' +
                         '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
-                        '<input class="fs-friends" type="checkbox" name="friend[]" value="fs-'+ person.uid+'" />' +
+                        '<input class="fs-friends" type="checkbox" name="friend[]" value='+ person.uid+'0" />' +
                         '<img class="fs-thumb" src="https://graph.facebook.com/'+person.uid+'/picture" />' +
                         '<span class="fs-name">' + _charLimit(person.name, 15) + '</span>' +
                       '</a>';
