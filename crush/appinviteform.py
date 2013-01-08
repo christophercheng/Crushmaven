@@ -5,7 +5,6 @@ Created on Dec 24, 2012
 '''
 import re
 from django import forms
-from django.core.validators import validate_email
 from django.core.validators import email_re
 from django.forms import ValidationError
 
@@ -31,12 +30,16 @@ class MultiEmailField(forms.Field):
 
 class AppInviteForm(forms.Form):
 
+    def __init__(self,*args,**kwargs):
+        self.friendlist_string=kwargs.pop('friendlist_string',None)
+        super(AppInviteForm, self).__init__(*args,**kwargs)
+    
     crush_emails = MultiEmailField(required=False)
-    friend_emails = MultiEmailField(required=False)
+    mutual_friend_emails = MultiEmailField(required=False)
 
     def clean(self):
         print "clean called"
-        if (self.data['crush_emails']=="") and (self.data['friend_emails']==""):
+        if (self.data['crush_emails']=="") and (self.data['mutual_friend_emails']==""):
             raise forms.ValidationError("Yo, you must enter at least one valid email address.")
         return super(AppInviteForm,self).clean()
 

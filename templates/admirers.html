@@ -51,7 +51,10 @@ var lineups_need_initialization=false;
 </script>
 	<ul>
 		{% for admirer_rel in admirer_relationships %}
-			<li> Secret Admirer #{{admirer_rel.admirer_display_id}} (added {{admirer_rel.date_added|datetime_since}} ago) ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}} - <small>{{admirer_rel.source_person.facebook_username}})</small><BR> 
+			<li> Secret Admirer #{{admirer_rel.admirer_display_id}} 
+			({% if admirer_rel.friendship_type == 0 %} friend of yours {% elif admirer_rel.friendship_type == 1 %}friend-of-a-friend{% endif %})
+			({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})
+			<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
 			<div id="{{admirer_rel.admirer_display_id}}" class="lineup">
                 <script>
                 {% if admirer_rel.is_lineup_initialized %}

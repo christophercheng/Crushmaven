@@ -176,6 +176,8 @@ class FacebookUserManager(UserManager):
                 if is_this_for_me:
                     user.is_active=True
                     user.access_token=fb_access_token
+                else:
+                    user.is_active=False
                 #print "completed creation call"
             except IntegrityError:
                 #print "unable to create a new user for some odd reason"

@@ -154,11 +154,10 @@ def app_invite_form(request, crush_username):
     if request.method == 'POST': # if the form has been submitted...
         print "METHOD IS POST"
         form = AppInviteForm(request.POST)
-
         if form.is_valid():
             # send out the emails here
             crush_email_list=form.cleaned_data['crush_emails']
-            friend_email_list=form.cleaned_data['friend_emails']
+            friend_email_list=form.cleaned_data['mutual_friend_emails']
             try:
                 crush_user = FacebookUser.objects.get(username=crush_username)
             except FacebookUser.DoesNotExist:
@@ -193,13 +192,24 @@ def app_invite_form(request, crush_username):
             except SMTPException:
                 return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Plese try again later." })
             if request.is_ajax():
-                print "sucess!!!!!"
+                print "success and returning rendered template"
                 return render(request,'app_invite_success.html',{'crush_email_list':crush_email_list,
                                                                  'friend_email_list':friend_email_list})
             else:
+                print "success and redirecting"                
                 return redirect('app_invite_success')
     else:
-        form=AppInviteForm()
+        # find mutual friends to pass to the app invite form
+        friend_profile = urllib.urlopen('https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + crush_username + '/?access_token=%s' % request.user.access_token)
+        friend_profile = json.load(friend_profile)
+        friendlist_string=''
+        if len(friend_profile['data'])>0:
+            for friend in friend_profile['data']:
+                friendlist_string+=friend['name'] + ', '
+            friendlist_string=friendlist_string[:-2] # strip out last comma 
+        print "friendlist_string: " + friendlist_string
+        form=AppInviteForm(friendlist_string=friendlist_string)
+        print "instantiated form instance"
     return render(request, 'app_invite_form.html',{'form':form,'crush_username':crush_username})
 
 @login_required

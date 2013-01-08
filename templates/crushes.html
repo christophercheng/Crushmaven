@@ -4,13 +4,13 @@
 {% load fbdater_extras %}
 
 <meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+</meta>
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
-
 
 
 <script type="text/javascript">
@@ -31,6 +31,7 @@ $(document).ready(function()
             $("#credit_check_modal").dialog("open");
             return false;
         });
+        
 });
 </script>
 
@@ -38,16 +39,25 @@ $(document).ready(function()
 <script type="text/javascript">
 $(document).ready(function() 
 {
-        $("#app_invite_modal").dialog({modal: true, autoOpen: false});
+				var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
+        $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
 
         $("a.app_invite").click(function(e) {
-        	var crush_username=$(this).attr('crush_username');	
-        	load_url="/app_invite_form/" + crush_username + "/";
-          e.preventDefault();
-					$("#app_invite_modal").load(load_url)   	
-          $("#app_invite_modal").dialog("open");
-          return false;
+  
+				 app_div_element = $("#app_invite_modal");
+				 app_div_element.html('<div id="admirer-loading"></div>');
+				 app_div_element.dialog(options).dialog("open");
+				 var crush_username=$(this).attr('crush_username');	
+				 app_div_element.load("/app_invite_form/" + crush_username + "/");  
+				 //app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
+				 e.preventDefault();
+         return false;
         });
+        
+//        $('#app_invite_modal').bind('dialogclose', function(event) {
+ //    	alert('closed');
+// });
+        
 });
 </script>
 
@@ -123,11 +133,13 @@ $(document).ready(function()
 		<HR>	
 		<!-- start: crush first and last name -->
 		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
+		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
+		
 		&nbsp;&nbsp;&nbsp;
 		<!-- end: crush first and last name -->
 
 		<!-- start: crush status graphic -->	
-		<font color="dark red">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+		<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
 		<!--  end: crush status graphic -->
 		<BR>		
 		<!-- start: crush pic -->
@@ -192,19 +204,20 @@ $(document).ready(function()
 		
 <!-- start: crush first and last name -->
 		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b> 
+		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
 		{% if crush_type = 1 %} <b>(YES)</b> {% elif crush_type = 2 %} <b>(NO)</b>{% endif %}
 		&nbsp;&nbsp;&nbsp;
 <!-- end: crush first and last name -->
 
 <!-- start: crush status graphic -->	
 		{% if crush.target_status < 2 %}
-			<font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;finished crush line-up</font>
+			<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;finished crush line-up</font>
 			{% elif crush.target_status == 2 %}
-				<font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;finished crush line-up</font>
+				<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;finished crush line-up</font>
 				{% elif crush.target_status == 3 %}
-					<font color="dark red">signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>finished crush line-up</font>
+					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>finished crush line-up</font>
 					{% else %}	
-						<font color="dark red">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+						<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
 		{% endif %}
 		<!--  end: crush status graphic -->
 		<BR>		
@@ -242,9 +255,7 @@ $(document).ready(function()
 		{% if crush.target_status == 0 %}
 			&nbsp;&nbsp;&nbsp;<B><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></B>
 		{% endif %}
-		<!-- end: conditional button: send invite -->
-		
-			
+		<!-- end: conditional button: send invite -->		
 		
 		<!-- start: secondary data -->
 		<br>

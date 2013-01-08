@@ -1,13 +1,11 @@
 '''
-Created on Dec 24, 2012
-
-@author: Chris Work
+THIS IS A TEST PAGE THAT IS NO LONGER USED.  RELATED FUNCTIONALITY IS IN JQUERY NOW
 '''
 #from django.forms import CharField
 from django import forms
 import urllib, json
 from crush.models import FacebookUser, CrushRelationship
-import random 
+
 
 class SelectCrushIDForm(forms.Form):
     uid = forms.CharField(max_length=100,required=True)
