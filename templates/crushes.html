@@ -17,7 +17,7 @@
 
 $(document).ready(function() 
 {
-        $("#credit_check_modal").dialog({modal: true, autoOpen: false});
+        $("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
 
         $("a.check_credit").click(function(e) {
         	var success_path=$(this).attr('success_path');	

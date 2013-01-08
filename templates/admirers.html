@@ -15,8 +15,8 @@ $(document).ready(function()
 {
 	
         $("#credit_check_modal").dialog({modal: true, autoOpen: false});
-				$('.lineup').on('click',function(e) {
-					credit_check_element=$(this).children('.check_credit');
+				$('.lineup').on('click', '.check_credit', function(e) {
+					credit_check_element=$(this);
         	var success_path=credit_check_element.attr('success_path');	
         	var cancel_url = credit_check_element.attr('cancel_url');
         	// return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
@@ -28,6 +28,7 @@ $(document).ready(function()
 			$("#credit_check_modal").load(load_url)   	
             $("#credit_check_modal").dialog("open");
             return false;
+            
         });
 });
 </script>
