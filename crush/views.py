@@ -471,6 +471,9 @@ def just_friends(request):
             crushee_id=request.POST[key]
     
             if key.startswith('to'):    
+                crushee_id=request.POST[key][:-1] #handle a hack where last character is the friend type
+
+                friend_type= int(request.POST[key][-1])
                 # find existing site user with this id or create a new user 
                 # called function is in a custom UserProfile manager because it is also used during login/authentication
                 print "trying to get a platonic friend user for id=" + crushee_id            
@@ -480,7 +483,7 @@ def just_friends(request):
     
                 if not(request.user.just_friends_targets.filter(username=selected_user.username).exists()):
                         PlatonicRelationship.objects.create(target_person=selected_user,source_person=request.user,
-                                                               friendship_type=0, updated_flag=True)
+                                                               friendship_type=friend_type, updated_flag=True)
                         userlist.append(selected_user)
         return HttpResponseRedirect('/just_friends')
 
