@@ -57,7 +57,6 @@
     			return false;
     		}
     		else {
-    			//_checkForDuplicate() // check both tabs
 
     	    	// find the original user in hte old container
     	    	var selected_id = "fs-" +response.id;
@@ -85,11 +84,9 @@
         var link =  '<a class="fs-anchor"  href="javascript://">' +
 		        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+userData.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
 		        '<input class="fs-friends" type="checkbox" checked="checked" name="friend[]" value="' + userData.id+ userData.friend_type + '" />' +
-		      //  '<input class="fs-friend-type" type="hidden" name="nfs-friend-type" value="'+ userData.friend_type +'" />' +
 		        '<img class="fs-thumb" src="https://graph.facebook.com/'+userData.id+'/picture" />' +
 		        '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>' +
 		      '</a>';
-
         item.append(link);
         $('#fs-selected-user-list ul').append(item);
 
@@ -308,7 +305,7 @@
     _getFacebookFriends();
     _resize(true);
     _initEvent();
-    _selectAll();
+    //_selectAll();
 
     $(window).resize(function(){
       _resize(false);
@@ -376,7 +373,7 @@
           person = facebook_friends[j]
           link =  '<a class="fs-anchor" href="javascript://">' +
                         '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
-                        '<input class="fs-friends" type="checkbox" name="friend[]" value='+ person.uid+'0" />' +
+                        '<input class="fs-friends" type="checkbox" name="friend[]" value="'+ person.uid+'0" />' +
                         '<img class="fs-thumb" src="https://graph.facebook.com/'+person.uid+'/picture" />' +
                         '<span class="fs-name">' + _charLimit(person.name, 15) + '</span>' +
                       '</a>';
@@ -566,17 +563,15 @@
   _click = function(th) {
 
     var btn = th;
-
-       		
+    		
     if ( btn.hasClass('checked') ) {
 
     	// find the original user in hte old container
     	var selected_id = $(btn).find('.fs-friends').val();
-		var hidden_element = $('#fs-user-list .fs-friends[value='+selected_id+']');
 
+    	var hidden_element = $('#fs-user-list .fs-friends[value='+selected_id+']');
     	// show the original user in the old container
 		$(hidden_element).parents('li').removeClass('selected').show();
-		
 
     	// compltely remove the copied user from the new container
     	btn.remove();

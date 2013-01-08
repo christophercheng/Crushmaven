@@ -53,6 +53,8 @@ urlpatterns += patterns('crush',
     url(r'^ajax_update_num_crushes_in_progress/$','views.ajax_update_num_crushes_in_progress'),
     
     url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
+    
+    url(r'^ajax_are_lineups_initialized/$','views.ajax_are_lineups_initialized'),
         
     url(r'^ajax_display_lineup/(?P<display_id>\d+)/$','views.ajax_display_lineup'),
     

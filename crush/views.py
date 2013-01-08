@@ -14,7 +14,8 @@ from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
 from smtplib import SMTPException
 from multiprocessing import Pool
-from django.http import Http404
+from django.http import HttpResponseNotFound
+import time
 
 
 
@@ -68,7 +69,7 @@ def crushes_in_progress(request):
                                                                friendship_type=friend_type, updated_flag=True)
                     
                     if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-                        pool=Pool(processes=1)
+                        pool=Pool()
                         pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
             
                     userlist.append(selected_user)
@@ -342,18 +343,32 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
     return HttpResponse(ajax_response)
 
 @login_required
+def ajax_are_lineups_initialized(request):
+    print "call to ajax_are_lineups_initialized"
+    counter = 0
+    while True:
+        admirer_rels=request.user.crush_relationship_set_from_target.filter(is_lineup_initialized=False)
+        if len(admirer_rels)==0:
+            return HttpResponse()
+        elif counter==10: 
+            # wait up to 5 seconds total before returning control back to client side
+            return HttpResponseNotFound()
+        else:
+            time.sleep(.5)
+            counter+=1
+            # wait a half second before checking again
+            
+@login_required
 def ajax_display_lineup(request, display_id):
     int_display_id=int(display_id)
     print "ajax initialize lineup with display id: " + str(int_display_id)
-
     ajax_response = ""
-
     try:    
         admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
  
         if admirer_rel.is_lineup_initialized == False:
-            
-            raise Http404 # don't do anything until the initialization is done
+            return HttpResponseNotFound(str(display_id),content_type="text/plain")
+            #raise Http404 # don't do anything until the initialization is done
  
 
         for counter, member in enumerate(admirer_rel.lineupmember_set.all()):

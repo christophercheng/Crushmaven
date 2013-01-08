@@ -8,7 +8,6 @@ from django.db.models import F
 import random
 from smtplib import SMTPException
 from django.core.mail import send_mail
-from multiprocessing import Pool
 
 # returns true if successful, false otherwise
 def initialize_lineup(self):
@@ -50,8 +49,9 @@ def initialize_lineup(self):
     #print "fql_query string: " + str(fql_query)
     fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
     try:
-        print "json results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(fql_query_results)
         data = json.load(fql_query_results)['data']     
+        print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
+        
         if (len(data) == 0):
             if admirer_gender=='Male':
                 data = [{u'username':u'zuck', 'uid':u'zuck'}]

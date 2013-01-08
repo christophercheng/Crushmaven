@@ -5,7 +5,6 @@
 
 <meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
@@ -14,7 +13,7 @@
 
 $(document).ready(function() 
 {
-			var
+	
         $("#credit_check_modal").dialog({modal: true, autoOpen: false});
 				$('.lineup').on('click',function(e) {
 					credit_check_element=$(this).children('.check_credit');
@@ -47,49 +46,44 @@ $(document).ready(function()
 <! -- End of crush type navigation widget -->  
 
 {% if admirer_relationships %}
+<script>
+var lineups_need_initialization=false;
+</script>
 	<ul>
 		{% for admirer_rel in admirer_relationships %}
 			<li> Secret Admirer #{{admirer_rel.admirer_display_id}} (added {{admirer_rel.date_added|datetime_since}} ago) ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}} - <small>{{admirer_rel.source_person.facebook_username}})</small><BR> 
 			<div id="{{admirer_rel.admirer_display_id}}" class="lineup">
-			<!--  
-			<BR><img src="http://graph.facebook.com/{{ admirer_rel|admirer_lineup_username:"0"}}/picture" height=40 width=40> <img src="http://graph.facebook.com/{{ admirer_rel|admirer_lineup_username:"1" }}/picture" height=40 width=40>
-			{% for x in "xxxxxxxx" %}
-				<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>
-			{% endfor %}
-			<BR>
-			
-			{% if admirer_rel.is_lineup_paid %}
-				{% if admirer_rel.date_lineup_finished %}
-					Line-up completed {{ admirer_rel.date_lineup_finished }}
-					<a href="/lineup/{{admirer_rel.admirer_display_id}}/">View Completed Lineup</a>
-				{% else %}
-					<a href="/lineup/{{admirer_rel.admirer_display_id}}/">Finish Lineup</a>
-				{% endif %}
-			{% else %}
-				<a class="check_credit" href="#" feature_id="1" cancel_url="{{request.build_absolute_uri}}" success_path="/lineup/{{admirer_rel.admirer_display_id}}">Start Lineup</a>
-			{% endif %}
-			-->
+                <script>
+                {% if admirer_rel.is_lineup_initialized %}
+                    $('.lineup#{{admirer_rel.admirer_display_id}}').load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}')           
+                {% else %}
+                    lineups_need_initialization=true;
+                 {% endif %}
+                 </script>
+                 <div id="admirer-loading"></div>
 			</div>
 
 			<BR><BR>
 		{% endfor %}
-			<script type="text/javascript">
 
-  		$(".lineup").each(function(index) {
-  		 var this_element = $(this);
-  		 var this_id = this.id;
-  		  // call load every 1 second until it returns content
-  		 callback = function(response,status,xhr){
-					if (status=="error"){
-					  setTimeout(function(){
-							this_element.load('/ajax_display_lineup/' + this_id,callback);
-						},1000);
-					} 
-  		 };
-  		 this_element.load('/ajax_display_lineup/' + this_id,callback);  
-			});
-			</script>
-		
+	<script type="text/javascript">
+        if (lineups_need_initialization) {
+            check_lineups = function() 
+                {   
+                    setTimeout(function()
+                        {
+                            $.get('/ajax_are_lineups_initialized',function() 
+                                {   
+                                    $(".lineup").has("script").each(function(index){
+                                        $(this).load('/ajax_display_lineup/' + this.id);
+                                        }); // close off each loop
+                                 }).error(check_lineups); // close off get and add error callback
+                         },1000); // close off setTimeout         
+                }; // closeoff check_lineups
+            check_lineups(); // make first call to check lineups
+        } // close of if conditional block
+	</script>
+
 	</ul>
 {% else %}
 	THERE ARE NO {% if admirer_type = 0 %} CURRENT {% else %} PAST {% endif %} SECRET ADMIRERS!
