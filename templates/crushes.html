@@ -10,8 +10,6 @@
 </meta>
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
-<div id="app_invite_modal" title="Send Application Invites"></div>
-
 
 <script type="text/javascript">
 
@@ -35,31 +33,6 @@ $(document).ready(function()
 });
 </script>
 
-<!-- FOR THE EMAIL INVITE POPUP -->
-<script type="text/javascript">
-$(document).ready(function() 
-{
-				var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
-        $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
-
-        $("a.app_invite").click(function(e) {
-  
-				 app_div_element = $("#app_invite_modal");
-				 app_div_element.html('<div id="admirer-loading"></div>');
-				 app_div_element.dialog(options).dialog("open");
-				 var crush_username=$(this).attr('crush_username');	
-				 app_div_element.load("/app_invite_form/" + crush_username + "/");  
-				 //app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
-				 e.preventDefault();
-         return false;
-        });
-        
-//        $('#app_invite_modal').bind('dialogclose', function(event) {
- //    	alert('closed');
-// });
-        
-});
-</script>
 
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
 
@@ -253,13 +226,12 @@ $(document).ready(function()
 		
 		<!-- start: conditional button: send invite -->
 		{% if crush.target_status == 0 %}
-			&nbsp;&nbsp;&nbsp;<B><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></B>
+			&nbsp;&nbsp;&nbsp;<B><span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></span></B>
 		{% endif %}
 		<!-- end: conditional button: send invite -->		
 		
 		<!-- start: secondary data -->
 		<br>
-		
 		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
 		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
 		&nbsp;|&nbsp;

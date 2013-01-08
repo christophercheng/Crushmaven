@@ -23,21 +23,21 @@
     	</style>
     	
     	<!-- Add Facebook Friend Selector CSS -->
+    		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 
-
-		<!-- Add jQuery library 
-		<script type="text/javascript" src="http://facebook-friend-selector.codersgrave.com/js/libs/jquery-1.8.3.min.js"></script>-->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		
+	
 		<!-- Add Facebook Friend Selector JS -->
 		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
     	
 		<title>CrushVibes | Anonymous discovery and connect with crushes and secret admirers</title>
+  		<!-- Add jQuery library  -->
 
     </head>
     <body>
-  
+
  <div id="fb-root"></div>
  <script>
     (function() {
@@ -134,6 +134,27 @@
 		document.body.removeChild(form);
   };
 </script>
+			<div id="app_invite_modal" title="Send Application Invites"></div>
+<!-- FOR THE EMAIL INVITE POPUP -->
+<script type="text/javascript">
+$(document).ready(function() 
+{
+
+				var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
+        $(".app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+
+        $(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
+				 app_div_element = $("#app_invite_modal");
+				 app_div_element.html('<div id="admirer-loading"></div>');
+				 app_div_element.dialog(options).dialog("open");
+				 var crush_username=$(this).attr('crush_username');	
+				 app_div_element.load("/app_invite_form/" + crush_username + "/");  
+				 //app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
+				 e.preventDefault();
+         return false;
+        });     
+});
+</script>
 <script type="text/javascript">
 jQuery(document).ready(function($) {
   $(".inactive_crushed_friends").load('/friends_with_admirers_section');
@@ -141,6 +162,7 @@ jQuery(document).ready(function($) {
 });
 
 </script>
+
 {% if request.path == '/settings_profile/' or request.path == '/settings_notifications/' or request.path == '/settings_credits/' %}
 	{% include "navigation_settings.html" %}
 {% else %}

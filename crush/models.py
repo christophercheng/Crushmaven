@@ -249,11 +249,18 @@ class FacebookUser(AbstractUser):
             return False
         return
 
-    processed_activated_friends_admirers = models.DateField(null=True,default=None)
+    processed_activated_friends_admirers = models.DateTimeField(null=True,default=None)
     #call this asynchronously after a user first logs in.
     def find_inactive_friends_of_activated_user(self):
     # this is done whenever an active user is first created
 
+        # this is a potentially expensive operation, so do it at most every 12 hours
+        if  (self.processed_activated_friends_admirers):
+            time_since_last_update = datetime.datetime.now() - self.processed_activated_friends_admirers 
+            if time_since_last_update.seconds < 43200:
+                print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update.seconds)
+                return
+        
         # get all inactive users into a queryset result but filter out users who are also crushes of user
         all_inactive_crush_relationships = CrushRelationship.objects.filter(target_status__lt=2).exclude(source_person=self)
         print "list of all inactive crush relationships: " + str(all_inactive_crush_relationships)
@@ -269,17 +276,19 @@ class FacebookUser(AbstractUser):
         print "attempting to load the json results"
         fql_query_results = json.load(fql_query_results)['data']
     
+        # clear out past data
+        self.friends_with_admirers_set.clear()
         # loop through all friends.  if any friend is in inactive user results, then add them to the friends_with_admirers list.
         for friend in fql_query_results:
             if friend['uid'] in all_inactive_user_list:
                 self.add_inactive_crushed_friend_by_id(str(friend['uid']))
         # mark the function complete flag so that future users/pages won't reprocess the user
-        self.processed_activated_friends_admirers = datetime.date.today()
+        self.processed_activated_friends_admirers = datetime.datetime.now()
         self.save(update_fields=['processed_activated_friends_admirers'])
         return
     
     #processed_inactivated_friends_admirers = models.BooleanField(default=False)
-    #def find_active_friends_of_inactivated_user(self):
+    def find_active_friends_of_inactivated_crush(self):
                 
         # initialize a batch json argument for use in graph api batch request
             # batch format: https://graph.facebook.com/?access_token=31235234123&batch=[{"METHOD":"GET","relative_url","me/friends?limit=50"},{-second request}]
@@ -294,7 +303,7 @@ class FacebookUser(AbstractUser):
         # go through the results and for each result item, add user to the friends_with_admirers list.
        
         #self.processed_inactivated_friends_admirers=True
-        #return
+        return
     
     def get_facebook_profile(self):
         fb_profile = urllib.urlopen(
@@ -323,6 +332,9 @@ class FacebookUser(AbstractUser):
         return self.crush_relationship_set_from_source.filter(is_results_paid=True)
     
     #=========  Admirer Filters =========
+
+    def get_all_admirer_relations(self):
+        return self.crush_relationship_set_from_target.all()
         
     def get_all_incomplete_admirer_relations(self):
         return self.crush_relationship_set_from_target.filter(date_lineup_finished = None)
@@ -495,6 +507,8 @@ class CrushRelationship(BasicRelationship):
                         self.notify_target_person(crush_relationship=self)
                     else:
                         self.target_status = 0
+                        # see if any active users are friends with this new inactive crush - solicit their help
+                        #self.target_person.find_active_friends_of_inactivated_crush()
                    
         else:
             # check if the target status is being changed so that a possible notification can be sent out
