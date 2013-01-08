@@ -319,6 +319,9 @@ class FacebookUser(AbstractUser):
                                                             
     #=========  Crush Filters =========
     
+    def get_all_crush_relations(self):
+        return self.crush_relationship_set_from_source.all()
+    
     def get_all_incomplete_crush_relations(self):
         return self.crush_relationship_set_from_source.filter(is_results_paid=False)
     

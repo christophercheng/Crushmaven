@@ -1,18 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
 
 <div id="dialog" title="Remove Platonic Friend">Are you sure you want to remove this person from your 'Just Friends' list?</div>
+<div id="reconsider_dialog" title="Add as Crush">Are you sure you want to add this user to your Crush list?</div>
 
 <script type="text/javascript">
 
 $(document).ready(function() 
 {
-        $("#dialog").dialog({modal: true, autoOpen: false});
+        $("#dialog").dialog({modal: true,resizable:false, autoOpen: false});
 
         $("a.delete").click(function(e) {
         	var name=$(this).attr('name');	
@@ -28,6 +25,36 @@ $(document).ready(function()
             return false;
         });
         
+        $("#reconsider_dialog").dialog({modal: true,resizable:false, autoOpen: false});
+
+        $("a#reconsider").click(function(e) {
+        	  var name=$(this).attr('name');	
+            var rel_id=$(this).attr('rel_id');
+            e.preventDefault();
+            $("#reconsider_dialog").html("<form action='/reconsider' method='POST'>Are you sure you want to add " + name + " to your crush list? <BR><BR>" +
+            "<input type='checkbox' id='check_terms' name='terms' value='terms_value' checked>" + 
+            " <small>I agree to the <a href='/terms' target=_blank>terms & conditions</a></small></form>"); 
+            
+            $("#reconsider_dialog").dialog('option', 'buttons', {
+       			"Add": function() {
+       				if (!$('#check_terms').is(':checked')){
+       					alert("You must agree to the terms & conditions before proceeding");
+       					return false;
+       					} // close checkbox check block
+       				$.post("/ajax_reconsider/",{rel_id:rel_id, csrfmiddlewaretoken:'{{csrf_token}}' },function(data){
+      
+       				window.location = "/crushes_in_progress/";
+       				}); // close post function
+							}, // close add function
+        		"Cancel": function() {$(this).dialog("close");
+ 						 }
+    			}); // close off dialog
+            $("#reconsider_dialog").dialog("open");
+            return false;
+        });
+        
+        
+        
 });
 
 </script>
@@ -40,7 +67,7 @@ $(document).ready(function()
 
 	{% for friendship in platonic_relationships %}
 	
-	<div>
+	<div class="platonic_friend_block">
 		<HR>
 <!-- Display NEW or UPDATED if relevant -->  
 		{% if friendship.updated_flag == 1 %}
@@ -53,14 +80,17 @@ $(document).ready(function()
 		&nbsp;&nbsp;&nbsp;
 		<b><i>{{friendship.target_person.first_name}} {{friendship.target_person.last_name}}</i></b> 
 		&nbsp;&nbsp;&nbsp;
-		added {{friendship.date_target_responded}}
+		as of {{friendship.date_added}}
 		&nbsp;&nbsp;&nbsp;
-		<a username="{{friendship.target_person.username}}" name= "{{friendship.target_person.first_name}} 
-				{{friendship.target_person.last_name}}" class="delete" href="#" >remove</a>	
+		<a href="#" id="reconsider" rel_id="{{friendship.id}}" name= "{{friendship.target_person.first_name}} 
+				{{friendship.target_person.last_name}}">reconsider</a>
+	
 		
 		<!-- start: secondary data -->
 		<br>
-		<a href="https://www.facebook.com/{{friendship.target_person.username}}" target="_blank">view facebook page</a>	
+		<a href="https://www.facebook.com/{{friendship.target_person.username}}" target="_blank">view facebook page</a>		&nbsp;&nbsp;<a username="{{friendship.target_person.username}}" name= "{{friendship.target_person.first_name}} 
+				{{friendship.target_person.last_name}}" class="delete" href="#" >(admin remove)</a>	
+	</div>
 	{% endfor %}
 
 	

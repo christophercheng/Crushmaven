@@ -405,6 +405,32 @@ def ajax_display_lineup(request, display_id):
     
     return HttpResponse(ajax_response)
     
+@login_required
+def ajax_reconsider(request):
+
+    rel_id = request.POST['rel_id']
+    
+    try:
+        rel=request.user.platonic_relationship_set_from_source.get(id=rel_id)
+        rel_target_person=rel.target_person
+        try:
+            request.user.get_all_crush_relations().get(target_person__username=rel_target_person.username)         
+            # for some reason crush relationship already exists, but kill this platonic relationship anyway before leaving
+            rel.delete()
+            return HttpResponse("success") # crush relationship already exists for this person so don't do anything mo
+        except CrushRelationship.DoesNotExist:
+            # create a new crushrelationship
+            new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True)
+           
+            if rel.friendship_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
+               pool=Pool()
+               pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
+               rel.delete()
+    except PlatonicRelationship.DoesNotExist:
+        return HttpResponseNotFound("can't find the original platonic relationship") #can't find original platonic relationships so don't do anything more
+    
+    return HttpResponse("success")
+
 
 @login_required
 def ajax_update_num_platonic_friends(request):

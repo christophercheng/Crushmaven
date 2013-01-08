@@ -59,6 +59,8 @@ urlpatterns += patterns('crush',
     url(r'^ajax_display_lineup/(?P<display_id>\d+)/$','views.ajax_display_lineup'),
     
     url(r'^ajax_find_fb_user/$','views.ajax_find_fb_user'),
+    
+    url(r'^ajax_reconsider/$','views.ajax_reconsider'),
                                
     url(r'^modal_delete_crush/$', 'views.modal_delete_crush'),
     
