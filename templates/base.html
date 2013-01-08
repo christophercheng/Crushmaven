@@ -51,7 +51,7 @@
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
-	  malePref: {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+	  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
       max:18,
 	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
       closeOverlayClick: true,

@@ -6,9 +6,96 @@ from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
 import random
-
 from smtplib import SMTPException
 from django.core.mail import send_mail
+from multiprocessing import Pool
+
+# returns true if successful, false otherwise
+def initialize_lineup(self):
+    print "initializing relationship for admirer: " + self.source_person.facebook_username
+    # get sex of admirer
+    admirer_gender= 'Male' if self.source_person.gender == 'M'  else 'Female'
+    if self.friendship_type == 0:
+        builder_user = self.target_person # crush is building lineup from his friend list
+    else:
+        builder_user = self.source_person # admirer is building lineup from his friend list
+    exclude_facebook_ids=""
+    # loop through all their just_friends_targets and all their crush_targets and add their ids to a fql friendlist list
+    builder_crushes = builder_user.crush_targets.all()
+    builder_just_friends = builder_user.just_friends_targets.all()
+    for crush in builder_crushes:
+        exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
+    for just_friend in builder_just_friends:
+        exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
+    builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
+    for rel in builder_incomplete_admirer_rels:
+        builder_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
+        for lineup_member in builder_undecided_lineup_members:
+            exclude_facebook_ids = exclude_facebook_ids + "'" + lineup_member.LineupUser.username + "',"
+    # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
+    if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
+        # if building from crush perspective, then exclude pulling from fb 
+            # -the source person (they will get inserted manually)
+            # anyone already on their crush list or their platonic friend list
+        if exclude_facebook_ids == "":
+            exclude_facebook_ids = "'" + str(self.source_person.username) + "'"
+        else:
+            exclude_facebook_ids = exclude_facebook_ids + "'" + str(self.source_person.username) + "'"
+    
+        fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+    else: # the admirer must build the lineup from his friend list
+        if exclude_facebook_ids != "": # remove the trailing comma
+            exclude_facebook_ids = exclude_facebook_ids[:-1]
+        fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (" + exclude_facebook_ids + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+    #print "fql_query string: " + str(fql_query)
+    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
+    try:
+        print "json results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(fql_query_results)
+        data = json.load(fql_query_results)['data']     
+        if (len(data) == 0):
+            if admirer_gender=='Male':
+                data = [{u'username':u'zuck', 'uid':u'zuck'}]
+            else:
+                data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
+        #print "data: " + str(data)
+    except ValueError:
+        print "ValueError on Fql Query Fetch read!"
+        return False
+    except KeyError:
+        print "KeyError on FQL Query Fetch read"
+        return False
+    # determine where the admirer should randomly fall into the lineup
+    admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
+    print "admirer_position: " + str(admirer_position)
+    index = 0
+    rel_id = self.id
+    for fql_user in data:
+        # if the current lineup position is where the admirer should go, then insert the admirer
+        if index==admirer_position:
+            new_member_id = rel_id + (.1 * index)
+            self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
+            #print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
+            index = index + 1            
+            # create a lineup member with the given username      
+        new_member_id = rel_id + (.1 * index)
+        lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=builder_user.access_token,is_this_for_me=False)
+        self.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
+        #print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
+        index = index + 1
+        
+    if len(data)==admirer_position:
+        new_member_id = rel_id + (len(data) * .1)
+        self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
+        #print "put crush in position: " + str(new_member_id)        
+        
+    self.number_unrated_lineup_members = self.lineupmember_set.count()
+    #print "number lineup members: " + str(self.lineupmember_set.count())
+    self.is_lineup_initialized = True
+    self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
+
+#    print "Number of results: " + str((data['data']).__len__())
+    
+    return True
 
 class NotificationSettings(models.Model):
     bNotify_crush_signed_up = models.BooleanField(default=True)
@@ -51,8 +138,9 @@ class FacebookUserManager(UserManager):
     # find_or_create_user called in two cases:
     # 1) after someone adds a crush from the friend selector dialog (is_this_for_me = false)
     # 2) when facebook authenticates a user (is_this_for_me = true
+
     def find_or_create_user(self, fb_id, fb_access_token,is_this_for_me,fb_profile=None):
-        print "find_or_create_user called"
+        #print "find_or_create_user called"
         try:
         # Try and find existing user
             user = super(FacebookUserManager, self).get_query_set().get(username=fb_id)
@@ -75,6 +163,7 @@ class FacebookUserManager(UserManager):
                 user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
         # No existing user, create one
         except FacebookUser.DoesNotExist:
+            
             if fb_profile == None:
                 fb_profile = urllib.urlopen('https://graph.facebook.com/' + str(fb_id) + '/?access_token=%s' % fb_access_token)
                 fb_profile = json.load(fb_profile)
@@ -82,19 +171,21 @@ class FacebookUserManager(UserManager):
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
             default_notification_settings=NotificationSettings.objects.create()
             try:
-                print "creating username - please fucking work: " + fb_username
-                user = self.create_user(username=fb_id,notification_settings=default_notification_settings)
-                user.access_token=fb_access_token
-                user.is_active=is_this_for_me
-
-                print "completed creation call"
+                #print "creating username:" + fb_username
+                user = FacebookUser.objects.create_user(username=fb_id,notification_settings=default_notification_settings)
+                if is_this_for_me:
+                    user.is_active=True
+                    user.access_token=fb_access_token
+                #print "completed creation call"
             except IntegrityError:
-                print "unable to create a new user for some odd reason"
+                #print "unable to create a new user for some odd reason"
                 return #this would be a bad database error (something out-a-sync!)
-            print "calling the update_user function"
-            self.update_user(user,fb_profile)
-            user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+            #print "calling the update_user function"
+            FacebookUser.objects.update_user(user,fb_profile)
+            user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+   
         return user
+
 
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
@@ -254,6 +345,15 @@ class BasicRelationship(models.Model):
 
     date_added = models.DateTimeField(auto_now_add=True)
     
+        
+    # how are the admirer and crushee connected
+    FRIENDSHIP_TYPE_CHOICES = (
+                               (0,'Friend'),
+                               (1,'Friend of Friend'),
+                               (2,'Stranger'),
+                               )
+    friendship_type=models.IntegerField(max_length=1,default=0,choices=FRIENDSHIP_TYPE_CHOICES)#, choices=FRIENDSHIP_TYPE_CHOICES)
+    
     # list of one or many mutual friends between the admirer and crushee
     #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
     
@@ -266,13 +366,7 @@ class BasicRelationship(models.Model):
         super(BasicRelationship, self).save(update_fields=['updated_flag'])
         return "" # if I don't return "" then for some reason None is actually returned
     
-    # how are the admirer and crushee connected
-    FRIENDSHIP_TYPE_CHOICES = (
-                               (0,'Friend'),
-                               (1,'Friend of Friend'),
-                               (2,'Stranger'),
-                               )
-    friendship_type=models.IntegerField(max_length=1, default=0, choices=FRIENDSHIP_TYPE_CHOICES)
+
         
     def get_reciprocal_nonresponded_incomplete_crush_relation(self):
         try:
@@ -357,93 +451,7 @@ class CrushRelationship(BasicRelationship):
 
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0)
- 
-    # returns true if successful, false otherwise
-    def initialize_lineup(self):
-        print "initializing relationship for admirer: " + self.source_person.facebook_username
-        # get sex of admirer
-        admirer_gender= 'Male' if self.source_person.gender == 'M'  else 'Female'
-        if self.friendship_type == 0:
-            builder_user = self.target_person # crush is building lineup from his friend list
-        else:
-            builder_user = self.source_person # admirer is building lineup from his friend list
-        exclude_facebook_ids=""
-        # loop through all their just_friends_targets and all their crush_targets and add their ids to a fql friendlist list
-        builder_crushes = builder_user.crush_targets.all()
-        builder_just_friends = builder_user.just_friends_targets.all()
-        for crush in builder_crushes:
-            exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
-        for just_friend in builder_just_friends:
-            exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
-        builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
-        for rel in builder_incomplete_admirer_rels:
-            builder_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
-            for lineup_member in builder_undecided_lineup_members:
-                exclude_facebook_ids = exclude_facebook_ids + "'" + lineup_member.LineupUser.username + "',"
-        # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
-        if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
-            # if building from crush perspective, then exclude pulling from fb 
-                # -the source person (they will get inserted manually)
-                # anyone already on their crush list or their platonic friend list
-            if exclude_facebook_ids == "":
-                exclude_facebook_ids = "'" + str(self.source_person.username) + "'"
-            else:
-                exclude_facebook_ids = exclude_facebook_ids + "'" + str(self.source_person.username) + "'"
-        
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + exclude_facebook_ids + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-        else: # the admirer must build the lineup from his friend list
-            if exclude_facebook_ids != "": # remove the trailing comma
-                exclude_facebook_ids = exclude_facebook_ids[:-1]
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (" + exclude_facebook_ids + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-        print "fql_query string: " + str(fql_query)
-        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
-        try:
-            print "json results: " + str(fql_query_results)
-            data = json.load(fql_query_results)['data']     
-            if (len(data) == 0):
-                if admirer_gender=='Male':
-                    data = [{u'username':u'zuck', 'uid':u'zuck'}]
-                else:
-                    data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
-            print "data: " + str(data)
-        except ValueError:
-            print "ValueError on Fql Query Fetch read!"
-            return False
-        except KeyError:
-            print "KeyError on FQL Query Fetch read"
-            return False
-        # determine where the admirer should randomly fall into the lineup
-        admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
-        print "admirer_position: " + str(admirer_position)
-        index = 0
-        rel_id = self.id
-        for fql_user in data:
-            # if the current lineup position is where the admirer should go, then insert the admirer
-            if index==admirer_position:
-                new_member_id = rel_id + (.1 * index)
-                self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
-                print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
-                index = index + 1            
-                # create a lineup member with the given username      
-            new_member_id = rel_id + (.1 * index)
-            lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=builder_user.access_token,is_this_for_me=False)
-            self.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
-            print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
-            index = index + 1
-            
-        if len(data)==admirer_position:
-            new_member_id = rel_id + (len(data) * .1)
-            self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
-            print "put crush in position: " + str(new_member_id)        
-            
-        self.number_unrated_lineup_members = self.lineupmember_set.count()
-        print "number lineup members: " + str(self.lineupmember_set.count())
-        self.is_lineup_initialized = True
-        self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
     
-    #    print "Number of results: " + str((data['data']).__len__())
-        
-        return True
     # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
         # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save(self,*args,**kwargs):
@@ -492,11 +500,9 @@ class CrushRelationship(BasicRelationship):
             if 'update_fields' in kwargs and 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                 print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.first_name + " " + self.source_person.last_name + " and target: " + self.target_person.first_name + " " + self.target_person.last_name
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
-        print "finished saving crush relationship object"
+        print "finished saving crush relationship object: 12"
         super(CrushRelationship,self).save(*args,**kwargs)
-        if self.friendship_type>0 and self.is_lineup_initialized ==False:
-            if self.initialize_lineup() == False: # if crush is not on friend, must build lineup with admirer friends asap cause crush can't access admirer's friends
-                self.delete()# if lineup failed, then don't allow this relationship
+        
     def notify_target_person(self,crush_relationship):
         print "notifying the target person of a new admirer: "
         target_person=crush_relationship.target_person
