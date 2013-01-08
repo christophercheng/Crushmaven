@@ -44,7 +44,14 @@ $(document).ready(function()
     <div class = "mutualFriendListWrapper">
 		 		Mutual friends: {{form.friendlist_string}}
     </div>
+    	<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
+		{% elif request.POST.mutual_friends != "" %} <!-- grab mutual friend list from post data  -->
+				Mutual friends: {{request.POST.mutual_friends}}
+				<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
 		{% endif %}
+		
+	
+
 		<p id="sendwrapper"><input id="sendbutton" type="submit" value="Send"/></p>
 		</div> 
 	</form>
