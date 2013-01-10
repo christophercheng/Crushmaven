@@ -278,10 +278,10 @@ def admirers(request):
     uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
-        #pool=Pool(processes=len(uninitialized_relationships))
+        pool=Pool(processes=len(uninitialized_relationships))
         for relationship in uninitialized_relationships:
-            #pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
-            initialize_lineup(relationship)
+            pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
+            #initialize_lineup(relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
