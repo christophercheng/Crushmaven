@@ -50,15 +50,17 @@ $(document).ready(function()
 
 <h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
 
-{% for member in lineup_set %}
+{% for membership in membership_set %}
 
-	<img src="http://graph.facebook.com/{{member.LineupUser.username}}/picture?type=large" width=40 height=40>
+	<img src="http://graph.facebook.com/{{membership.member.username}}/picture?type=large" width=40 height=40>
 		
 {% endfor %}
 
-
+<!-- Just a shell for the slideshow container 
+<div id="lineup_container"></div>
+<ul>
 {% for member in lineup_set %}
-	<div id="lineup{{member.position}}">
+	<li id="member{{member.position}}">
 		{{member.position}}: {{member.LineupUser.username}} <img src="http://graph.facebook.com/{{member.LineupUser.username}}/picture?type=large" width=60 height=60>
 		<div id="choice">
 			{% if member.decision = True %}
@@ -68,6 +70,25 @@ $(document).ready(function()
 			{% else %}
 				<a href="#" class="member_add" add_type="crush" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as crush</a> 
 				<a href="#" class="member_add" add_type="platonic" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
+			{% endif %}
+		</div> 
+	</li>
+{% endfor %}
+</ul>
+</div>  close off lineup_container div-->
+
+
+{% for membership in membership_set %}
+	<div id="lineup{{member.position}}">
+		{{membership.position}}: {{membership.member.username}} <img src="http://graph.facebook.com/{{membership.member.username}}/picture?type=large" width=60 height=60>
+		<div id="choice">
+			{% if membership.decision = True %}
+				You added {{membership.member.first_name}} {{membership.member.last_name}} as a crush!
+			{% elif membership.decision = False %}
+				You added {{membership.member.first_name}} {{membership.member.last_name}} as just-a-friend.
+			{% else %}
+				<a href="#" class="member_add" add_type="crush" username="{{membership.member.username}}" name="{{membership.member.first_name}} {{membership.memberlast_name}}">Add as crush</a> 
+				<a href="#" class="member_add" add_type="platonic" username="{{membership.member.username}}" name="{{membership.member.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
 			{% endif %}
 		</div>
 	</div>

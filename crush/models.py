@@ -46,18 +46,17 @@ def initialize_lineup(self):
         if exclude_facebook_ids != "": # remove the trailing comma
             exclude_facebook_ids = exclude_facebook_ids[:-1]
         fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (" + exclude_facebook_ids + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-    #print "fql_query string: " + str(fql_query)
+    print "fql_query string: " + str(fql_query)
     fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
     try:
-        data = json.load(fql_query_results)['data']     
-        print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
-        
+        data = json.load(fql_query_results)['data']       
         if (len(data) == 0):
             if admirer_gender=='Male':
                 data = [{u'username':u'zuck', 'uid':u'zuck'}]
             else:
                 data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
-        #print "data: " + str(data)
+        print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
+      
     except ValueError:
         print "ValueError on Fql Query Fetch read!"
         return False
@@ -65,35 +64,30 @@ def initialize_lineup(self):
         print "KeyError on FQL Query Fetch read"
         return False
     # determine where the admirer should randomly fall into the lineup
-    admirer_position=random.randint(0, len(data)) # normally len(data) should be 9
+    # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
+    admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9
     print "admirer_position: " + str(admirer_position)
     index = 0
-    rel_id = self.id
     for fql_user in data:
         # if the current lineup position is where the admirer should go, then insert the admirer
         if index==admirer_position:
-            new_member_id = rel_id + (.1 * index)
-            self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
-            #print "put crush in position: " + str(new_member_id) + " from index value: " + str(index)
+            LineupMembership.objects.create(position=index,member=self.source_person,relationship=self,decision=None)
+            print "put crush in position: " + str(index) 
             index = index + 1            
             # create a lineup member with the given username      
-        new_member_id = rel_id + (.1 * index)
         lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=builder_user.access_token,is_this_for_me=False)
-        self.lineupmember_set.create(position=new_member_id, LineupUser=lineup_user)
-        #print "put friend in position: " + str(new_member_id) + " from index value: " + str(index)
+        LineupMembership.objects.create(position=index,member=lineup_user,relationship=self,decision=None)
+        print "put friend in position: " + str(index)
         index = index + 1
-        
+    # the following condition (to put admirer in last position) should not occur, but just in case let's handle it    
     if len(data)==admirer_position:
-        new_member_id = rel_id + (len(data) * .1)
-        self.lineupmember_set.create(position=new_member_id,LineupUser=self.source_person)
-        #print "put crush in position: " + str(new_member_id)        
+        LineupMembership.objects.create(position=len(data),member=self.source_person,relationship=self,decision=None)
+  
         
     self.number_unrated_lineup_members = self.lineupmember_set.count()
-    #print "number lineup members: " + str(self.lineupmember_set.count())
+    print "number lineup members: " + str(self.lineupmember_set.count())
     self.is_lineup_initialized = True
     self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
-
-#    print "Number of results: " + str((data['data']).__len__())
     
     return True
 
@@ -429,7 +423,6 @@ class PlatonicRelationship(BasicRelationship):
 # need to override the save method 
     # check to see if the platonic friend has a crush on me, if so, then let them know of my evaluation
 
-
 class CrushRelationship(BasicRelationship):
     source_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_source')
     
@@ -454,11 +447,15 @@ class CrushRelationship(BasicRelationship):
     
     date_invite_last_sent=models.DateTimeField(null=True,default=None) 
     
+    lineup_members = models.ManyToManyField(FacebookUser, through='LineupMembership')
+    
+    # lineup initialized and paid can be combined into a single state variable 
     is_lineup_initialized=models.BooleanField(default=False)
     # actual lineup members have a foreign key to a Crush Lineup
     is_lineup_paid=models.BooleanField(default=False)
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
     date_lineup_started = models.DateTimeField(default=None, null=True)
+    # i'd like to get rid of this
     number_unrated_lineup_members = models.IntegerField(default=10)
     date_lineup_finished = models.DateTimeField(default=None, null=True)
         # keeps track of when the crush signed up
@@ -597,19 +594,23 @@ class EmailRecipient(models.Model):
     date_sent=models.DateTimeField(auto_now_add=True)
     is_email_crush=models.BooleanField(default=True) # if false, then the email was sent to a mutual friend
 
-
 # details about each crush's secret admirer lineup (SAL)
-class LineupMember(models.Model):
+class LineupMembership(models.Model):
     # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
-    LineupRelationship = models.ForeignKey(CrushRelationship)
-    LineupUser=models.ForeignKey(FacebookUser)
-    
-    # instead of letting Django auto create a primary ID, let's create a custom one so we can track the sequential position of each member in lineup using the id
-    position = models.FloatField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
-    position.primary_key=True
-    
-    # crush's decision about this person, default is none - so there are actually 2.5 states
-    decision = models.NullBooleanField()
+    relationship = models.ForeignKey(CrushRelationship)
+    member=models.ForeignKey(FacebookUser)
+    position = models.IntegerField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
+
+    DECISION_CHOICES = ( # platonic levels represent crush's rating of member's attractiveness
+                           (0,'Crush'),
+                           (1,'Platonic 1'),
+                           (2,'Platonic 2'),
+                           (3,'Platonic 3'),
+                           (4,'Platonic 4'),
+                           (5,'Platonic 5'),
+                           )
+    decision = models.IntegerField(null=True, choices=DECISION_CHOICES, default=None)
+    comment = models.CharField(null=True,default=None,max_length=200)
 
 
 class Purchase(models.Model):

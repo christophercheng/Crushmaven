@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember, Purchase, EmailRecipient, initialize_lineup
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMembership, Purchase, EmailRecipient, initialize_lineup
 import urllib, json
 import paypal
 from django.views.decorators.http import require_POST
@@ -281,7 +281,7 @@ def admirers(request):
         pool=Pool(processes=len(uninitialized_relationships))
         for relationship in uninitialized_relationships:
             pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
- 
+            #initialize_lineup(relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -308,14 +308,14 @@ def lineup(request,admirer_id):
             admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
         else:
             return HttpResponse("Error: not enough credits to see lineup")
-    lineup_set = admirer_rel.lineupmember_set.all()
+    membership_set = admirer_rel.lineupmembership_set.all()
     # need to cleanse the lineup members each time the lineup is run 
     #    reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
         
     return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
-                               'lineup_set': lineup_set})
+                               'membership_set': membership_set})
 
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
@@ -328,20 +328,20 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         except CrushRelationship.DoesNotExist:
             return HttpResponse("Server Error: Could not add given lineup user")
         try:
-            member=target_user.lineupmember_set.get(LineupUser=target_user,LineupRelationship=admirer_rel)
+            membership=admirer_rel.lineupmembership_set.get(member=target_user)
 
-        except LineupMember.DoesNotExist:
+        except LineupMembership.DoesNotExist:
             print "could not find lineup member"
             return HttpResponse("Server Error: Could not add given lineup user")
         if add_type=='crush':
             new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
-            member.decision=True
+            membership.decision=True
         else:
             new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
-            member.decision=False
-        member.save(update_fields=['decision'])
+            membership.decision=1
+        membership.save(update_fields=['decision'])
         #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
         admirer_rel.number_unrated_lineup_members -= 1
         if admirer_rel.number_unrated_lineup_members == 0:
@@ -381,9 +381,9 @@ def ajax_display_lineup(request, display_id):
             #raise Http404 # don't do anything until the initialization is done
  
 
-        for counter, member in enumerate(admirer_rel.lineupmember_set.all()):
-            if counter < 2 or member.decision!=None:
-                ajax_response +=  '<img src="http://graph.facebook.com/' + member.LineupUser.username + '/picture" height=40 width=40>'
+        for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
+            if counter < 2 or membership.decision!=None:
+                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.member.username + '/picture" height=40 width=40>'
             else:
                 ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
 
