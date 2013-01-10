@@ -278,10 +278,10 @@ def admirers(request):
     uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
-        pool=Pool(processes=len(uninitialized_relationships))
+        #pool=Pool(processes=len(uninitialized_relationships))
         for relationship in uninitialized_relationships:
-            pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
-            #initialize_lineup(relationship)
+            #pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
+            initialize_lineup(relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -328,7 +328,7 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         except CrushRelationship.DoesNotExist:
             return HttpResponse("Server Error: Could not add given lineup user")
         try:
-            membership=admirer_rel.lineupmembership_set.get(member=target_user)
+            membership=admirer_rel.lineupmembership_set.get(lineup_member=target_user)
 
         except LineupMembership.DoesNotExist:
             print "could not find lineup member"
@@ -336,17 +336,16 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         if add_type=='crush':
             new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as a crush on " + str(new_relationship.date_added) + "</div>"
-            membership.decision=True
+            membership.decision=0
         else:
             new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">" + target_user.first_name + " " + target_user.last_name + " was successfully added as just-a-friend on " + str(new_relationship.date_added) + "</div>"
             membership.decision=1
         membership.save(update_fields=['decision'])
         #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
-        admirer_rel.number_unrated_lineup_members -= 1
-        if admirer_rel.number_unrated_lineup_members == 0:
-                admirer_rel.date_lineup_finished= datetime.datetime.now()
-        admirer_rel.save(update_fields=['date_lineup_finished', 'number_unrated_lineup_members'])
+        if len(admirer_rel.lineupmembership_set.filter(decision=None)) == 0:
+            admirer_rel.date_lineup_finished= datetime.datetime.now()
+        admirer_rel.save(update_fields=['date_lineup_finished'])
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
@@ -383,7 +382,7 @@ def ajax_display_lineup(request, display_id):
 
         for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
             if counter < 2 or membership.decision!=None:
-                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.member.username + '/picture" height=40 width=40>'
+                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
             else:
                 ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
 

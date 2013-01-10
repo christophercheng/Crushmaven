@@ -52,7 +52,7 @@ $(document).ready(function()
 
 {% for membership in membership_set %}
 
-	<img src="http://graph.facebook.com/{{membership.member.username}}/picture?type=large" width=40 height=40>
+	<img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width=40 height=40>
 		
 {% endfor %}
 
@@ -80,15 +80,15 @@ $(document).ready(function()
 
 {% for membership in membership_set %}
 	<div id="lineup{{member.position}}">
-		{{membership.position}}: {{membership.member.username}} <img src="http://graph.facebook.com/{{membership.member.username}}/picture?type=large" width=60 height=60>
+		{{membership.position}}: {{membership.lineup_member.username}} <img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width=60 height=60>
 		<div id="choice">
-			{% if membership.decision = True %}
-				You added {{membership.member.first_name}} {{membership.member.last_name}} as a crush!
-			{% elif membership.decision = False %}
-				You added {{membership.member.first_name}} {{membership.member.last_name}} as just-a-friend.
+			{% if membership.decision == None %}
+				<a href="#" class="member_add" add_type="crush" username="{{membership.lineup_member.username}}" name="{{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}}">Add as crush</a> 
+				<a href="#" class="member_add" add_type="platonic" username="{{membership.lineup_member.username}}" name="{{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}}">Add as platonic friend</a>		
+			{% elif membership.decision == 0 %}
+				You added {{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}} as a crush!
 			{% else %}
-				<a href="#" class="member_add" add_type="crush" username="{{membership.member.username}}" name="{{membership.member.first_name}} {{membership.memberlast_name}}">Add as crush</a> 
-				<a href="#" class="member_add" add_type="platonic" username="{{membership.member.username}}" name="{{membership.member.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
+				You added {{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}} as just-a-friend.
 			{% endif %}
 		</div>
 	</div>

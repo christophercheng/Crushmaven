@@ -7,7 +7,6 @@ Created on Nov 1, 2012
 from datetime import datetime, timedelta
 from django import template
 from django.utils.timesince import timesince
-from crush.models import LineupMember
 
 register = template.Library()
 
@@ -46,19 +45,6 @@ def date_since(value):
     if difference < timedelta(hours=24):
         return 'hi'
     return '%(time)s' % {'time': timesince(value).split(', ')[0]}
-
-
-# value is the admirer instance, arg is the lineup position (0-9)
-# returns the username of the admirer lineup at that position
-# ? WHERE IS THIS CALLED FROM?
-@register.filter
-def admirer_lineup_username(value, arg): 
-    print "looking for username at position " + arg
-    try:
-        member = value.lineupmember_set.get(position=(value.id + (.1 * int(arg))))
-    except LineupMember.DoesNotExist:
-        return "no_user"
-    return member.LineupUser.username
 
 
 """

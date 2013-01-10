@@ -28,9 +28,9 @@ def initialize_lineup(self):
         exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
     builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
     for rel in builder_incomplete_admirer_rels:
-        builder_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
-        for lineup_member in builder_undecided_lineup_members:
-            exclude_facebook_ids = exclude_facebook_ids + "'" + lineup_member.LineupUser.username + "',"
+        builder_undecided_lineup_memberships = rel.lineupmembership_set.filter(decision=None)    
+        for membership in builder_undecided_lineup_memberships:
+            exclude_facebook_ids = exclude_facebook_ids + "'" + membership.lineup_member.username + "',"
     # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
     if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
         # if building from crush perspective, then exclude pulling from fb 
@@ -71,21 +71,19 @@ def initialize_lineup(self):
     for fql_user in data:
         # if the current lineup position is where the admirer should go, then insert the admirer
         if index==admirer_position:
-            LineupMembership.objects.create(position=index,member=self.source_person,relationship=self,decision=None)
+            LineupMembership.objects.create(position=index,lineup_member=self.source_person,relationship=self,decision=None)
             print "put crush in position: " + str(index) 
             index = index + 1            
             # create a lineup member with the given username      
         lineup_user=FacebookUser.objects.find_or_create_user(fb_id=fql_user['uid'],fb_access_token=builder_user.access_token,is_this_for_me=False)
-        LineupMembership.objects.create(position=index,member=lineup_user,relationship=self,decision=None)
+        LineupMembership.objects.create(position=index,lineup_member=lineup_user,relationship=self,decision=None)
         print "put friend in position: " + str(index)
         index = index + 1
     # the following condition (to put admirer in last position) should not occur, but just in case let's handle it    
     if len(data)==admirer_position:
-        LineupMembership.objects.create(position=len(data),member=self.source_person,relationship=self,decision=None)
+        LineupMembership.objects.create(position=len(data),lineup_member=self.source_person,relationship=self,decision=None)
   
-        
-    self.number_unrated_lineup_members = self.lineupmember_set.count()
-    print "number lineup members: " + str(self.lineupmember_set.count())
+    print "number lineup members: " + str(self.lineupmembership_set.count())
     self.is_lineup_initialized = True
     self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
     
@@ -598,7 +596,7 @@ class EmailRecipient(models.Model):
 class LineupMembership(models.Model):
     # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
     relationship = models.ForeignKey(CrushRelationship)
-    member=models.ForeignKey(FacebookUser)
+    lineup_member=models.ForeignKey(FacebookUser)
     position = models.IntegerField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
 
     DECISION_CHOICES = ( # platonic levels represent crush's rating of member's attractiveness
@@ -611,7 +609,6 @@ class LineupMembership(models.Model):
                            )
     decision = models.IntegerField(null=True, choices=DECISION_CHOICES, default=None)
     comment = models.CharField(null=True,default=None,max_length=200)
-
 
 class Purchase(models.Model):
     credit_total = models.IntegerField(default=0) # e.g. 100
