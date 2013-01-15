@@ -1,98 +1,142 @@
-{% extends "base.html" %}
-
-{% block content %}
 
 {% load fbdater_extras %}
+    		<!-- Include the plugin *after* the jQuery library -->
+<!--<script src="{{ STATIC_URL }}basic-slider/bjqs-1.3.js"></script>-->
+<!-- Include the basic styles -->
+<!--<link type="text/css" rel="Stylesheet" href="{{ STATIC_URL }}basic-slider/bjqs.css" />-->
+
+<!-- bxSlider Javascript file -->
+<script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
+<!-- bxSlider CSS file -->
+<link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
 
 <div id="dialog_member_add" title="Lineup Confirmation">Are you sure about this person?</div>
 
 <script type="text/javascript">
 $(document).ready(function() 
+{ 
+	$("#dialog_member_add").dialog({modal: true, autoOpen: false});
+  $('#lineup_container li').on('click','a.member_add',function(e) {
+		var parent = $(this).parent();				//# decision div
+	  var url;
+	  var text= "Are you sure you want to add " + $(this).attr('name') + " as a ";
+	  var bIsCrush=true;
+	  // obtain position of the next slide in deck for future loading
+		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
+		var next_position = parseInt(current_position) + 1;
+		next_position=next_position.toString();
+		if ($(this).attr('add_type') == "crush")    {
+			url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + "/"; 
+	  	text = text + "crush?";
+		}
+	  else {
+			url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + "/"; 
+	  	text = text + "platonic_friend?";
+	  	bIsCrush=false;
+	  }
+	  e.preventDefault();
+	  $("#dialog_member_add").text(text);
+	  $("#dialog_member_add").dialog('option', 'buttons', {
+			"Add": function() { 
+				parent.load(url, function(){
+			       				// call an ajax function on the elements which display number of crushes or platonics
+					if (bIsCrush) 
+						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
+					else 
+						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
+					// load the next lineup slide
+		
+					
+					$('.bxslider li[lineup_position=' + next_position + ']').load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + next_position + '/', function(response, status, xhr) {
+						// load the next thumbnail as well
+						var next_username =$(this).find('#decision').attr("username");
+						var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
+						var img_element = $('#bx-pager img[lineup_position=' + next_position + ']')
+						window.slider_control.reInitialize();
+						setTimeout(function(){
+							img_element.attr('src', new_src).attr('width','50').attr('height','50');	
+							img_element.wrap('<a data-slide-index="' + next_position + '" href="">');
+							window.slider_control.goToSlide(next_position);
+							},1000);
+						}).attr("id", "preload"); // close off ajax load of next slide
+					}); // close off parent.load (making the decision and showing the html results
+			
+					$(this).dialog("close");
+				},   // end of add handler
+				"Cancel": function() {$(this).dialog("close");
+				} // end of cancel handler
+			}); // end of .dialog handler
+    $("#dialog_member_add").dialog("open");
+    return false;
+		}); // end of .click handler (on a.member add)
+}); // end document.ready function
+
+</script>
+
+<!--  
+<h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
+ -->
+<div id="lineup_container">
+ <div id="bx-pager">
+ 
+{% for membership in membership_set %}
+
+	{% if membership.decision != None or forloop.counter0 == number_completed_members %}
+		<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width="50px" height="50px" /></a>
+	{% else %}
+			<img lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" width="50px" height="50px" />
+	{% endif %}
+{% endfor %}
+</div>
+<!-- Just a shell for the slideshow container -->
+
+<ul class="bxslider">
+{% for member in membership_set %}
+	{% if member.decision != None %}
+	<li id="preload" lineup_position = {{member.position}} style="height:300px">
+	{% else %}	
+	<li id="lineup" lineup_position="{{member.position}}" style="height:300px">
+	{% endif %}
+</li>
+{% endfor %}
+</ul>
+</div>  <!--  close off slider div-->
+
+<script>
+// load all lineup members who have a decision already (and have been marked as 'preload')
+$(document).ready(function($) 
 {
-        $("#dialog_member_add").dialog({modal: true, autoOpen: false});
-        $("a.member_add").click(function(e) {
-     		var parent = $(this).parent();				
-            var url;
-            var text= "Are you sure you want to add " + $(this).attr('name') + " as a ";
-            var bIsCrush=true;
-            if ($(this).attr('add_type') == "crush")    {
-            	url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + " #choice"; 
-            	text = text + "crush?";
-            	}
-            else {
-            	url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + " #choice"; 
-            	text = text + "platonic_friend?";
-            	bIsCrush=false;
-            	}
-            e.preventDefault();
-            $("#dialog_member_add").text(text);
-            $("#dialog_member_add").dialog('option', 'buttons', {
-       			"Add": function() { 
-       				parent.load(url, function(){
-       				       				// call an ajax function on the elements which display number of crushes or platonics
-       					if (bIsCrush) 
-	       					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress");
-       					else 
-       						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends");   				
-       				});
-       				$(this).dialog("close");
-				},   
-        		"Cancel": function() {$(this).dialog("close");
-        		}
-    		});
-            $("#dialog_member_add").dialog("open");
-            return false;
-        });
-});
+
+	var last_loaded_slide=-1;
+	$('.bxslider li#preload').each(function(index){
+			$(this).load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + index + '/');	
+			last_loaded_slide = index;
+	});
+	// load the next slide automatically at the value of counter + 1 (unless of course the counter value is beyond the last slide)
+	var next_unloaded_slide = last_loaded_slide + 1;
+
+	// load the next slide in the list unless we're at the end, in which case set the current slide to display at 0 position
+	if ({{membership_set.count}} > next_unloaded_slide)
+			$('.bxslider li[lineup_position=' + next_unloaded_slide + ']').load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + next_unloaded_slide + '/', function(a,b,c){		
+			}).attr("id", "preload");	
+	else
+			next_unloaded_slide = 0;
+
+
+	window.slider_control = $('.bxslider').bxSlider({
+			pagerCustom: '#bx-pager',
+			infiniteLoop: false,
+			hideControlOnEnd: true,
+			speed:900,
+			adaptiveHeight:true,
+			startSlide: 0,
+			slideSelector:'li#preload'
+			});
+	
+	setTimeout(function(){window.slider_control.goToSlide(next_unloaded_slide)},500);
+		
+}); // close off jquery document ready
 
 </script>
 
 
-<h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
-
-{% for membership in membership_set %}
-
-	<img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width=40 height=40>
-		
-{% endfor %}
-
-<!-- Just a shell for the slideshow container 
-<div id="lineup_container"></div>
-<ul>
-{% for member in lineup_set %}
-	<li id="member{{member.position}}">
-		{{member.position}}: {{member.LineupUser.username}} <img src="http://graph.facebook.com/{{member.LineupUser.username}}/picture?type=large" width=60 height=60>
-		<div id="choice">
-			{% if member.decision = True %}
-				You added {{member.LineupUser.first_name}} {{member.LineupUser.last_name}} as a crush!
-			{% elif member.decision = False %}
-				You added {{member.Lineup.first_name}} {{member.LineupUser.last_name}} as just-a-friend.
-			{% else %}
-				<a href="#" class="member_add" add_type="crush" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as crush</a> 
-				<a href="#" class="member_add" add_type="platonic" username="{{member.LineupUser.username}}" name="{{member.LineupUser.first_name}} {{member.LineupUser.last_name}}">Add as platonic friend</a>
-			{% endif %}
-		</div> 
-	</li>
-{% endfor %}
-</ul>
-</div>  close off lineup_container div-->
-
-
-{% for membership in membership_set %}
-	<div id="lineup{{member.position}}">
-		{{membership.position}}: {{membership.lineup_member.username}} <img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width=60 height=60>
-		<div id="choice">
-			{% if membership.decision == None %}
-				<a href="#" class="member_add" add_type="crush" username="{{membership.lineup_member.username}}" name="{{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}}">Add as crush</a> 
-				<a href="#" class="member_add" add_type="platonic" username="{{membership.lineup_member.username}}" name="{{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}}">Add as platonic friend</a>		
-			{% elif membership.decision == 0 %}
-				You added {{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}} as a crush!
-			{% else %}
-				You added {{membership.lineup_member.first_name}} {{membership.lineup_member.last_name}} as just-a-friend.
-			{% endif %}
-		</div>
-	</div>
-{% endfor %}
-
-
-{% endblock %}

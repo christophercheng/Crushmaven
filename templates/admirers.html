@@ -6,12 +6,15 @@
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
+<div id="lineup_modal" title="Secret Admirer Lineup"></div>
+
 <script type="text/javascript">
 
 $(document).ready(function() 
 {
 	
         $("#credit_check_modal").dialog({modal: true, autoOpen: false});
+        $("#lineup_modal").dialog({modal: true, resizable:false,autoOpen: false,height:500,width:640});
 				$('.lineup').on('click', '.check_credit', function(e) {
 					credit_check_element=$(this);
         	var success_path=credit_check_element.attr('success_path');	
@@ -22,11 +25,29 @@ $(document).ready(function()
         	var feature_id=credit_check_element.attr('feature_id');
         	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
             e.preventDefault();
-			$("#credit_check_modal").load(load_url)   	
-            $("#credit_check_modal").dialog("open");
+					$("#credit_check_modal").load(load_url);   	
+           $("#credit_check_modal").dialog("open");
+                     $(".ui-widget-overlay").css("background","black").css("opacity",".5");
             return false;
             
         });
+        
+        $('.lineup').on('click', '.view_lineup', function(e) {
+					view_lineup_element=$(this);
+        	var display_id=view_lineup_element.attr('display_id');	
+        	load_url="/ajax_view_lineup/" + display_id + "/";
+          e.preventDefault();
+					$("#lineup_modal").load(load_url);   	
+          $("#lineup_modal").dialog("open");
+          $(".ui-widget-overlay").css("background","black").css("opacity",".80");
+          return false;
+            
+        });
+        
+        
+ 
+
+				
 });
 </script>
 
@@ -41,7 +62,7 @@ $(document).ready(function()
 </font>
 <BR><BR>
   
-<! -- End of crush type navigation widget -->  
+<!-- End of crush type navigation widget -->  
 
 {% if admirer_relationships %}
 <script>
@@ -51,16 +72,21 @@ var lineups_need_initialization=false;
 		{% for admirer_rel in admirer_relationships %}
 			<li> Secret Admirer #{{admirer_rel.admirer_display_id}} 
 			({% if admirer_rel.friendship_type == 0 %} friend of yours {% elif admirer_rel.friendship_type == 1 %}friend-of-a-friend{% endif %})
-			({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})
+
 			<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
 			<div id="{{admirer_rel.admirer_display_id}}" class="lineup">
+      <script>
+      	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}')           
+      </script>          
+     	<!-- 
                 <script>
                 {% if admirer_rel.is_lineup_initialized %}
-                    $('.lineup#{{admirer_rel.admirer_display_id}}').load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}')           
+                	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}').error(function(e){alert("fail");});           
                 {% else %}
                     lineups_need_initialization=true;
                  {% endif %}
                  </script>
+                  -->
                  <div id="admirer-loading"></div>
 			</div>
 
@@ -69,6 +95,13 @@ var lineups_need_initialization=false;
 
 	<script type="text/javascript">
         if (lineups_need_initialization) {
+        $.get('/ajax_are_lineups_initialized',function() 
+                                {   
+                                    $(".lineup").has("script").each(function(index){
+                                        $(this).load('/ajax_display_lineup/' + this.id);
+                                        });
+                                 });
+        /*
             check_lineups = function() 
                 {   
                     setTimeout(function()
@@ -82,6 +115,8 @@ var lineups_need_initialization=false;
                          },1000); // close off setTimeout         
                 }; // closeoff check_lineups
             check_lineups(); // make first call to check lineups
+        */
+        
         } // close of if conditional block
 	</script>
 

@@ -44,7 +44,7 @@ urlpatterns += patterns('crush',
     
     url(r'^select_crush_by_id/$','views.select_crush_by_id'),
     
-    url(r'^lineup/(?P<admirer_id>\d+)/$','views.lineup'), 
+    url(r'^ajax_view_lineup/(?P<admirer_id>\d+)/$','views.ajax_view_lineup'), 
     
     # -- MODAL DIALOG PROCESSING & CONTENT --
     
@@ -55,6 +55,8 @@ urlpatterns += patterns('crush',
     url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
     
     url(r'^ajax_are_lineups_initialized/$','views.ajax_are_lineups_initialized'),
+    
+    url(r'^ajax_get_lineup_member_view/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','views.ajax_get_lineup_member_view'),
         
     url(r'^ajax_display_lineup/(?P<display_id>\d+)/$','views.ajax_display_lineup'),
     
@@ -77,8 +79,7 @@ urlpatterns += patterns('crush',
     url(r'^paypal_purchase/$', 'views.paypal_purchase'),
     
     url(r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','views.paypal_ipn_listener'),
-    
-    
+
     # -- HELP --
     url(r'^help_FAQ/$', 'views.help_faq'),
     

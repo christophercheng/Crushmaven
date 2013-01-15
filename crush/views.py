@@ -3,7 +3,8 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMembership, Purchase, EmailRecipient, initialize_lineup
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMembership, Purchase, EmailRecipient
+from crush.utilities import  initialize_lineup
 import urllib, json
 import paypal
 from django.views.decorators.http import require_POST
@@ -31,6 +32,12 @@ from django.core.mail import send_mass_mail
 def home(request):
     
     if request.user.is_authenticated():
+        if len(FacebookUser.objects.all()) == 1:
+            fake_ids=['1057460663','100004192844461','100003843122126']
+            for crushee_id in fake_ids:
+                selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
+                CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
+                                                               friendship_type=0, updated_flag=True)
         return HttpResponseRedirect('/crushes_in_progress/')
 
     else:
@@ -42,15 +49,18 @@ def crushes_in_progress(request):
     
     # obtain the results of any crush additions or deletions
         # later I can move this into a separate view function
-    
+        
     if request.method == "POST":
+        print "method is post"
         crushee_id=''
         userlist = []
         duplicate_userlist=[]
         
+        # this is just for testing, remove later
+
+        
         for key in request.POST:
 
-    
             if key.startswith('to'):    
                 crushee_id=request.POST[key][:-1] #handle a hack where last character is the friend type
 
@@ -69,9 +79,9 @@ def crushes_in_progress(request):
                                                                friendship_type=friend_type, updated_flag=True)
                     
                     if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-                        pool=Pool()
+                        pool=Pool(1)
                         pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
-            
+                        
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)
@@ -278,7 +288,7 @@ def admirers(request):
     uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
-        pool=Pool(processes=len(uninitialized_relationships))
+        pool=Pool(1) #must be 1 or things go bad!
         for relationship in uninitialized_relationships:
             pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
             #initialize_lineup(relationship)
@@ -291,7 +301,7 @@ def admirers(request):
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
-def lineup(request,admirer_id):
+def ajax_view_lineup(request,admirer_id):
     me = request.user
     try:
         admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
@@ -315,7 +325,8 @@ def lineup(request,admirer_id):
     return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
-                               'membership_set': membership_set})
+                               'membership_set': membership_set,
+                               'number_completed_members': len(membership_set.exclude(decision = None))})
 
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
@@ -373,12 +384,18 @@ def ajax_display_lineup(request, display_id):
     print "ajax initialize lineup with display id: " + str(int_display_id)
     ajax_response = ""
     try:    
-        admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
- 
-        if admirer_rel.is_lineup_initialized == False:
-            return HttpResponseNotFound(str(display_id),content_type="text/plain")
-            #raise Http404 # don't do anything until the initialization is done
- 
+        counter = 0
+        while True:
+            print "trying admirer " + str(display_id) + " on try: " + str(counter) 
+            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
+            if admirer_rel.is_lineup_initialized==True:
+                break
+            elif counter==30: # if 30 seconds have passed then give up
+                print "giving up on admirer:" + str(display_id)
+                return HttpResponse("Lineup Loading Error: please reload page")
+                #return HttpResponseNotFound(str(display_id),content_type="text/plain")
+            time.sleep(1) # wait a quarter second
+            counter+=1
 
         for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
             if counter < 2 or membership.decision!=None:
@@ -391,18 +408,66 @@ def ajax_display_lineup(request, display_id):
         if admirer_rel.is_lineup_paid:
             if admirer_rel.date_lineup_finished:
                 ajax_response += 'Line-up completed ' + str(admirer_rel.date_lineup_finished)
-                ajax_response += '<a href="/lineup/' + display_id + '/"><BR>View Completed Lineup</a>'
+                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
             else:
-                ajax_response += '<a href="/lineup/' + display_id + '/">Finish Lineup</a>'
+                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
       
         else:
-            ajax_response += '<a class="check_credit" href="#" feature_id="1" cancel_url="' + request.build_absolute_uri() + '" success_path="/lineup/' + display_id + '">Start Lineup</a>'
+            #ajax_response += '<a class="check_credit" href="#" feature_id="1" cancel_url="' + request.build_absolute_uri() + '" success_path="/lineup/' + display_id + '">Start Lineup</a>'
+            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
+    
     except CrushRelationship.DoesNotExist:
         print "could not find admirer relationship"
         ajax_response="Sorry, there is a problem processing the lineup for this admirer.  We are working on fixing this issue."
 
     
     return HttpResponse(ajax_response)
+
+# called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
+@login_required
+@csrf_exempt
+def ajax_get_lineup_member_view(request, display_id,lineup_position):
+    print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
+    
+    ajax_response = ""
+    me=request.user
+    # obtain the admirer relationship
+    try:
+        admirer_rel=me.crush_relationship_set_from_target.get(admirer_display_id=display_id)
+    except CrushRelationship.DoesNotExist:
+        print "Error: Could not find the admirer relationship."
+        return HttpResponseNotFound("Error: Could not find the admirer relationship.")
+    # obtain the actual user:
+    try:   # obtain the user
+        lineup_membership = admirer_rel.lineupmembership_set.get(position=lineup_position)
+    except FacebookUser.DoesNotExist: 
+        print ("Error: Could not find the lineup member data.")
+        return HttpResponseNotFound("Error: Could not find the lineup member data.")
+    lineup_count = len(admirer_rel.lineup_members.all())
+    display_position=int(lineup_position) + 1;
+    
+    # build the basic elements
+    # 1) name, photo, position info 
+    ajax_response += '<div id="name">' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '</div>'
+    ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_membership.lineup_member.get_facebook_picture() + '" height="80" width="10"></div>'
+    ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
+    ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_membership.lineup_member.username + '" target="_blank">view facebook profile</a></div>'
+    ajax_response += '<div id="decision" username="' + lineup_membership.lineup_member.username + '">'
+    if lineup_membership.decision == None:
+        ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
+        ajax_response += '<a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
+    elif lineup_membership.decision == 0:
+        ajax_response += 'You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!'
+    else:
+        ajax_response += 'You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.'
+    ajax_response += '</div>'
+    #2) facebook button 
+    #3) crush button 
+    #4) platonic friend button  #
+    
+    
+    return HttpResponse(ajax_response)
+
     
 @login_required
 def ajax_reconsider(request):
@@ -422,9 +487,9 @@ def ajax_reconsider(request):
             new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True)
            
             if rel.friendship_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-               pool=Pool()
-               pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
-               rel.delete()
+                pool=Pool(1)
+                pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
+                rel.delete()
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound("can't find the original platonic relationship") #can't find original platonic relationships so don't do anything more
     
