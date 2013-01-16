@@ -197,7 +197,7 @@ AUTHENTICATION_BACKENDS = (
 
 FEATURES = {
     '1': {
-        'NAME': 'View Secret Admirer Lineup', 
+        'NAME': 'Continue Viewing Secret Admirer Lineup', 
         'COST': 1,      
     },
     '2': {

@@ -15,7 +15,7 @@ from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
 from smtplib import SMTPException
 from multiprocessing import Pool
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time
 
 
@@ -299,34 +299,147 @@ def admirers(request):
                                'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count})    
 
+@login_required
+def ajax_are_lineups_initialized(request):
+    print "call to ajax_are_lineups_initialized"
+    counter = 0
+    while True:
+        admirer_rels=request.user.crush_relationship_set_from_target.filter(is_lineup_initialized=False)
+        if len(admirer_rels)==0:
+            return HttpResponse()
+        elif counter==10: 
+            # wait up to 5 seconds total before returning control back to client side
+            return HttpResponseNotFound()
+        else:
+            time.sleep(.5)
+            counter+=1
+            # wait a half second before checking again
+            
+@login_required
+def ajax_display_lineup_block(request, display_id):
+    int_display_id=int(display_id)
+    print "ajax initialize lineup with display id: " + str(int_display_id)
+    ajax_response = ""
+    try:    
+        counter = 0
+        while True:
+            print "trying admirer " + str(display_id) + " on try: " + str(counter) 
+            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
+            if admirer_rel.is_lineup_initialized==True:
+                break
+            elif counter==30: # if 30 seconds have passed then give up
+                print "giving up on admirer:" + str(display_id)
+                return HttpResponse("Lineup Loading Error: please reload page")
+                #return HttpResponseNotFound(str(display_id),content_type="text/plain")
+            time.sleep(1) # wait a quarter second
+            counter+=1
+
+        for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
+            if counter < 2 or membership.decision!=None:
+                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
+            else:
+                ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
+
+        ajax_response += '<BR>'
+        
+        if admirer_rel.is_lineup_paid:
+            if admirer_rel.date_lineup_finished:
+                ajax_response += 'Line-up completed ' + str(admirer_rel.date_lineup_finished)
+                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
+            else:
+                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
+      
+        else:
+            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
+    
+    except CrushRelationship.DoesNotExist:
+        print "could not find admirer relationship"
+        ajax_response="Sorry, there is a problem processing the lineup for this admirer.  We are working on fixing this issue."
+
+    
+    return HttpResponse(ajax_response)
+
 # -- Single Lineup (Ajax Content) Page --
 @login_required
-def ajax_view_lineup(request,admirer_id):
+def ajax_show_lineup_slider(request,admirer_id):
     me = request.user
     try:
         admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
     # detract credit if lineup not already paid for
-    if (not admirer_rel.is_lineup_paid):
-        if (me.site_credits >= settings.FEATURES['1']['COST']):
-            me.site_credits -= int(settings.FEATURES['1']['COST'])
-            me.save(update_fields=['site_credits']) 
-            admirer_rel.is_lineup_paid=True
-            admirer_rel.target_status=3
-            admirer_rel.updated_flag=True
-            admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
-        else:
-            return HttpResponse("Error: not enough credits to see lineup")
+    #if (not admirer_rel.is_lineup_paid):
+    #     if (me.site_credits >= settings.FEATURES['1']['COST']):
+    #         me.site_credits -= int(settings.FEATURES['1']['COST'])
+    #         me.save(update_fields=['site_credits']) 
+    #         admirer_rel.is_lineup_paid=True
+    #         admirer_rel.target_status=3
+    #        admirer_rel.updated_flag=True
+    #         admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
+    #     else:
+    #         return HttpResponse("Error: not enough credits to see lineup")
     membership_set = admirer_rel.lineupmembership_set.all()
     # need to cleanse the lineup members each time the lineup is run 
-    #    reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
+    # reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
         
     return render(request,'lineup.html',
                               {
                                'admirer_rel':admirer_rel,
                                'membership_set': membership_set,
                                'number_completed_members': len(membership_set.exclude(decision = None))})
+
+# called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
+@login_required
+@csrf_exempt
+def ajax_get_lineup_slide(request, display_id,lineup_position):
+    print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
+    
+    ajax_response = ""
+    me=request.user
+    # obtain the admirer relationship
+    try:
+        admirer_rel=me.crush_relationship_set_from_target.get(admirer_display_id=display_id)
+        # if lineup is not paid for, then don't show any content beyond slide 2
+        # if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
+        #     print "lineup_position just before forbidden error: " + lineup_position
+        #     return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
+    except CrushRelationship.DoesNotExist:
+        print "Error: Could not find the admirer relationship."
+        return HttpResponseNotFound("Error: Could not find the admirer relationship.")
+    # obtain the actual user:
+    try:   # obtain the user
+        lineup_membership = admirer_rel.lineupmembership_set.get(position=lineup_position)
+    except FacebookUser.DoesNotExist: 
+        print ("Error: Could not find the lineup member data.")
+        return HttpResponseNotFound("Error: Could not find the lineup member data.")
+    lineup_count = len(admirer_rel.lineup_members.all())
+    display_position=int(lineup_position) + 1;
+    
+    # build the basic elements
+    # 1) name, photo, position info 
+    ajax_response += '<div id="name">' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '</div>'
+    ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_membership.lineup_member.get_facebook_picture() + '" height="80" width="10"></div>'
+    ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
+    ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_membership.lineup_member.username + '" target="_blank">view facebook profile</a></div>'
+    ajax_response += '<div id="decision" username="' + lineup_membership.lineup_member.username + '">'
+    if lineup_membership.decision == None:
+        ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
+        ajax_response += '<br><a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
+   
+    elif lineup_membership.decision == 0:
+        ajax_response += '<div id="choice">"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
+        #ajax_response += '<a class="fake-bx-next" id="check_credit" href="#" feature_id="1" cancel_url="http://' + request.get_host() + '/admirers/?show_lineup=' + str(display_id) + '" success_path="http://' + request.get_host() + '/admirers/?show_lineup=' + str(display_id) + '">Next</a>'
+
+    else:
+        ajax_response += '<div id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'
+       
+    ajax_response += '</div>' # close off decision tag
+    #2) facebook button 
+    #3) crush button 
+    #4) platonic friend button  #
+    
+    
+    return HttpResponse(ajax_response)
 
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
@@ -361,113 +474,6 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
     return HttpResponse(ajax_response)
-
-@login_required
-def ajax_are_lineups_initialized(request):
-    print "call to ajax_are_lineups_initialized"
-    counter = 0
-    while True:
-        admirer_rels=request.user.crush_relationship_set_from_target.filter(is_lineup_initialized=False)
-        if len(admirer_rels)==0:
-            return HttpResponse()
-        elif counter==10: 
-            # wait up to 5 seconds total before returning control back to client side
-            return HttpResponseNotFound()
-        else:
-            time.sleep(.5)
-            counter+=1
-            # wait a half second before checking again
-            
-@login_required
-def ajax_display_lineup(request, display_id):
-    int_display_id=int(display_id)
-    print "ajax initialize lineup with display id: " + str(int_display_id)
-    ajax_response = ""
-    try:    
-        counter = 0
-        while True:
-            print "trying admirer " + str(display_id) + " on try: " + str(counter) 
-            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
-            if admirer_rel.is_lineup_initialized==True:
-                break
-            elif counter==30: # if 30 seconds have passed then give up
-                print "giving up on admirer:" + str(display_id)
-                return HttpResponse("Lineup Loading Error: please reload page")
-                #return HttpResponseNotFound(str(display_id),content_type="text/plain")
-            time.sleep(1) # wait a quarter second
-            counter+=1
-
-        for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
-            if counter < 2 or membership.decision!=None:
-                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
-            else:
-                ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
-
-        ajax_response += '<BR>'
-        
-        if admirer_rel.is_lineup_paid:
-            if admirer_rel.date_lineup_finished:
-                ajax_response += 'Line-up completed ' + str(admirer_rel.date_lineup_finished)
-                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
-            else:
-                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
-      
-        else:
-            #ajax_response += '<a class="check_credit" href="#" feature_id="1" cancel_url="' + request.build_absolute_uri() + '" success_path="/lineup/' + display_id + '">Start Lineup</a>'
-            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
-    
-    except CrushRelationship.DoesNotExist:
-        print "could not find admirer relationship"
-        ajax_response="Sorry, there is a problem processing the lineup for this admirer.  We are working on fixing this issue."
-
-    
-    return HttpResponse(ajax_response)
-
-# called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
-@login_required
-@csrf_exempt
-def ajax_get_lineup_member_view(request, display_id,lineup_position):
-    print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
-    
-    ajax_response = ""
-    me=request.user
-    # obtain the admirer relationship
-    try:
-        admirer_rel=me.crush_relationship_set_from_target.get(admirer_display_id=display_id)
-    except CrushRelationship.DoesNotExist:
-        print "Error: Could not find the admirer relationship."
-        return HttpResponseNotFound("Error: Could not find the admirer relationship.")
-    # obtain the actual user:
-    try:   # obtain the user
-        lineup_membership = admirer_rel.lineupmembership_set.get(position=lineup_position)
-    except FacebookUser.DoesNotExist: 
-        print ("Error: Could not find the lineup member data.")
-        return HttpResponseNotFound("Error: Could not find the lineup member data.")
-    lineup_count = len(admirer_rel.lineup_members.all())
-    display_position=int(lineup_position) + 1;
-    
-    # build the basic elements
-    # 1) name, photo, position info 
-    ajax_response += '<div id="name">' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '</div>'
-    ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_membership.lineup_member.get_facebook_picture() + '" height="80" width="10"></div>'
-    ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
-    ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_membership.lineup_member.username + '" target="_blank">view facebook profile</a></div>'
-    ajax_response += '<div id="decision" username="' + lineup_membership.lineup_member.username + '">'
-    if lineup_membership.decision == None:
-        ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
-        ajax_response += '<a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
-    elif lineup_membership.decision == 0:
-        ajax_response += 'You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!'
-    else:
-        ajax_response += 'You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.'
-    ajax_response += '</div>'
-    #2) facebook button 
-    #3) crush button 
-    #4) platonic friend button  #
-    
-    
-    return HttpResponse(ajax_response)
-
     
 @login_required
 def ajax_reconsider(request):
@@ -506,6 +512,34 @@ def ajax_update_num_crushes_in_progress(request):
     ajax_response = str(request.user.crush_targets.all().count())
     return HttpResponse(ajax_response)
 
+@login_required
+def ajax_deduct_credit(request, feature_id, relationship_display_id, current_user_is_target):
+    print "deducting credit"
+    # called from lineup.html to add a member to either the crush list or the platonic friend list
+    me=request.user
+    try:
+        if current_user_is_target:
+            relationship=request.user.crush_relationship_set_from_target.get(admirer_display_id=relationship_display_id)
+        else:
+            relationship=request.user.crush_relationship_set_from_source.get(admirer_display_id=relationship_display_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+
+    features_data=settings.FEATURES[feature_id]
+    feature_cost = features_data['COST']
+    credit_available = me.site_credits
+    credit_remaining = credit_available - int(feature_cost)
+    if credit_remaining >= 0:
+        me.site_credits = credit_remaining
+    else:
+        return HttpResponseForbidden("Error: You no longer have enough credit.")
+    if str(feature_id) == '1': # if feature is view lineup
+        relationship.is_lineup_paid = True
+    # now save both the user and the relationship
+    me.save(update_fields=['site_credits'])
+    relationship.save(update_fields=['is_lineup_paid'])
+    return HttpResponse()
+    
 # -- Past Admirers Page --
 @login_required
 def admirers_past(request):
@@ -723,7 +757,7 @@ def settings_notifications(request):
 
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
-def credit_checker(request,feature_id):
+def credit_checker(request,feature_id,relationship_display_id):
     # obtain feature data from feature_id and settings
     features_data=settings.FEATURES[feature_id]
     feature_cost = features_data['COST']
@@ -760,6 +794,11 @@ def credit_checker(request,feature_id):
                        'credit_available':credit_available,
                        'credit_remaining': credit_remaining,
                        'success_path':success_path})
+        
+@login_required
+def credit_checker_handler(request,feature_id,relationship_display_id):
+    print ""
+    
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 
 def paypal_purchase(request):

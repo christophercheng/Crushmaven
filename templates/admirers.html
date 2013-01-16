@@ -35,7 +35,7 @@ $(document).ready(function()
         $('.lineup').on('click', '.view_lineup', function(e) {
 					view_lineup_element=$(this);
         	var display_id=view_lineup_element.attr('display_id');	
-        	load_url="/ajax_view_lineup/" + display_id + "/";
+        	load_url="/ajax_show_lineup_slider/" + display_id + "/";
           e.preventDefault();
 					$("#lineup_modal").load(load_url);   	
           $("#lineup_modal").dialog("open");
@@ -67,6 +67,7 @@ $(document).ready(function()
 {% if admirer_relationships %}
 <script>
 var lineups_need_initialization=false;
+var show_lineup_number = '{{request.GET.show_lineup}}';
 </script>
 	<ul>
 		{% for admirer_rel in admirer_relationships %}
@@ -76,12 +77,16 @@ var lineups_need_initialization=false;
 			<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
 			<div id="{{admirer_rel.admirer_display_id}}" class="lineup">
       <script>
-      	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}')           
+      	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup_block/{{admirer_rel.admirer_display_id}}',function(){
+    				 // if there is a show_lineup get variable, and it is equal to the current admirer's display_id, then auto show this lineup
+    				 if (show_lineup_number && show_lineup_number=={{admirer_rel.admirer_display_id}})
+    						 $(this).children('.view_lineup').trigger('click'); 		
+      	});           
       </script>          
      	<!-- 
                 <script>
                 {% if admirer_rel.is_lineup_initialized %}
-                	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup/{{admirer_rel.admirer_display_id}}').error(function(e){alert("fail");});           
+                	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup_block/{{admirer_rel.admirer_display_id}}').error(function(e){alert("fail");});           
                 {% else %}
                     lineups_need_initialization=true;
                  {% endif %}
@@ -98,7 +103,7 @@ var lineups_need_initialization=false;
         $.get('/ajax_are_lineups_initialized',function() 
                                 {   
                                     $(".lineup").has("script").each(function(index){
-                                        $(this).load('/ajax_display_lineup/' + this.id);
+                                        $(this).load('/ajax_display_lineup_block/' + this.id);
                                         });
                                  });
         /*
@@ -109,7 +114,7 @@ var lineups_need_initialization=false;
                             $.get('/ajax_are_lineups_initialized',function() 
                                 {   
                                     $(".lineup").has("script").each(function(index){
-                                        $(this).load('/ajax_display_lineup/' + this.id);
+                                        $(this).load('/ajax_display_lineup_block/' + this.id);
                                         }); // close off each loop
                                  }).error(check_lineups); // close off get and add error callback
                          },1000); // close off setTimeout         
@@ -117,7 +122,7 @@ var lineups_need_initialization=false;
             check_lineups(); // make first call to check lineups
         */
         
-        } // close of if conditional block
+        } // close of if conditional block    
 	</script>
 
 	</ul>

@@ -44,21 +44,21 @@ urlpatterns += patterns('crush',
     
     url(r'^select_crush_by_id/$','views.select_crush_by_id'),
     
-    url(r'^ajax_view_lineup/(?P<admirer_id>\d+)/$','views.ajax_view_lineup'), 
-    
     # -- MODAL DIALOG PROCESSING & CONTENT --
+        
+    url(r'^ajax_are_lineups_initialized/$','views.ajax_are_lineups_initialized'),
+    
+    url(r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','views.ajax_display_lineup_block'),
+    
+    url(r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','views.ajax_show_lineup_slider'), 
+    
+    url(r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','views.ajax_get_lineup_slide'),
     
     url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','views.ajax_add_lineup_member'),
     
     url(r'^ajax_update_num_crushes_in_progress/$','views.ajax_update_num_crushes_in_progress'),
     
     url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
-    
-    url(r'^ajax_are_lineups_initialized/$','views.ajax_are_lineups_initialized'),
-    
-    url(r'^ajax_get_lineup_member_view/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','views.ajax_get_lineup_member_view'),
-        
-    url(r'^ajax_display_lineup/(?P<display_id>\d+)/$','views.ajax_display_lineup'),
     
     url(r'^ajax_find_fb_user/$','views.ajax_find_fb_user'),
     
@@ -68,13 +68,15 @@ urlpatterns += patterns('crush',
     
     # -- SETTINGS PAGES --
     
-        url(r'^settings_credits/$', 'views.settings_credits'),
+    url(r'^settings_credits/$', 'views.settings_credits'),
     
     url(r'^settings_notifications/$','views.settings_notifications'),
     
     url(r'^settings_profile/$', 'views.settings_profile'),
     
-    url(r'^credit_checker/(?P<feature_id>\d+)/$','views.credit_checker'),
+    url(r'^credit_checker/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/$','views.credit_checker'),
+    
+    url(r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/(?P<current_user_is_target>\d+)/$','views.ajax_deduct_credit'),
     
     url(r'^paypal_purchase/$', 'views.paypal_purchase'),
     

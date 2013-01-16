@@ -1,20 +1,103 @@
-
 {% load fbdater_extras %}
     		<!-- Include the plugin *after* the jQuery library -->
 <!--<script src="{{ STATIC_URL }}basic-slider/bjqs-1.3.js"></script>-->
 <!-- Include the basic styles -->
 <!--<link type="text/css" rel="Stylesheet" href="{{ STATIC_URL }}basic-slider/bjqs.css" />-->
 
-<!-- bxSlider Javascript file -->
-<script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
-<!-- bxSlider CSS file -->
-<link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
+
 
 <div id="dialog_member_add" title="Lineup Confirmation">Are you sure about this person?</div>
+<div id="credit_check_modal" title="Premium Feature Purchase"></div>
+
+<!--  
+<h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
+ -->
+<div id="lineup_container">
+ <div id="bx-pager">
+ 
+{% for membership in membership_set %}
+
+	{% if membership.decision != None or forloop.counter0 == 0 %}
+		<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width="50px" height="50px" /></a>
+	{% else %}
+			<img lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" width="50px" height="50px" />
+	{% endif %}
+{% endfor %}
+</div>
+<!-- Just a shell for the slideshow container -->
+
+<ul class="bxslider">
+{% for member in membership_set %}
+	{% if member.decision != None %}
+	<li id="preload" lineup_position = {{member.position}} style="height:300px">
+	{% else %}	
+	<li id="lineup" lineup_position="{{member.position}}" style="height:300px">
+	{% endif %}
+</li>
+{% endfor %}
+</ul>
+</div>  <!--  close off slider div-->
 
 <script type="text/javascript">
-$(document).ready(function() 
+$(document).ready(function() // handling for the slider
 { 
+
+	/** PROCEDURAL CODE - CREATE IS_LINEUP_PAID GLOBAL
+	* create global bool variable for lineup's is_lineup_paid setting
+	*/
+	window.is_lineup_paid = '{{admirer_rel.is_lineup_paid}}';
+	if (window.is_lineup_paid == 'True')
+		window.is_lineup_paid=true;
+	else
+		window.is_lineup_paid=false;
+		
+	/** FUNCTION - LAUNCH SLIDER
+	*Launch the slider at a parameterized position
+	*/
+	var launch_slider_at = function(last_loaded_slide){
+		window.slider_control = $('.bxslider').bxSlider({
+			pagerCustom: '#bx-pager',
+			infiniteLoop: false,
+			hideControlOnEnd: false,
+			speed:800,
+			adaptiveHeight:true,
+			startSlide: 0,
+			slideSelector:'li#preload',
+			onLastSlideNext: window.handleLastSlideNext
+			});
+		setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
+	};	
+		
+	/** FUNCTION - AJAX LOAD NEXT SLIDE
+	* Ajax load the next slide into the DOM
+	*/	
+	var load_next_slide = function(next_position, callback){
+		$('.bxslider li[lineup_position=' + next_position + ']').load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + next_position + '/', function(response, status, xhr) {
+			// load the next thumbnail as well
+			var next_username =$(this).find('#decision').attr("username");
+			var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
+			var img_element = $('#bx-pager img[lineup_position=' + next_position + ']')
+
+			img_element.attr('src', new_src).attr('width','50').attr('height','50');	
+			img_element.wrap('<a data-slide-index="' + next_position + '" href="">');
+			callback(next_position);
+				// add the fake next button if we're not at the last slide
+			}).attr("id", "preload"); // close off ajax load of next slide
+	}; // close off of helper function: load_next_slide
+	
+	/** FUNCTION - RESET SLIDER
+	* reset the slider (if # slides changed) and advance it to last slide 
+	*/
+	var resetAndAdvanceSlider = function(just_loaded_slide){
+		window.slider_control.reInitialize();						
+		setTimeout(function(){
+			window.slider_control.goToSlide(just_loaded_slide);
+		},1000);
+	}; // close off resetAndAdvanceSlider
+	
+	/** FUNCTION - HANDLE ADD MEMBER CLICK
+	* handle click to 'add member' as crush or platonic friend
+	*/
 	$("#dialog_member_add").dialog({modal: true, autoOpen: false});
   $('#lineup_container li').on('click','a.member_add',function(e) {
 		var parent = $(this).parent();				//# decision div
@@ -44,23 +127,20 @@ $(document).ready(function()
 						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
 					else 
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
-					// load the next lineup slide
-		
-					
-					$('.bxslider li[lineup_position=' + next_position + ']').load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + next_position + '/', function(response, status, xhr) {
-						// load the next thumbnail as well
-						var next_username =$(this).find('#decision').attr("username");
-						var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
-						var img_element = $('#bx-pager img[lineup_position=' + next_position + ']')
-						window.slider_control.reInitialize();
-						setTimeout(function(){
-							img_element.attr('src', new_src).attr('width','50').attr('height','50');	
-							img_element.wrap('<a data-slide-index="' + next_position + '" href="">');
-							window.slider_control.goToSlide(next_position);
-							},1000);
-						}).attr("id", "preload"); // close off ajax load of next slide
-					}); // close off parent.load (making the decision and showing the html results
-			
+					// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
+					// if check dialog is a success then continue on to load the third slide, else stop at second slide
+					if (current_position == 1 && !window.is_lineup_paid){
+							var success_path='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
+							var cancel_url='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
+							var feature_id = '1';
+							setTimeout(function(){window.launch_credit_check(success_path,cancel_url,feature_id);},1000);
+					}
+					else {
+						// if we are not at the second slide load the next lineup slide		
+						
+						load_next_slide(next_position, resetAndAdvanceSlider);	
+						} // close off else if not at second slide
+					}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close");
 				},   // end of add handler
 				"Cancel": function() {$(this).dialog("close");
@@ -68,73 +148,85 @@ $(document).ready(function()
 			}); // end of .dialog handler
     $("#dialog_member_add").dialog("open");
     return false;
-		}); // end of .click handler (on a.member add)
-}); // end document.ready function
-
-</script>
-
-<!--  
-<h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
- -->
-<div id="lineup_container">
- <div id="bx-pager">
- 
-{% for membership in membership_set %}
-
-	{% if membership.decision != None or forloop.counter0 == number_completed_members %}
-		<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture?type=large" width="50px" height="50px" /></a>
-	{% else %}
-			<img lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" width="50px" height="50px" />
-	{% endif %}
-{% endfor %}
-</div>
-<!-- Just a shell for the slideshow container -->
-
-<ul class="bxslider">
-{% for member in membership_set %}
-	{% if member.decision != None %}
-	<li id="preload" lineup_position = {{member.position}} style="height:300px">
-	{% else %}	
-	<li id="lineup" lineup_position="{{member.position}}" style="height:300px">
-	{% endif %}
-</li>
-{% endfor %}
-</ul>
-</div>  <!--  close off slider div-->
-
-<script>
-// load all lineup members who have a decision already (and have been marked as 'preload')
-$(document).ready(function($) 
-{
-
+	}); // end of click handler: $('#lineup_container li').on('click','a.member_add',function(e)
+	
+	/** FUNCTION - HANDLE SLIDER LAST NEXT CLICK
+	* callback handler for slider called when last next button is clicked
+	*   checks to see if check-payment dialog should be launched (on second slide if lineup_paid is false)
+	*/
+	window.handleLastSlideNext = function(activeSlideElement,activeIndex){
+		//	alert(activeIndex);
+		//	alert("is_lineup_paid: " + is_lineup_paid);
+		// if active slide is last slide (which is 1) and no decision has been made yet, then launch credit check
+			if (activeIndex == 1 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
+				var success_path='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
+				var cancel_url='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
+				var feature_id = '1';
+				window.launch_credit_check(success_path,cancel_url,feature_id);
+			}
+			else{
+				var member_name = activeSlideElement.children('#name').html();
+				alert("Sorry, you can not jump ahead without making a decision on " + member_name);
+			}
+	};
+	
+	/** PROCEDURAL CODE
+	* Preload any slides that already have a decision
+	*/
 	var last_loaded_slide=-1;
 	$('.bxslider li#preload').each(function(index){
-			$(this).load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + index + '/');	
+			$(this).load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + index + '/');	
 			last_loaded_slide = index;
 	});
-	// load the next slide automatically at the value of counter + 1 (unless of course the counter value is beyond the last slide)
-	var next_unloaded_slide = last_loaded_slide + 1;
 
-	// load the next slide in the list unless we're at the end, in which case set the current slide to display at 0 position
-	if ({{membership_set.count}} > next_unloaded_slide)
-			$('.bxslider li[lineup_position=' + next_unloaded_slide + ']').load('/ajax_get_lineup_member_view/{{admirer_rel.admirer_display_id}}/' + next_unloaded_slide + '/', function(a,b,c){		
-			}).attr("id", "preload");	
+	/** PROCEDURAL CODE
+	* possibly load the next upcoming slide if we are at first position or if lineup is already paid
+	* then call the slider launching function
+	*/
+	var next_loaded_slide=last_loaded_slide;
+	if (last_loaded_slide<1 || window.is_lineup_paid) {		
+			var next_loaded_slide = last_loaded_slide + 1;
+			if (next_loaded_slide < {{membership_set.count}})
+				load_next_slide(next_loaded_slide,launch_slider_at);
+			else // don't load slide after last, just open slider at first position
+				launch_slider_at(0);				
+	} // lineup isn't paid so just open slider with whatever was already decided
 	else
-			next_unloaded_slide = 0;
+		launch_slider_at(next_loaded_slide);
 
 
-	window.slider_control = $('.bxslider').bxSlider({
-			pagerCustom: '#bx-pager',
-			infiniteLoop: false,
-			hideControlOnEnd: true,
-			speed:900,
-			adaptiveHeight:true,
-			startSlide: 0,
-			slideSelector:'li#preload'
-			});
+ $("#credit_check_modal").dialog({modal: true, autoOpen: false});    
 	
-	setTimeout(function(){window.slider_control.goToSlide(next_unloaded_slide)},500);
-		
+	window.launch_credit_check = function(success_path,cancel_url,feature_id) {
+
+  	// return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
+  	if(cancel_url.substr(-1) == '/') 
+   	cancel_url = cancel_url.substr(0, cancel_url.length - 1);
+   	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
+		$("#credit_check_modal").load(load_url);   	
+   	$("#credit_check_modal").dialog("open");
+   	$(".ui-widget-overlay").css("background","black").css("opacity",".5");
+  	return false;         
+   }; // close off window.launch_credit_check function
+	
+	/** FUNCTION
+	* click handler for credit checker dialog - when ok-to-deduct is clicked
+	*   calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
+	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
+	*/
+	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
+		// call ajax post function to deduct credit and change lineup_is_paid to true 
+		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/1/' // feature is type 2, 1: user is target
+		$.get(get_url,function(data) {
+			// if successful then load next slide and thumbnail and auto go to that slide
+			next_position=window.slider_control.getCurrentSlide() + 1;
+			load_next_slide(next_position,resetAndAdvanceSlider);
+			window.is_lineup_paid=true;
+			}) // if fail (credit was suddenly not available or network problem), then do nothing
+			.error(function(data){alert(data);}); // end of $.get(get_url...)
+		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
+
+
 }); // close off jquery document ready
 
 </script>
