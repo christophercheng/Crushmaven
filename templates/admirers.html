@@ -3,35 +3,14 @@
 
 {% load fbdater_extras %}
 
-
-<div id="credit_check_modal" title="Premium Feature Purchase"></div>
-
 <div id="lineup_modal" title="Secret Admirer Lineup"></div>
 
 <script type="text/javascript">
 
 $(document).ready(function() 
 {
-	
-        $("#credit_check_modal").dialog({modal: true, autoOpen: false});
         $("#lineup_modal").dialog({modal: true, resizable:false,autoOpen: false,height:500,width:640});
-				$('.lineup').on('click', '.check_credit', function(e) {
-					credit_check_element=$(this);
-        	var success_path=credit_check_element.attr('success_path');	
-        	var cancel_url = credit_check_element.attr('cancel_url');
-        	// return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
-        	if(cancel_url.substr(-1) == '/') 
-        		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
-        	var feature_id=credit_check_element.attr('feature_id');
-        	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
-            e.preventDefault();
-					$("#credit_check_modal").load(load_url);   	
-           $("#credit_check_modal").dialog("open");
-                     $(".ui-widget-overlay").css("background","black").css("opacity",".5");
-            return false;
-            
-        });
-        
+    
         $('.lineup').on('click', '.view_lineup', function(e) {
 					view_lineup_element=$(this);
         	var display_id=view_lineup_element.attr('display_id');	
@@ -40,14 +19,8 @@ $(document).ready(function()
 					$("#lineup_modal").load(load_url);   	
           $("#lineup_modal").dialog("open");
           $(".ui-widget-overlay").css("background","black").css("opacity",".80");
-          return false;
-            
-        });
-        
-        
- 
-
-				
+          return false;    
+        });			
 });
 </script>
 
@@ -67,7 +40,7 @@ $(document).ready(function()
 {% if admirer_relationships %}
 <script>
 var lineups_need_initialization=false;
-var show_lineup_number = '{{request.GET.show_lineup}}';
+var show_lineup_number = '{{show_lineup}}';
 </script>
 	<ul>
 		{% for admirer_rel in admirer_relationships %}

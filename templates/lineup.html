@@ -130,10 +130,7 @@ $(document).ready(function() // handling for the slider
 					// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
 					// if check dialog is a success then continue on to load the third slide, else stop at second slide
 					if (current_position == 1 && !window.is_lineup_paid){
-							var success_path='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
-							var cancel_url='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
-							var feature_id = '1';
-							setTimeout(function(){window.launch_credit_check(success_path,cancel_url,feature_id);},1000);
+							setTimeout(window.launch_credit_check,1000);
 					}
 					else {
 						// if we are not at the second slide load the next lineup slide		
@@ -159,10 +156,7 @@ $(document).ready(function() // handling for the slider
 		//	alert("is_lineup_paid: " + is_lineup_paid);
 		// if active slide is last slide (which is 1) and no decision has been made yet, then launch credit check
 			if (activeIndex == 1 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
-				var success_path='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
-				var cancel_url='http://{{request.get_host}}/admirers/?show_lineup={{admirer_rel.admirer_display_id}}';
-				var feature_id = '1';
-				window.launch_credit_check(success_path,cancel_url,feature_id);
+				window.launch_credit_check();
 			}
 			else{
 				var member_name = activeSlideElement.children('#name').html();
@@ -195,13 +189,18 @@ $(document).ready(function() // handling for the slider
 		launch_slider_at(next_loaded_slide);
 
 
- $("#credit_check_modal").dialog({modal: true, autoOpen: false});    
+	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
+	* 
+	*/
+ 	$("#credit_check_modal").dialog({modal: true, autoOpen: false});    
 	
-	window.launch_credit_check = function(success_path,cancel_url,feature_id) {
-
+	window.launch_credit_check = function() {
+		var success_path='/admirers/{{admirer_rel.admirer_display_id}}/';
+		var cancel_url='http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
+		var feature_id = '1';
   	// return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
   	if(cancel_url.substr(-1) == '/') 
-   	cancel_url = cancel_url.substr(0, cancel_url.length - 1);
+   		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
    	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
 		$("#credit_check_modal").load(load_url);   	
    	$("#credit_check_modal").dialog("open");
@@ -209,7 +208,7 @@ $(document).ready(function() // handling for the slider
   	return false;         
    }; // close off window.launch_credit_check function
 	
-	/** FUNCTION
+	/** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
 	* click handler for credit checker dialog - when ok-to-deduct is clicked
 	*   calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
 	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
@@ -219,9 +218,11 @@ $(document).ready(function() // handling for the slider
 		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/1/' // feature is type 2, 1: user is target
 		$.get(get_url,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
-			next_position=window.slider_control.getCurrentSlide() + 1;
+			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;
+			// adjust the credits number on the main site
+			$("#num_credits").load("/ajax_update_num_credits/");
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
 			.error(function(data){alert(data);}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)

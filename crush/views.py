@@ -17,7 +17,7 @@ from smtplib import SMTPException
 from multiprocessing import Pool
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time
-
+from django.db.models import F
 
 
 #from django.contrib.auth.models import Use
@@ -266,7 +266,7 @@ def ajax_find_fb_user(request):
 
 # -- Admirer List Page --
 @login_required
-def admirers(request):
+def admirers(request,show_lineup=None):
 
     me = request.user 
 
@@ -297,7 +297,8 @@ def admirers(request):
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':progressing_admirer_relationships,
-                               'past_admirers_count': past_admirers_count})    
+                               'past_admirers_count': past_admirers_count,
+                               'show_lineup': show_lineup})    
 
 @login_required
 def ajax_are_lineups_initialized(request):
@@ -400,9 +401,9 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     try:
         admirer_rel=me.crush_relationship_set_from_target.get(admirer_display_id=display_id)
         # if lineup is not paid for, then don't show any content beyond slide 2
-        # if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
+        if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
         #     print "lineup_position just before forbidden error: " + lineup_position
-        #     return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
+            return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
     except CrushRelationship.DoesNotExist:
         print "Error: Could not find the admirer relationship."
         return HttpResponseNotFound("Error: Could not find the admirer relationship.")
@@ -428,7 +429,6 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
    
     elif lineup_membership.decision == 0:
         ajax_response += '<div id="choice">"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
-        #ajax_response += '<a class="fake-bx-next" id="check_credit" href="#" feature_id="1" cancel_url="http://' + request.get_host() + '/admirers/?show_lineup=' + str(display_id) + '" success_path="http://' + request.get_host() + '/admirers/?show_lineup=' + str(display_id) + '">Next</a>'
 
     else:
         ajax_response += '<div id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'
@@ -510,6 +510,11 @@ def ajax_update_num_platonic_friends(request):
 @login_required
 def ajax_update_num_crushes_in_progress(request):
     ajax_response = str(request.user.crush_targets.all().count())
+    return HttpResponse(ajax_response)
+
+@login_required
+def ajax_update_num_credits(request):
+    ajax_response = str(request.user.site_credits)
     return HttpResponse(ajax_response)
 
 @login_required
@@ -771,7 +776,7 @@ def credit_checker(request,feature_id,relationship_display_id):
     print "success_path: " + success_path
     cancel_url = request.GET.get('cancel_url',"home")
     print "cancel_url: " + cancel_url
-    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?success_path=" + success_path
+    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?feature_id=" + str(feature_id) + "&rel_display_id=" + str(relationship_display_id) + "&username=" + request.user.username + "&success_path=" + success_path + "&cancel_url=" + cancel_url
     paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
     
     # perform conditional logic to determine which dialog to display
@@ -795,10 +800,6 @@ def credit_checker(request,feature_id,relationship_display_id):
                        'credit_remaining': credit_remaining,
                        'success_path':success_path})
         
-@login_required
-def credit_checker_handler(request,feature_id,relationship_display_id):
-    print ""
-    
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 
 def paypal_purchase(request):
@@ -807,16 +808,33 @@ def paypal_purchase(request):
     success_path = method_dict.get('success_path',"home")
     credit_amount = method_dict.get('credit_amount', 10)
     price=method_dict.get('amt',9)
+    feature_id=method_dict.get('feature_id','')
+    rel_display_id=method_dict.get('rel_display_id','')
+    username=method_dict.get('username','')
     print "printing out pdt get variables:"
     for element in method_dict:
-        print "element: " + element + " -> " + method_dict[element]
+        print "element: " + element + " -> " + method_dict[element] 
 #    resource = get_object_or_404( models.Resource, pk=id )
 #    user = get_object_or_404( User, pk=uid )
     if request.REQUEST.has_key('tx'):
-        tx = request.REQUEST['tx']
+        tx = request.REQUEST['tx']      
         try:
             Purchase.objects.get( tx=tx )
             print "duplicate transaction found when processing PAYPAL PDT Handler"
+            if feature_id == u'1': # handling of lineup payment
+                try:# handle special feature processing 
+                    facebook_user = FacebookUser.objects.get(username=username)
+                    #print "facebook user found with first name: " + facebook_user.first_name
+                    admirer_rel = request.user.get_all_new_incomplete_admirer_relations().get(admirer_display_id=rel_display_id)
+                    feature_cost=int(settings.FEATURES['1']['COST'])
+                    facebook_user.site_credits=F('site_credits') - feature_cost
+                    admirer_rel.is_lineup_paid=True;
+                    admirer_rel.save(update_fields=['is_lineup_paid'])
+                    facebook_user.save(update_fields=['site_credits'])
+                except CrushRelationship.DoesNotExist:
+                    pass # do nothing, i guess :)            
+                except FacebookUser.DoesNotExist:
+                    pass
             return HttpResponseRedirect(success_path)
         except Purchase.DoesNotExist:
             print "processing pdt transaction"
@@ -824,6 +842,20 @@ def paypal_purchase(request):
             if result.success(): # valid
                 Purchase.objects.create(purchaser=request.user, tx=tx, credit_total=int(credit_amount),price= price)
                 print "just created a new purchase"
+                # handle special feature processing
+                if feature_id == 1 and rel_display_id != '': # handling of lineup payment
+                    try:
+                        facebook_user = FacebookUser.objects.get(username=username)
+                        admirer_rel = request.user.get_all_new_incomplete_admirer_relations().get(admirer_display_id=rel_display_id)
+                        feature_cost=settings.FEATURES['1']['COST']
+                        facebook_user.site_credits=F('site_credits') - feature_cost
+                        admirer_rel.is_lineup_paid=True;
+                        admirer_rel.save(update_fields=['is_lineup_paid'])
+                        facebook_user.save(udpate_fields=['site_credits'])
+                    except CrushRelationship.DoesNotExist:
+                        pass # do nothing, i guess :)
+                    except FacebookUser.DoesNotExist:
+                        pass
                 return HttpResponseRedirect(success_path)
             else: # didn't validate
                 return render(request, 'error.html', { 'error': "Failed to validate payment" } )

@@ -32,6 +32,8 @@ urlpatterns += patterns('crush',
     url(r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html'),
         name="app_invite_success"),
 
+    url(r'^admirers/(?P<show_lineup>\d+)/$', 'views.admirers'),
+    
     url(r'^admirers/$', 'views.admirers'),
         
     url(r'^admirers_past/$', 'views.admirers_past'),
@@ -59,6 +61,8 @@ urlpatterns += patterns('crush',
     url(r'^ajax_update_num_crushes_in_progress/$','views.ajax_update_num_crushes_in_progress'),
     
     url(r'^ajax_update_num_platonic_friends/$','views.ajax_update_num_platonic_friends'),
+    
+    url(r'^ajax_update_num_credits/$','views.ajax_update_num_credits'),
     
     url(r'^ajax_find_fb_user/$','views.ajax_find_fb_user'),
     

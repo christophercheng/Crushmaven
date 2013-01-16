@@ -135,7 +135,7 @@ class FacebookUser(AbstractUser):
     age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(7,80)])
     age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(7,100)])
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
-    site_credits = models.IntegerField(default=1000) 
+    site_credits = models.IntegerField(default=0) 
     
     # each user has a set of user lists representing their 'just friends' and their crushes
     # here is an idiosyncrasy of this implementation:
