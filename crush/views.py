@@ -453,10 +453,16 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
             return HttpResponse("Server Error: Could not add given lineup user")
         try:
             membership=admirer_rel.lineupmembership_set.get(lineup_member=target_user)
-
         except LineupMembership.DoesNotExist:
             print "could not find lineup member"
             return HttpResponse("Server Error: Could not add given lineup user")
+        if membership.decision!=None:
+            # something is wrong, this person was already decided upon, so just return an error message
+            if membership.decision == 0:
+                ajax_response = "<div id=\"choice\">You already added " + target_user.first_name + " " + target_user.last_name + " as a crush!</div>"
+            else:
+                ajax_response = "<div id=\"choice\">You already added " + target_user.first_name + " " + target_user.last_name + " as a platonic friend.</div>"
+            return HttpResponse(ajax_response)
         if add_type=='crush':
             new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             ajax_response = "<div id=\"choice\">You added " + target_user.first_name + " " + target_user.last_name + " as a crush!</div>"

@@ -300,11 +300,13 @@ $(document).ready(function() // handling for the slider
 	// need to also handle a.ui-dialog-titlebar-close"
 	var handle_lineup_dialog_close = function(){
 		var current_href=document.location.href;
+					var decided_li_elements = $('.bxslider li#preload #decision #choice');	
+	 		var total_decisions=decided_li_elements.length;
 		$('#lineup_modal').dialog("close");
-		if (current_href.contains("/admirers/")) {
+		if (current_href.indexOf("/admirers/") != -1) {
 			// if there are other incomplete lineups then stay on admirer page, otherwise go right to crush page
 			var decided_li_elements = $('.bxslider li#preload #decision #choice');	
-	 		var total_decisions=decided_li_elements.length;
+	 		var total_decisions=decided_li_elements.length;		
 	 		if (total_decisions < {{membership_set.count}})
 	 				return; // do nothing
 			{% if request.user.get_all_incomplete_admirer_relations.count > 1  %}
