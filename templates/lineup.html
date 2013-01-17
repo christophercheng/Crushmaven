@@ -85,7 +85,7 @@ $(document).ready(function() // handling for the slider
 		footer_element.children('#finish-btn').removeAttr('disabled');
 	  footer_msg_element = footer_element.children('#footer-msg');
 	  footer_msg_element_html='<b>Your Crush Lineup evaluation is complete!</b>'
-	 	crush_li_elements = $('.bxslider li#preload').has('#decision #choice.crush');
+	 	crush_li_elements = $('.bxslider li#preload').has('#decision .crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
 	 		footer_msg_element_html += '<BR> <b>Added to crush list (' + total_crushes + '):</b>';
@@ -190,7 +190,7 @@ $(document).ready(function() // handling for the slider
 					else 
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
-					if (current_position == 1 && !window.is_lineup_paid){
+					if (current_position == 1 && !window.is_lineup_paid && {{membership_set.count}} > 2){
 							setTimeout(window.launch_credit_check,1000);
 					}
 					else {
@@ -242,9 +242,8 @@ $(document).ready(function() // handling for the slider
 	* possibly load the next upcoming slide if we are at first position or if lineup is already paid
 	* then call the slider launching function
 	*/
-	var next_loaded_slide=last_loaded_slide;
-	if (last_loaded_slide<1 || window.is_lineup_paid) {		
-			var next_loaded_slide = last_loaded_slide + 1;
+	var next_loaded_slide=last_loaded_slide+1;
+	if (last_loaded_slide<1 || window.is_lineup_paid ) {		
 			if (next_loaded_slide < {{membership_set.count}})
 				load_next_slide(next_loaded_slide,launch_slider_at);
 			else {// don't load slide after last, just open slider at first position
@@ -252,9 +251,12 @@ $(document).ready(function() // handling for the slider
 				process_completed_lineup();
 			}				
 	} // lineup isn't paid so just open slider with whatever was already decided
-	else
-		launch_slider_at(next_loaded_slide);
-		
+	else{
+
+		launch_slider_at(last_loaded_slide);
+			if (next_loaded_slide == {{membership_set.count}}) // we've already decided on last member (i.e. 2 members total)
+		process_completed_lineup();
+	}
 
 	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
 	* 
@@ -300,20 +302,17 @@ $(document).ready(function() // handling for the slider
 	// need to also handle a.ui-dialog-titlebar-close"
 	var handle_lineup_dialog_close = function(){
 		var current_href=document.location.href;
-					var decided_li_elements = $('.bxslider li#preload #decision #choice');	
-	 		var total_decisions=decided_li_elements.length;
+		var decided_li_elements = $('.bxslider li#preload #decision #choice');	
+	 	var total_decisions=decided_li_elements.length;
 		$('#lineup_modal').dialog("close");
 		if (current_href.indexOf("/admirers/") != -1) {
 			// if there are other incomplete lineups then stay on admirer page, otherwise go right to crush page
-			var decided_li_elements = $('.bxslider li#preload #decision #choice');	
-	 		var total_decisions=decided_li_elements.length;		
-	 		if (total_decisions < {{membership_set.count}})
-	 				return; // do nothing
 			{% if request.user.get_all_incomplete_admirer_relations.count > 1  %}
 				document.location.href='/admirers/'; // reload page
 			{% else %}
-			// redirect user to crushes in progress is we are currently at the admirers page		
-				document.location.href='/crushes_in_progress/';
+			// redirect user to crushes in progress if the last lineup is done
+				if (total_decisions == {{membership_set.count}})	
+					document.location.href='/crushes_in_progress/';
 		{% endif %}
 		}
 	};

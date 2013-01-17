@@ -32,12 +32,12 @@ from django.core.mail import send_mass_mail
 def home(request):
     
     if request.user.is_authenticated():
-        if len(FacebookUser.objects.all()) == 1:
-            fake_ids=['1057460663','100004192844461','100003843122126']
-            for crushee_id in fake_ids:
-                selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
-                CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
-                                                               friendship_type=0, updated_flag=True)
+        #if len(FacebookUser.objects.all()) == 1 and request.user.username==:
+        #   fake_ids=['1057460663','100004192844461','100003843122126']
+        #    for crushee_id in fake_ids:
+        #        selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
+        #        CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
+        #                                                       friendship_type=0, updated_flag=True)
         return HttpResponseRedirect('/crushes_in_progress/')
 
     else:
@@ -394,7 +394,7 @@ def ajax_show_lineup_slider(request,admirer_id):
 @csrf_exempt
 def ajax_get_lineup_slide(request, display_id,lineup_position):
     print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
-    
+    print "please change!"
     ajax_response = ""
     me=request.user
     # obtain the admirer relationship
@@ -428,10 +428,10 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         ajax_response += '<br><a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
    
     elif lineup_membership.decision == 0:
-        ajax_response += '<div id="choice" class="crush">"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
-
+        ajax_response += '<div class="crush" id="choice" >"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
     else:
-        ajax_response += '<div id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'
+        ajax_response += '<div class="platonic" id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'
+    
        
     ajax_response += '</div>' # close off decision tag
     #2) facebook button 
@@ -464,12 +464,12 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
                 ajax_response = "<div id=\"choice\">You already added " + target_user.first_name + " " + target_user.last_name + " as a platonic friend.</div>"
             return HttpResponse(ajax_response)
         if add_type=='crush':
-            new_relationship = CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
-            ajax_response = "<div id=\"choice\">You added " + target_user.first_name + " " + target_user.last_name + " as a crush!</div>"
+            CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = '<div id="choice" class="crush">You added ' + target_user.first_name + ' ' + target_user.last_name + ' as a crush!</div>'
             membership.decision=0
         else:
-            new_relationship = PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
-            ajax_response = "<div id=\"choice\">You added " + target_user.first_name + " " + target_user.last_name + " as a platonic friend.</div>"
+            PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+            ajax_response = '<div id="choice" class="platonic">You added ' + target_user.first_name + ' ' + target_user.last_name + ' as a platonic friend.</div>'
             membership.decision=1
         membership.save(update_fields=['decision'])
         #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
