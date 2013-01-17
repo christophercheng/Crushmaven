@@ -156,7 +156,7 @@
   
   height: 353px;
   overflow: auto;
-  position: relative
+  position: relative;
 }
 
 #fs-user-list ul, #fs-selected-user-list ul {
@@ -164,13 +164,13 @@
   
   margin: 0;
   padding: 0;
-  overflow: hidden
+  overflow: hidden;
 }
 #fs-user-list li,#fs-selected-user-list li {
   float: left;
   padding: 5px 0 0 5px;
   width: 173px;
-  overflow: hidden
+  overflow: hidden;
 }
 
 #fs-confirm-user-list {
@@ -226,6 +226,7 @@ li.checked .fs-anchor {
   display: table-cell;
   vertical-align: middle;
   height: 29px
+  font-size: 11px;
 }
 
 /* @end User List */
