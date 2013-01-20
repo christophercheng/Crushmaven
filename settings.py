@@ -196,9 +196,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # auto delay the response between the start time and end time (in seconds)
-CRUSH_RESPONSE_DELAY_START = 43200
-CRUSH_RESPONSE_DELAY_END = 86400
-STARTING_CREDITS=100
+CRUSH_RESPONSE_DELAY_START = 43200 # 12 hours
+CRUSH_RESPONSE_DELAY_END = 86400 # 24 hours
+STARTING_CREDITS=100 # change to 1 in production
+MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself
 
 FEATURES = {
     '1': {

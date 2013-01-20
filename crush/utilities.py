@@ -5,8 +5,7 @@ Created on Jan 11, 2013
 '''
 import random, urllib, json
 from crush.models import LineupMembership, FacebookUser
-from multiprocessing import Pool
-import time
+from django.conf import settings
 
 def initialize_all_lineups(user):
     print "initializing all incomplete lineups"
@@ -60,20 +59,18 @@ def initialize_lineup(self):
     print "fql_query string: " + str(fql_query)
     fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,builder_user.access_token))
     try:
-        data = json.load(fql_query_results)['data']       
-        if (len(data) == 0):
-            if admirer_gender=='Male':
-                data = [{u'username':u'zuck', 'uid':u'4'}]
-            else:
-                data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
+        data = json.load(fql_query_results)['data']    
+        if (len(data) < settings.MINIMUM_LINEUP_MEMBERS):
+            
+            return "You do not have enough friends to create a lineup at this time." # not enough members to fill a lineup   
         print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
       
     except ValueError:
         print "ValueError on Fql Query Fetch read!"
-        return False
+        return "Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later."
     except KeyError:
         print "KeyError on FQL Query Fetch read"
-        return False
+        return "Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later."
     # determine where the admirer should randomly fall into the lineup
     # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
     admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9

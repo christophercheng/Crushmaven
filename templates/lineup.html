@@ -184,22 +184,20 @@ $(document).ready(function() // handling for the slider
 			"Add": function() { 
 				parent.load(url, function(){
 			       				// call an ajax function on the elements which display number of crushes or platonics
-					updateFooterMsg();
 					if (bIsCrush) 
 						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
 					else 
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
-					// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
-					if (current_position == 1 && !window.is_lineup_paid && {{membership_set.count}} > 2){
+					if (next_position < {{membership_set.count}})	{
+						updateFooterMsg();
+						// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
+						if (current_position == 1 && !window.is_lineup_paid && {{membership_set.count}} > 2)
 							setTimeout(window.launch_credit_check,1000);
-					}
-					else {
-						// if we are not at last side then load the next lineup slide
-						if (next_position < {{membership_set.count}})	
+						else 
 							load_next_slide(next_position, resetAndAdvanceSlider);	
-						else // enable finish button
-							process_completed_lineup();
-						} // close off else if not at second slide
+						} // close off - if not at last slide
+					else // enable finish button
+						process_completed_lineup();
 					}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close");
 				},   // end of add handler
@@ -243,19 +241,15 @@ $(document).ready(function() // handling for the slider
 	* then call the slider launching function
 	*/
 	var next_loaded_slide=last_loaded_slide+1;
-	if (last_loaded_slide<1 || window.is_lineup_paid ) {		
-			if (next_loaded_slide < {{membership_set.count}})
+	if (next_loaded_slide < {{membership_set.count}}) { // we haven't decided on last member yet
+		if (last_loaded_slide<1 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
 				load_next_slide(next_loaded_slide,launch_slider_at);
-			else {// don't load slide after last, just open slider at first position
-				launch_slider_at(0);
-				process_completed_lineup();
-			}				
+		else // don't load slide after last, just open slider at last loaded position
+				launch_slider_at(last_loaded_slide);		
 	} // lineup isn't paid so just open slider with whatever was already decided
 	else{
-
-		launch_slider_at(last_loaded_slide);
-			if (next_loaded_slide == {{membership_set.count}}) // we've already decided on last member (i.e. 2 members total)
-		process_completed_lineup();
+		launch_slider_at(0);
+		process_completed_lineup(); // if lineup is finished then just process it
 	}
 
 	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG

@@ -368,18 +368,9 @@ def ajax_show_lineup_slider(request,admirer_id):
         admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
-    # detract credit if lineup not already paid for
-    #if (not admirer_rel.is_lineup_paid):
-    #     if (me.site_credits >= settings.FEATURES['1']['COST']):
-    #         me.site_credits -= int(settings.FEATURES['1']['COST'])
-    #         me.save(update_fields=['site_credits']) 
-    #         admirer_rel.is_lineup_paid=True
-    #         admirer_rel.target_status=3
-    #        admirer_rel.updated_flag=True
-    #         admirer_rel.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
-    #     else:
-    #         return HttpResponse("Error: not enough credits to see lineup")
+
     membership_set = admirer_rel.lineupmembership_set.all()
+    
     # need to cleanse the lineup members each time the lineup is run 
     # reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
         
