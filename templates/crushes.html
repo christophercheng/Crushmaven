@@ -92,7 +92,7 @@ $(document).ready(function()
 </ul>
 {% endif %}
 
-<!-- ALWAYS display resonded crush relationships on top of page, if they exist -->
+<!-- ALWAYS display responded crush relationships on top of page, if they exist -->
 
 {% if responded_relationships %}
 	<font color="red"><b>You have responses!</b></font>
@@ -107,7 +107,7 @@ $(document).ready(function()
 		<!-- end: crush first and last name -->
 
 		<!-- start: crush status graphic -->	
-		<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+		<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
 		<!--  end: crush status graphic -->
 		<BR>		
 		<!-- start: crush pic -->
@@ -179,13 +179,17 @@ $(document).ready(function()
 
 <!-- start: crush status graphic -->	
 		{% if crush.target_status < 2 %}
-			<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;finished crush line-up</font>
+			<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;decided on you</font>
 			{% elif crush.target_status == 2 %}
-				<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;finished crush line-up</font>
-				{% elif crush.target_status == 3 %}
-					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>finished crush line-up</font>
-					{% else %}	
-						<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">finished crush line-up</font>
+				<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
+				{% elif crush.target_status == 3  %}
+					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
+					{% elif crush.date_target_responded|is_in_future == True and crush.is_lineup_initialized == False %}
+							<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
+						{% elif crush.date_target_responded|is_in_future == True and crush.is_lineup_initialized == True %}
+							<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
+							{% else %}	
+								<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
 		{% endif %}
 		<!--  end: crush status graphic -->
 		<BR>		
@@ -197,25 +201,32 @@ $(document).ready(function()
 		
 		<!--  start: bullet points -->
 		{% if crush.target_status == 0 %}
-		* needs an email invitation from you to sign up and consider your relationship
+			* needs an email invitation from you to sign up and consider your relationship
 		{% elif crush.target_status == 1 %}
-		* not a member<br>
-		* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a>
+			* not a member<br>
+			* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a>
 		{% elif crush.target_status == 2 %}
-		{% if crush.date_target_signed_up %}
-		* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
-		{% else %}
-		* is an existing member<BR>
-		{% endif %}
-		* must start your crush line-up to assess your relationship
+			{% if crush.date_target_signed_up %}
+				* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
+			{% else %}
+				* is an existing member<BR>
+			{% endif %}
+			* must start your crush line-up to assess your relationship
 		{% elif crush.target_status == 3 %}
-		* started crush line-up<br>
-		* response expected soon
-		{% elif crush.target_status == 4 %}
-		* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
-		* [send a message]
+			* started crush line-up<br>
+			* response expected soon
+		{% elif crush.date_target_responded|is_in_future == True %}
+			{% if crush.is_lineup_initialized == False %}
+				* is an existing member<BR>
+			{% else %}
+				* started crush line-up<br>
+				* response expected soon
+			{% endif %}
+		{% elif crush.target_status == 4 %} 
+			* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
+			* [send a message]
 		{% else %}
-		* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})		
+			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})		
 		{% endif %}
 		<!--  end: bullet points -->
 		

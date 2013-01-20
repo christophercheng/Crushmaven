@@ -22,21 +22,26 @@ def initialize_lineup(self):
     admirer_gender= 'Male' if self.source_person.gender == 'M'  else 'Female'
     if self.friendship_type == 0:
         builder_user = self.target_person # crush is building lineup from his friend list
+        builder_crushes= builder_user.crush_targets.all()
+        builder_just_friends = builder_user.just_friends_targets.all()
+        builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
     else:
         builder_user = self.source_person # admirer is building lineup from his friend list
+        builder_crushes= self.target_person.crush_targets.all()
+        builder_just_friends = self.target_person.just_friends_targets.all()
+        builder_incomplete_admirer_rels = self.target_person.get_all_incomplete_admirer_relations()
     exclude_facebook_ids=""
+
     # loop through all their just_friends_targets and all their crush_targets and add their ids to a fql friendlist list
-    builder_crushes = builder_user.crush_targets.all()
-    builder_just_friends = builder_user.just_friends_targets.all()
     for crush in builder_crushes:
         exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
     for just_friend in builder_just_friends:
         exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
-    builder_incomplete_admirer_rels = builder_user.get_all_incomplete_admirer_relations()
+    
     for rel in builder_incomplete_admirer_rels:
         builder_undecided_lineup_memberships = rel.lineupmembership_set.filter(decision=None)    
-        for membership in builder_undecided_lineup_memberships:
-            exclude_facebook_ids = exclude_facebook_ids + "'" + membership.lineup_member.username + "',"
+    for membership in builder_undecided_lineup_memberships:
+        exclude_facebook_ids = exclude_facebook_ids + "'" + membership.lineup_member.username + "',"
     # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
     if self.friendship_type == 0: # the crush can build the lineup from his/her friend list
         # if building from crush perspective, then exclude pulling from fb 

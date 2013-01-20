@@ -81,7 +81,7 @@ def crushes_in_progress(request):
                     if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
                         pool=Pool(1)
                         pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
-                        
+                        #initialize_lineup(new_crush)
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)
@@ -103,9 +103,9 @@ def crushes_in_progress(request):
     # obtain a query set of all CrushRelationship objectse where the target's feeling is unknown (0)
         
     crush_relationships = request.user.crush_relationship_set_from_source
-    responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
+    responded_relationships = crush_relationships.filter(target_status__gt = 3,date_target_responded__lt = datetime.datetime.now()).exclude(is_results_paid=True)
 
-    crush_progressing_relationships = crush_relationships.filter(target_status__lt = 4).order_by('-updated_flag','target_status','target_person__last_name')
+    crush_progressing_relationships = crush_relationships.exclude(target_status__gt = 3,date_target_responded__lt=datetime.datetime.now()).order_by('-updated_flag','target_status','target_person__last_name')
     crushes_completed_count = crush_relationships.filter(is_results_paid=True).count()
 #    crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
 #    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
@@ -138,7 +138,7 @@ def crushes_completed(request,reveal_crush_id=None):
         except CrushRelationship.DoesNotExist:
             print("Could not find the relationship to reveal or not enough credit")
    
-    responded_relationships = crush_relationships.filter(target_status__gt = 3).exclude(is_results_paid=True)
+    responded_relationships = crush_relationships.filter(target_status__gt = 3, date_target_responded__gt = datetime.datetime.now()).exclude(is_results_paid=True)
     
 #    crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
 #    crushes_matched_count = crush_matched_relationships.count()
@@ -456,8 +456,10 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         except LineupMembership.DoesNotExist:
             print "could not find lineup member"
             return HttpResponse("Server Error: Could not add given lineup user")
+
         if membership.decision!=None:
             # something is wrong, this person was already decided upon, so just return an error message
+            # check to see if they haven't already been added as a crush
             if membership.decision == 0:
                 ajax_response = "<div id=\"choice\">You already added " + target_user.first_name + " " + target_user.last_name + " as a crush!</div>"
             else:
@@ -475,7 +477,7 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
         #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
         if len(admirer_rel.lineupmembership_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
-        admirer_rel.save(update_fields=['date_lineup_finished'])
+            admirer_rel.save(update_fields=['date_lineup_finished'])
     except FacebookUser.DoesNotExist:
         print "failed to add lineup member: " + facebook_id
         return HttpResponse("Server Error: Could not add given lineup user")  
@@ -613,7 +615,6 @@ def just_friends(request):
     return render(request,'just_friends.html',
                               {
                                'platonic_relationships':platonic_relationships,
-                               'add_as_platonic_friends':True
                                })    
 
 # -- Friends with Admirers Page --

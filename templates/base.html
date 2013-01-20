@@ -84,12 +84,7 @@
        // response looks like a comma delimited list of facebook id's
 		var form = document.createElement("form");
 		form.setAttribute("method", "POST");
-		{% if add_as_platonic_friends %}
-			form.setAttribute("action", "http://{{request.get_host}}/just_friends/");
-		{% else %} 
-			form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
-		{% endif %}
-		
+		form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
 		var hiddenField;
 		var cField;
 		cField =	document.createElement("div");

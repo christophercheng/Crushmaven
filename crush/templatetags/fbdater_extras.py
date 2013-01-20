@@ -46,6 +46,16 @@ def date_since(value):
         return 'hi'
     return '%(time)s' % {'time': timesince(value).split(', ')[0]}
 
+@register.filter
+def is_in_future(value): 
+    print "called is in future"
+    if datetime.now() < value:
+        print "is in future"
+        return True
+    else:
+        print "is not in future"
+        return False
+
 
 """
 Usage:

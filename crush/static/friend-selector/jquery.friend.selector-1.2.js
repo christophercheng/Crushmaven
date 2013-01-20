@@ -337,17 +337,17 @@
 	    fql_query += " ORDER BY name";
 	 	    
 	  //alert("fql_query_string: " + fql_query);
-	  
 	  FB.api('fql',{q:fql_query}, function(response) {
 	  		if ( response.error ) {
 	  			//alert ("error: " + response.error); // temporary
 	  			num_connect_tries+=1;
-	  			if (num_connect_tries < 5) 	
+	  			if (num_connect_tries < 10) 	
 	  				setTimeout(function () {
 	  					_getFacebookFriends();
 	  				}, 400); // if error connecting to facebook, wait .4 milliseconds before trying again
 	  			else // too many tries - give up
 	  			{
+	  				num_connect_tries=0;
 	  		        alert(fsOptions.lang.fbConnectError);
 	  		        _close();
 	  		        return false;

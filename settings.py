@@ -195,6 +195,11 @@ AUTHENTICATION_BACKENDS = (
     #'django.contrib.auth.backends.ModelBackend',
 )
 
+# auto delay the response between the start time and end time (in seconds)
+CRUSH_RESPONSE_DELAY_START = 43200
+CRUSH_RESPONSE_DELAY_END = 86400
+STARTING_CREDITS=100
+
 FEATURES = {
     '1': {
         'NAME': 'Continue Viewing Secret Admirer Lineup', 

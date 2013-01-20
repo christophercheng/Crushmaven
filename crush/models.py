@@ -7,7 +7,8 @@ from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.db.models import F
 from smtplib import SMTPException
 from django.core.mail import send_mail
-
+import random
+from django.conf import settings
 
 class NotificationSettings(models.Model):
     bNotify_crush_signed_up = models.BooleanField(default=True)
@@ -135,7 +136,7 @@ class FacebookUser(AbstractUser):
     age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(7,80)])
     age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(7,100)])
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
-    site_credits = models.IntegerField(default=0) 
+    site_credits = models.IntegerField(default=settings.STARTING_CREDITS) 
     
     # each user has a set of user lists representing their 'just friends' and their crushes
     # here is an idiosyncrasy of this implementation:
@@ -318,13 +319,26 @@ class PlatonicRelationship(BasicRelationship):
     def save(self,*args, **kwargs):  
         #  print "saving platonic relationship object"
         if (not self.pk):
+            try:
+                self.source_person.just_friends_targets.get(username=self.target_person.username)
+                print "existing platonic relationship detected. doing nothing more"
+                return False
+            except FacebookUser.DoesNotExist:
+                pass
+            try:
+                self.source_person.crush_targets.get(username=self.target_person.username)
+                print "existing crush relationship detected. doing nothing more"
+                return False
+            except FacebookUser.DoesNotExist:
+                pass
             # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
             #if target platonic friend has a crush on this user, then platonic friend must be informed
             try:
                 reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
-                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                reciprocal_relationship.date_target_responded=datetime.datetime.now() + datetime.timedelta(0,response_wait)
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
     
@@ -390,8 +404,23 @@ class CrushRelationship(BasicRelationship):
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk):
+            
+            # make sure we're not adding a duplicate
+            try:
+                self.source_person.crush_targets.get(username=self.target_person.username)
+                print "duplicate crush relationships detected. doing nothing more"
+                return False
+            except FacebookUser.DoesNotExist:
+                pass
+            try:
+                print "testing for existing platonic relationship"
+                existing_platonic_relationship = self.source_person.platonic_relationship_set_from_source.get(target_person=self.target_person)
+                print "existing platonic relationship detected. deleting it before moving on"
+                existing_platonic_relationship.delete()
+            except PlatonicRelationship.DoesNotExist:
+                pass
             # give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
-            # get total previous admirers (past and present) and add 1
+            # get total previousadmirers (past and present) and add 1
             self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
           
             try:
@@ -400,12 +429,15 @@ class CrushRelationship(BasicRelationship):
                 # update the target_status_choices
                 reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
                 reciprocal_relationship.target_status=4 # responded-crush status
-                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                # determine the response wait period
+                response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                reciprocal_relationship.date_target_responded=datetime.datetime.now() + datetime.timedelta(0,response_wait)
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
                 self.target_status=4
                 # massage the date_target_responded for the crush recipient since we want to mask the initiator
-                self.date_target_responded=datetime.datetime.now() # this should be randomized a bit.
+                self.date_target_responded=datetime.datetime.now() + datetime.timedelta(0,response_wait) # this should be randomized a bit.
+                
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 
             except CrushRelationship.DoesNotExist:
@@ -427,8 +459,16 @@ class CrushRelationship(BasicRelationship):
                     else:
                         self.target_status = 0
                         # see if any active users are friends with this new inactive crush - solicit their help
-                        #self.target_person.find_active_friends_of_inactivated_crush()
-                   
+                        #self.target_person.find_active_friends_of_inactivated_crush()         
+            # check to see if there are any incomplete lineups that have this crush as an undecided member, if so , preset their decision
+            incomplete_admirer_rels = self.source_person.crush_relationship_set_from_target.filter(date_lineup_finished=None)
+            for rel in incomplete_admirer_rels:
+                try:
+                    duplicate_lineup_membership = rel.lineupmembership_set.get(lineup_member=self.target_person)
+                    duplicate_lineup_membership.decision = 0
+                    duplicate_lineup_membership.save(update_fields=['decision'])
+                except LineupMembership.DoesNotExist:
+                    pass      
         else:
             # check if the target status is being changed so that a possible notification can be sent out
             original_relationship = CrushRelationship.objects.get(pk=self.pk)
