@@ -63,7 +63,7 @@ def initialize_lineup(self):
         data = json.load(fql_query_results)['data']       
         if (len(data) == 0):
             if admirer_gender=='Male':
-                data = [{u'username':u'zuck', 'uid':u'zuck'}]
+                data = [{u'username':u'zuck', 'uid':u'4'}]
             else:
                 data = [{u'username':u'sheryl', 'uid':u'sheryl'}]
         print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)

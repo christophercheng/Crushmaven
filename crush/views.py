@@ -288,10 +288,10 @@ def admirers(request,show_lineup=None):
     uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
-        pool=Pool(1) #must be 1 or things go bad!
+        #pool=Pool(1) #must be 1 or things go bad!
         for relationship in uninitialized_relationships:
-            pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
-            #initialize_lineup(relationship)
+            #pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
+            initialize_lineup(relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -418,21 +418,27 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     
     # build the basic elements
     # 1) name, photo, position info 
-    ajax_response += '<div id="name">' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '</div>'
+    ajax_response +='<div id="name">' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '</div>'
     ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_membership.lineup_member.get_facebook_picture() + '" height="80" width="10"></div>'
     ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
     ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_membership.lineup_member.username + '" target="_blank">view facebook profile</a></div>'
-    ajax_response += '<div id="decision" username="' + lineup_membership.lineup_member.username + '">'
-    if lineup_membership.decision == None:
-        ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
-        ajax_response += '<br><a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
-   
-    elif lineup_membership.decision == 0:
-        ajax_response += '<div class="crush" id="choice" >"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
-    else:
-        ajax_response += '<div class="platonic" id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'
+    ajax_response +='<div id="decision" username="' + lineup_membership.lineup_member.username + '">'
     
+    lineup_user=lineup_membership.lineup_member
+    # check to see if there is an existing crush relationship or platonic relationship:
+    if lineup_user in me.crush_targets.all():
+        ajax_response += "<div id=\"choice\">You already added " + lineup_user.first_name + " " + lineup_user.last_name + " as a crush.</div>"
+    elif lineup_user in me.just_friends_targets.all():
+        ajax_response = "<div id=\"choice\">You already added " + lineup_user.first_name + " " + lineup_user.last_name + " as a platonic friend.</div>"
+    else:    
+        if lineup_membership.decision == None:
+            ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
+            ajax_response += '<br><a href="#" class="member_add" add_type="platonic" username="' + lineup_membership.lineup_member.username + '" name="' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
        
+        elif lineup_membership.decision == 0:
+            ajax_response += '<div class="crush" id="choice" >"You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as a crush!</div>'
+        else:
+            ajax_response += '<div class="platonic" id="choice">You added' + lineup_membership.lineup_member.first_name + ' ' + lineup_membership.lineup_member.last_name + ' as just-a-friend.</div>'   
     ajax_response += '</div>' # close off decision tag
     #2) facebook button 
     #3) crush button 
@@ -444,6 +450,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
 @login_required
 def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
     print "adding member to a list"
+    me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
