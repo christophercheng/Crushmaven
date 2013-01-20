@@ -382,14 +382,20 @@ class CrushRelationship(BasicRelationship):
     
     lineup_members = models.ManyToManyField(FacebookUser, through='LineupMembership')
     
+    
+    LINEUP_INITIALIZATION_STATUS_CHOICES = (
+                           (0,'Not Initialized'),
+                           (1,'Initialized'),
+                           (2,'You do not have enough friends to create a lineup at this time.'),
+                           (3,'Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.')
+                           )
+    lineup_initialization_status = models.IntegerField(default=0, choices=LINEUP_INITIALIZATION_STATUS_CHOICES)
     # lineup initialized and paid can be combined into a single state variable 
-    is_lineup_initialized=models.BooleanField(default=False)
-    # actual lineup members have a foreign key to a Crush Lineup
+
     is_lineup_paid=models.BooleanField(default=False)
     # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
     date_lineup_started = models.DateTimeField(default=None, null=True)
-    # i'd like to get rid of this
-    number_unrated_lineup_members = models.IntegerField(default=10)
+    
     date_lineup_finished = models.DateTimeField(default=None, null=True)
         # keeps track of when the crush signed up
     date_target_signed_up = models.DateTimeField(default=None,null=True)

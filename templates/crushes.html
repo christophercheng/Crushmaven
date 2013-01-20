@@ -184,9 +184,9 @@ $(document).ready(function()
 				<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
 				{% elif crush.target_status == 3  %}
 					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
-					{% elif crush.date_target_responded|is_in_future == True and crush.is_lineup_initialized == False %}
+					{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status != 1 %}
 							<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-						{% elif crush.date_target_responded|is_in_future == True and crush.is_lineup_initialized == True %}
+						{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status == 1 %}
 							<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
 							{% else %}	
 								<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
@@ -216,7 +216,7 @@ $(document).ready(function()
 			* started crush line-up<br>
 			* response expected soon
 		{% elif crush.date_target_responded|is_in_future == True %}
-			{% if crush.is_lineup_initialized == False %}
+			{% if crush.lineup_initialization != 1 %}
 				* is an existing member<BR>
 			{% else %}
 				* started crush line-up<br>

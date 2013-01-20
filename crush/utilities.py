@@ -7,11 +7,11 @@ import random, urllib, json
 from crush.models import LineupMembership, FacebookUser
 from django.conf import settings
 
-def initialize_all_lineups(user):
-    print "initializing all incomplete lineups"
-    uninitialized_rels=user.get_all_new_incomplete_admirer_relations().filter(is_lineup_initialized=False)
-    for rel in uninitialized_rels:
-        initialize_lineup(rel)
+#def initialize_all_lineups(user):
+#    print "initializing all incomplete lineups"
+#    uninitialized_rels=user.get_all_new_incomplete_admirer_relations().filter(lineup_initialization_status != 1)
+#    for rel in uninitialized_rels:
+#        initialize_lineup(rel)
 
 # returns true if successful, false otherwise
 
@@ -36,7 +36,7 @@ def initialize_lineup(self):
         exclude_facebook_ids = exclude_facebook_ids + "'" + crush.username + "',"
     for just_friend in builder_just_friends:
         exclude_facebook_ids = exclude_facebook_ids + "'" + just_friend.username + "',"
-    
+        
     for rel in builder_incomplete_admirer_rels:
         builder_undecided_lineup_memberships = rel.lineupmembership_set.filter(decision=None)    
     for membership in builder_undecided_lineup_memberships:
@@ -61,19 +61,24 @@ def initialize_lineup(self):
     try:
         data = json.load(fql_query_results)['data']    
         if (len(data) < settings.MINIMUM_LINEUP_MEMBERS):
-            
+            self.lineup_initialization_status=2
+            self.save(update_fields=['lineup_initialization_status'])
             return "You do not have enough friends to create a lineup at this time." # not enough members to fill a lineup   
         print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
       
     except ValueError:
         print "ValueError on Fql Query Fetch read!"
-        return "Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later."
+        self.lineup_initialization_status=3
+        self.save(update_fields=['lineup_initialization_status'])
+        return False
     except KeyError:
         print "KeyError on FQL Query Fetch read"
-        return "Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later."
+        self.lineup_initialization_status=3
+        self.save(update_fields=['lineup_initialization_status'])
+        return False
     # determine where the admirer should randomly fall into the lineup
     # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
-    admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9
+        admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9
     print "admirer_position: " + str(admirer_position)
     index = 0
     #number_members=len(data)+1
@@ -100,9 +105,8 @@ def initialize_lineup(self):
     print "number lineup members: " + str(self.lineupmembership_set.count())
     
     # don't return until all lineup members have been completed (number of lineup memberships = len(data)+1
-
-    self.is_lineup_initialized = True
-    self.save(update_fields=['number_unrated_lineup_members','is_lineup_initialized'])
+    self.lineup_initialization_status=1
+    self.save(update_fields=['lineup_initialization_status'])
     
     return True
 

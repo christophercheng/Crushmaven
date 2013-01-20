@@ -14,7 +14,7 @@ def context_processor(request):
         #     filter through only those admirer relationships who have not finished their lineup (progressing relationships)
         #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
         #        e.g. if they are also a progressing crush, but a lineup has already been created, then don't filter them out
-        progressing_admirer_relationships = me.crush_relationship_set_from_target.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,is_lineup_initialized=False).exclude(source_person__in = me.just_friends_targets.all()) # valid progressing relationships  
+        progressing_admirer_relationships = me.crush_relationship_set_from_target.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,lineup_initialization_status = 0).exclude(source_person__in = me.just_friends_targets.all()) # valid progressing relationships  
     
         incomplete_crushes = me.crush_relationship_set_from_source.exclude(is_results_paid=True)
         responded_crushes = incomplete_crushes.filter(date_target_responded__lt = datetime.now())

@@ -278,14 +278,14 @@ def admirers(request,show_lineup=None):
     #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
     #        if they are also a progressing crush, but a lineup has already been created, then don't filter them out
     admirer_relationships = me.crush_relationship_set_from_target
-    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,is_lineup_initialized=False).exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
+    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list, lineup_initialization_status = 0).exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
 
     past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     
     # initialize the lineups of any new admirer relationships
         # filter out the new relationships whose lineup member 1 is empty
     
-    uninitialized_relationships = progressing_admirer_relationships.filter(is_lineup_initialized = False) #get all relationships that don't already have a lineup (number of lineump members is zero)
+    uninitialized_relationships = progressing_admirer_relationships.exclude(lineup_initialization_status=1) #get all relationships that don't already have a lineup (number of lineump members is zero)
     if (uninitialized_relationships):
         print "hey, found an uninitialized relationship"
         #pool=Pool(1) #must be 1 or things go bad!
@@ -305,7 +305,7 @@ def ajax_are_lineups_initialized(request):
     print "call to ajax_are_lineups_initialized"
     counter = 0
     while True:
-        admirer_rels=request.user.crush_relationship_set_from_target.filter(is_lineup_initialized=False)
+        admirer_rels=request.user.crush_relationship_set_from_target.exclude(lineup_initialization_status=1)
         if len(admirer_rels)==0:
             return HttpResponse()
         elif counter==10: 
@@ -326,11 +326,16 @@ def ajax_display_lineup_block(request, display_id):
         while True:
             print "trying admirer " + str(display_id) + " on try: " + str(counter) 
             admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
-            if admirer_rel.is_lineup_initialized==True:
-                break
-            elif counter==30: # if 30 seconds have passed then give up
+            if admirer_rel.lineup_initialization_status > 0: # initialization was either a success or failed
+                if admirer_rel.lineup_initialization_status == 1:
+                    break
+                elif admirer_rel.lineup_initialization_status == 2:
+                    return HttpResponse('You do not have enough friends to create a lineup at this time.')
+                else:
+                    return HttpResponse('Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.')
+            elif counter==25: # if 30 seconds have passed then give up
                 print "giving up on admirer:" + str(display_id)
-                return HttpResponse("Lineup Loading Error: please reload page")
+                return HttpResponse("Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.")
                 #return HttpResponseNotFound(str(display_id),content_type="text/plain")
             time.sleep(1) # wait a quarter second
             counter+=1
@@ -472,7 +477,6 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
             ajax_response = '<div id="choice" class="platonic">You added ' + target_user.first_name + ' ' + target_user.last_name + ' as a platonic friend.</div>'
             membership.decision=1
         membership.save(update_fields=['decision'])
-        #admirer_rel.number_unrated_lineup_members=F('number_unrated_lineup_members') - 1
         if len(admirer_rel.lineupmembership_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             admirer_rel.save(update_fields=['date_lineup_finished'])
