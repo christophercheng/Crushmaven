@@ -272,13 +272,13 @@ def admirers(request,show_lineup=None):
 
     # get list of responded (so we can filter them out the admirers )
     progressing_crush_list = me.crush_targets.filter(crush_relationship_set_from_target__target_status__gt = 3,crush_relationship_set_from_target__is_results_paid=False)   
-    
+    # if admirer is already a platonic friend of the crush, then don't create a new admirer block or a new lineup; 
     # build a list of incomplete admirer relationship by filtering them in the following order:
     #     filter through only those admirer relationships who have not finished their lineup (progressing relationships)
     #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
     #        if they are also a progressing crush, but a lineup has already been created, then don't filter them out
     admirer_relationships = me.crush_relationship_set_from_target
-    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,is_lineup_initialized=False).order_by('target_status','date_added') # valid progressing relationships 
+    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list,is_lineup_initialized=False).exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
 
     past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     

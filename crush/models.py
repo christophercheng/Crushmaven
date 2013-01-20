@@ -447,7 +447,8 @@ class CrushRelationship(BasicRelationship):
                     # print "found a reciprocal platonic relationship"
                     # if there is a platonic match, then update this relationships' target_status (other user can't know what this user thinks of them)
                     self.target_status=5
-                    self.date_target_responded=datetime.datetime.now()
+                    response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                    self.date_target_responded=datetime.datetime.now() + datetime.timedelta(0,response_wait)
                     self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 except PlatonicRelationship.DoesNotExist:
                     # print "did not find a reciprocal platonic or crush relationship"
