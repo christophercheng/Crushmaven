@@ -48,7 +48,7 @@ urlpatterns += patterns('crush',
     
     # -- MODAL DIALOG PROCESSING & CONTENT --
         
-    url(r'^ajax_are_lineups_initialized/$','views.ajax_are_lineups_initialized'),
+    url(r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','views.ajax_initialize_nonfriend_lineup'),
     
     url(r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','views.ajax_display_lineup_block'),
     

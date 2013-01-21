@@ -13,7 +13,7 @@ from django.conf import settings
 class NotificationSettings(models.Model):
     bNotify_crush_signed_up = models.BooleanField(default=True)
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
-    bNotify_crush_started_lineup = models.BooleanField(default=True)
+    bNotify_crush_started_lineup = models.BooleanField(default=False) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
@@ -54,7 +54,7 @@ class FacebookUserManager(UserManager):
 
     def find_or_create_user(self, fb_id, fb_access_token,is_this_for_me,fb_profile=None):
         
-        print "find_or_create_user called"
+        print "find_or_create_user called for id: " + str(fb_id)
         try:
         # Try and find existing user
             user = super(FacebookUserManager, self).get_query_set().get(username=fb_id)
@@ -384,12 +384,14 @@ class CrushRelationship(BasicRelationship):
     
     
     LINEUP_INITIALIZATION_STATUS_CHOICES = (
-                           (0,'Not Initialized'),
-                           (1,'Initialized'),
-                           (2,'You do not have enough friends to create a lineup at this time.'),
-                           (3,'Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.')
+                           (0,settings.LINEUP_STATUS_CHOICES[0]),# initialization in progress
+                           (1,settings.LINEUP_STATUS_CHOICES[1]),# successfully initialized
+                           (2,settings.LINEUP_STATUS_CHOICES[2]),# error - source doesn't have enough friends
+                           (3,settings.LINEUP_STATUS_CHOICES[3]),# error - target doesn't have enough friends
+                           (4,settings.LINEUP_STATUS_CHOICES[4]),# error - facebook data fetch error
+                           (5,settings.LINEUP_STATUS_CHOICES[5]) # unknown error
                            )
-    lineup_initialization_status = models.IntegerField(default=0, choices=LINEUP_INITIALIZATION_STATUS_CHOICES)
+    lineup_initialization_status = models.IntegerField(default=None, choices=LINEUP_INITIALIZATION_STATUS_CHOICES,null=True)
     # lineup initialized and paid can be combined into a single state variable 
 
     is_lineup_paid=models.BooleanField(default=False)
@@ -552,7 +554,7 @@ class CrushRelationship(BasicRelationship):
         return
             
     def __unicode__(self):
-        return 'CrushRelationship with:' + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return 'CrushRelationship:'  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
 
 class EmailRecipient(models.Model):
     crush_relationship = models.ForeignKey(CrushRelationship)

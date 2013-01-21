@@ -39,7 +39,7 @@ $(document).ready(function()
 
 {% if admirer_relationships %}
 <script>
-var lineups_need_initialization=false;
+
 var show_lineup_number = '{{show_lineup}}';
 </script>
 	<ul>
@@ -56,47 +56,12 @@ var show_lineup_number = '{{show_lineup}}';
     						 $(this).children('.view_lineup').trigger('click'); 		
       	});           
       </script>          
-     	<!-- 
-                <script>
-                {% if admirer_rel.is_lineup_initialized %}
-                	$(".lineup#{{admirer_rel.admirer_display_id}}").load('/ajax_display_lineup_block/{{admirer_rel.admirer_display_id}}').error(function(e){alert("fail");});           
-                {% else %}
-                    lineups_need_initialization=true;
-                 {% endif %}
-                 </script>
-                  -->
-                 <div id="admirer-loading"></div>
+    
+     <div id="admirer-loading"></div>
 			</div>
 
 			<BR><BR>
 		{% endfor %}
-
-	<script type="text/javascript">
-        if (lineups_need_initialization) {
-        $.get('/ajax_are_lineups_initialized',function() 
-                                {   
-                                    $(".lineup").has("script").each(function(index){
-                                        $(this).load('/ajax_display_lineup_block/' + this.id);
-                                        });
-                                 });
-        /*
-            check_lineups = function() 
-                {   
-                    setTimeout(function()
-                        {
-                            $.get('/ajax_are_lineups_initialized',function() 
-                                {   
-                                    $(".lineup").has("script").each(function(index){
-                                        $(this).load('/ajax_display_lineup_block/' + this.id);
-                                        }); // close off each loop
-                                 }).error(check_lineups); // close off get and add error callback
-                         },1000); // close off setTimeout         
-                }; // closeoff check_lineups
-            check_lineups(); // make first call to check lineups
-        */
-        
-        } // close of if conditional block    
-	</script>
 
 	</ul>
 {% else %}

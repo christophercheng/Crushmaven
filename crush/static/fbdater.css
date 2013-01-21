@@ -37,6 +37,16 @@ a {
 	left: 10%;
 }
 
+#loading {
+	background-image:url(friend-selector/friend-selector-loader.gif);
+	margin: 5px; /* 0 0 -12px; */
+	height: 24px;
+	width: 24px;
+	position: relative;
+	top: 10%;
+	left: 10%;
+}
+
 #bx-pager a img  {
 	border: 1px solid black;
 	opacity:0.4;

@@ -61,24 +61,27 @@ def initialize_lineup(self):
     try:
         data = json.load(fql_query_results)['data']    
         if (len(data) < settings.MINIMUM_LINEUP_MEMBERS):
-            self.lineup_initialization_status=2
+            if self.friendship_type == 0:
+                self.lineup_initialization_status=3
+            else:
+                self.lineup_initialization_status=2
             self.save(update_fields=['lineup_initialization_status'])
-            return "You do not have enough friends to create a lineup at this time." # not enough members to fill a lineup   
+            return      
         print "json data results for admirer: " + self.source_person.first_name + " " + self.source_person.last_name + " : " + str(data)
       
     except ValueError:
         print "ValueError on Fql Query Fetch read!"
-        self.lineup_initialization_status=3
+        self.lineup_initialization_status=4
         self.save(update_fields=['lineup_initialization_status'])
-        return False
+        return 
     except KeyError:
         print "KeyError on FQL Query Fetch read"
-        self.lineup_initialization_status=3
+        self.lineup_initialization_status=4
         self.save(update_fields=['lineup_initialization_status'])
-        return False
+        return 
     # determine where the admirer should randomly fall into the lineup
     # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
-        admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9
+    admirer_position=random.randint(0, len(data)-1) # normally len(data) should be 9
     print "admirer_position: " + str(admirer_position)
     index = 0
     #number_members=len(data)+1

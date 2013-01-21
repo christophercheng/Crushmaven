@@ -49,7 +49,6 @@ def crushes_in_progress(request):
     
     # obtain the results of any crush additions or deletions
         # later I can move this into a separate view function
-        
     if request.method == "POST":
         print "method is post"
         crushee_id=''
@@ -58,7 +57,6 @@ def crushes_in_progress(request):
         
         # this is just for testing, remove later
 
-        
         for key in request.POST:
 
             if key.startswith('to'):    
@@ -78,9 +76,9 @@ def crushes_in_progress(request):
                     new_crush = CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                                friendship_type=friend_type, updated_flag=True)
                     
-                    if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-                        pool=Pool(1)
-                        pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
+                    #if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
+                    #    pool=Pool(1)
+                    #    pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
                         #initialize_lineup(new_crush)
                     userlist.append(selected_user)
                 else:
@@ -116,9 +114,10 @@ def crushes_in_progress(request):
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crush_progressing_relationships,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'crushes_completed_count':crushes_completed_count
-#                               'crushes_matched_count': crushes_matched_count,
-#                               'crushes_not_matched_count': crushes_not_matched_count
+                               'crushes_completed_count':crushes_completed_count,
+                               'lineup_status_choice_2':settings.LINEUP_STATUS_CHOICES[2],
+                               'lineup_status_choice_3':settings.LINEUP_STATUS_CHOICES[3],
+                               'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4]
                                })    
 
 # -- Crushes Completed Page --
@@ -278,7 +277,9 @@ def admirers(request,show_lineup=None):
     #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
     #        if they are also a progressing crush, but a lineup has already been created, then don't filter them out
     admirer_relationships = me.crush_relationship_set_from_target
-    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None).exclude(source_person__in = progressing_crush_list, lineup_initialization_status = 0).exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
+    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None)
+    progressing_admirer_relationships = progressing_admirer_relationships.all().exclude(source_person__in = progressing_crush_list, lineup_initialization_status = None)
+    progressing_admirer_relationships = progressing_admirer_relationships.all().exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
 
     past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
     
@@ -299,23 +300,43 @@ def admirers(request,show_lineup=None):
                                'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count,
                                'show_lineup': show_lineup})    
-
+ 
 @login_required
-def ajax_are_lineups_initialized(request):
-    print "call to ajax_are_lineups_initialized"
-    counter = 0
-    while True:
-        admirer_rels=request.user.crush_relationship_set_from_target.exclude(lineup_initialization_status=1)
-        if len(admirer_rels)==0:
-            return HttpResponse()
-        elif counter==10: 
-            # wait up to 5 seconds total before returning control back to client side
-            return HttpResponseNotFound()
-        else:
-            time.sleep(.5)
+def ajax_initialize_nonfriend_lineup(request,target_username):
+    ajax_response=''
+    try:
+        relationship = request.user.crush_relationship_set_from_source.get(target_person__username=target_username)
+    except CrushRelationship.DoesNotExist:
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        return HttpResponse(ajax_response) # this is a catch all error return state
+   
+    if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
+        #    pool=Pool(1)
+        #    pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
+        relationship.lineup_initialization_status = 0
+        relationship.save(update_fields=['lineup_initialization_status'])
+        initialize_lineup(relationship)
+    if relationship.lineup_initialization_status == 0:
+        # wait for a certain amount of time before returning a response
+        counter = 0
+        while True:
+            print "trying crush lineup initialization for " + relationship.target_person.last_name + " on try: " + str(counter) 
+
+            if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
+                break
+            elif counter==25: # if these number of seconds have passed then give up
+                print "giving up on crush: " + relationship.target_person.last_name
+                relationship.lineup_initialization_status = 5
+                relationship.save(update_fields=['lineup_initialization_status'])
+                break
+            time.sleep(1) # wait a quarter second
             counter+=1
-            # wait a half second before checking again
-            
+    if relationship.lineup_initialization_status < 4 :
+        return HttpResponse() # success or crush doesn't have enough friends
+    else:
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        return HttpResponse(ajax_response)
+
 @login_required
 def ajax_display_lineup_block(request, display_id):
     int_display_id=int(display_id)
@@ -329,10 +350,8 @@ def ajax_display_lineup_block(request, display_id):
             if admirer_rel.lineup_initialization_status > 0: # initialization was either a success or failed
                 if admirer_rel.lineup_initialization_status == 1:
                     break
-                elif admirer_rel.lineup_initialization_status == 2:
-                    return HttpResponse('You do not have enough friends to create a lineup at this time.')
                 else:
-                    return HttpResponse('Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.')
+                    return HttpResponse(settings.LINEUP_STATUS_CHOICES[admirer_rel.lineup_initialization_status])
             elif counter==25: # if 30 seconds have passed then give up
                 print "giving up on admirer:" + str(display_id)
                 return HttpResponse("Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.")

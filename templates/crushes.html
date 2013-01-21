@@ -3,6 +3,7 @@
 
 {% load fbdater_extras %}
 
+<!-- hi -->
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
@@ -10,21 +11,47 @@
 
 $(document).ready(function() 
 {
-        $("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
+  $("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
 
-        $("a.check_credit").click(function(e) {
-        	var success_path=$(this).attr('success_path');	
-        	var cancel_url = $(this).attr('cancel_url');
-        	if(cancel_url.substr(-1) == '/') 	
-        		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
-        	var feature_id=$(this).attr('feature_id');
-        	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
-            e.preventDefault();
-					$("#credit_check_modal").load(load_url)   	
-            $("#credit_check_modal").dialog("open");
-            return false;
-        });
-        
+  $("a.check_credit").click(function(e) {
+   	var success_path=$(this).attr('success_path');	
+   	var cancel_url = $(this).attr('cancel_url');
+   	if(cancel_url.substr(-1) == '/') 	
+   		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
+   	var feature_id=$(this).attr('feature_id');
+   	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
+       e.preventDefault();
+	$("#credit_check_modal").load(load_url)   	
+       $("#credit_check_modal").dialog("open");
+       return false;
+   });
+   
+  /** FUNCTION - HANDLE RE-INITIALIZE NON_FRIEND CRUSH LINEUP
+  *
+	*/  
+  $('.crush_block').on('click','#initialize_lineup_btn',function(e) {
+  	var crush_username=$(this).parents('.crush_block').attr("username");
+  	var initialize_div = $(this).parent('#initialize_lineup');
+  	console.log(initialize_div);
+    initialize_div.html('<div id="loading">initializing lineup...</div>');
+		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username;
+		initialize_div.load(load_url);
+	});
+	
+	/** FUNCTION - AUTO-CALL RE_INITIALIZE LINEUP
+  *
+	*/  
+	var auto_initialize_new_nonfriend_crushes = function(){
+		var fake_initialize_btns = $('#initialize_lineup_btn.fake');
+		fake_initialize_btns.each(function(index,element){
+			$(element).trigger('click');
+		});
+		return true;
+	}
+	
+	// PROCEDURAL CODE ALWAYS RUN
+	auto_initialize_new_nonfriend_crushes();
+	
 });
 </script>
 
@@ -158,7 +185,8 @@ $(document).ready(function()
 
 	{% for crush in crush_relationships %}
 	
-	<div>
+	<div class="crush_block" username="{{crush.target_person.username}}">
+	
 		<HR>
 <!-- Display NEW or UPDATED if relevant -->  
 		{% if crush.updated_flag == True %}
@@ -178,20 +206,22 @@ $(document).ready(function()
 <!-- end: crush first and last name -->
 
 <!-- start: crush status graphic -->	
-		{% if crush.target_status < 2 %}
-			<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;decided on you</font>
-			{% elif crush.target_status == 2 %}
-				<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-				{% elif crush.target_status == 3  %}
+
+{% if crush.target_status < 2 %}
+	<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;decided on you</font>
+	{% elif crush.target_status == 2 %}
+		<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
+		{% elif crush.target_status == 3  %}
+			<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
+			{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status != 1 %}
+					<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
+				{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status == 1 %}
 					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
-					{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status != 1 %}
-							<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-						{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status == 1 %}
-							<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
-							{% else %}	
-								<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
-		{% endif %}
-		<!--  end: crush status graphic -->
+					{% else %}	
+						<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
+{% endif %}
+
+	<!--  end: crush status graphic -->
 		<BR>		
 		<!-- start: crush pic -->
 		<img src="{{crush.target_person.get_facebook_picture }}" height=80 width=80>
@@ -200,6 +230,30 @@ $(document).ready(function()
 		<BR>
 		
 		<!--  start: bullet points -->
+		
+		
+<script>
+
+</script>		
+		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
+{% if crush.friendship_type > 0  %}
+	{% if crush.lineup_initialization_status == None or crush.lineup_initialization_status == 0 %}
+		<div id="initialize_lineup"><div id="initialize_lineup_btn" class="fake" username="{{crush.target_person.username}}"></div>		
+		</div> <!--  close off initialize_lineup div -->
+	{% elif crush.lineup_initialization_status == 4 %} <!-- lineup initialization error 2 or 3 -->
+		<div id="initialize_lineup"><button id="initialize_lineup_btn">Re-initialize</button>
+		* {{ lineup_status_choice_4 }}
+		</div><!--  close off initialize_lineup div -->
+	{% elif crush.lineup_initialization_status == 5 %} <!-- lineup initialization error 2 or 3 -->
+		<div id="initialize_lineup"><button id="initialize_lineup_btn">Re-initialize</button>
+		* {{ lineup_status_choice_5 }}
+		</div><!--  close off initialize_lineup div -->
+	{% endif %}
+	
+{% endif %}
+		
+		<!--  start: normal bullet points -->
+		
 		{% if crush.target_status == 0 %}
 			* needs an email invitation from you to sign up and consider your relationship
 		{% elif crush.target_status == 1 %}
@@ -228,19 +282,7 @@ $(document).ready(function()
 		{% else %}
 			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})		
 		{% endif %}
-		<!--  end: bullet points -->
 		
-		<!-- start: conditional button: send invite -->
-		{% if crush.target_status == 0 %}
-			&nbsp;&nbsp;&nbsp;<B><span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></span></B>
-		{% endif %}
-		<!-- end: conditional button: send invite -->		
-		
-		<!-- start: secondary data -->
-		<br>
-		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
-		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
-		&nbsp;|&nbsp;
 		
 		<!-- Conditional Delete Functionality -->
 			
@@ -260,7 +302,7 @@ $(document).ready(function()
 		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
 				{{crush.target_person.last_name}}" class="delete" href="#" >temporary admin: remove as crush</a>	
 		<!-- end: secondary data -->
-	</div>
+	</div> <!-- close off crush_block div -->
 	{% endfor %}
 
 	
