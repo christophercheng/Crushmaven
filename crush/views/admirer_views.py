@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMembership
+from crush.models import CrushRelationship,PlatonicRelationship,LineupMembership,FacebookUser
 from crush.utilities import  initialize_lineup
 import datetime
 from multiprocessing import Pool
