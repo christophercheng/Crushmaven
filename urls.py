@@ -15,13 +15,13 @@ urlpatterns += patterns('crush.views',
                        
     # -- BASIC APP FUNCTIONALITY  --
     # guest vs. member processing done at view module
-    url(r'^$', 'app_views.home', name='app_views.home'),
+    url(r'^$', 'infrastructure_views.home', name='app_views.home'),
     
-    url(r'^home/$', 'app_views.home'),  
+    url(r'^home/$', 'infrastructure_views.home'),  
    # # pending crush list is also member home page
-    url(r'^accounts/login/$', 'app_views.home'),
+    url(r'^accounts/login/$', 'infrastructure_views.home'),
 
-    url(r'^logout_view/$', 'app_views.logout_view'),
+    url(r'^logout_view/$', 'infrastructure_views.logout_view'),
     
     # -- CRUSH: DISPLAY AND HANDLING PAGES --
  

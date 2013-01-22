@@ -1,5 +1,5 @@
-from app_views import home
-from app_views import logout_view
+from infrastructure_views import home
+from infrastructure_views import logout_view
 
 # admirer view and process views
 from admirer_views import admirers

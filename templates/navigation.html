@@ -6,7 +6,7 @@
 		<div class="navbar-content">
 		<!-- Top Bar Links -->
 			<a class="{% navactive request 'accounts/login' %}"
-				href="{% url 'crush.views.app_views.home' %}"><font color=red>Just</font><font><i>Maybe</i>.us</font></a>
+				href="{% url 'crush.views.infrastructure_views.home' %}"><font color=red>Just</font><font><i>Maybe</i>.us</font></a>
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
 		new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
@@ -22,7 +22,7 @@
 				href="{% url 'crush.views.settings_views.settings_credits' %}">Credits (<span id="num_credits">{{request.user.site_credits}}</span>)</a>	
 			<a class="{% navactive request 'settings_notifications' %}"
 				href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
-			<a href="{% url 'crush.views.app_views.logout_view' %}">Logout</a>
+			<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
 
 		<!-- Left Bar Links -->	
 			<BR>
