@@ -13,7 +13,7 @@ urlpatterns = patterns('facebook.views',
 
 urlpatterns += patterns('crush.views',
                        
-    # -- BASIC APP FUNCTIONALITY  --
+    # ----      BASIC APP FUNCTIONALITY  --
     # guest vs. member processing done at view module
     url(r'^$', 'infrastructure_views.home', name='app_views.home'),
     
@@ -23,7 +23,7 @@ urlpatterns += patterns('crush.views',
 
     url(r'^logout_view/$', 'infrastructure_views.logout_view'),
     
-    # -- CRUSH: DISPLAY AND HANDLING PAGES --
+    # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----
  
     url(r'^crushes_in_progress/$', 'crush_views.crushes_in_progress'),
             
@@ -42,7 +42,7 @@ urlpatterns += patterns('crush.views',
                         
     url(r'^ajax_find_fb_user/$','crush_views.ajax_find_fb_user'),
                         
-    # -- ADMIRER: DISPLAY AND HANDLING PAGES --
+    # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 
     url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirer_views.admirers'),
     
@@ -62,19 +62,19 @@ urlpatterns += patterns('crush.views',
         
     url(r'^admirers_past/$', 'admirer_views.admirers_past'),
     
-    # -- PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
+    # ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
     
     url(r'^just_friends/$', 'platonic_friend_views.just_friends'),
     
     url(r'^ajax_reconsider/$','platonic_friend_views.ajax_reconsider'),
     
-    # -- FRIENDS WITH ADMIRERS:: DISPLAY AND HANDLING PAGES --
+    # ----      FRIENDS WITH ADMIRERS:: DISPLAY AND HANDLING PAGES --
 
     url(r'^friends_with_admirers/$', 'friends_with_admirers_views.friends_with_admirers'),
     
     url(r'^friends_with_admirers_section/$', 'friends_with_admirers_views.friends_with_admirers_section'), # right bar called via ajax    
     
-    # -- PAYMENT PROCESSING --
+    # ----      PAYMENT PROCESSING --
     
     url(r'^ajax_update_num_credits/$','payment_views.ajax_update_num_credits'),
     
@@ -86,7 +86,7 @@ urlpatterns += patterns('crush.views',
     
     url(r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','payment_views.paypal_ipn_listener'),
     
-    # -- SETTINGS PAGES --
+    # ----      SETTINGS PAGES --
     
     url(r'^settings_credits/$', 'settings_views.settings_credits'),
     
@@ -94,7 +94,7 @@ urlpatterns += patterns('crush.views',
     
     url(r'^settings_profile/$', 'settings_views.settings_profile'),
     
-    # -- STATIC HELP PAGES --
+    # ----      STATIC HELP PAGES --
     
     url(r'^help_FAQ/$', 'static_file_views.help_faq'),
     
