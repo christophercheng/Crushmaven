@@ -28,7 +28,7 @@ from friends_with_admirers_views import friends_with_admirers_section
 from payment_views import ajax_update_num_credits
 from payment_views import ajax_deduct_credit
 from payment_views import credit_checker
-from payment_views import paypal_purchase
+from payment_views import paypal_pdt_purchase
 from payment_views import paypal_ipn_listener
 
 from settings_views import settings_profile

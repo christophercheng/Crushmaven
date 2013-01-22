@@ -267,6 +267,18 @@ $(document).ready(function()
 			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})		
 		{% endif %}
 		
+    <!-- start: conditional button: send invite -->
+        {% if crush.target_status == 0 %}
+                &nbsp;&nbsp;&nbsp;<B><span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></span></B>
+        {% endif %}
+        <!-- end: conditional button: send invite -->           
+        
+        <!-- start: secondary data -->
+        <br>
+        <i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
+        <a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
+        &nbsp;|&nbsp;<BR>
+                
 		
 		<!-- Conditional Delete Functionality -->
 			

@@ -88,7 +88,7 @@ def credit_checker(request,feature_id,relationship_display_id):
         
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 
-def paypal_purchase(request):
+def paypal_pdt_purchase(request):
 
     method_dict=request.GET
     success_path = method_dict.get('success_path',"home")

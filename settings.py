@@ -225,7 +225,7 @@ FEATURES = {
 PAYPAL_PDT_TOKEN = 'HBfJRGv3GKoo9zF1_5t3uA12VlNyvALbtai1rgbZMrYT3wWGcMeuRMpp324'
 #PAYPAL_EMAIL = 'buyer1_1344811410_per@gmail.com'
 PAYPAL_EMAIL =  'seller_1344811486_biz@gmail.com'
-PAYPAL_RETURN_URL = 'http://142.255.66.205:443/paypal_purchase'
+PAYPAL_RETURN_URL = 'http://142.255.66.205:443/paypal_pdt_purchase'
 PAYPAL_NOTIFY_URL = 'http://142.255.66.205:443/paypal_ipn_listener/'
 # sandbox
 PAYPAL_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'

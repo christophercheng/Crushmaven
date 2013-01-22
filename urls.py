@@ -7,107 +7,119 @@ admin.autodiscover()
 
 urlpatterns = patterns('facebook.views',
        # Facebook Backend Authentication URL's        
-    url(r'^facebook/login/$', 'login'),
-    url(r'^facebook/authentication_callback$', 'authentication_callback'),                    
+       (r'^facebook/login/$', 'login'),
+    (r'^facebook/authentication_callback$', 'authentication_callback'),                    
 )
 
-urlpatterns += patterns('crush.views',
-                       
-    # ----      BASIC APP FUNCTIONALITY  --
+ # ----      BASIC APP FUNCTIONALITY  --
+urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
-    url(r'^$', 'infrastructure_views.home', name='app_views.home'),
+    (r'^$', 'home'),
     
-    url(r'^home/$', 'infrastructure_views.home'),  
+    (r'^home/$', 'home'),  
    # # pending crush list is also member home page
-    url(r'^accounts/login/$', 'infrastructure_views.home'),
+    (r'^accounts/login/$', 'home'),
 
-    url(r'^logout_view/$', 'infrastructure_views.logout_view'),
-    
-    # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----
+    (r'^logout_view/$', 'logout_view'),
+    )
+   
+# ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
+urlpatterns += patterns('crush.views.crush_views',
  
-    url(r'^crushes_in_progress/$', 'crush_views.crushes_in_progress'),
+    (r'^crushes_in_progress/$', 'crushes_in_progress'),
             
-    url(r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','crush_views.ajax_initialize_nonfriend_lineup'),
+    (r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','ajax_initialize_nonfriend_lineup'),
     
-    url(r'^select_crush_by_id/$','crush_views.select_crush_by_id'),
+    (r'^select_crush_by_id/$','select_crush_by_id'),
 
-    url(r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','crush_views.crushes_completed'),
+    (r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','crushes_completed'),
     
-    url(r'^crushes_completed/$','crush_views.crushes_completed'),
+    (r'^crushes_completed/$','crushes_completed'),
     
-    url(r'^app_invite_form/(?P<crush_username>\w+)/$','crush_views.app_invite_form'),
+    (r'^app_invite_form/(?P<crush_username>\w+)/$','app_invite_form'),
     
-    url(r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html'),
-        name="app_invite_success"),
+    (r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html')),
                         
-    url(r'^ajax_find_fb_user/$','crush_views.ajax_find_fb_user'),
+    (r'^ajax_find_fb_user/$','ajax_find_fb_user'),
+    )
                         
-    # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
-
-    url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirer_views.admirers'),
+# ----      ADMIRER: DISPLAY AND HANDLING PAGES --
+urlpatterns += patterns('crush.views.admirer_views',
+                        
+    (r'^admirers/(?P<show_lineup>\d+)/$', 'admirers'),
     
-    url(r'^admirers/$', 'admirer_views.admirers'),
+    (r'^admirers/$', 'admirers'),
     
-    url(r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','admirer_views.ajax_display_lineup_block'),
+    (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     
-    url(r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','admirer_views.ajax_show_lineup_slider'), 
+    (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','ajax_show_lineup_slider'), 
     
-    url(r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','admirer_views.ajax_get_lineup_slide'),
+    (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','ajax_get_lineup_slide'),
     
-    url(r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','admirer_views.ajax_add_lineup_member'),
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
     
-    url(r'^ajax_update_num_crushes_in_progress/$','admirer_views.ajax_update_num_crushes_in_progress'),
+    (r'^ajax_update_num_crushes_in_progress/$','ajax_update_num_crushes_in_progress'),
     
-    url(r'^ajax_update_num_platonic_friends/$','admirer_views.ajax_update_num_platonic_friends'),
+    (r'^ajax_update_num_platonic_friends/$','ajax_update_num_platonic_friends'),
         
-    url(r'^admirers_past/$', 'admirer_views.admirers_past'),
-    
-    # ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
-    
-    url(r'^just_friends/$', 'platonic_friend_views.just_friends'),
-    
-    url(r'^ajax_reconsider/$','platonic_friend_views.ajax_reconsider'),
-    
-    # ----      FRIENDS WITH ADMIRERS:: DISPLAY AND HANDLING PAGES --
+    (r'^admirers_past/$', 'admirers_past'),
+)
 
-    url(r'^friends_with_admirers/$', 'friends_with_admirers_views.friends_with_admirers'),
+# ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
+urlpatterns += patterns('crush.views.platonic_friend_views',    
+
+    (r'^just_friends/$', 'just_friends'),
     
-    url(r'^friends_with_admirers_section/$', 'friends_with_admirers_views.friends_with_admirers_section'), # right bar called via ajax    
+    (r'^ajax_reconsider/$','ajax_reconsider'),
+)
     
-    # ----      PAYMENT PROCESSING --
+# ----      FRIENDS WITH ADMIRERS:: DISPLAY AND HANDLING PAGES --
+urlpatterns += patterns('crush.views.friends_with_admirers_views', 
+                        
+    (r'^friends_with_admirers/$', 'friends_with_admirers'),
     
-    url(r'^ajax_update_num_credits/$','payment_views.ajax_update_num_credits'),
+    (r'^friends_with_admirers_section/$', 'friends_with_admirers_section'), # right bar called via ajax    
+)
     
-    url(r'^credit_checker/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/$','payment_views.credit_checker'),
+# ----      PAYMENT PROCESSING --
+urlpatterns += patterns('crush.views.payment_views', 
+                         
+    (r'^ajax_update_num_credits/$','ajax_update_num_credits'),
     
-    url(r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/(?P<current_user_is_target>\d+)/$','payment_views.ajax_deduct_credit'),
+    (r'^credit_checker/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/$','credit_checker'),
     
-    url(r'^paypal_purchase/$', 'payment_views.paypal_purchase'),
+    (r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/(?P<current_user_is_target>\d+)/$','ajax_deduct_credit'),
     
-    url(r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','payment_views.paypal_ipn_listener'),
+    (r'^paypal_pdt_purchase/$', 'paypal_pdt_purchase'),
     
-    # ----      SETTINGS PAGES --
+    (r'^paypal_ipn_listener/(?P<username>\w+)/(?P<credit_amount>\d+)/$','paypal_ipn_listener'),
+)
     
-    url(r'^settings_credits/$', 'settings_views.settings_credits'),
+# ----      SETTINGS PAGES --
+urlpatterns += patterns('crush.views.settings_views', 
+                        
+    (r'^settings_credits/$', 'settings_credits'),
     
-    url(r'^settings_notifications/$','settings_views.settings_notifications'),
+    (r'^settings_notifications/$','settings_notifications'),
     
-    url(r'^settings_profile/$', 'settings_views.settings_profile'),
+    (r'^settings_profile/$', 'settings_profile'),
+)
     
-    # ----      STATIC HELP PAGES --
+# ----      STATIC HELP PAGES --
+urlpatterns += patterns('crush.views.static_file_views', 
     
-    url(r'^help_FAQ/$', 'static_file_views.help_faq'),
+    (r'^help_FAQ/$', 'help_faq'),
     
-    url(r'^help_how_it_works/$','static_file_views.help_how_it_works'),
+    (r'^help_how_it_works/$','help_how_it_works'),
     
-    url(r'^terms/$', 'static_file_views.help_terms'),
+    (r'^terms/$', 'help_terms'),
     
-    url(r'^privacy_policy/$', 'static_file_views.help_privacy_policy'),
+    (r'^privacy_policy/$', 'help_privacy_policy'),
 )
 
 urlpatterns += patterns('',
     # -- ADMIN PAGE -- #
-    url(r'^admin/', include(admin.site.urls)),                        
+    (r'^admin/', include(admin.site.urls)),                        
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

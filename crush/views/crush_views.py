@@ -240,8 +240,7 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])
-        #pool=Pool(1)
-        #pool.apply_async(initialize_lineup,[relationship]) #initialize lineup asynchronously
+        # we don't need to call initialize_lineup via asynchronous pooling since we are already calling it from client via ajax asynchronously
         initialize_lineup(relationship)
     if relationship.lineup_initialization_status == 0:
         # wait for a certain amount of time before returning a response
