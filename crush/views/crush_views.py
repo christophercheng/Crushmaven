@@ -47,11 +47,6 @@ def crushes_in_progress(request):
                 if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
                     new_crush = CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                                friendship_type=friend_type, updated_flag=True)
-                    
-                    #if friend_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-                    #    pool=Pool(1)
-                    #    pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
-                        #initialize_lineup(new_crush)
                     userlist.append(selected_user)
                 else:
                     duplicate_userlist.append(selected_user)
@@ -87,9 +82,8 @@ def crushes_in_progress(request):
                                'crush_relationships':crush_progressing_relationships,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
                                'crushes_completed_count':crushes_completed_count,
-                               'lineup_status_choice_2':settings.LINEUP_STATUS_CHOICES[2],
-                               'lineup_status_choice_3':settings.LINEUP_STATUS_CHOICES[3],
-                               'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4]
+                               'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
+                               'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5]
                                })    
 
 # -- Crushes Completed Page --
@@ -244,10 +238,10 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
         return HttpResponse(ajax_response) # this is a catch all error return state
    
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
-        #    pool=Pool(1)
-        #    pool.apply_async(initialize_lineup,[new_crush],) #initialize lineup asynchronously
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])
+        #pool=Pool(1)
+        #pool.apply_async(initialize_lineup,[relationship]) #initialize lineup asynchronously
         initialize_lineup(relationship)
     if relationship.lineup_initialization_status == 0:
         # wait for a certain amount of time before returning a response

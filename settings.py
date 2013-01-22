@@ -203,7 +203,7 @@ MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the s
 
 LINEUP_STATUS_CHOICES = {0:'Not Initialized',
                          1:'Initialized',
-                         2:'Sorry, we do not haven enough information about your admirer to create a lineup at this time.',
+                         2:'Sorry, your admirer has not provided us with enough information to create a lineup yet.  We will notify you via email when it is ready.',
                          3:'You do not have enough friends to create a lineup at this time.',
                          4:'Sorry, we are having difficulty getting data from Facebook to create a lineup.  Please try again later.',
                          5:'Sorry, we are having difficulty initializing a lineup.  Please try again later.',
