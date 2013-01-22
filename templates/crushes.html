@@ -78,22 +78,6 @@ $(document).ready(function()
             return false;
         });
         
-        $("a.modal_ajax_test").click(function(e) {
-        	var content="yo";
-            e.preventDefault();
-            // Ajax
-			$.get('/modal_delete_crush', function(data){
-   	 		
-            	$("#dialog").text(data);
-            	$("#dialog").dialog('option', 'buttons', {
-       				"OK": function() {window.location = "/crushes_in_progress"},
-        			"Cancel": function() {$(this).dialog("close");
-        			}
-    			});
-            	$("#dialog").dialog("open");
-            	return false;
-        	});
-        });
 });
 </script>
 
