@@ -130,7 +130,7 @@ TEMPLATE_DIRS = (
     # MAC PATH:
     #os.path.join(PROJECT_PATH, 'templates'), 
     # PC PATCH:
-    os.path.join(SITE_ROOT, 'templates'), 
+    os.path.join(SITE_ROOT, 'crush/templates'), 
     
     
     #"templates"
@@ -235,5 +235,10 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 #PAYPAL_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
 #PAYPAL_PDT_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
 
-
+# LOAD development settings that override app settings
+try:
+    from dev_settings import *
+except ImportError:
+    print 'local development settings could not be imported'
+    pass
 

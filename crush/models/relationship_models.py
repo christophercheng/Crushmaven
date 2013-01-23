@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 import random
 from django.conf import settings
 from crush.models.user_models import FacebookUser
-import crush.models.miscellaneous_models
+import crush.models.lineup_models
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -15,22 +15,15 @@ class BasicRelationship(models.Model):
         abstract = True 
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
-    # to find the relationships where a given user is the one being admired:
-        # request.user.target_person_relatioinship_set
 
-    date_added = models.DateTimeField(auto_now_add=True)
-    
-        
-    # how are the admirer and crushee connected
+    date_added = models.DateTimeField(auto_now_add=True)    
+
     FRIENDSHIP_TYPE_CHOICES = (
                                (0,'Friend'),
                                (1,'Friend of Friend'),
                                (2,'Stranger'),
                                )
-    friendship_type=models.IntegerField(max_length=1,default=0,choices=FRIENDSHIP_TYPE_CHOICES)#, choices=FRIENDSHIP_TYPE_CHOICES)
-    
-    # list of one or many mutual friends between the admirer and crushee
-    #mutual_friend_list = models.ManyToManyField(User,related_name='%(app_label)s_%(class)s_related')
+    friendship_type=models.IntegerField(max_length=1,default=0,choices=FRIENDSHIP_TYPE_CHOICES)#, choices=FRIENDSHIP_TYPE_CHOICES))
     
     # need to know whether to display a 'new' or 'updated' ribbon on the crush content block
     updated_flag = models.BooleanField(default=True) # default True so status is New by default
@@ -40,17 +33,21 @@ class BasicRelationship(models.Model):
         # save the change to the database, but don't call this level's save function cause it does too much.
         super(BasicRelationship, self).save(update_fields=['updated_flag'])
         return "" # if I don't return "" then for some reason None is actually returned
-    
-
-        
-    def get_reciprocal_nonresponded_incomplete_crush_relation(self):
-        try:
-            return self.target_person.get_incomplete_crush_relations().get(target_person=self.source_person)
-        except CrushRelationship.DoesNotExist:
-            return False
         
     def __unicode__(self):
         return 'Basic relationship for:' + str(self.target_person.facebook_username)
+
+class PlatonicRelationshipQuerySet(models.query.QuerySet):
+    
+    def all_friends(self, source_user):
+        return source_user.platonic_relationship_set_from_source.all()
+    
+class PlatonicRelationshipManager(models.Manager):
+    def get_query_set(self):
+        return PlatonicRelationshipQuerySet(self.model,using=self._db)
+    # this magic function prevents us from defining duplicate Queryset functions in our manager
+    def __getattr__(self,name):
+        return getattr(self.get_query_set(),name)
 
 class PlatonicRelationship(BasicRelationship):
     
@@ -58,15 +55,14 @@ class PlatonicRelationship(BasicRelationship):
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
         
-    source_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_source')
-    
+    objects = PlatonicRelationshipManager()
+        
+    source_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_source')  
     target_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_target')
-    # will have to write an overloaded save function here that checks to see if the platonic friend has a crush
-        # if so, then modify that person's target_feeilng and target_status 
  
     def save(self,*args, **kwargs):  
         #  print "saving platonic relationship object"
-        if (not self.pk):
+        if (not self.pk): # if creating a new platonic relationship
             try:
                 self.source_person.just_friends_targets.get(username=self.target_person.username)
                 print "existing platonic relationship detected. doing nothing more"
@@ -92,30 +88,71 @@ class PlatonicRelationship(BasicRelationship):
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
-                
         super(PlatonicRelationship, self).save(*args,**kwargs)
         return
         
 # consider putting in a delete function later
           
     def __unicode__(self):
-        return 'Platonic relationship with:' + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return 'Platonic relationship:' + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+
+class CrushRelationshipQuerySet(models.query.QuerySet):
     
-# need to override the save method 
-    # check to see if the platonic friend has a crush on me, if so, then let them know of my evaluation
+    def all_crushes(self,admirer_user):
+        return admirer_user.crush_relationship_set_from_source.all()
+    
+    def progressing_crushes(self,admirer_user):   
+        crush_relationships = admirer_user.crush_relationship_set_from_source
+        return crush_relationships.exclude(target_status__gt = 3,date_target_responded__lt=datetime.datetime.now())  
+    # known responded crushes are can be shown to both users
+    def known_responded_crushes(self,admirer_user):
+        crush_relationships = admirer_user.crush_relationship_set_from_source
+        return crush_relationships.exclude(is_results_paid=True).filter(target_status__gt = 3,date_target_responded__lt = datetime.datetime.now())
+    # unknown responded crushes cannot be shown to either user because they are in a wait period
+    def unknown_responded_crushes(self,admirer_user):
+        crush_relationships = admirer_user.crush_relationship_set_from_source
+        return crush_relationships.exclude(is_results_paid=True).filter(target_status__gt = 3,date_target_responded__gt = datetime.datetime.now())
+    
+    def completed_crushes(self,admirer_user):
+        crush_relationships = admirer_user.crush_relationship_set_from_source
+        return crush_relationships.filter(is_results_paid=True)
+    
+    def all_admirers(self,crush_user):
+        return crush_user.crush_relationship_set_from_target.all()
+    
+    def new_admirers(self,crush_user):
+        return self.progressing_admirers(crush_user).filter(target_status__lt = 3)
+    
+    def progressing_admirers(self,crush_user):
+        # 1) start with all relationships where the target is the crush user
+        admirer_relationships = crush_user.crush_relationship_set_from_target.filter(date_lineup_finished=None)
+        # 2) filter out any relationships where the source_user is either a crush or platonic target of crush 
+        #    (hint: relationship will have a date_responded field set)
+        admirer_relationships = admirer_relationships.filter(date_target_responded = None)
+        return admirer_relationships
+      
+    def past_admirers(self,crush_user):
+        return crush_user.crush_relationship_set_from_target.exclude(date_lineup_finished=None)
+    
+class CrushRelationshipManager(models.Manager):
+    def get_query_set(self):
+        return CrushRelationshipQuerySet(self.model,using=self._db)
+    # this magic function prevents us from defining duplicate Queryset functions in our manager
+    def __getattr__(self,name):
+        return getattr(self.get_query_set(),name)
 
 class CrushRelationship(BasicRelationship):
     
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
+    
+    objects = CrushRelationshipManager()
             
     source_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_source')
-    
     target_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_target')
     
-    #dynamically tie in the target person's response as a lookup time optimization (using django signals)
-      
+    #dynamically tie in the target person's response as a lookup time optimization
     TARGET_STATUS_CHOICES = (
                            (0,'Not Invited (not member)'),
                            (1,'Invited (not member)'),
@@ -129,12 +166,10 @@ class CrushRelationship(BasicRelationship):
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
-    # the crush target (and potentially the admirer) will need to pay to activate the crush-line-up
-    
+
     date_invite_last_sent=models.DateTimeField(null=True,default=None) 
     
     lineup_members = models.ManyToManyField(FacebookUser, through='LineupMembership')
-    
     
     LINEUP_INITIALIZATION_STATUS_CHOICES = (
                            (0,settings.LINEUP_STATUS_CHOICES[0]),# initialization in progress
@@ -146,9 +181,8 @@ class CrushRelationship(BasicRelationship):
                            )
     lineup_initialization_status = models.IntegerField(default=None, choices=LINEUP_INITIALIZATION_STATUS_CHOICES,null=True)
     # lineup initialized and paid can be combined into a single state variable 
-
     is_lineup_paid=models.BooleanField(default=False)
-    # is_lineup_completed=models.BooleanField(default=False) deprecate this - check if date_lineup_finished is not None instead
+
     date_lineup_started = models.DateTimeField(default=None, null=True)
     
     date_lineup_finished = models.DateTimeField(default=None, null=True)
@@ -156,12 +190,9 @@ class CrushRelationship(BasicRelationship):
     date_target_signed_up = models.DateTimeField(default=None,null=True)
     # keeps track of when the crush responded
     date_target_responded = models.DateTimeField(default=None,null=True)    
-
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0)
     
-    # save_wo_checking is to be called by other crush relationships when they want to update the reciprocal relationship
-        # this method avoids receiprocal relationship checking which could lead to infinite loop checking
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk):
@@ -229,7 +260,7 @@ class CrushRelationship(BasicRelationship):
                     duplicate_lineup_membership = rel.lineupmembership_set.get(lineup_member=self.target_person)
                     duplicate_lineup_membership.decision = 0
                     duplicate_lineup_membership.save(update_fields=['decision'])
-                except crush.models.miscellaneous_models.LineupMembership.DoesNotExist:
+                except crush.models.lineup_models.LineupMembership.DoesNotExist:
                     pass      
         else:
             # check if the target status is being changed so that a possible notification can be sent out
@@ -239,6 +270,35 @@ class CrushRelationship(BasicRelationship):
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
         print "finished saving crush relationship object: 12"
         super(CrushRelationship,self).save(*args,**kwargs)
+        
+    def handle_lineup_paid(self): 
+        self.target_status = 3
+        self.is_lineup_paid = True
+        self.save(update_fields=['is_lineup_paid','target_status'])
+        print "handle_lineup_paid called"
+    
+        # TODO!!! when/where this called?    
+    def delete(self,*args, **kwargs):  
+        print "delete relationships fired"
+        # check to see if there is a reciprocal relationship
+        # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
+        try:
+            print "attempting to find the crush relationship"
+            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
+            if reciprocal_relationship.target_status > 2:
+                # once a target has started a crush line-up, the crush can no longer be deleted
+                if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
+                    return # change this to: if user is not a staff (admin) member then return
+            reciprocal_relationship.target_status=2
+            reciprocal_relationship.save(update_fields=['target_status'])
+        except CrushRelationship.DoesNotExist:
+            print "cannot find a reciprocal crush relationship to delete!"
+            pass
+        print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
+        super(CrushRelationship, self).delete(*args,**kwargs)
+        return
+    
+    
         
     def notify_target_person(self,crush_relationship):
         print "notifying the target person of a new admirer: "
@@ -283,28 +343,6 @@ class CrushRelationship(BasicRelationship):
                 send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
         except SMTPException:
             print "crap: could not send notification email"
-        
-
-    # TODO!!! when/where this called?    
-    def delete(self,*args, **kwargs):  
-        print "delete relationships fired"
-        # check to see if there is a reciprocal relationship
-        # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
-        try:
-            print "attempting to find the crush relationship"
-            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            if reciprocal_relationship.target_status > 2:
-                # once a target has started a crush line-up, the crush can no longer be deleted
-                if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
-                    return # change this to: if user is not a staff (admin) member then return
-            reciprocal_relationship.target_status=2
-            reciprocal_relationship.save(update_fields=['target_status'])
-        except CrushRelationship.DoesNotExist:
-            print "cannot find a reciprocal crush relationship to delete!"
-            pass
-        print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
-        super(CrushRelationship, self).delete(*args,**kwargs)
-        return
             
     def __unicode__(self):
         return 'CrushRelationship:'  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)

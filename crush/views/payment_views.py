@@ -25,9 +25,9 @@ def ajax_deduct_credit(request, feature_id, relationship_display_id, current_use
     me=request.user
     try:
         if current_user_is_target:
-            relationship=request.user.crush_relationship_set_from_target.get(admirer_display_id=relationship_display_id)
+            relationship=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=relationship_display_id)
         else:
-            relationship=request.user.crush_relationship_set_from_source.get(admirer_display_id=relationship_display_id)
+            relationship=CrushRelationship.objects.all_crushes(me).get(admirer_display_id=relationship_display_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
 
@@ -40,10 +40,9 @@ def ajax_deduct_credit(request, feature_id, relationship_display_id, current_use
     else:
         return HttpResponseForbidden("Error: You no longer have enough credit.")
     if str(feature_id) == '1': # if feature is view lineup
-        relationship.is_lineup_paid = True
+        relationship.handle_lineup_paid()
     # now save both the user and the relationship
     me.save(update_fields=['site_credits'])
-    relationship.save(update_fields=['is_lineup_paid'])
     return HttpResponse()
    
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
@@ -111,11 +110,10 @@ def paypal_pdt_purchase(request):
                 try:# handle special feature processing 
                     facebook_user = FacebookUser.objects.get(username=username)
                     #print "facebook user found with first name: " + facebook_user.first_name
-                    admirer_rel = request.user.get_all_new_incomplete_admirer_relations().get(admirer_display_id=rel_display_id)
+                    admirer_rel = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=rel_display_id)
                     feature_cost=int(settings.FEATURES['1']['COST'])
                     facebook_user.site_credits=F('site_credits') - feature_cost
-                    admirer_rel.is_lineup_paid=True;
-                    admirer_rel.save(update_fields=['is_lineup_paid'])
+                    admirer_rel.handle_lineup_paid()
                     facebook_user.save(update_fields=['site_credits'])
                 except CrushRelationship.DoesNotExist:
                     pass # do nothing, i guess :)            
@@ -132,11 +130,10 @@ def paypal_pdt_purchase(request):
                 if feature_id == 1 and rel_display_id != '': # handling of lineup payment
                     try:
                         facebook_user = FacebookUser.objects.get(username=username)
-                        admirer_rel = request.user.get_all_new_incomplete_admirer_relations().get(admirer_display_id=rel_display_id)
+                        admirer_rel = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=rel_display_id)
                         feature_cost=settings.FEATURES['1']['COST']
                         facebook_user.site_credits=F('site_credits') - feature_cost
-                        admirer_rel.is_lineup_paid=True;
-                        admirer_rel.save(update_fields=['is_lineup_paid'])
+                        admirer_rel.handle_lineup_paid()
                         facebook_user.save(udpate_fields=['site_credits'])
                     except CrushRelationship.DoesNotExist:
                         pass # do nothing, i guess :)

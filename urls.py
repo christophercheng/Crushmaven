@@ -5,23 +5,23 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 admin.autodiscover()
 
+# Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
-       # Facebook Backend Authentication URL's        
-       (r'^facebook/login/$', 'login'),
-    (r'^facebook/authentication_callback$', 'authentication_callback'),                    
+   (r'^facebook/login/$', 'login'),
+   (r'^facebook/authentication_callback$', 'authentication_callback'),                    
 )
 
- # ----      BASIC APP FUNCTIONALITY  --
+# ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
-    (r'^$', 'home'),
+    url(r'^$', 'home', name="home_short"),
     
-    (r'^home/$', 'home'),  
-   # # pending crush list is also member home page
-    (r'^accounts/login/$', 'home'),
+    url(r'^home/$', 'home',name="home_medium"),  
+
+    url(r'^accounts/login/$', 'home',name="home_long"),
 
     (r'^logout_view/$', 'logout_view'),
-    )
+)
    
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
 urlpatterns += patterns('crush.views.crush_views',
@@ -30,8 +30,6 @@ urlpatterns += patterns('crush.views.crush_views',
             
     (r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','ajax_initialize_nonfriend_lineup'),
     
-    (r'^select_crush_by_id/$','select_crush_by_id'),
-
     (r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','crushes_completed'),
     
     (r'^crushes_completed/$','crushes_completed'),
@@ -41,14 +39,14 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html')),
                         
     (r'^ajax_find_fb_user/$','ajax_find_fb_user'),
-    )
+)
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.admirer_views',
                         
-    (r'^admirers/(?P<show_lineup>\d+)/$', 'admirers'),
+    url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirers',name="admirers_show_lineup"),
     
-    (r'^admirers/$', 'admirers'),
+    url(r'^admirers/$', 'admirers',name="admirers_show_all"),
     
     (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     

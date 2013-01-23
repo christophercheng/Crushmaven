@@ -2,14 +2,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,FacebookUser,EmailRecipient
-from crush.utilities import  initialize_lineup
+from crush.models import CrushRelationship,FacebookUser,EmailRecipient,LineupMembership
 import urllib, json
 import datetime
 from crush.appinviteform import AppInviteForm
-from crush.select_crush_by_id_form import SelectCrushIDForm
 from smtplib import SMTPException
-from multiprocessing import Pool
 import time
 
 # for mail testing 
@@ -18,7 +15,7 @@ from django.core.mail import send_mass_mail
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
-    
+    me = request.user
     # obtain the results of any crush additions or deletions
         # later I can move this into a separate view function
     if request.method == "POST":
@@ -63,18 +60,11 @@ def crushes_in_progress(request):
             "can't find crush relationship to delete!"
             delete_username=''
         return HttpResponseRedirect('/crushes_in_progress/')
-        
+           
+    crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
+    responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
+    crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
-    # obtain a query set of all CrushRelationship objectse where the target's feeling is unknown (0)
-        
-    crush_relationships = request.user.crush_relationship_set_from_source
-    responded_relationships = crush_relationships.filter(target_status__gt = 3,date_target_responded__lt = datetime.datetime.now()).exclude(is_results_paid=True)
-
-    crush_progressing_relationships = crush_relationships.exclude(target_status__gt = 3,date_target_responded__lt=datetime.datetime.now()).order_by('-updated_flag','target_status','target_person__last_name')
-    crushes_completed_count = crush_relationships.filter(is_results_paid=True).count()
-#    crushes_matched_count = crush_relationships.filter(target_status=4).filter(is_results_paid=True).count()
-#    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
-    
     return render(request,'crushes.html',
                               {
                                'crush_type': 0, # 0 is in progress, 1 is matched, 2 is not matched
@@ -89,7 +79,7 @@ def crushes_in_progress(request):
 # -- Crushes Completed Page --
 @login_required
 def crushes_completed(request,reveal_crush_id=None):
-    
+    me = request.user
     crush_relationships = request.user.crush_relationship_set_from_source 
     
     if (( reveal_crush_id) and request.user.site_credits >= settings.FEATURES['2']['COST']):
@@ -103,13 +93,9 @@ def crushes_completed(request,reveal_crush_id=None):
         except CrushRelationship.DoesNotExist:
             print("Could not find the relationship to reveal or not enough credit")
    
-    responded_relationships = crush_relationships.filter(target_status__gt = 3, date_target_responded__gt = datetime.datetime.now()).exclude(is_results_paid=True)
-    
-#    crush_matched_relationships = crush_relationships.filter(target_status = 4).filter(is_results_paid=True).order_by('target_person__last_name')
-#    crushes_matched_count = crush_matched_relationships.count()
-#    crushes_not_matched_count = crush_relationships.filter(target_status=5).filter(is_results_paid=True).count()
-    crushes_completed_relationships = crush_relationships.filter(is_results_paid=True).order_by('target_person__last_name')
-    crushes_in_progress_count = crush_relationships.filter(target_status__lt = 4).count()
+    responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
+    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
+    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
     
     return render(request,'crushes.html',
                               {
@@ -153,7 +139,7 @@ def app_invite_form(request, crush_username):
             try:
                 send_mass_mail(message_list,fail_silently=False)
                 try: 
-                    crush_relationship = request.user.crush_relationship_set_from_source.get(target_person=crush_user)
+                    crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person=crush_user)
                     crush_relationship.date_invite_last_sent=datetime.datetime.now()
                     crush_relationship.target_status = 1
                     crush_relationship.save(update_fields=['date_invite_last_sent','target_status'])
@@ -232,7 +218,7 @@ def ajax_find_fb_user(request):
 def ajax_initialize_nonfriend_lineup(request,target_username):
     ajax_response=''
     try:
-        relationship = request.user.crush_relationship_set_from_source.get(target_person__username=target_username)
+        relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=target_username)
     except CrushRelationship.DoesNotExist:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response) # this is a catch all error return state
@@ -241,7 +227,7 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])
         # we don't need to call initialize_lineup via asynchronous pooling since we are already calling it from client via ajax asynchronously
-        initialize_lineup(relationship)
+        LineupMembership.objects.initialize_lineup(relationship)
     if relationship.lineup_initialization_status == 0:
         # wait for a certain amount of time before returning a response
         counter = 0
@@ -262,28 +248,3 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
     else:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response)
-
-# -- Temporary content for select crush by id --
-@login_required
-def select_crush_by_id(request):
-    # contains form which accepts as input a facebook uid
-    # validates the uid 
-        # cannot be a previously crushed ID
-        # fetch it via facebook graph api
-    # if successful fetch, then display the contents, else display error message
-    
-    print "SELECT CRUSH BY ID FORM!"
-    # crush_name should be first name last name
-    if request.method == 'POST': # if the form has been submitted...
-        print "METHOD IS POST"
-        form = SelectCrushIDForm(request.POST,request=request)
-
-        if form.is_valid():
-            # the work to find/create the user and add the was moved to the overriden form clean function for efficiency sake
-                # since it has to make a call to facebook graph api to validate username already
-            return redirect('/crushes_in_progress')
-    else:
-        form=SelectCrushIDForm(request=request)
-    return render(request, 'select_crush_by_id_form.html',{'form':form})
-    
-    

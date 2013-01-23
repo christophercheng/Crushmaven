@@ -3,9 +3,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMembership,FacebookUser
-from crush.utilities import  initialize_lineup
 import datetime
-from multiprocessing import Pool
+#from multiprocessing import Pool
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time
 
@@ -14,31 +13,19 @@ import time
 def admirers(request,show_lineup=None):
 
     me = request.user 
-
-    # get list of responded (so we can filter them out the admirers )
-    progressing_crush_list = me.crush_targets.filter(crush_relationship_set_from_target__target_status__gt = 3,crush_relationship_set_from_target__is_results_paid=False)   
-    # if admirer is already a platonic friend of the crush, then don't create a new admirer block or a new lineup; 
-    # build a list of incomplete admirer relationship by filtering them in the following order:
-    #     filter through only those admirer relationships who have not finished their lineup (progressing relationships)
-    #     filter out those progressing relationships who are also progressing crushes AND who have not yet instantiated a lineup
-    #        if they are also a progressing crush, but a lineup has already been created, then don't filter them out
-    admirer_relationships = me.crush_relationship_set_from_target
-    progressing_admirer_relationships = admirer_relationships.filter(date_lineup_finished=None)
-    progressing_admirer_relationships = progressing_admirer_relationships.all().exclude(source_person__in = progressing_crush_list, lineup_initialization_status = None)
-    progressing_admirer_relationships = progressing_admirer_relationships.all().exclude(source_person__in = me.just_friends_targets.all()).order_by('target_status','date_added') # valid progressing relationships 
-
-    past_admirers_count = admirer_relationships.exclude(date_lineup_finished=None).count()
+    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
+    past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize the lineups of any new admirer relationships
         # filter out the new relationships whose lineup member 1 is empty
     
-    uninitialized_relationships = progressing_admirer_relationships.exclude(lineup_initialization_status=1) #get all relationships that don't already have a lineup (number of lineump members is zero)
-    if (uninitialized_relationships):
-        print "hey, found an uninitialized relationship"
-        pool=Pool(1) #must be 1 or things go bad!
-        for relationship in uninitialized_relationships:
-            pool.apply_async(initialize_lineup,[relationship],) #initialize lineup asynchronously
-            #initialize_lineup(relationship)
+    #uninitialized_relationships = progressing_admirer_relationships.exclude(lineup_initialization_status=1) #get all relationships that don't already have a lineup (number of lineump members is zero)
+    #if (uninitialized_relationships):
+    #    print "hey, found an uninitialized relationship"
+    #    pool=Pool(1) #must be 1 or things go bad!
+    #    for relationship in uninitialized_relationships:
+    #        pool.apply_async(LineupMembership.objects.initialize_lineup,[relationship]) #initialize lineup asynchronously
+            #LineupMembership.objects.initialize_lineup(relationship)
 
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -53,45 +40,56 @@ def ajax_display_lineup_block(request, display_id):
     print "ajax initialize lineup with display id: " + str(int_display_id)
     ajax_response = ""
     try:    
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+    except CrushRelationship.DoesNotExist:
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        return HttpResponse(ajax_response) # this is a catch all error return state
+    if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
+        relationship.lineup_initialization_status = 0
+        relationship.save(update_fields=['lineup_initialization_status'])
+        LineupMembership.objects.initialize_lineup(relationship) 
+    if relationship.lineup_initialization_status == 0:       
+        # wait for a certain amount of time before returning a response
         counter = 0
-        while True:
-            print "trying admirer " + str(display_id) + " on try: " + str(counter) 
-            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=int_display_id)
-            if admirer_rel.lineup_initialization_status > 0: # initialization was either a success or failed
-                if admirer_rel.lineup_initialization_status == 1:
-                    break
-                else:
-                    return HttpResponse(settings.LINEUP_STATUS_CHOICES[admirer_rel.lineup_initialization_status])
+        while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress
+            print "trying admirer lineup initialization for " + relationship.target_person.last_name + ":" + display_id + " on try: " + str(counter) 
+           
+            if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
+                break
             elif counter==25: # if 30 seconds have passed then give up
                 print "giving up on admirer:" + str(display_id)
-                return HttpResponse("Sorry, we are having difficulty enough data from Facebook to create your lineup.  Please try again later.")
-                #return HttpResponseNotFound(str(display_id),content_type="text/plain")
+                relationship.lineup_initialization_status = 5
+                relationship.save(update_fields=['lineup_initialization_status'])
+                break
             time.sleep(1) # wait a quarter second
             counter+=1
 
-        for counter, membership in enumerate(admirer_rel.lineupmembership_set.all()):
-            if counter < 2 or membership.decision!=None:
-                ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
-            else:
-                ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
+    if relationship.lineup_initialization_status > 3: # for data fetching errors show a button that allows user to restart the initialization 
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + ' <button id="initialize_lineup_btn" display_id="' + display_id + '">Re-initialize</button>'
+        return HttpResponse(ajax_response)
+    if relationship.lineup_initialization_status > 1: # show error message
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
+        return HttpResponse(ajax_response)
 
-        ajax_response += '<BR>'
-        
-        if admirer_rel.is_lineup_paid:
-            if admirer_rel.date_lineup_finished:
-                ajax_response += 'Line-up completed ' + str(admirer_rel.date_lineup_finished)
-                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
-            else:
-                ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
-      
+   
+    # for successful initialization, the following code applies
+    for counter, membership in enumerate(relationship.lineupmembership_set.all()):
+        if counter < 2 or membership.decision!=None:
+            ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
         else:
-            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
-    
-    except CrushRelationship.DoesNotExist:
-        print "could not find admirer relationship"
-        ajax_response="Sorry, there is a problem processing the lineup for this admirer.  We are working on fixing this issue."
+            ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
 
+    ajax_response += '<BR>'
     
+    if relationship.is_lineup_paid:
+        if relationship.date_lineup_finished:
+            ajax_response += 'Line-up completed ' + str(relationship.date_lineup_finished)
+            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
+        else:
+            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
+  
+    else:
+        ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
     return HttpResponse(ajax_response)
 
 # -- Single Lineup (Ajax Content) Page --
@@ -99,7 +97,7 @@ def ajax_display_lineup_block(request, display_id):
 def ajax_show_lineup_slider(request,admirer_id):
     me = request.user
     try:
-        admirer_rel = me.crush_relationship_set_from_target.get(admirer_display_id=admirer_id)
+        admirer_rel = CrushRelationship.objects.all_admirers(me).get(admirer_display_id=admirer_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
 
@@ -124,7 +122,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     me=request.user
     # obtain the admirer relationship
     try:
-        admirer_rel=me.crush_relationship_set_from_target.get(admirer_display_id=display_id)
+        admirer_rel=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=display_id)
         # if lineup is not paid for, then don't show any content beyond slide 2
         if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
         #     print "lineup_position just before forbidden error: " + lineup_position
@@ -180,7 +178,7 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
         try:
-            admirer_rel=request.user.crush_relationship_set_from_target.get(admirer_display_id=admirer_display_id)
+            admirer_rel=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=admirer_display_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponse("Server Error: Could not add given lineup user")
         try:
@@ -229,9 +227,8 @@ def ajax_update_num_crushes_in_progress(request):
 def admirers_past(request):
     me = request.user 
    
-    admirer_relationships = me.crush_relationship_set_from_target
-    admirer_completed_relationships = admirer_relationships.exclude(date_lineup_finished=None).order_by('date_added')
-    progressing_admirers_count = admirer_relationships.filter(date_lineup_finished=None).count()
+    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('date_added')
+    progressing_admirers_count = CrushRelationship.objects.progressing_admirers(me).count()
     
     return render(request,'admirers.html',
                               {

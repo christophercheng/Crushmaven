@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load fbdater_extras %}
+
+<div id="lineup_modal" title="Secret Admirer Lineup"></div>
+
+<script type="text/javascript">
+
+$(document).ready(function() 
+{
+        $("#lineup_modal").dialog({modal: true, resizable:false,autoOpen: false,height:500,width:640});
+    
+        $('.admirer_block').on('click', '.view_lineup', function(e) {
+					view_lineup_element=$(this);
+        	var display_id=view_lineup_element.attr('display_id');	
+        	load_url="/ajax_show_lineup_slider/" + display_id + "/";
+          e.preventDefault();
+					$("#lineup_modal").load(load_url);   	
+          $("#lineup_modal").dialog("open");
+          $(".ui-widget-overlay").css("background","black").css("opacity",".80");
+          return false;    
+        });			
+  
+  /** FUNCTION - HANDLE INITIALIZATION of FRIEND TYPE LINEUP
+  *
+	*/
+  $('.admirer_block').on('click','#initialize_lineup_btn',function(e) {
+  	
+  	var admirer_display_id=$(this).attr("display_id");
+  	var initialize_div = $(this).parent('#initialize_lineup');
+    initialize_div.html('<div id="loading">initializing lineup...</div>');
+		var load_url = '/ajax_display_lineup_block/' + admirer_display_id;
+		initialize_div.load(load_url, function(){
+		
+		if (show_lineup_number && show_lineup_number==admirer_display_id)
+    	$(this).children('.view_lineup').trigger('click');
+		});
+	});
+
+	/** FUNCTION - AUTO-CALL RE_INITIALIZE LINEUP
+  *
+	*/  
+	var auto_initialize_new_friend_admirers = function(){
+		var fake_initialize_btns = $('#initialize_lineup_btn.fake');
+		fake_initialize_btns.each(function(index,element){
+			$(element).trigger('click');
+		});
+		return true;
+	}
+	// PROCEDURAL CODE ALWAYS RUN
+	auto_initialize_new_friend_admirers();
+	var show_lineup_number = '{{show_lineup}}';    
+});
+</script>
+
+<!-- Display the crush type navigation widget -->  
+<HR>
+<font color="gray">
+{% if admirer_type = 0 %}
+<b>Secret Admirers ({{admirer_relationships.count}})</b>&nbsp;&nbsp;<a href="/admirers_past">Past Admirers ({{past_admirers_count}})</a>
+{% else %}
+<a href="/admirers">Secret Admirers ({{progressing_admirers_count}})</a><b>&nbsp;&nbsp;Past Admirers ({{admirer_relationships.count}})</b>
+{% endif %}
+</font>
+<BR><BR>
+  
+<!-- End of crush type navigation widget -->  
+
+{% if admirer_relationships %}
+
+{% for admirer_rel in admirer_relationships %}
+	<div class="admirer_block" display_id="{{admirer_rel.admirer_display_id}} ">
+		Secret Admirer #{{admirer_rel.admirer_display_id}} 
+		({% if admirer_rel.friendship_type == 0 %} friend of yours {% elif admirer_rel.friendship_type == 1 %}friend-of-a-friend{% endif %})
+		<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
+	
+		<div id="initialize_lineup">
+			<div id="initialize_lineup_btn" class="fake" display_id="{{admirer_rel.admirer_display_id}}"></div>		
+		</div><!--  close off initialize_lineup div -->
+	</div> <!-- close off .admirer_block div -->
+	<BR><BR>
+{% endfor %}
+
+{% else %}
+	THERE ARE NO {% if admirer_type = 0 %} CURRENT {% else %} PAST {% endif %} SECRET ADMIRERS!
+{% endif %}
+
+
+{% endblock %}

@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from crush.models import CrushRelationship
 
 import datetime
 
@@ -22,11 +23,12 @@ def friends_with_admirers_section(request):
         print "creating html for: " + inactive_crush_friend.username
         ajax_response+="<div id='friend_admirer" + str(counter) + "'>"
         ajax_response +="<img src='" + inactive_crush_friend.get_facebook_picture() + "' width=20 height=20><small>" + inactive_crush_friend.first_name + "&nbsp;&nbsp;" + inactive_crush_friend.last_name
-        num_admirers = len(inactive_crush_friend.get_all_admirer_relations())
+        all_admirers = CrushRelationship.objects.all_admirers(inactive_crush_friend)
+        num_admirers = len(all_admirers)
         ajax_response += "<br>" + str(num_admirers) + " secret admirer"
         if num_admirers > 1:
             ajax_response += "s"
-        elapsed_days = (datetime.datetime.now() - inactive_crush_friend.get_all_admirer_relations()[num_admirers-1].date_added).days
+        elapsed_days = (datetime.datetime.now() - all_admirers[num_admirers-1].date_added).days
         if elapsed_days==0:
             elapsed_days = "today"
         elif elapsed_days == 1:

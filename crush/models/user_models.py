@@ -6,7 +6,6 @@ from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.conf import settings
 import crush.models.relationship_models
-import crush.models.relationship_models
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -59,7 +58,7 @@ class FacebookUserManager(UserManager):
                     # update their profile with facebook data; they're not always obtained indirectly
                     self.update_user(user,fb_profile)
                     # look for any admirers at this point so their relationships can get updated
-                    admirer_relationships = user.crush_relationship_set_from_target.all()
+                    admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
                     for relation in admirer_relationships:
                         # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
                         relation.target_status = 2
@@ -224,39 +223,11 @@ class FacebookUser(AbstractUser):
         return data
 
     def get_facebook_picture(self):
-        return u'http://graph.facebook.com/%s/picture?type=large' \
-                                                            % self.username
-                                                            
-    #=========  Crush Filters =========
+        return u'http://graph.facebook.com/%s/picture?type=large' % self.username
     
-    def get_all_crush_relations(self):
-        return self.crush_relationship_set_from_source.all()
-    
-    def get_all_incomplete_crush_relations(self):
-        return self.crush_relationship_set_from_source.filter(is_results_paid=False)
-    
-    def get_nonresponded_incomplete_crush_relations(self):
-        return self.crush_relationship_set_from_source.filter(target_status__lt = 4)
-    
-    def get_responded_incomplete_crush_relations(self):
-        return self.crush_relationship_set_from_source.filter(target_status__gt = 3, is_results_paid=False)
-    
-    def get_completed_crush_relations(self):
-        return self.crush_relationship_set_from_source.filter(is_results_paid=True)
-    
-    #=========  Admirer Filters =========
-
-    def get_all_admirer_relations(self):
-        return self.crush_relationship_set_from_target.all()
-        
-    def get_all_incomplete_admirer_relations(self):
-        return self.crush_relationship_set_from_target.filter(date_lineup_finished = None)
-    
+    # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_all_new_incomplete_admirer_relations(self):
-        return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
-        
-    def get_all_completed_admirer_relations(self):
-        return self.crush_relationship_set_from_target.exclude(date_lineup_finished = None)
+      return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):

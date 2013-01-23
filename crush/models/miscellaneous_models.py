@@ -9,7 +9,7 @@ class NotificationSettings(models.Model):
         
     bNotify_crush_signed_up = models.BooleanField(default=True)
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
-    bNotify_crush_started_lineup = models.BooleanField(default=False) # off by default cause reciprocal lineup crushes don't instantiate a lineup
+    bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)
 
@@ -23,28 +23,6 @@ class EmailRecipient(models.Model):
     recipient_address=models.CharField(max_length=200) # is this long enough?
     date_sent=models.DateTimeField(auto_now_add=True)
     is_email_crush=models.BooleanField(default=True) # if false, then the email was sent to a mutual friend
-
-# details about each crush's secret admirer lineup (SAL)
-class LineupMembership(models.Model):
-    
-    class Meta:
-        # this allows the models to be broken into separate model files
-        app_label = 'crush'
-    # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
-    relationship = models.ForeignKey('CrushRelationship')
-    lineup_member=models.ForeignKey('FacebookUser')
-    position = models.IntegerField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
-
-    DECISION_CHOICES = ( # platonic levels represent crush's rating of member's attractiveness
-                           (0,'Crush'),
-                           (1,'Platonic 1'),
-                           (2,'Platonic 2'),
-                           (3,'Platonic 3'),
-                           (4,'Platonic 4'),
-                           (5,'Platonic 5'),
-                           )
-    decision = models.IntegerField(null=True, choices=DECISION_CHOICES, default=None)
-    comment = models.CharField(null=True,default=None,max_length=200)
 
 class Purchase(models.Model):
 
@@ -70,12 +48,3 @@ class Purchase(models.Model):
             current_user.site_credits = F('site_credits') + self.credit_total     
             current_user.save(update_fields = ['site_credits']) 
         return super(Purchase, self).save(*args,**kwargs)
-    
-# 10/27/12 couldn't get this class to work cause the UserProfile object was a foreign key on the original model
-    # attempts to use a backwards relation fetch through the model (profile.defaultorderedrelationship_set) failed
-# use this class instead of CrushRelaionship object when obtaining a sorted list
-    # by default the relationship objects will be in the order that they are added, i think :)
-#class DefaultOrderedCrushRelationship(CrushRelationship):
-#        class Meta:
-#            proxy = True
-#            ordering = ['target_status']
