@@ -139,16 +139,15 @@ jQuery(document).ready(function($) {
 });
 
 </script>
-<div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div>
+<div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
 <div class="main_container">
-<div class="left_panel"><div class="left_content_container">{% include "navigation_left.html" %}</div></div> <!-- close off left side bar -->
-<div class="center_panel"><div class="center_content_container">
-	{% block content %}
-	{% endblock %}
-</div></div> <!-- close off main_content_container -->
-<div class="right_panel"><div class="right_content_container">{% include "navigation_right.html" %}</div></div> <!-- close off right side bar -->
+	<div class="left_panel"><div class="left_content_container">{% include "navigation_left.html" %}</div></div> <!-- close off left side bar -->
+	<div class="center_panel"><div class="center_content_container">
+		{% block content %}
+		{% endblock %}
+	</div></div> <!-- close off main_content_container -->
+	<div class="right_panel"><div class="right_content_container">{% include "navigation_right.html" %}</div></div> <!-- close off right side bar -->
 </div> <!-- close off main container -->
-</div> <!--  close off wrapper -->
-<fb:like></fb:like>
-<BR><BR><a href="/admin/">Admin</a><br>
+<!--  <fb:like></fb:like>
+<BR><BR><a href="/admin/">Admin</a><br>-->
  

@@ -7,8 +7,8 @@
 			href="{% url 'crush.views.infrastructure_views.home' %}"><font color=RoyalBlue>Attracted</font><font color=SeaShell><i>to...</i></font></a>
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
-	new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
-	new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
+	(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
+	(<a href="/admirers/">{{num_new_admirers}}</a>)
 	
 <!-- END NOTIFICAIONS -->
 		&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;
@@ -22,7 +22,7 @@
 			href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
 		<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
 		
-					<img src="http://graph.facebook.com/{{ user.username }}/picture" height=30 width=30>
+					<img src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
 			<b>Settings </b>
 
 </div> <!-- close off topbar div -->
