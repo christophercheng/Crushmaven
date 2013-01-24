@@ -8,47 +8,42 @@ import datetime
 from crush.appinviteform import AppInviteForm
 from smtplib import SMTPException
 import time
+from  django.http import HttpResponseNotFound
 
 # for mail testing 
 from django.core.mail import send_mass_mail
+
+# called by crush selector upson submit button press
+@login_required
+def ajax_add_crush_targets(request):
+    print "HI"
+    post_data = request.POST
+    # this is just for testing, remove later
+    counter=0
+    for key in post_data:
+        if key=="csrfmiddlewaretoken":
+            continue
+        counter+=1
+        crushee_id=request.POST[key][:-1] #handle a hack where last character is the friend type   
+        friend_type= int(request.POST[key][-1])
+        # find existing site user with this id or create a new user 
+        selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
+        # now that the user is definitely on the system, add that user to the crush list        
+        # only create a new relationship if an existing one between the current user and the selected user does not exist 
+        print "successfully got a new crush user with username: " + selected_user.facebook_username
+        if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
+            CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
+                                                       friendship_type=friend_type, updated_flag=True)
+    if counter > 0:
+        return HttpResponse()
+    else:
+        return HttpResponseNotFound()
 
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
     me = request.user
-    # obtain the results of any crush additions or deletions
-        # later I can move this into a separate view function
-    if request.method == "POST":
-        print "method is post"
-        crushee_id=''
-        userlist = []
-        duplicate_userlist=[]
-        
-        # this is just for testing, remove later
-
-        for key in request.POST:
-
-            if key.startswith('to'):    
-                crushee_id=request.POST[key][:-1] #handle a hack where last character is the friend type
-
-                friend_type= int(request.POST[key][-1])
-                # find existing site user with this id or create a new user 
-                # called function is in a custom UserProfile manager because it is also used during login/authentication
-                print "trying to get a user for crushee_id=" + crushee_id
-                selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
-                # now that the user is definitely on the system, add that user to the crush list        
-                # only create a new relationship if an existing one between the current user and the selected user does not exist 
-               
-                
-                print "successfully got a new crush user with username: " + selected_user.facebook_username
-                if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
-                    new_crush = CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
-                                                               friendship_type=friend_type, updated_flag=True)
-                    userlist.append(selected_user)
-                else:
-                    duplicate_userlist.append(selected_user)
-        return HttpResponseRedirect('/crushes_in_progress')
-    
+    # obtain the results of any crush deletions
     if "delete" in request.GET:
         
         delete_username=request.GET["delete"]

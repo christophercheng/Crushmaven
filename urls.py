@@ -39,6 +39,9 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html')),
                         
     (r'^ajax_find_fb_user/$','ajax_find_fb_user'),
+    
+    # called by crush selector dialog upon submit button press
+    (r'^ajax_add_crush_targets/$','ajax_add_crush_targets'),
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
@@ -59,6 +62,10 @@ urlpatterns += patterns('crush.views.admirer_views',
     (r'^ajax_update_num_crushes_in_progress/$','ajax_update_num_crushes_in_progress'),
     
     (r'^ajax_update_num_platonic_friends/$','ajax_update_num_platonic_friends'),
+    
+    (r'^ajax_update_num_new_admirers/$','ajax_update_num_new_admirers'),
+    
+    (r'^ajax_update_num_new_responses/$','ajax_update_num_new_responses'),
         
     (r'^admirers_past/$', 'admirers_past'),
 )
@@ -76,7 +83,7 @@ urlpatterns += patterns('crush.views.friends_with_admirers_views',
                         
     (r'^friends_with_admirers/$', 'friends_with_admirers'),
     
-    (r'^friends_with_admirers_section/$', 'friends_with_admirers_section'), # right bar called via ajax    
+    (r'^ajax_friends_with_admirers_content/$', 'ajax_friends_with_admirers_content'), # right bar called via ajax    
 )
     
 # ----      PAYMENT PROCESSING --

@@ -221,6 +221,19 @@ def ajax_update_num_platonic_friends(request):
 def ajax_update_num_crushes_in_progress(request):
     ajax_response = str(request.user.crush_targets.all().count())
     return HttpResponse(ajax_response)
+
+# called when a crush response is paid for
+@login_required
+def ajax_update_num_new_responses(request):
+    ajax_response = str(CrushRelationship.objects.known_responded_crushes(request.user).count())
+    return HttpResponse(ajax_response)
+
+# called when a lineup goes past the payment stage
+@login_required
+def ajax_update_num_new_admirers(request):
+    ajax_response = str(CrushRelationship.objects.new_admirers(request.user).count())
+    return HttpResponse(ajax_response)
+    
     
 # -- Past Admirers Page --
 @login_required

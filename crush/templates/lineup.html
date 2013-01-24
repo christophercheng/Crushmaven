@@ -280,6 +280,7 @@ $(document).ready(function() // handling for the slider
 		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/1/' // feature is type 2, 1: user is target
 		$.get(get_url,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
+			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;

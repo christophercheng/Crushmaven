@@ -75,41 +75,16 @@
   
   function add_friends_to_db(response)
   {	      
-		// add a special field if the added crushes are open
-       // response looks like a comma delimited list of facebook id's
-		var form = document.createElement("form");
-		form.setAttribute("method", "POST");
-		form.setAttribute("action", "http://{{request.get_host}}/crushes_in_progress/");
-		var hiddenField;
-		var cField;
-		cField =	document.createElement("div");
-		cField.setAttribute("style","display:none");
-		form.appendChild(cField);
-		var input_field;
-		input_field = document.createElement("input");
-		input_field.setAttribute("type", "hidden");
-		input_field.setAttribute("name","csrfmiddlewaretoken");
-		input_field.setAttribute("value","{{csrf_token}}");
-		form.appendChild(input_field);
-	
-		var	key;
-		var id;
-
-		results = String(response).split(',');
-		
+		results = String(response).split(','); // response looks like a comma delimited list of facebook id's
+		var result_dictionary = {};
+		result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
 		for(i=0; i<results.length; i++) 
-		{	
-			hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            key = "to[" + i + "]";
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", results[i]);
-            form.appendChild(hiddenField);
-		}
-		document.body.appendChild(form);
-		form.submit();
-		document.body.removeChild(form);
-  };
+			result_dictionary[i]=results[i];
+  	$.post('/ajax_add_crush_targets/',result_dictionary, function(){
+  		// on success redirect to the crush page
+  		document.location.href='/crushes_in_progress/'; // reload page
+  	});
+  	};
 </script>
 			<div id="app_invite_modal" title="Send Application Invites"></div>
 <!-- FOR THE EMAIL INVITE POPUP -->
@@ -134,7 +109,7 @@ $(document).ready(function()
 </script>
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-  $(".inactive_crushed_friends").load('/friends_with_admirers_section/');
+  $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/');
 
 });
 

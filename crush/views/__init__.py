@@ -22,7 +22,7 @@ from platonic_friend_views import ajax_reconsider
 from platonic_friend_views import just_friends
 
 from friends_with_admirers_views import friends_with_admirers
-from friends_with_admirers_views import friends_with_admirers_section
+from friends_with_admirers_views import ajax_friends_with_admirers_content
 
 from payment_views import ajax_update_num_credits
 from payment_views import ajax_deduct_credit

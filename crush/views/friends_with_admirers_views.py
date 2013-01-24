@@ -13,7 +13,7 @@ def friends_with_admirers(request):
 
 # -- Friends with Admirers Section (Ajax Content) --
 @login_required
-def friends_with_admirers_section(request):
+def ajax_friends_with_admirers_content(request):
     print " called friends-with-admirers-section"
     ajax_response=""
     me=request.user
