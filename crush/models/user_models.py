@@ -128,8 +128,8 @@ class FacebookUser(AbstractUser):
     # ----------  START OF OPTIONAL FIELDS
 
     birthday_year = models.IntegerField(null=True,blank=True,max_length=4,choices=[(y,y) for y in range(1920,datetime.datetime.now().year-6)])
-    age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(7,80)])
-    age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(7,100)])
+    age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(13,99)])
+    age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(13,99)])
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
     site_credits = models.IntegerField(default=settings.STARTING_CREDITS) 
     

@@ -110,9 +110,11 @@ urlpatterns += patterns('crush.views.static_file_views',
     
     (r'^help_how_it_works/$','help_how_it_works'),
     
-    (r'^terms/$', 'help_terms'),
+    (r'^help_terms/$', 'help_terms'),
     
-    (r'^privacy_policy/$', 'help_privacy_policy'),
+    (r'^help_privacy/$', 'help_privacy'),
+        
+    (r'^help_contact/$', 'help_contact'),
 )
 
 urlpatterns += patterns('',

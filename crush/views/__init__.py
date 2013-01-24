@@ -37,5 +37,6 @@ from settings_views import settings_credits
 from static_file_views import help_how_it_works
 from static_file_views import help_faq
 from static_file_views import help_terms
-from static_file_views import help_privacy_policy
+from static_file_views import help_privacy
+from static_file_views import help_contact
 

@@ -13,5 +13,9 @@ def help_terms(request):
     return render(request,'help_terms.html')
 
 # -- Privacy Policy Page --
-def help_privacy_policy(request):
-    return render(request,'privacy_policy.html')
+def help_privacy(request):
+    return render(request,'help_privacy.html')
+
+# -- Contact Us Page --
+def help_contact(request):
+    return render(request,'help_contact.html')
