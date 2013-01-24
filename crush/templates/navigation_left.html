@@ -1,0 +1,19 @@
+{% load base_extras %}
+
+<div id="left_bar" class = "navbar">
+
+		<!-- Left Bar Links -->	
+			<a class="{% navactive request 'crushes_in_progress' %}"
+				href="{% url 'crush.views.crush_views.crushes_in_progress' %}">Crushes (<span id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>)</a><BR>
+
+			<BR><a class="{% navactive request 'admirers' %}"
+				href="{% url 'crush.views.admirer_views.admirers' %}">Secret Admirers ({{num_admirers_in_progress}})</a><BR>
+
+			<BR><a class="{% navactive request 'just_friends' %}"
+				href="{% url 'crush.views.platonic_friend_views.just_friends' %}">Just Friends (<span id="num_platonic_friends">{{num_platonic_friends}}</span>)</a><BR>
+
+			<BR><a class="{% navactive request 'friends_with_admirers' %}"
+				href="{% url 'crush.views.friends_with_admirers_views.friends_with_admirers' %}">Friends with Admirers</a><BR>
+			<BR><a href="javascript:{}" class="bt-fs-dialog">Add Crush</a>
+			
+		</div>	<!-- close off left_bar -->

@@ -18,7 +18,6 @@ $(document).ready(function()
           e.preventDefault();
 					$("#lineup_modal").load(load_url);   	
           $("#lineup_modal").dialog("open");
-          $(".ui-widget-overlay").css("background","black").css("opacity",".80");
           return false;    
         });			
   
@@ -55,7 +54,6 @@ $(document).ready(function()
 </script>
 
 <!-- Display the crush type navigation widget -->  
-<HR>
 <font color="gray">
 {% if admirer_type = 0 %}
 <b>Secret Admirers ({{admirer_relationships.count}})</b>&nbsp;&nbsp;<a href="/admirers_past">Past Admirers ({{past_admirers_count}})</a>

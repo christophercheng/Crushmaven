@@ -166,7 +166,7 @@ class FacebookUser(AbstractUser):
         # this is a potentially expensive operation, so do it at most every 12 hours
         if  (self.processed_activated_friends_admirers):
             time_since_last_update = datetime.datetime.now() - self.processed_activated_friends_admirers 
-            if time_since_last_update.seconds < 43200:
+            if time_since_last_update.seconds < settings.FRIENDS_WITH_ADMIRERS_SEARCH_DELAY:
                 print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update.seconds)
                 return
         

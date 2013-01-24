@@ -109,7 +109,6 @@ $(document).ready(function()
 	<font color="red"><b>You have responses!</b></font>
 	{% for crush in responded_relationships %}
 		<div>
-		<HR>	
 		<!-- start: crush first and last name -->
 		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
 		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
@@ -154,7 +153,6 @@ $(document).ready(function()
 {% endif %} 
 
 <!-- Display the crush type navigation widget -->  
-<HR>
 <font color="gray">
 {% if crush_type = 0 %}
 <b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_completed">Completed Crushes ({{crushes_completed_count}})</a>
@@ -171,7 +169,6 @@ $(document).ready(function()
 	
 	<div class="crush_block" username="{{crush.target_person.username}}">
 	
-		<HR>
 <!-- Display NEW or UPDATED if relevant -->  
 		{% if crush.updated_flag == True %}
 			{% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
@@ -304,9 +301,9 @@ $(document).ready(function()
 	
 {% elif responded_relationships.count == 0 %}
 	{% if crush_type = 0 %}
-		<HR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+		<BR><BR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
 	{% else %}
-		<HR>You have no completed crushes.
+		<BR><BR>You have no completed crushes.
 	{% endif %}
 {% endif %}
 {% endblock %}

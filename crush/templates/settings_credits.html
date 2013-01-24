@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
+<h2>Credit Settings</h2>
 You currently have {{ request.user.site_credits }} 
 {% if request.user.site_credits == 1 %}
 credit.
 {% else %}
 credits.
 {% endif %}
-
 
 <h3>Add More Credits:</h3>
 <form method="post" action='{{ paypal_url }}'>{% csrf_token %}

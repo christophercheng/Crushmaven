@@ -200,6 +200,7 @@ CRUSH_RESPONSE_DELAY_START = 43200 # 12 hours
 CRUSH_RESPONSE_DELAY_END = 86400 # 24 hours
 STARTING_CREDITS=100 # change to 1 in production
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
+FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 
 LINEUP_STATUS_CHOICES = {0:'Not Initialized',
                          1:'Initialized',

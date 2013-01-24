@@ -267,7 +267,6 @@ $(document).ready(function() // handling for the slider
    	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
 		$("#credit_check_modal").load(load_url);   	
    	$("#credit_check_modal").dialog("open");
-   	$(".ui-widget-overlay").css("background","black").css("opacity",".5");
   	return false;         
    }; // close off window.launch_credit_check function
 	

@@ -10,6 +10,80 @@ body {
   color: #333333;  
 }
 
+
+.header {
+	height: 35px;
+	background-color:Black;
+	color: white;
+	width:2864px;
+	margin-left:-8px;
+	margin-right:-8px;
+	margin-top:-8px;
+	padding:5px 5px;
+	border-bottom: 1px solid #020303;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.35);
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+}
+
+.header_content_container{
+	width:980px;
+	margin-left: auto;
+	margin-right:auto;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	position:static;
+}
+
+.main_container {
+
+	height:100%;	
+	min-width: 980px;
+	width:980px;
+	margin-left: auto;
+	margin-right:auto;
+}
+
+.left_panel {
+	height: 600px;
+	width:200px;
+	float:left;
+	position:relative;
+	bottom:0;
+	background-color:GhostWhite;
+}
+
+.center_panel {
+	height: 100%;
+	width:550px;
+	float:left;
+	position:relative;
+	bottom:0;
+}
+
+.right_panel {
+	height:600px;
+	width:200px;
+	float:left;
+	position:relative;
+	bottom:0;
+	background-color:GhostWhite;
+}
+
+.left_content_container,.center_content_container,.right_content_container {
+margin-top:55px;
+}
+
+.center_content_container {
+margin-left:15px;
+margin-right:15px;
+}
+
 a {
    font-weight: bold;
    font-size: 15px; 
@@ -45,6 +119,16 @@ a {
 	position: relative;
 	top: 10%;
 	left: 10%;
+}
+
+.crush_block,.admirer_block {
+	
+background-color:GhostWhite;
+border-style:solid;
+border-width:1px;
+border-color: LightSteelBlue;
+margin-bottom:15px;
+padding:10px;
 }
 
 #bx-pager a img  {
@@ -102,4 +186,10 @@ a {
 
 #lineup_modal #lineup-footer #footer-msg #progressing {
 	margin-left:200px;
+}
+
+/* style the overlay of all jquery modals */
+.ui-widget-overlay{
+	background:black;
+	opacity:0.8;
 }

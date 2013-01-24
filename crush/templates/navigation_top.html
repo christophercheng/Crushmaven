@@ -1,0 +1,29 @@
+{% load base_extras %}
+
+<div id="top_bar" class = "navbar">
+
+	<!-- Top Bar Links -->
+		<a class="{% navactive request 'accounts/login' %}"
+			href="{% url 'crush.views.infrastructure_views.home' %}"><font color=RoyalBlue>Attracted</font><font color=SeaShell><i>to...</i></font></a>
+<!-- NOTIFICATIONS (variables are processed in a custom context processor -->
+
+	new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
+	new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
+	
+<!-- END NOTIFICAIONS -->
+		&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;
+		<a class="{% navactive request 'help_how_it_works' %}"
+			href="{% url 'crush.views.static_file_views.help_how_it_works' %}">How it Works</a>
+		<a class="{% navactive request 'settings_profile' %}"
+			href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
+		<a class="{% navactive request 'settings_credits' %}"
+			href="{% url 'crush.views.settings_views.settings_credits' %}">Credits (<span id="num_credits">{{request.user.site_credits}}</span>)</a>	
+		<a class="{% navactive request 'settings_notifications' %}"
+			href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
+		<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
+		
+					<img src="http://graph.facebook.com/{{ user.username }}/picture" height=30 width=30>
+			<b>Settings </b>
+
+</div> <!-- close off topbar div -->
+
