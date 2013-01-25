@@ -43,8 +43,8 @@ urlpatterns += patterns('crush.views.crush_views',
     # called by crush selector dialog upon submit button press
     (r'^ajax_add_crush_targets/$','ajax_add_crush_targets'),
 
+    # deletion handling
     (r'^ajax_admin_delete_crush_target/(?P<crush_username>\w+)/$','ajax_admin_delete_crush_target'),
-    
     (r'^ajax_can_crush_target_be_platonic_friend/(?P<crush_username>\w+)/$','ajax_can_crush_target_be_platonic_friend'),    
     (r'^ajax_make_crush_target_platonic_friend/(?P<crush_username>\w+)/$','ajax_make_crush_target_platonic_friend'),
     
@@ -97,9 +97,9 @@ urlpatterns += patterns('crush.views.payment_views',
                          
     (r'^ajax_update_num_credits/$','ajax_update_num_credits'),
     
-    (r'^credit_checker/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/$','credit_checker'),
+    (r'^credit_checker/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','credit_checker'),
     
-    (r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<relationship_display_id>\d+)/(?P<current_user_is_target>\d+)/$','ajax_deduct_credit'),
+    (r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','ajax_deduct_credit'),
     
     (r'^paypal_pdt_purchase/$', 'paypal_pdt_purchase'),
     

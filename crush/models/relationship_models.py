@@ -7,6 +7,8 @@ import random
 from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
+from django.db.models import F
+from django.http import HttpResponseForbidden
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -272,11 +274,29 @@ class CrushRelationship(BasicRelationship):
         super(CrushRelationship,self).save(*args,**kwargs)
         
     def handle_lineup_paid(self): 
+        feature_cost=int(settings.FEATURES['1']['COST'])
+        if self.target_person.site_credits < feature_cost:
+            return False
+        self.source_person.site_credits=F('site_credits') - feature_cost
+        self.is_lineup_paid=True
+        self.updated_flag=True
         self.target_status = 3
-        self.is_lineup_paid = True
-        self.save(update_fields=['is_lineup_paid','target_status'])
+        self.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
+        self.target_person.save(update_fields=['site_credits'])
         print "handle_lineup_paid called"
-    
+        return True # must return true or else caller thinks payment failed
+        
+    def handle_results_paid(self):
+        feature_cost=int(settings.FEATURES['2']['COST'])
+        if self.source_person.site_credits < feature_cost:
+            return False
+        self.source_person.site_credits=F('site_credits') - feature_cost
+        self.is_results_paid=True
+        self.updated_flag=True
+        # change the status of relationship's is_results_paid and save the object
+        self.save(update_fields=['is_results_paid','updated_flag'])
+        self.source_person.save(update_fields=['site_credits'])
+        return True #must return True or else caller thinks payment failed
         # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
         print "delete relationships fired"

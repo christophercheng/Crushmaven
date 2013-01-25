@@ -88,7 +88,7 @@ def ajax_make_crush_target_platonic_friend(request,crush_username):
         return HttpResponse()
     except CrushRelationship.DoesNotExist:
         return HttpResponse() # same thing as a successful deletion i guess?
-
+    
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
@@ -115,17 +115,13 @@ def crushes_in_progress(request):
 def crushes_completed(request,reveal_crush_id=None):
     me = request.user
     crush_relationships = request.user.crush_relationship_set_from_source 
-    
-    if (( reveal_crush_id) and request.user.site_credits >= settings.FEATURES['2']['COST']):
+    if reveal_crush_id:
         try:
             reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            reveal_crush_relationship.is_results_paid=True
-            reveal_crush_relationship.updated_flag=True
-            reveal_crush_relationship.save(update_fields=['is_results_paid','updated_flag'])
-            request.user.site_credits -=  settings.FEATURES['2']['COST']
-            request.user.save(update_fields=['site_credits'])
+            if reveal_crush_relationship.is_results_paid == False:
+                reveal_crush_id = None #reset the value in this error case
         except CrushRelationship.DoesNotExist:
-            print("Could not find the relationship to reveal or not enough credit")
+            pass
    
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
     crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
@@ -137,9 +133,8 @@ def crushes_completed(request,reveal_crush_id=None):
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crushes_completed_relationships,
                                'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count
-#                               'crushes_matched_count': crushes_matched_count,
-#                               'crushes_not_matched_count': crushes_not_matched_count
+                               'crushes_completed_count' : crushes_completed_relationships.count,
+                               'reveal_crush_id':reveal_crush_id,
                                })   
 
 @login_required    

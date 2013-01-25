@@ -1,11 +1,10 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden,HttpResponseRedirect,HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,FacebookUser, Purchase
 from crush import paypal
 from django.views.decorators.http import require_POST
-from django.http import HttpResponseNotFound,HttpResponseForbidden
 from django.db.models import F
 
 
@@ -18,36 +17,37 @@ def ajax_update_num_credits(request):
     ajax_response = str(request.user.site_credits)
     return HttpResponse(ajax_response)
 
+# unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 @login_required
-def ajax_deduct_credit(request, feature_id, relationship_display_id, current_user_is_target):
+def ajax_deduct_credit(request, feature_id, unique_id):
     print "deducting credit"
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     me=request.user
-    try:
-        if current_user_is_target:
-            relationship=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=relationship_display_id)
-        else:
-            relationship=CrushRelationship.objects.all_crushes(me).get(admirer_display_id=relationship_display_id)
-    except CrushRelationship.DoesNotExist:
-        return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
 
-    features_data=settings.FEATURES[feature_id]
-    feature_cost = features_data['COST']
-    credit_available = me.site_credits
-    credit_remaining = credit_available - int(feature_cost)
-    if credit_remaining >= 0:
-        me.site_credits = credit_remaining
-    else:
-        return HttpResponseForbidden("Error: You no longer have enough credit.")
     if str(feature_id) == '1': # if feature is view lineup
-        relationship.handle_lineup_paid()
-    # now save both the user and the relationship
-    me.save(update_fields=['site_credits'])
-    return HttpResponse()
-   
+        try:
+            relationship=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=unique_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_lineup_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse()
+        
+    elif str(feature_id)=='2':
+        try:
+            relationship=CrushRelationship.objects.all_crushes(me).get(target_person__username=unique_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_results_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse()
+
+# unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
-def credit_checker(request,feature_id,relationship_display_id):
+def credit_checker(request,feature_id,unique_id):
     # obtain feature data from feature_id and settings
     features_data=settings.FEATURES[feature_id]
     feature_cost = features_data['COST']
@@ -61,7 +61,7 @@ def credit_checker(request,feature_id,relationship_display_id):
     print "success_path: " + success_path
     cancel_url = request.GET.get('cancel_url',"home")
     print "cancel_url: " + cancel_url
-    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?feature_id=" + str(feature_id) + "&rel_display_id=" + str(relationship_display_id) + "&username=" + request.user.username + "&success_path=" + success_path + "&cancel_url=" + cancel_url
+    paypal_success_url = settings.PAYPAL_RETURN_URL + "/?feature_id=" + str(feature_id) + "&unique_id=" + str(unique_id) + "&username=" + request.user.username + "&success_path=" + success_path + "&cancel_url=" + cancel_url
     paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
     
     # perform conditional logic to determine which dialog to display
@@ -94,7 +94,7 @@ def paypal_pdt_purchase(request):
     credit_amount = method_dict.get('credit_amount', 10)
     price=method_dict.get('amt',9)
     feature_id=method_dict.get('feature_id','')
-    rel_display_id=method_dict.get('rel_display_id','')
+    unique_id=method_dict.get('unique_id','')
     username=method_dict.get('username','')
     print "printing out pdt get variables:"
     for element in method_dict:
@@ -106,15 +106,21 @@ def paypal_pdt_purchase(request):
         try:
             Purchase.objects.get( tx=tx )
             print "duplicate transaction found when processing PAYPAL PDT Handler"
-            if feature_id == u'1': # handling of lineup payment
+            if feature_id == u'1' and unique_id!='': # handling of lineup payment
                 try:# handle special feature processing 
                     facebook_user = FacebookUser.objects.get(username=username)
                     #print "facebook user found with first name: " + facebook_user.first_name
-                    admirer_rel = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=rel_display_id)
-                    feature_cost=int(settings.FEATURES['1']['COST'])
-                    facebook_user.site_credits=F('site_credits') - feature_cost
+                    admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(admirer_display_id=unique_id)
                     admirer_rel.handle_lineup_paid()
-                    facebook_user.save(update_fields=['site_credits'])
+                except CrushRelationship.DoesNotExist:
+                    pass # do nothing, i guess :)            
+                except FacebookUser.DoesNotExist:
+                    pass
+            if feature_id == u'2' and unique_id!='':
+                try:# handle special feature processing 
+                    facebook_user = FacebookUser.objects.get(username=username)
+                    admirer_rel = CrushRelationship.objects.all_crushes(facebook_user).get(target_person__username=unique_id)
+                    admirer_rel.handle_results_paid()
                 except CrushRelationship.DoesNotExist:
                     pass # do nothing, i guess :)            
                 except FacebookUser.DoesNotExist:
@@ -127,16 +133,22 @@ def paypal_pdt_purchase(request):
                 Purchase.objects.create(purchaser=request.user, tx=tx, credit_total=int(credit_amount),price= price)
                 print "just created a new purchase"
                 # handle special feature processing
-                if feature_id == 1 and rel_display_id != '': # handling of lineup payment
+                if feature_id == 1 and unique_id != '': # handling of lineup payment
                     try:
                         facebook_user = FacebookUser.objects.get(username=username)
-                        admirer_rel = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=rel_display_id)
-                        feature_cost=settings.FEATURES['1']['COST']
-                        facebook_user.site_credits=F('site_credits') - feature_cost
+                        admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(admirer_display_id=unique_id)
                         admirer_rel.handle_lineup_paid()
-                        facebook_user.save(udpate_fields=['site_credits'])
                     except CrushRelationship.DoesNotExist:
                         pass # do nothing, i guess :)
+                    except FacebookUser.DoesNotExist:
+                        pass
+                if feature_id == u'2' and unique_id != '':
+                    try:# handle special feature processing 
+                        facebook_user = FacebookUser.objects.get(username=username)
+                        admirer_rel = CrushRelationship.objects.all_crushes(facebook_user).get(target_person__username=unique_id)
+                        admirer_rel.handle_results_paid()
+                    except CrushRelationship.DoesNotExist:
+                        pass # do nothing, i guess :)            
                     except FacebookUser.DoesNotExist:
                         pass
                 return HttpResponseRedirect(success_path)

@@ -277,7 +277,7 @@ $(document).ready(function() // handling for the slider
 	*/
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
 		// call ajax post function to deduct credit and change lineup_is_paid to true 
-		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/1/' // feature is type 2, 1: user is target
+		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
 		$.get(get_url,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
@@ -287,7 +287,7 @@ $(document).ready(function() // handling for the slider
 			// adjust the credits number on the main site
 			$("#num_credits").load("/ajax_update_num_credits/");
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
-			.error(function(data){alert(data);}); // end of $.get(get_url...)
+			.error(function(data){alert(data.responseText);}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
 
 	/** FUNCTION - HANDLE FINISH BTN CLICK

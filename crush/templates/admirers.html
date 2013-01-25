@@ -30,11 +30,7 @@ $(document).ready(function()
   	var initialize_div = $(this).parent('#initialize_lineup');
     initialize_div.html('<div id="loading">initializing lineup...</div>');
 		var load_url = '/ajax_display_lineup_block/' + admirer_display_id;
-		initialize_div.load(load_url, function(){
-		
-		if (show_lineup_number && show_lineup_number==admirer_display_id)
-    	$(this).children('.view_lineup').trigger('click');
-		});
+		initialize_div.load(load_url);
 	});
 
 	/** FUNCTION - AUTO-CALL RE_INITIALIZE LINEUP
@@ -49,7 +45,9 @@ $(document).ready(function()
 	}
 	// PROCEDURAL CODE ALWAYS RUN
 	auto_initialize_new_friend_admirers();
-	var show_lineup_number = '{{show_lineup}}';    
+	var show_lineup_number = '{{show_lineup}}';   
+	if (show_lineup_number)
+   $('.view_lineup[display_id="{{show_lineup}}"]').trigger('click'); 
 });
 </script>
 

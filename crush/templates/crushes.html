@@ -17,15 +17,35 @@ $(document).ready(function()
   $("a.check_credit").click(function(e) {
    	var success_path=$(this).attr('success_path');	
    	var cancel_url = $(this).attr('cancel_url');
+   	var unique_id = $(this).attr('unique_id');
+   	 // add to the modal element an attribute that specifies the username (so that the ok click handler knows which person to handle)
+  	$('#credit_check_modal').attr('unique_id',unique_id);
    	if(cancel_url.substr(-1) == '/') 	
    		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
    	var feature_id=$(this).attr('feature_id');
-   	load_url="/credit_checker/" + feature_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
+   	load_url="/credit_checker/" + feature_id + "/" + unique_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
        e.preventDefault();
 	$("#credit_check_modal").load(load_url)   	
        $("#credit_check_modal").dialog("open");
        return false;
    });
+   
+   
+   /** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
+	* click handler for credit checker dialog - when ok-to-deduct is clicked
+	*   calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
+	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
+	*/
+	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
+	  	var unique_id = $('#credit_check_modal').attr('unique_id');
+			// call ajax post function to deduct credit and change lineup_is_paid to true 
+			var get_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
+		$.get(get_url,function(data) {
+			// if successful then reload the page?
+		 document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
+			}) // if fail (credit was suddenly not available or network problem), then do nothing
+			.error(function(data){alert(data.responseText);}); // end of $.get(get_url...)
+		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
    
   /** FUNCTION - HANDLE INITIALIZATION of NON_FRIEND CRUSH LINEUP
   *
@@ -33,7 +53,6 @@ $(document).ready(function()
   $('.crush_block').on('click','#initialize_lineup_btn',function(e) {
   	var crush_username=$(this).parents('.crush_block').attr("username");
   	var initialize_div = $(this).parent('#initialize_lineup');
-  	console.log(initialize_div);
     initialize_div.html('<div id="loading">initializing lineup...</div>');
 		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username;
 		initialize_div.load(load_url);
@@ -136,7 +155,7 @@ $(document).ready(function()
 {% if responded_relationships %}
 	<font color="red"><b>You have responses!</b></font>
 	{% for crush in responded_relationships %}
-		<div>
+		<div class="crush_block" username="{{crush.target_person.username}}">
 		<!-- start: crush first and last name -->
 		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
 		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
@@ -161,7 +180,7 @@ $(document).ready(function()
 		<!-- start: response button -->
 			&nbsp;&nbsp;&nbsp;
 			
-			<a href="#" class="check_credit" feature_id="2" cancel_url = "{{request.build_absolute_uri}}" success_path="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+			<a href="#" class="check_credit" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="/crushes_completed/{{crush.target_person.username}}">View Response</a>
 
 			
 		<!-- end: response button -->
