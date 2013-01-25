@@ -70,7 +70,11 @@ $(document).ready(function()
             e.preventDefault();
             $("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
             $("#dialog").dialog('option', 'buttons', {
-       			"Delete": function() {window.location = "/crushes_in_progress" + '?delete=' + username;},
+       			"Delete": function() {
+       				$.get('/ajax_admin_delete_crush_target/' + username + '/',function(){
+       					document.location.href='/crushes_in_progress/'; // reload page
+       				});
+       			},
         		"Cancel": function() {$(this).dialog("close");
         		}
     		});

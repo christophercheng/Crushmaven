@@ -42,6 +42,9 @@ urlpatterns += patterns('crush.views.crush_views',
     
     # called by crush selector dialog upon submit button press
     (r'^ajax_add_crush_targets/$','ajax_add_crush_targets'),
+
+    (r'^ajax_admin_delete_crush_target/(?P<crush_username>\w+)/$','ajax_admin_delete_crush_target'),
+    
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --

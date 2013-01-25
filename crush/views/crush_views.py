@@ -8,7 +8,7 @@ import datetime
 from crush.appinviteform import AppInviteForm
 from smtplib import SMTPException
 import time
-from  django.http import HttpResponseNotFound
+from  django.http import HttpResponseNotFound,HttpResponseForbidden
 
 # for mail testing 
 from django.core.mail import send_mass_mail
@@ -16,7 +16,6 @@ from django.core.mail import send_mass_mail
 # called by crush selector upson submit button press
 @login_required
 def ajax_add_crush_targets(request):
-    print "HI"
     post_data = request.POST
     # this is just for testing, remove later
     counter=0
@@ -38,23 +37,25 @@ def ajax_add_crush_targets(request):
         return HttpResponse()
     else:
         return HttpResponseNotFound()
+    
+# called by crush selector upson submit button press
+@login_required
+def ajax_admin_delete_crush_target(request,crush_username):
+    if (not request.user.is_superuser) or (not request.user.is_staff):
+        if request.user.username=="1057460663" or request.user.username=="651900292" or request.user.username=="100004192844461":
+            pass
+        else:
+            return HttpResponseForbidden()        try:
+        CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username).delete()
+        return HttpResponse()
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound()
 
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
     me = request.user
-    # obtain the results of any crush deletions
-    if "delete" in request.GET:
-        
-        delete_username=request.GET["delete"]
-        print "attempting to delete: " + delete_username
-            # find the relationship and delete it!
-        try:
-            request.user.crush_relationship_set_from_source.get(target_person__username=delete_username).delete()
-        except CrushRelationship.DoesNotExist:
-            "can't find crush relationship to delete!"
-            delete_username=''
-        return HttpResponseRedirect('/crushes_in_progress/')
+ 
            
     crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
