@@ -48,12 +48,9 @@ def date_since(value):
 
 @register.filter
 def is_in_future(value): 
-    print "called is in future"
     if datetime.now() < value:
-        print "is in future"
         return True
     else:
-        print "is not in future"
         return False
 
 

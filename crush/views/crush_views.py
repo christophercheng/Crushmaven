@@ -251,7 +251,9 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
     except CrushRelationship.DoesNotExist:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response) # this is a catch all error return state
-   
+    # if the non-friend is a reciprocal admirer (there is a date_target_responded), then there's no need to initialize the lineup, so just get out of here
+    if relationship.date_target_responded != None:
+        return HttpResponse()
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])

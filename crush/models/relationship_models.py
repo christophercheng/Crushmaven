@@ -7,8 +7,7 @@ import random
 from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
-from django.db.models import F
-from django.http import HttpResponseForbidden
+from django.db.models import F,Q
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -128,9 +127,10 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
     def progressing_admirers(self,crush_user):
         # 1) start with all relationships where the target is the crush user
         admirer_relationships = crush_user.crush_relationship_set_from_target.filter(date_lineup_finished=None)
-        # 2) filter out any relationships where the source_user is either a crush or platonic target of crush 
+        # 2) if the lineup has not yet been started, then filter out any relationships where the source_user is either a crush or platonic target of crush 
         #    (hint: relationship will have a date_responded field set)
-        admirer_relationships = admirer_relationships.filter(date_target_responded = None)
+        
+        admirer_relationships = admirer_relationships.exclude(~Q(date_target_responded = None), lineup_initialization_status = None)
         return admirer_relationships
       
     def past_admirers(self,crush_user):

@@ -54,7 +54,8 @@ $(document).ready(function()
   	var crush_username=$(this).parents('.crush_block').attr("username");
   	var initialize_div = $(this).parent('#initialize_lineup');
     initialize_div.html('<div id="loading">initializing lineup...</div>');
-		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username;
+    // 
+		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username + '/';
 		initialize_div.load(load_url);
 	});
 	
@@ -265,7 +266,7 @@ $(document).ready(function()
 
 </script>		
 		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
-{% if crush.friendship_type > 0  %}
+{% if crush.friendship_type > 0 %}
 	{% if crush.lineup_initialization_status == None or crush.lineup_initialization_status == 0 %}
 		<div id="initialize_lineup"><div id="initialize_lineup_btn" class="fake" username="{{crush.target_person.username}}"></div>		
 		</div> <!--  close off initialize_lineup div -->
