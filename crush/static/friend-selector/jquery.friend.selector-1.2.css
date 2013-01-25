@@ -175,9 +175,9 @@
 
 #fs-confirm-user-list {
   border-bottom: 1px solid #ccc;
-  
-  height: 435px;
+  height: 470px;
   overflow: auto;
+  overflow-x:hidden;
   position: relative
 }
 
