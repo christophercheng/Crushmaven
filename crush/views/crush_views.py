@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,FacebookUser,EmailRecipient,LineupMembership
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient,LineupMembership
 import urllib, json
 import datetime
 from crush.appinviteform import AppInviteForm
@@ -38,7 +38,6 @@ def ajax_add_crush_targets(request):
     else:
         return HttpResponseNotFound()
     
-# called by crush selector upson submit button press
 @login_required
 def ajax_admin_delete_crush_target(request,crush_username):
     if (not request.user.is_superuser) or (not request.user.is_staff):
@@ -50,6 +49,45 @@ def ajax_admin_delete_crush_target(request,crush_username):
         return HttpResponse()
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound()
+
+@login_required
+def ajax_can_crush_target_be_platonic_friend(request,crush_username):
+    try:
+        crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
+        time_since_add = datetime.datetime.now() - crush_relationship.date_added
+        if time_since_add.days < settings.MINIMUM_DELETION_DAYS_SINCE_ADD:
+            return HttpResponseForbidden(settings.DELETION_ERROR[0])
+        if crush_relationship.target_status == 3:
+            return HttpResponseForbidden(settings.DELETION_ERROR[1])
+        if crush_relationship.target_status > 3:
+            if crush_relationship.date_target_responded > datetime.datetime.now():
+                return HttpResponseForbidden(settings.DELETION_ERROR[1])
+            elif crush_relationship.is_results_paid == False:
+                return HttpResponseForbidden(settings.DELETION_ERROR[2])
+        if crush_relationship.is_results_paid == True:
+            time_since_target_responded = datetime.datetime.now() - crush_relationship.date_target_responded;
+            if time_since_target_responded.days < settings.MINIMUM_DELETION_DAYS_SINCE_RESPONSE:
+                return HttpResponseForbidden(settings.DELETION_ERROR[3])
+        return HttpResponse() # everything passes
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound("Error: crush can no longer be found.") # same thing as a successful deletion i guess?
+
+# user is no longer interested in crush and will move them to a platonic friend
+# crush must pass all of the conditions before it can be removed
+@login_required
+def ajax_make_crush_target_platonic_friend(request,crush_username):   
+    conditional_response = ajax_can_crush_target_be_platonic_friend(request,crush_username)
+    if conditional_response.status_code != 200:
+        return HttpResponseForbidden(conditional_response.content)
+        # all checks have passed, go ahead and 'make' this relationship a platonic one
+    try:
+        crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
+        target_person = crush_relationship.target_person
+        crush_relationship.delete()
+        PlatonicRelationship.objects.create(source_person=request.user,target_person=target_person)
+        return HttpResponse()
+    except CrushRelationship.DoesNotExist:
+        return HttpResponse() # same thing as a successful deletion i guess?
 
 # -- Crush List Page --
 @login_required

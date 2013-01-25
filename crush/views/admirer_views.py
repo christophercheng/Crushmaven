@@ -71,26 +71,7 @@ def ajax_display_lineup_block(request, display_id):
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         return HttpResponse(ajax_response)
 
-   
-    # for successful initialization, the following code applies
-    for counter, membership in enumerate(relationship.lineupmembership_set.all()):
-        if counter < 2 or membership.decision!=None:
-            ajax_response +=  '<img src="http://graph.facebook.com/' + membership.lineup_member.username + '/picture" height=40 width=40>'
-        else:
-            ajax_response += '<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>'
-
-    ajax_response += '<BR>'
-    
-    if relationship.is_lineup_paid:
-        if relationship.date_lineup_finished:
-            ajax_response += 'Line-up completed ' + str(relationship.date_lineup_finished)
-            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '"><BR>View Completed Lineup</a>'
-        else:
-            ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">Finish Lineup</a>'
-  
-    else:
-        ajax_response += '<a href="#" class="view_lineup" display_id="' + display_id + '">View Lineup</a>'
-    return HttpResponse(ajax_response)
+    return render(request,'lineup_block.html', {'relationship':relationship})
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required

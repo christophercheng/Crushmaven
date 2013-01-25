@@ -1,0 +1,19 @@
+{% for membership in relationship.lineupmembership_set.all %}
+	{% if forloop.counter0 < 2 or membership.decision != None %}
+		<img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture" height=40 width=40>
+	{% else %}
+		<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>
+	{% endif %}
+{% endfor %}
+<BR>
+{% if relationship.is_lineup_paid == True %}
+	{% if relationship.date_lineup_finished != None %}
+		Line-up completed {{relationship.date_lineup_finished}}<BR>
+    <a href="#" class="view_lineup" display_id="{{relationship.admirer_display_id}}"><BR>View Completed Lineup</a>
+	{% else %}
+		<a href="#" class="view_lineup" display_id="{{relationship.admirer_display_id}}">Finish Lineup</a>
+	{% endif %}
+{% else %}
+	<a href="#" class="view_lineup" display_id="{{relationship.admirer_display_id}}">View Lineup</a>
+{% endif %}
+

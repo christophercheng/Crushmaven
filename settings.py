@@ -201,6 +201,13 @@ CRUSH_RESPONSE_DELAY_END = 86400 # 24 hours
 STARTING_CREDITS=100 # change to 1 in production
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
+MINIMUM_DELETION_DAYS_SINCE_ADD=0
+MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
+DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
+                   1:'Your attraction has already started your lineup.  To prevent system gaming, attractions may only be removed once a response is received and viewed.',
+                   2:'Your attraction has already responded to you.  To prevent system gaming, attractions may only be removed once their response is viewed.',
+                   3: 'To prevent system gaming, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days have passed since the since the response was originally received.',
+                   }
 
 LINEUP_STATUS_CHOICES = {0:'Not Initialized',
                          1:'Initialized',

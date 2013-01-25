@@ -74,10 +74,15 @@ $(document).ready(function()
 		<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
 	
 		<div id="initialize_lineup">
+			{% if admirer_rel.lineup_initialization_status == 1 %}
+				{% with admirer_rel as relationship %}
+				 	{% include "lineup_block.html" %}
+				{% endwith %}
+			{% else %}
 			<div id="initialize_lineup_btn" class="fake" display_id="{{admirer_rel.admirer_display_id}}"></div>		
+			{% endif %}
 		</div><!--  close off initialize_lineup div -->
 	</div> <!-- close off .admirer_block div -->
-	<BR><BR>
 {% endfor %}
 
 {% else %}

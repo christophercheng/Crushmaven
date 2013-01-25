@@ -6,6 +6,7 @@
 <!-- hi -->
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
+<div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
 
 <script type="text/javascript">
 
@@ -48,39 +49,62 @@ $(document).ready(function()
 		});
 		return true;
 	}
-	
+
+  $("#dialog").dialog({modal: true, autoOpen: false});
+
+  $("a.admin_delete").click(function(e) {
+  	var name=$(this).attr('name');	
+      var username=$(this).attr('username');
+      e.preventDefault();
+      $("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
+      $("#dialog").dialog('option', 'buttons', {
+ 			"Delete": function() {
+ 				$.get('/ajax_admin_delete_crush_target/' + username + '/',function(){
+ 					document.location.href='/crushes_in_progress/'; // reload page
+ 				});
+ 			},
+  		"Cancel": function() {$(this).dialog("close");
+  		}
+  		});
+      $("#dialog").dialog("open");
+      return false;
+  });
+  
+  	// call ajax function to see if deletion if possible, if not then raise alert
+  	//   if possible to delete, then confirm action with user before making second ajax call to actually perform the delete
+    $("a.delete_crush").click(function(e) {
+  		var name=$(this).attr('name');	
+      var username=$(this).attr('username');
+    	$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
+    		// deletion is possible, so open up the confirmation dialog
+    		$("#dialog").dialog("open");
+    	}).fail(function(response){
+ 				alert(response.responseText);
+ 				return false;
+				});  
+      e.preventDefault();
+      $("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
+      $("#dialog").dialog('option', 'buttons', {
+ 			"Delete": function() {
+ 				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
+ 					document.location.href='/crushes_in_progress/'; // reload page
+ 				}).fail(function(response){
+ 				 	$("#dialog").dialog("close");
+ 				alert(response.responseText);
+
+ 				});
+ 			},
+  		"Cancel": function() {$(this).dialog("close");
+  		}
+  		});
+      
+      return false;
+  });
+  
+  
+        
 	// PROCEDURAL CODE ALWAYS RUN
 	auto_initialize_new_nonfriend_crushes();
-	
-});
-</script>
-
-
-<div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
-
-<script type="text/javascript">
-
-$(document).ready(function() 
-{
-        $("#dialog").dialog({modal: true, autoOpen: false});
-
-        $("a.delete").click(function(e) {
-        	var name=$(this).attr('name');	
-            var username=$(this).attr('username');
-            e.preventDefault();
-            $("#dialog").text("Are you sure you want to remove " + name + " from your crush list?");
-            $("#dialog").dialog('option', 'buttons', {
-       			"Delete": function() {
-       				$.get('/ajax_admin_delete_crush_target/' + username + '/',function(){
-       					document.location.href='/crushes_in_progress/'; // reload page
-       				});
-       			},
-        		"Cancel": function() {$(this).dialog("close");
-        		}
-    		});
-            $("#dialog").dialog("open");
-            return false;
-        });
         
 });
 </script>
@@ -148,9 +172,10 @@ $(document).ready(function()
 		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
 		&nbsp;|&nbsp;
 		
-		<b title= "Sorry, you can no longer remove this person since they have already responded to your crush.">remove as crush</b>
 		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete" href="#" >temporary admin: remove as crush</a>		
+				{{crush.target_person.last_name}}" class="delete_crush" href="#" >remove as crush</a><BR>
+		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+				{{crush.target_person.last_name}}" class="admin_delete" href="#" >temporary admin: remove as crush</a>		
 		<!-- end: secondary data -->
 	</div>
 	{% endfor %} 
@@ -281,23 +306,13 @@ $(document).ready(function()
         &nbsp;|&nbsp;<BR>
                 
 		
-		<!-- Conditional Delete Functionality -->
+		<!-- Delete Functionality -->
 			
-		<!-- If relationship status > 2 then prevent deletion and inform user that crush already started line-up -->
-		{% if crush.target_status > 2 %}
-			<b title= "Sorry, you can no longer remove this person since they have already started your crush line-up.">remove as crush</b>	
+			<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+				{{crush.target_person.last_name}}" class="delete_crush" href="#" >remove as crush</a><BR>	
 
-		<!-- If timesince crush added < 7 days then prevent deletion and inform user that they must wait (in order to prevent system gaming) -->
-			{% elif crush.date_added|days_since < 7 %}
-				<b title= "Sorry, you can not remove this person yet.  To prevent system gaming, you must wait at least 7 days after adding your crush.">remove as crush</b>	
-			
-		<!-- If previous two conditions met, then allow deletion but confirm it first -->
-			{% else %}
-				<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete" href="#" >remove as crush</a>	
-		{% endif %}
 		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete" href="#" >temporary admin: remove as crush</a>	
+				{{crush.target_person.last_name}}" class="admin_delete" href="#" >temporary admin: remove as crush</a>	
 		<!-- end: secondary data -->
 	</div> <!-- close off crush_block div -->
 	{% endfor %}

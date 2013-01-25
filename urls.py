@@ -45,6 +45,9 @@ urlpatterns += patterns('crush.views.crush_views',
 
     (r'^ajax_admin_delete_crush_target/(?P<crush_username>\w+)/$','ajax_admin_delete_crush_target'),
     
+    (r'^ajax_can_crush_target_be_platonic_friend/(?P<crush_username>\w+)/$','ajax_can_crush_target_be_platonic_friend'),    
+    (r'^ajax_make_crush_target_platonic_friend/(?P<crush_username>\w+)/$','ajax_make_crush_target_platonic_friend'),
+    
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
