@@ -85,11 +85,12 @@ class FacebookUserManager(UserManager):
                     user.is_active=False
                 print fb_username + ": completed creation call"
             except IntegrityError:
-                print fb_username + ": unable to create a new user for some odd reason"
-                return None#this would be a bad database error (something out-a-sync!)
+                print fb_username + " unable to create a new user, probably cause it's already been created"
+                return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             print fb_username + ": calling the update_user function"
-            FacebookUser.objects.update_user(user,fb_profile)
-            user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+            if is_this_for_me==True:
+                FacebookUser.objects.update_user(user,fb_profile)
+                user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
    
         return user
 
