@@ -151,9 +151,13 @@ class LineupMemberManager(models.Manager):
         
         for mfriend in mutual_friend_data:
             mfriend_username=mfriend['id']
-            fof_id_array = fof_id_array + self.get_api_friends_friendlist(mfriend_username,admirer_gender,exclude_facebook_id_array,int(9-len(fof_id_array)))
+            new_fof_id_array = self.get_api_friends_friendlist(mfriend_username,admirer_gender,exclude_facebook_id_array,int(9-len(fof_id_array)))
+            fof_id_array = fof_id_array + new_fof_id_array
             if len(fof_id_array) > 8:
                 return fof_id_array
+            else:
+                # before repeating, update the excluded ids with the latest additions
+                exclude_facebook_id_array = exclude_facebook_id_array + new_fof_id_array
             # repeat for another mutual friend if previous mutual friend did not generate enough id's
         
         # NEED TO TEST THIS CASE!    
@@ -169,10 +173,13 @@ class LineupMemberManager(models.Manager):
             if crush_friend in mutual_friend_data:
                 # make sure we haven't already processed this friend above
                 continue
-            fof_id_array = fof_id_array + self.get_api_friends_friendlist(crush_friend.username,admirer_gender,exclude_facebook_id_array,1) # note that we only get one friend of friend
+            new_fof_id_array = self.get_api_friends_friendlist(crush_friend.username,admirer_gender,exclude_facebook_id_array,1) # note that we only get one friend of friend
+            fof_id_array = fof_id_array + new_fof_id_array
             if len(fof_id_array) > 8:
                 return fof_id_array
-            
+            else:
+                # before repeating, update the excluded ids with the latest additions
+                exclude_facebook_id_array = exclude_facebook_id_array + new_fof_id_array
         # STEP 3 (cURL scrape), if necessary: go back and get ids of 9 friends from any mutual friends (who are not an active user processed earlier)
         
         #update the excluded friend ids with the just-created lineup ids 
@@ -181,9 +188,14 @@ class LineupMemberManager(models.Manager):
             
             # step 1: use curl scraping to get ids of 9 friends from one mutual friend (who is not an active user processed earlier)
             mfriend_username=mfriend['id']
-            fof_id_array = fof_id_array + self.get_scraped_friends_friendlist(crush,mfriend_username,admirer_gender,exclude_facebook_id_array,int(9-len(fof_id_array)))
+            new_fof_id_array = self.get_scraped_friends_friendlist(crush,mfriend_username,admirer_gender,exclude_facebook_id_array,int(9-len(fof_id_array)))
+            fof_id_array = fof_id_array + new_fof_id_array
             if len(fof_id_array) > 8:
                 return fof_id_array
+            else:
+                # before repeating, update the excluded ids with the latest additions
+                exclude_facebook_id_array = exclude_facebook_id_array + new_fof_id_array
+                
         # STEP 4 (cURL scrape): if necessary, go back and grab 1 friend-of-friend from 9 (or remaining) random friends of crush 
         
         #update the excluded friend ids with the just-created lineup ids 
@@ -196,10 +208,15 @@ class LineupMemberManager(models.Manager):
             if crush_friend in mutual_friend_data or crush_friend in active_crush_friend_array:
                 # make sure we haven't already processed this friend above
                 continue
-            fof_id_array = fof_id_array + self.get_scraped_friends_friendlist(crush,crush_friend.username,exclude_facebook_id_array,admirer_gender,1)
+            new_fof_id_array = self.get_scraped_friends_friendlist(crush,crush_friend.username,exclude_facebook_id_array,admirer_gender,1)
+            fof_id_array = fof_id_array + new_fof_id_array
             if len(fof_id_array) > 8:
                 return fof_id_array
-        # if steps 1,2,3,4 all fail, then do nothing, and later, a catch-all task will try to accomplish the task through a scraper or manual means
+            else:
+                # before repeating, update the excluded ids with the latest additions
+                exclude_facebook_id_array = exclude_facebook_id_array + new_fof_id_array
+                
+        # if steps 1,2,3,4 all fail, then do nothing more programatically. Later, a catch-all task will try to accomplish the task through a scraper or manual means
         return fof_id_array # return what was created (if anything)
     
     def get_acceptable_friend_id_list(self,relationship,exclude_facebook_id_array):
