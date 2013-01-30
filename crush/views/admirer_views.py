@@ -115,7 +115,9 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     lineup_member = admirer_rel.lineupmember_set.get(position=lineup_position)
     # find or create a new user for the lineup member
     lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
-    lineup_member.user=lineup_member_user
+    if lineup_member.user==None:
+        lineup_member.user=lineup_member_user
+        lineup_member.save(update_fields=['user'])
     lineup_count = len(admirer_rel.lineupmember_set.all())
     display_position=int(lineup_position) + 1;
     

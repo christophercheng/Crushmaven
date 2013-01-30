@@ -276,7 +276,7 @@ $(document).ready(function()
 
 </script>		
 		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
-{% if crush.friendship_type > 0 %}
+{% if crush.friendship_type > 1 %}
 	{% if crush.lineup_initialization_status == None or crush.lineup_initialization_status == 0 %}
 		<div id="initialize_lineup"><div id="initialize_lineup_btn" class="fake" username="{{crush.target_person.username}}"></div>		
 		</div> <!--  close off initialize_lineup div -->

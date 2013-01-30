@@ -88,9 +88,10 @@ class FacebookUserManager(UserManager):
                 print fb_username + " unable to create a new user, probably cause it's already been created"
                 return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             print fb_username + ": calling the update_user function"
-            if is_this_for_me==True:
-                FacebookUser.objects.update_user(user,fb_profile)
-                user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+            
+            FacebookUser.objects.update_user(user,fb_profile)
+                
+            user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
    
         return user
 
@@ -111,15 +112,15 @@ class FacebookUser(AbstractUser):
     facebook_username = models.CharField(max_length=60) 
     
     GENDER_CHOICES = (
-                      (u'M', u'Male'),
-                      (u'F', u'Female'),
+                      (u'M', u'male'),
+                      (u'F', u'female'),
                       )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     
     GENDER_PREF_CHOICES = (
-                           (u'M',u'Male'),
-                           (u'F',u'Female'),
-                           (u'B',u'Both')
+                           (u'M',u'male'),
+                           (u'F',u'female'),
+                           (u'B',u'both')
                            )
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 

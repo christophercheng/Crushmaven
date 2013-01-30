@@ -13,6 +13,8 @@ import pycurl
 import time
 import random
 from itertools import islice
+from crush.models import LineupMember
+from django.conf import settings
 # end imports for testing
 
 #from django.contrib.auth.models import Use
@@ -82,29 +84,43 @@ def testing(request):
 
 
     # CURL FETCHING
-    c = pycurl.Curl()
+#    c = pycurl.Curl()
+#    fetch_response=''
+#    fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me())) ORDER BY friend_count DESC LIMIT 100"
+#    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,request.user.access_token))
+#    data_array = json.load(fql_query_results)['data']
+#    start_position=random.randint(0, len(data_array)-11) 
+#    end_position=start_position + 10
+#    counter = 0
+#    for fql_user in data_array[start_position:end_position]:
+#        counter = counter + 1
+#        for_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=1&start=0&uid=" + str(fql_user['uid'])
+#        #for_url="http://www.google.com"
+#        storage = StringIO()
+#        c.setopt(c.URL, curl_url)
+#        c.setopt(pycurl.SSL_VERIFYPEER, 0)
+#        c.setopt(pycurl.SSL_VERIFYHOST, 0)
+#        c.setopt(c.WRITEFUNCTION, storage.write)
+#        c.perform()
+#        fetch_response = fetch_response + "Attempt:" + str(counter) + " " + storage.getvalue() 
+#
+#    c.close()
     fetch_response=''
-    fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me())) ORDER BY friend_count DESC LIMIT 100"
-    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,request.user.access_token))
-    data_array = json.load(fql_query_results)['data']
-    start_position=random.randint(0, len(data_array)-11) 
-    end_position=start_position + 10
-    counter = 0
-    for fql_user in data_array[start_position:end_position]:
-        counter = counter + 1
-        for_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=1&start=0&uid=" + str(fql_user['uid'])
-        #for_url="http://www.google.com"
-        storage = StringIO()
-        c.setopt(c.URL, curl_url)
-        c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        c.setopt(pycurl.SSL_VERIFYHOST, 0)
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        fetch_response = fetch_response + "Attempt:" + str(counter) + " " + storage.getvalue() 
-
-    c.close()
-    text_file=open("fetch_output.txt","w")
-    text_file.write(fetch_response)
-    text_file.close()
+    file_location = settings.SITE_ROOT + "\ladouglass.txt"
+    print "HEY " + file_location
+    fetch_data = open(file_location).read()
+    
+    #text_file=open("ladouglass.txt","r")
+    #text_file.read(fetch_response)
+    #text_file.close()
+    friend_array = LineupMember.objects.extract_friends_from_curl(fetch_data)
+    
+    counter=0
+    for friend in friend_array:
+        print str(counter) + " : " + friend
+        fetch_response = fetch_response + "   " + friend
+        counter+=1
+    fetch_response = "NUMBER OF FRIENDS " + str(len(friend_array)) + fetch_response
+    
     return render(request,'testing.html', {'fetch_response':fetch_response})
 

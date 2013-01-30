@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- 
 <script src='https://raw.github.com/padolsey/jQuery-Plugins/master/cross-domain-ajax/jquery.xdomainajax.js'></script>
+-->
 <!-- Add Facebook Friend Selector CSS -->
 
 <!-- hi -->
@@ -10,6 +12,8 @@
 
 Response Text:<BR>
 {{fetch_response}}
+
+<!-- 
 <script type="text/javascript">
 $(document).ready(function() 
 {
@@ -26,7 +30,9 @@ $(document).ready(function()
 	//load_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&__user=651900292&__a=1&start=0";
 		//$("#facebook_modal").load(load_url);
   //$("#facebook_modal").dialog("open");
-  
+ 
+ 
+ /* 
   $.ajaxSetup({
   	// headers is comma separated list
   	headers:{'Host':'www.facebook.com',
@@ -52,6 +58,7 @@ $(document).ready(function()
 			}
 	);
 
+*/
   	//var initialize_div = $(this).parent('#initialize_lineup');
     //initialize_div.html('<div id="loading">initializing lineup...</div>');
 		//var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username + '/';
@@ -67,7 +74,7 @@ $(document).ready(function()
 		//console.log(json);alert("hi");
 });
 </script>
-
+ -->
 {% endblock %}
 
 	
