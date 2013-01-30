@@ -191,7 +191,7 @@ $(document).ready(function() // handling for the slider
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
 						// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
-						if (current_position == 1 && !window.is_lineup_paid && {{member_set.count}} > 2)
+						if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
 							setTimeout(window.launch_credit_check,1000);
 						else 
 							load_next_slide(next_position, resetAndAdvanceSlider);	
@@ -214,7 +214,7 @@ $(document).ready(function() // handling for the slider
 	*/
 	window.handleLastSlideNext = function(activeSlideElement,activeIndex){
 		// if active slide is last slide (which is 1) and no decision has been made yet, then launch credit check
-		if (activeIndex == 1 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
+		if (activeIndex == 0 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
 			window.launch_credit_check();
 		}
 		else {		
@@ -242,7 +242,7 @@ $(document).ready(function() // handling for the slider
 	*/
 	var next_loaded_slide=last_loaded_slide+1;
 	if (next_loaded_slide < {{member_set.count}}) { // we haven't decided on last member yet
-		if (last_loaded_slide<1 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
+		if (last_loaded_slide<0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
 				load_next_slide(next_loaded_slide,launch_slider_at);
 		else // don't load slide after last, just open slider at last loaded position
 				launch_slider_at(last_loaded_slide);		
