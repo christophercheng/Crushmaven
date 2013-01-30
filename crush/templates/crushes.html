@@ -89,7 +89,7 @@ $(document).ready(function()
       $("#dialog").dialog('option', 'buttons', {
  			"Delete": function() {
  				$.get('/ajax_admin_delete_crush_target/' + username + '/',function(){
- 					document.location.href='/crushes_in_progress/'; // reload page
+ 					document.location.href='/attractions/'; // reload page
  				});
  			},
   		"Cancel": function() {$(this).dialog("close");
@@ -116,7 +116,7 @@ $(document).ready(function()
       $("#dialog").dialog('option', 'buttons', {
  			"Delete": function() {
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
- 					document.location.href='/crushes_in_progress/'; // reload page
+ 					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	$("#dialog").dialog("close");
  				alert(response.responseText);
@@ -216,7 +216,7 @@ $(document).ready(function()
 {% if crush_type = 0 %}
 <b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_completed">Completed Crushes ({{crushes_completed_count}})</a>
 {% elif crush_type = 1 %}
-<a href="/crushes_in_progress">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Completed Crushes ({{crushes_completed_count}})</b>
+<a href="/attractions">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Completed Crushes ({{crushes_completed_count}})</b>
 {% endif %}
 </font>
   

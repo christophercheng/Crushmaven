@@ -96,7 +96,7 @@ def ajax_make_crush_target_platonic_friend(request,crush_username):
     
 # -- Crush List Page --
 @login_required
-def crushes_in_progress(request):
+def attractions(request):
     
     me = request.user
   

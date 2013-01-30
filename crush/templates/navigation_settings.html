@@ -9,7 +9,7 @@
 				href="{% url 'crush.views.home' %}"><font color=red>Crush</font><font><i>Discovery</i></font></a>
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
-		new responses(<a href="/crushes_in_progress/">{{num_new_responses}}</a>)
+		new responses(<a href="/attractions/">{{num_new_responses}}</a>)
 		new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
 		
  <!-- END NOTIFICAIONS -->
@@ -39,8 +39,8 @@
 			<a class="{% navactive request 'settings_credits' %}"
 				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>		
 				
-			<a class="{% navactive request 'crushes_in_progress' %}"
-				href="{% url 'crush.views.crushes_in_progress' %}"> Back to Crushes</a>
+			<a class="{% navactive request 'attractions' %}"
+				href="{% url 'crush.views.attractions' %}"> Back to Crushes</a>
 				
 			
 		</div>	

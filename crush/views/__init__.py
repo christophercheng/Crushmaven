@@ -12,7 +12,7 @@ from admirer_views import ajax_update_num_crushes_in_progress
 from admirer_views import admirers_past
 
 # crush view and creation views
-from crush_views import crushes_in_progress
+from crush_views import attractions
 from crush_views import crushes_completed
 from crush_views import app_invite_form
 from crush_views import ajax_find_fb_user

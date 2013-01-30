@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from crush.models import CrushRelationship
 
 # imports for testing
 import urllib2
@@ -34,7 +35,15 @@ def home(request):
         #        selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
         #        CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
         #                                                       friendship_type=0, updated_flag=True)
-        return HttpResponseRedirect('/crushes_in_progress/')
+        print str(len(CrushRelationship.objects.progressing_admirers(request.user)))
+        print str(len(CrushRelationship.objects.progressing_crushes(request.user)))
+        print str(len(CrushRelationship.objects.known_responded_crushes(request.user)))
+           
+        
+        if len(CrushRelationship.objects.progressing_admirers(request.user))>0 and len(CrushRelationship.objects.known_responded_crushes(request.user)) == 0:
+            return HttpResponseRedirect('/admirers/')
+        else:
+            return HttpResponseRedirect('/attractions/')
 
     else:
         return render(request,'guest_home.html')
@@ -53,7 +62,7 @@ def testing(request):
     #data = urllib.urlencode({'email':'schmackforever@yahoo.com','pass':'carmel1','login':'Log+In'})
     #jar = cookielib.FileCookieJar("cookies")
     #fetch_url = "https://www.locationary.com/index.jsp?ACTION_TOKEN=tile_loginBar_jsp$JspView$LoginAction"
-    #mobile_fb_url = "https://m.facebook.com/andrea.fang.5?v=friends&ref=bookmark&__user=651900292/"
+    mobile_fb_url = "https://m.facebook.com/friends/?id=1090&f=30"
     #fetch_url = "https://m.facebook.com/marizdluna?v=friends&mutual&startindex=24&refid=17&ref=bookmark"
     fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__user=651900292&__a=1&start=0"
     curl_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__a=1&start=0"
@@ -105,22 +114,13 @@ def testing(request):
 #        fetch_response = fetch_response + "Attempt:" + str(counter) + " " + storage.getvalue() 
 #
 #    c.close()
-    fetch_response=''
-    file_location = settings.SITE_ROOT + "\ladouglass.txt"
-    print "HEY " + file_location
-    fetch_data = open(file_location).read()
+    for key in request.COOKIES.keys():
+        response_key = key
+        response_value = request.COOKIES[key]
+        fetch_response = key + " : " + request.COOKIES[key] + "    "
+
     
-    #text_file=open("ladouglass.txt","r")
-    #text_file.read(fetch_response)
-    #text_file.close()
-    friend_array = LineupMember.objects.extract_friends_from_curl(fetch_data)
-    
-    counter=0
-    for friend in friend_array:
-        print str(counter) + " : " + friend
-        fetch_response = fetch_response + "   " + friend
-        counter+=1
-    fetch_response = "NUMBER OF FRIENDS " + str(len(friend_array)) + fetch_response
-    
-    return render(request,'testing.html', {'fetch_response':fetch_response})
+    return render(request,'testing.html', {'fetch_response':fetch_response,
+                                           'response_key':response_key,
+                                           'response_value':response_value})
 

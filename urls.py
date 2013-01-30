@@ -28,7 +28,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
 urlpatterns += patterns('crush.views.crush_views',
  
-    (r'^crushes_in_progress/$', 'crushes_in_progress'),
+    (r'^attractions/$', 'attractions'),
             
     (r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','ajax_initialize_nonfriend_lineup'),
     
