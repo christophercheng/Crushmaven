@@ -1,7 +1,7 @@
 
 # admirer view and process views
 
-from lineup_models import LineupMembership
+from lineup_models import LineupMember
 
 from relationship_models import BasicRelationship
 from relationship_models import PlatonicRelationship

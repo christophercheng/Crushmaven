@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMembership
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember
 
 from multiprocessing import Pool
 from django.http import HttpResponseNotFound
@@ -26,7 +26,7 @@ def ajax_reconsider(request):
            
             if rel.friendship_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
                 pool=Pool(1)
-                pool.apply_async(LineupMembership.objects.initialize_lineup,[new_crush],) #initialize lineup asynchronously
+                pool.apply_async(LineupMember.objects.initialize_lineup,[new_crush],) #initialize lineup asynchronously
                 rel.delete()
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound("can't find the original platonic relationship") #can't find original platonic relationships so don't do anything more

@@ -203,6 +203,9 @@ MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the s
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
+FRIEND_SCRAPER_URL= "https://www.facebook.com/ajax/browser/list/allfriends/?uid=<UID>&infinitescroll=1&location=friends_tab_tl&start=<CARD_NO>&__a=1"
+FRIEND_SCRAPER_CARD_COUNT=24 # number of friends returned by each call to above browser ajax request url
+
 DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
                    1:'Your attraction has already started your lineup.  To prevent system gaming, attractions may only be removed once a response is received and viewed.',
                    2:'Your attraction has already responded to you.  To prevent system gaming, attractions may only be removed once their response is viewed.',

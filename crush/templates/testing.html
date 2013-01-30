@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<script src='https://raw.github.com/padolsey/jQuery-Plugins/master/cross-domain-ajax/jquery.xdomainajax.js'></script>
+<!-- Add Facebook Friend Selector CSS -->
+
+<!-- hi -->
+
+<div id="facebook_modal" title="Fetching Lineup Users">hey there</div>
+
+
+Response Text:<BR>
+{{fetch_response}}
+<script type="text/javascript">
+$(document).ready(function() 
+{
+	//mobile_fb_url = "https://m.facebook.com/andrea.fang.5?v=friends&mutual&startindex=12";
+	cnn_url="http://www.cnn.com";
+  //$("#facebook_modal").dialog({modal: true,resizable:true, autoOpen: false});
+
+  fb_url="https://www.facebook.com/lauren.douglass1/friends?ft_ref=mni"
+  fb_ajax_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__a=1&start=0"
+
+	//$("#facebook_modal").load('http://http://www.cnn.com .cnn_sectbincntnt2');   	
+  //$("#facebook_modal").dialog("open");
+	//load_url="http://www.cnn.com";
+	//load_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&__user=651900292&__a=1&start=0";
+		//$("#facebook_modal").load(load_url);
+  //$("#facebook_modal").dialog("open");
+  
+  $.ajaxSetup({
+  	// headers is comma separated list
+  	headers:{'Host':'www.facebook.com',
+ 						'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0',
+						'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+						'Accept-Language':'en-US,en;q=0.5',
+						'Accept-Encoding':'gzip, deflate',
+						'Cookie':'datr=atZ4UP1OShGVTlI-gWc21Y6h; fr=0LuO085IH0hedIzMv.AWUkaIdmNTH1JZ2M9QWNEFfHMA0.BQeNZy.8f.AWWXtjIw; lu=Tgq-cy2cDQY2fDF37z_DtD6A; locale=en_US; c_user=651900292; csm=2; s=Aa6_YK1OD7K68gms.BRBqGN; xs=3%3A2mTnN98BEEYpPQ%3A2%3A1359389069; act=1359501971433%2F46%3A2; p=150; presence=EM359501973EuserFA2651900292A2EstateFDsb2F1359411227605Et2F_5b_5dElm2FnullEuct2F1359501196BEtrFnullEtwF3568679181EatF1359501970676G359501973163CEchFDp_5f651900292F8CC',
+						'Connection':'keep-alive'
+  	} 
+  });
+  
+ 	$.ajax({
+  	url: fb_ajax_url,
+   	type: 'GET',
+   	success: function(res) {
+   			console.log(res);
+        alert("success: " + res.responseText);
+   	}
+	}).fail(function(res){
+			console.log(res);
+			alert("fail: " + res.responseText);
+			}
+	);
+
+  	//var initialize_div = $(this).parent('#initialize_lineup');
+    //initialize_div.html('<div id="loading">initializing lineup...</div>');
+		//var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username + '/';
+		//initialize_div.load(load_url).error(function(){
+		// in case of server error just stop initialization process
+		//console.log(this);
+		//alert("bad stuff");
+		//var initialize_div = $(this).html("");
+		//});
+
+		//scrape_url="http://www.cnn.com/?";
+		//$.getJSON(scrape_url,function(json){
+		//console.log(json);alert("hi");
+});
+</script>
+
+{% endblock %}
+
+	

@@ -171,8 +171,6 @@ class CrushRelationship(BasicRelationship):
 
     date_invite_last_sent=models.DateTimeField(null=True,default=None) 
     
-    lineup_members = models.ManyToManyField(FacebookUser, through='LineupMembership')
-    
     LINEUP_INITIALIZATION_STATUS_CHOICES = (
                            (0,settings.LINEUP_STATUS_CHOICES[0]),# initialization in progress
                            (1,settings.LINEUP_STATUS_CHOICES[1]),# successfully initialized
@@ -259,10 +257,10 @@ class CrushRelationship(BasicRelationship):
             incomplete_admirer_rels = self.source_person.crush_relationship_set_from_target.filter(date_lineup_finished=None)
             for rel in incomplete_admirer_rels:
                 try:
-                    duplicate_lineup_membership = rel.lineupmembership_set.get(lineup_member=self.target_person)
-                    duplicate_lineup_membership.decision = 0
-                    duplicate_lineup_membership.save(update_fields=['decision'])
-                except crush.models.lineup_models.LineupMembership.DoesNotExist:
+                    duplicate_lineup_member = rel.lineupmember_set.get(username=self.target_person.username)
+                    duplicate_lineup_member.decision = 0
+                    duplicate_lineup_member.save(update_fields=['decision'])
+                except crush.models.lineup_models.LineupMember.DoesNotExist:
                     pass      
         else:
             # check if the target status is being changed so that a possible notification can be sent out

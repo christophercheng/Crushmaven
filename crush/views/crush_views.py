@@ -2,13 +2,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient,LineupMembership
-import urllib, json
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient,LineupMember
+import urllib, json,urllib2
 import datetime
 from crush.appinviteform import AppInviteForm
 from smtplib import SMTPException
 import time
 from  django.http import HttpResponseNotFound,HttpResponseForbidden
+
+#from crush import friend_scraper
 
 # for mail testing 
 from django.core.mail import send_mass_mail
@@ -33,6 +35,9 @@ def ajax_add_crush_targets(request):
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
             CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
+        # kick off the initialization process if the crush is a friend of friend
+
+    
     if counter > 0:
         return HttpResponse()
     else:
@@ -92,9 +97,9 @@ def ajax_make_crush_target_platonic_friend(request,crush_username):
 # -- Crush List Page --
 @login_required
 def crushes_in_progress(request):
+    
     me = request.user
- 
-           
+  
     crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
@@ -258,7 +263,7 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])
         # we don't need to call initialize_lineup via asynchronous pooling since we are already calling it from client via ajax asynchronously
-        LineupMembership.objects.initialize_lineup(relationship)
+        LineupMember.objects.initialize_lineup(relationship)
     if relationship.lineup_initialization_status == 0:
         # wait for a certain amount of time before returning a response
         counter = 0

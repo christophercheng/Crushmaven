@@ -1,6 +1,6 @@
-{% for membership in relationship.lineupmembership_set.all %}
-	{% if forloop.counter0 < 2 or membership.decision != None %}
-		<img src="http://graph.facebook.com/{{membership.lineup_member.username}}/picture" height=40 width=40>
+{% for member in relationship.lineupmember_set.all %}
+	{% if forloop.counter0 < 2 or member.decision != None %}
+		<img src="http://graph.facebook.com/{{member.username}}/picture" height=40 width=40>
 	{% else %}
 		<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>
 	{% endif %}
