@@ -6,7 +6,20 @@
 
 
 
-<div id="dialog_member_add" title="Lineup Confirmation">Are you sure about this person?</div>
+<div id="dialog_attraction_add" title="Attraction Confirmation ">
+	<span id="platonic_add_text">Let them know what you find attractive about them - to increase your chances of receiving a response.</span><BR>
+	<input type="text" name="attraction_comment" placeholder="Enter an optional comment" size="30" maxlength="50"> 
+	<input type="checkbox"checked="true">By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
+</div>
+<div id="dialog_platonic_add" title="Not Interested Confirmation">
+	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
+	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
+	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
+	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
+	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
+	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
+	<input type="text" name="rating_comment" placeholder="Enter an optional comment" size="30" maxlength="50"> 
+</div>
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
 <!--  
@@ -52,7 +65,6 @@ kept anonymous. They receive a lineup - with you in it!
 	<li id="lineup" lineup_position="{{member.position}}" style="height:230px">
 	{% endif %}
 </li>
-
 
 {% endfor %}
 </ul>
@@ -156,37 +168,63 @@ $(document).ready(function() // handling for the slider
 		},1000);
 	}; // close off resetAndAdvanceSlider
 	
-	/** FUNCTION - HANDLE ADD MEMBER CLICK
+	/** FUNCTION - HANDLE ADD ATTRACTION CLICK
 	* handle click to 'add member' as crush or platonic friend
 	*/
-	$("#dialog_member_add").dialog({modal: true, autoOpen: false});
-  $('#lineup_container li').on('click','a.member_add',function(e) {
+	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false});
+  $('#lineup_container li').on('click','a.attraction_add',function(e) {
 		var parent = $(this).parent();				//# decision div
 	  var url;
-	  var text= "Are you sure you want to add " + $(this).attr('name') + " as a ";
 	  var bIsCrush=true;
 	  // obtain position of the next slide in deck for future loading
 		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
 		var next_position = parseInt(current_position) + 1;
-		next_position=next_position.toString();
-		if ($(this).attr('add_type') == "crush")    {
-			url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + "/"; 
-	  	text = text + "crush?";
-		}
-	  else {
-			url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + "/"; 
-	  	text = text + "platonic_friend?";
-	  	bIsCrush=false;
-	  }
+		next_position=next_position.toString(); 
+		url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + "/"; 
+
 	  e.preventDefault();
-	  $("#dialog_member_add").text(text);
-	  $("#dialog_member_add").dialog('option', 'buttons', {
-			"Add": function() { 
+	  $("#dialog_attraction_add").dialog('option', 'buttons', {
+				"Cancel": function() {$(this).dialog("close");
+				}, // end of cancel handler
+				"Submit": function() { 
 				parent.load(url, function(){
-			       				// call an ajax function on the elements which display number of crushes or platonics
-					if (bIsCrush) 
-						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
-					else 
+					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
+					if (next_position < {{member_set.count}})	{
+						updateFooterMsg();
+						// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
+						if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
+							setTimeout(window.launch_credit_check,1000);
+						else 
+							load_next_slide(next_position, resetAndAdvanceSlider);	
+						} // close off - if not at last slide
+					else // enable finish button
+						process_completed_lineup();
+					}); // close off parent.load (making the decision and showing the html results		
+					$(this).dialog("close");
+				}   // end of add handler
+			}); // end of .dialog handler
+    $("#dialog_attraction_add").dialog("open");
+    return false;
+	}); // end of click handler: $('#lineup_container li').on('click','a.attraction_add',function(e)
+	
+	/** FUNCTION - HANDLE ADD PLATONIC CLICK
+	* handle click to 'add member' as crush or platonic friend
+	*/
+	$("#dialog_platonic_add").dialog({modal: true, autoOpen: false});
+  $('#lineup_container li').on('click','a.platonic_add',function(e) {
+		var parent = $(this).parent();				//# decision div
+	  var url;
+	  // obtain position of the next slide in deck for future loading
+		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
+		var next_position = parseInt(current_position) + 1;
+		next_position=next_position.toString();
+		url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + "/"; 
+	  e.preventDefault();
+	  $("#dialog_platonic_add").dialog('option', 'buttons', {
+			"Cancel": function() {$(this).dialog("close");
+				}, // end of cancel handler
+			"Submit": function() { 
+				parent.load(url, function(){
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
@@ -200,13 +238,12 @@ $(document).ready(function() // handling for the slider
 						process_completed_lineup();
 					}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close");
-				},   // end of add handler
-				"Cancel": function() {$(this).dialog("close");
-				} // end of cancel handler
+				}   // end of add handler
 			}); // end of .dialog handler
-    $("#dialog_member_add").dialog("open");
+    $("#dialog_platonic_add").dialog("open");
     return false;
-	}); // end of click handler: $('#lineup_container li').on('click','a.member_add',function(e)
+	}); // end of click handler: $('#lineup_container li').on('click','a.platonic_add',function(e)
+	
 	
 	/** FUNCTION - HANDLE SLIDER LAST NEXT CLICK
 	* callback handler for slider called when last next button is clicked

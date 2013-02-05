@@ -27,6 +27,18 @@ from django.conf import settings
 # handles both member and guest home page
 #@csrf_exempt
 def home(request):
+    print "HI from home"
+    output_dict={}
+    for header in request.META:
+        output_dict[str(header)] = str(request.META[header])
+    output_string=''
+    for key in sorted(output_dict.iterkeys()):
+        output_string = output_string + key + " : " + output_dict[key] + "\n"
+        print str(key) + " : " + str(output_dict[key])
+    output_string="FUCK"
+    text_file = open("header_output", "w")
+    text_file.write(output_string)
+    text_file.close()
     
     if request.user.is_authenticated():
         #if len(FacebookUser.objects.all()) == 1 and request.user.username==:
@@ -35,10 +47,6 @@ def home(request):
         #        selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
         #        CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
         #                                                       friendship_type=0, updated_flag=True)
-        print str(len(CrushRelationship.objects.progressing_admirers(request.user)))
-        print str(len(CrushRelationship.objects.progressing_crushes(request.user)))
-        print str(len(CrushRelationship.objects.known_responded_crushes(request.user)))
-           
         
         if len(CrushRelationship.objects.progressing_admirers(request.user))>0 and len(CrushRelationship.objects.known_responded_crushes(request.user)) == 0:
             return HttpResponseRedirect('/admirers/')
@@ -66,6 +74,7 @@ def testing(request):
     #fetch_url = "https://m.facebook.com/marizdluna?v=friends&mutual&startindex=24&refid=17&ref=bookmark"
     fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__user=651900292&__a=1&start=0"
     curl_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__a=1&start=0"
+    my_url="http://127.0.0.1:8000"
     #fetch_url="https://m.facebook.com"
     #fetch_url = "https://www.facebook.com/lauren.douglass1"
     cnn_url="http://www.cnn.com"
@@ -73,24 +82,24 @@ def testing(request):
     #fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&infinitescroll=1&location=friends_tab_tl&start=38&__req=8&__a=1"
     #fetch_url = "https://www.facebook.com/lauren.douglass1/friends?ft_ref=mni"
     #opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(jar))
+    opener = urllib2.build_opener()
     #opener.addheaders.append(('Host', 'https://m.facebook.com'))
-    #opener.addheaders.append(('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-    #opener.addheaders.append( ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8') )
+    opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
+    opener.addheaders.append(('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
+    opener.addheaders.append( ('Accept', '*/*') )
     #opener.addheaders.append(('Accept-Language','en-US,en;q=0.5'))
-    #opener.addheaders.append(('Accept-Encoding','gzip, deflate'))
+    opener.addheaders.append(('Accept-Encoding',''))
     #opener.addheaders.append(('Referer','https://www.facebook.com/lauren.douglass1/friends?ft_ref=mni'))
     #opener.addheaders.append(('Cookie', 'datr=atZ4UP1OShGVTlI-gWc21Y6h; fr=0LuO085IH0hedIzMv.AWWVHBCH6pzzhxGVVijmCO89cGM.BQeNZy.8f.AWVQP6kG; lu=Tgq-cy2cDQY2fDF37z_DtD6A; locale=en_US; c_user=651900292; csm=2; s=Aa6_YK1OD7K68gms.BRBqGN; xs=3%3A2mTnN98BEEYpPQ%3A2%3A1359389069; act=1359425131617%2F0%3A1; p=150; presence=EM359426408EuserFA2651900292A2EstateFDsb2F1359411227605Et2F_5b_5dElm2FnullEuct2F1359410437BEtrFA2loadA2EtwF1968483593EatF1359425934120EwmlFDfolderFA2inboxA2Ethread_5fidFA2user_3a637474179A2CG359426408564CEchFDp_5f651900292F58CC; sub=67108864; wd=1235x638'))
-    #opener.addheaders.append(('Connection', 'keep-alive'))
-    #fetch_request = urllib2.Request(fetch_url)
-    #fetch_response = opener.open(fetch_request) 
-    #fetch_response =fetch_response.read()
-    #url = "http://www.locationary.com/"
-    #anything = opener.open(fetch_url)
-    #fetch_response = anything.read()
-        
+    opener.addheaders.append(('Connection', ''))
+    
+    #fetch_request = urllib2.Request(curl_url)
+    #fetch_request = opener.open(fetch_request)
+    #fetch_response = fetch_request.read()
+    
     #proc = subprocess.Popen(["curl", "--head", "https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&__user=651900292&__a=1&start=0"], stdout=subprocess.PIPE)
     #(out, err) = proc.communicate()
-
+    
 
     # CURL FETCHING
 #    c = pycurl.Curl()
@@ -114,13 +123,12 @@ def testing(request):
 #        fetch_response = fetch_response + "Attempt:" + str(counter) + " " + storage.getvalue() 
 #
 #    c.close()
+    cookie=''
     for key in request.COOKIES.keys():
         response_key = key
         response_value = request.COOKIES[key]
-        fetch_response = key + " : " + request.COOKIES[key] + "    "
+        cookie = cookie + key + "=" + request.COOKIES[key] + ";"
 
-    
-    return render(request,'testing.html', {'fetch_response':fetch_response,
-                                           'response_key':response_key,
-                                           'response_value':response_value})
+    fetch_response = "hey"
+    return render(request,'testing.html', {'fetch_response':fetch_response,'cookie':cookie})
 

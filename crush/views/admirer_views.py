@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
 import datetime
+import urllib,json
 #from multiprocessing import Pool
 from django.http import HttpResponseNotFound,HttpResponseForbidden
-import time
+import time,random
 
 # -- Admirer List Page --
 @login_required
@@ -32,7 +33,11 @@ def admirers(request,show_lineup=None):
                                'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count,
-                               'show_lineup': show_lineup})    
+                               'show_lineup': show_lineup,
+                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[2],
+                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
+                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,                               
+                               })    
 
 @login_required
 def ajax_display_lineup_block(request, display_id):
@@ -73,6 +78,65 @@ def ajax_display_lineup_block(request, display_id):
 
     return render(request,'lineup_block.html', {'relationship':relationship})
 
+# called when an client side initialization of friend-of-friend admirer starts
+@login_required
+def ajax_get_mutual_friends(request,display_id):
+    print "HEY"
+    try:
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=display_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound()
+    url='https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + relationship.source_person.username + '/?access_token=%s' % request.user.access_token
+    print url
+    friend_profile = urllib.urlopen(url)
+    friend_profile = json.load(friend_profile)
+    friendlist=[]
+    if len(friend_profile['data'])>0:
+        for friend in friend_profile['data']:
+            friendlist.append(friend['id'])
+    return HttpResponse(json.dumps(friendlist),content_type="application/json")
+
+# called when an client side initialization of friend-of-friend admirer fails
+@login_required
+def ajax_update_lineup_status(request,display_id,status):
+    try:
+            admirer_rel=CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=display_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound(settings.LINEUP_STATUS_CHOICES[5])
+    admirer_rel.lineup_initialization_status=int(status)
+    admirer_rel.save(update_fields=['lineup_initialization_status'])
+    return HttpResponse(settings.LINEUP_STATUS_CHOICES[int(status)])
+
+# called when an client side initialization of friend-of-friend successfully completes
+@login_required
+def ajax_post_lineup(request,display_id):
+    try:
+        admirer_rel=CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=display_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound(settings.LINEUP_STATUS_CHOICES[5])
+    post_data = request.POST
+    # if by chance there was an existing set of lineup members, clear them out first
+    if admirer_rel.lineupmember_set.count>0:
+        for member in admirer_rel.lineupmember_set.all():
+            member.delete()
+    # determine where admirer should go
+    random_end = len(post_data) - 2 # -1 for csrf token -1 so we are not put at end of list
+    admirer_position=random.randint(0, random_end) # normally len(data) should be 9
+    lineup_position=0;
+    for key in post_data:
+        if key=="csrfmiddlewaretoken":
+            continue
+        if lineup_position==admirer_position:
+            LineupMember.objects.create(relationship=admirer_rel,username=admirer_rel.source_person.username,position=lineup_position)
+            lineup_position=lineup_position+1
+            LineupMember.objects.create(relationship=admirer_rel,username=post_data[key],position=lineup_position)
+        else:
+            LineupMember.objects.create(relationship=admirer_rel,username=post_data[key],position=lineup_position)
+        lineup_position=lineup_position+1
+    # set initialization status
+    admirer_rel.lineup_initialization_status=1
+    admirer_rel.save(update_fields=['lineup_initialization_status'])
+    return HttpResponse()
 # -- Single Lineup (Ajax Content) Page --
 @login_required
 def ajax_show_lineup_slider(request,admirer_id):
@@ -91,7 +155,13 @@ def ajax_show_lineup_slider(request,admirer_id):
                               {
                                'admirer_rel':admirer_rel,
                                'member_set': member_set,
-                               'number_completed_members': len(member_set.exclude(decision = None))})
+                               'number_completed_members': len(member_set.exclude(decision = None)),
+                               'rating1': settings.PLATONIC_RATINGS[1],
+                               'rating2': settings.PLATONIC_RATINGS[2],
+                               'rating3': settings.PLATONIC_RATINGS[3],
+                               'rating4': settings.PLATONIC_RATINGS[4],
+                               'rating5': settings.PLATONIC_RATINGS[5],
+                               })
 
 # called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
 @login_required
@@ -131,18 +201,18 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():
-        ajax_response += "<div id=\"choice\">You already added " + lineup_member_user.first_name + " " + lineup_member_user.last_name + " as a crush.</div>"
+        ajax_response += "<div id=\"choice\">You already added " + lineup_member_user.first_name + " " + lineup_member_user.last_name + " as an attraction.</div>"
     elif lineup_member in me.just_friends_targets.all():
-        ajax_response = "<div id=\"choice\">You already added " + lineup_member_user.first_name + " " + lineup_member_user.last_name + " as a platonic friend.</div>"
+        ajax_response = "<div id=\"choice\">You already decided: Not Interested in " + lineup_member_user.first_name + " " + lineup_member_user.last_name + "</div>"
     else:    
         if lineup_member.decision == None:
-            ajax_response += '<a href="#" class="member_add" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position +  '">Add as crush</a>' 
-            ajax_response += '<br><a href="#" class="member_add" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position + '">Add as platonic friend</a>'        
+            ajax_response += '<a href="#" class="attraction_add" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position +  '">Add to Attractions</a>' 
+            ajax_response += '<br><a href="#" class="platonic_add" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
        
         elif lineup_member.decision == 0:
-            ajax_response += '<div class="crush" id="choice" >"You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as a crush!</div>'
+            ajax_response += '<div class="crush" id="choice" >"You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as an attraction!</div>'
         else:
-            ajax_response += '<div class="platonic" id="choice">You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as just-a-friend.</div>'   
+            ajax_response += '<div class="platonic" id="choice">You are Not Interested in ' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</div>'   
     ajax_response += '</div>' # close off decision tag
     #2) facebook button 
     #3) crush button 
@@ -214,8 +284,7 @@ def ajax_update_num_new_responses(request):
 def ajax_update_num_new_admirers(request):
     ajax_response = str(CrushRelationship.objects.new_admirers(request.user).count())
     return HttpResponse(ajax_response)
-    
-    
+
 # -- Past Admirers Page --
 @login_required
 def admirers_past(request):
@@ -228,5 +297,8 @@ def admirers_past(request):
                               {
                                'admirer_type': 1, # 0 is in progress, 1 completed
                                'admirer_relationships':admirer_completed_relationships,
-                               'progressing_admirers_count': progressing_admirers_count
+                               'progressing_admirers_count': progressing_admirers_count,
+                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[2],
+                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
+                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
                                })    

@@ -199,10 +199,22 @@ AUTHENTICATION_BACKENDS = (
 CRUSH_RESPONSE_DELAY_START = 43200 # default is 43200 seconds = 12 hours
 CRUSH_RESPONSE_DELAY_END = 86400 #86400 seconds = 24 hours
 STARTING_CREDITS=100 # change to 1 in production
-MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself
-FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
+MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
+IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
+FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=1# 43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
+PLATONIC_RATINGS = {
+                    5:'very attractive - just not for me',
+                    4:'somewhat attractive - just not for me', 
+                    3:"I'm indifferent",
+                    2:'slightly unattractive',
+                    1:'very unattractive',
+
+
+
+
+                     }
 
 DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
                    1:'Your attraction has already started your lineup.  To prevent system gaming, attractions may only be removed once a response is received and viewed.',
@@ -212,7 +224,7 @@ DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be remo
 
 LINEUP_STATUS_CHOICES = {0:'Not Initialized',
                          1:'Initialized',
-                         2:'Sorry, your admirer has not provided us with enough information to create a lineup yet.  We will notify you via email when it is ready.',
+                         2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  We will notify you via email when it is ready.',
                          3:'You do not have enough friends to create a lineup at this time.',
                          4:'Sorry, we are having difficulty getting data from Facebook to create a lineup.  Please try again later.',
                          5:'Sorry, we are having difficulty initializing a lineup.  Please try again later.',

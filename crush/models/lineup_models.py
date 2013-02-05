@@ -5,7 +5,7 @@ from  crush.models.relationship_models import CrushRelationship
 from crush.models.user_models import FacebookUser
 from random import shuffle
 from StringIO import StringIO    
-import pycurl,re
+import pycurl,re, time
 
 class LineupMemberManager(models.Manager):
     class Meta:
@@ -86,32 +86,37 @@ class LineupMemberManager(models.Manager):
             fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=1&start=" + str(fetch_offset) + "&uid=" + str(friend_username)
             storage = StringIO()
             c = pycurl.Curl()
-            c.setopt(pycurl.SSL_VERIFYPEER, 0)
-            c.setopt(pycurl.SSL_VERIFYHOST, 0)
-            c.setopt(c.URL, fetch_url)
-            c.setopt(c.WRITEFUNCTION, storage.write)
-            c.perform()
-            c.close()
-            fetched_raw_data=storage.getvalue() 
-            friend_array=self.extract_friends_from_curl(fetched_raw_data)
-            number_results = len(friend_array)
-            if number_results == 0:
-                
-                return fof_id_array # curl has stopped returning results, either cause we've exhausted friend list or curl mechanism failed
-                
-            shuffle(friend_array)
-            for friend in friend_array:
-                if friend in exclude_facebook_id_array or friend in fof_id_array: # make sure that they are not on the exclude list
-                    continue
-                # see if they pass the lineup member requirements (just gender for now)
-                fb_profile = urllib.urlopen('https://graph.facebook.com/' + str(friend) + '/?access_token=%s' % current_user.access_token)
-                fb_profile = json.load(fb_profile)
-                if fb_profile['gender'] == admirer_gender:
-                    fof_id_array.append(friend)
-                    if len(fof_id_array)==number_friends_needed:
-                        return fof_id_array
-            # if we've got to this point, then the fof_array has not been filled to expectation yet, and the previous curl function worked, so try it again with different offset
-            fetch_offset=fetch_offset + number_results # 20 is the number of results retrieved by each curl facebook fetch
+            try:
+                c.setopt(pycurl.SSL_VERIFYPEER, 0)
+                c.setopt(pycurl.SSL_VERIFYHOST, 0)
+                c.setopt(c.URL, fetch_url)
+                c.setopt(c.WRITEFUNCTION, storage.write)
+                c.perform()
+                c.close()
+                fetched_raw_data=storage.getvalue() 
+                friend_array=self.extract_friends_from_curl(fetched_raw_data)
+                number_results = len(friend_array)
+                if number_results == 0:
+                    
+                    return fof_id_array # curl has stopped returning results, either cause we've exhausted friend list or curl mechanism failed
+                    
+                shuffle(friend_array)
+                for friend in friend_array:
+                    if friend in exclude_facebook_id_array or friend in fof_id_array: # make sure that they are not on the exclude list
+                        continue
+                    # see if they pass the lineup member requirements (just gender for now)
+                    fb_profile = urllib.urlopen('https://graph.facebook.com/' + str(friend) + '/?access_token=%s' % current_user.access_token)
+                    fb_profile = json.load(fb_profile)
+                    if fb_profile['gender'] == admirer_gender:
+                        fof_id_array.append(friend)
+                        if len(fof_id_array)==number_friends_needed:
+                            return fof_id_array
+                # if we've got to this point, then the fof_array has not been filled to expectation yet, and the previous curl function worked, so try it again with different offset
+                fetch_offset=fetch_offset + number_results # 20 is the number of results retrieved by each curl facebook fetch
+            except:
+                # unexpected problem so close the pycurl object and set initialization status back to None
+                print "UNEXPECTED EXCEPTION IN THE cURL script!!!!"
+                c.close()
         return fof_id_array
     
         # call fb-browser-ajax-url and scrape friends and return as an array
@@ -215,6 +220,7 @@ class LineupMemberManager(models.Manager):
             else:
                 # before repeating, update the excluded ids with the latest additions
                 exclude_facebook_id_array = exclude_facebook_id_array + new_fof_id_array
+                time.sleep(1) # don't ping facebook again too soon
                 
         # if steps 1,2,3,4 all fail, then do nothing more programatically. Later, a catch-all task will try to accomplish the task through a scraper or manual means
         return fof_id_array # return what was created (if anything)

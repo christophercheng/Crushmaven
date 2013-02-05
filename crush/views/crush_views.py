@@ -207,6 +207,7 @@ def app_invite_form(request, crush_username):
         print "instantiated form instance"
     return render(request, 'app_invite_form.html',{'form':form,'crush_username':crush_username})
 
+# called by the crush selector dialog
 @login_required
 def ajax_find_fb_user(request):
     response_data = dict()
