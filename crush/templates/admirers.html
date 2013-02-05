@@ -75,44 +75,36 @@ $(document).ready(function()
 	// METHOD 1: attempt to grab FOF from one mutual friend via graph API
 	// ==================================================================
 	var initialize_method1 = function(display_id,admirer_gender){
-		initialize_method2(display_id,admirer_gender);
+		// Obtain all mutual friends
+		url='/ajax_get_mutual_friends/' + display_id;
+		$.get(url,function(data){			
+			mutual_friend_id_array=data;
+			initialize_method2(display_id,admirer_gender,data,0);
+		}).fail(function(){ // close off success callback handler for mutual friend fetch
+			// in case of failure, contine to the 2nd method
+			initialize_method2(display_id,admirer_gender,mutual_friend_id_array,0);
+		}); 
+
 	};
 	
 	// ==================================================================
 	// METHOD 2: attempt to grab FOF from one mutual friend via graph API
 	// ==================================================================
-	var initialize_method2 = function(display_id,admirer_gender){
-		initialize_method3(display_id,admirer_gender);
+	var initialize_method2 = function(display_id,admirer_gender,mutual_friend_id_array,process_index){
+		initialize_method3(display_id,admirer_gender,mutual_friend_id_array,0);
 	};
 
 	// ================================================================
 	// METHOD 3: attempt to grab FOF's from one mutual friend via YUI
+	//    Inital method functionality: obtain number of friends of individual mutual friend, create a random q block array, 
+	//    and fire off call to request & process blocks
 	// ==================================================================
 
-	var initialize_method3 = function(display_id,admirer_gender){
-		url='/ajax_get_mutual_friends/' + display_id;
-		// Obtain all mutual friends 	
-		$.get(url,function(data){
-			mutual_friend_id_array=data;
-			console.log(data);
-			get_lineup_from_mutual_friend(display_id,admirer_gender,data,0);
-		}).fail(function(){ // close off success callback handler for mutual friend fetch
-			// in case of failure, contine to the 4th method
-			initialize_method4(display_id,admirer_gender);
-		}); 
-	}; // close of Method 3 function
-	
-	// ================================================================
-	// SUB-ROUTINE 3a: obtain number of friends of individual mutual friend, create a random q block array, and fire off call to request & process blocks
-	// ==================================================================
-	
-	var get_lineup_from_mutual_friend = function(display_id,admirer_gender,mutual_friend_id_array,process_index){
+	var initialize_method3 = function(display_id,admirer_gender,mutual_friend_id_array,process_index){
 			var q_block_num_array=[];
-			current_mutual_friend=mutual_friend_id_array[process_index];
+			var current_mutual_friend = mutual_friend_id_array[process_index];
 			// calculate total number of friends for this mutual friend (and determine if friendlist public)
 			url = "https://graph.facebook.com/fql?q=SELECT friend_count FROM user WHERE uid=" + current_mutual_friend + "&access_token={{request.user.access_token}}&callback=?";
-			console.log(url);
-
 			$.getJSON(url,function(response){
 				var number_friends=response.data[0].friend_count;
 				if (number_friends){
@@ -122,8 +114,8 @@ $(document).ready(function()
 					q_block_array=[];
 					for (var x = 0;x<=max_q_block;x++)
 						q_block_array.push(x*24);
-						// randomize the array 
-						var i = q_block_array.length, j, tempi, tempj;
+					// randomize the array 						
+					var i = q_block_array.length, j, tempi, tempj;
 				  while ( --i ) {
 				     j = Math.floor( Math.random() * ( i + 1 ) );
 				     tempi = q_block_array[i];
@@ -139,24 +131,23 @@ $(document).ready(function()
 					// try to process the next friend
 					process_index++;
 					if (process_index < mutual_friend_id_array.length) // process next mutual friend
-						get_lineup_from_mutual_friend(display_id,admirer_gender,mutual_friend_id_array,process_index);
+						initialize_method3(display_id,admirer_gender,mutual_friend_id_array,process_index);
 					else
-						initialize_method4(display_id,admirer_gender);
+						initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0);
 				}
 			}).fail(function(){// close off getJSON for calculating mutual friend's friendlist count
 				console.log("Failure to get number of friends of mutual friend");
 				// try to process the next friend
 				process_index++;
 				if (process_index < mutual_friend_id_array.length) // process next mutual friend
-					get_lineup_from_mutual_friend(display_id,admirer_gender,mutual_friend_id_array,process_index);
+					initialize_method3(display_id,admirer_gender,mutual_friend_id_array,process_index);
 				else
-					initialize_method4(display_id,admirer_gender);
+					initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0);
 			}); // close of getJSON fail handling
-			console.log('time to wait');
 		}; //close off get_lineup_from_mutual_friend
 		
 	// ================================================================
-	// SUB-ROUTINE 3b: request blocks in batches of 5 and call sub-routine 3c to process results of each set of batch requests
+	// SUB-ROUTINE 3a: request blocks in batches of 5 and call sub-routine 3c to process results of each set of batch requests
 	// ==================================================================
 			
 	var process_batch_blocks=function(display_id,admirer_gender,mutual_friend_id_array,process_index,q_block_array,process_q_index){
@@ -204,7 +195,7 @@ $(document).ready(function()
 	};
 				
 	// ================================================================
-	// SUB-ROUTINE 3c: request & process blocks in batches of 5, after each batch is complete, call sub-routine 3c to process batch results
+	// SUB-ROUTINE 3b: request & process blocks in batches of 5, after each batch is complete, call sub-routine 3c to process batch results
 	// ==================================================================
 						
 	var process_batch_results=function(display_id,admirer_gender,mutual_friend_id_array,process_index,q_block_array,process_q_index){
@@ -218,7 +209,7 @@ $(document).ready(function()
 				query_string = query_string.slice(0,-1);
 			query_string = query_string + ') AND sex="' + admirer_gender + '"';
 			console.log("QUERY_STRING",query_string);
-			url = "https://graph.facebook.com/fql?q=" + query_string + "&access_token={{request.user.access_token}}&callback=?";
+			url = "https://graph.facebook.com/fql?q=" + query_string + "&callback=?"; // don't need access token for this query
 			var filter_fetched_ids = $.getJSON(url);
 			filter_fetched_ids.done(function(response){
 				console.log("filtering complete",response);
@@ -234,7 +225,7 @@ $(document).ready(function()
 				
 	}
 	// ================================================================
-	// SUB-ROUTINE 3d: request & process blocks in batches of 5, after each batch is complete, call sub-routine 3c to process batch results
+	// SUB-ROUTINE 3c: request & process blocks in batches of 5, after each batch is complete, call sub-routine 3c to process batch results
 	// ==================================================================
 						
 	var process_filtered_fetched_ids=function(display_id,admirer_gender,mutual_friend_id_array,process_index,q_block_array,process_q_index){
@@ -266,18 +257,18 @@ $(document).ready(function()
 			// if all q blocks have been fetched, then try to re-call get_lineup_from_mutual_friend with next mutual friend
 			next_process_index=process_index+1;
 			if (next_process_index < mutual_friend_id_array.length){
-				get_lineup_from_mutual_friend(display_id,admirer_gender,mutual_friend_id_array,next_process_index);
+				initialize_method3(display_id,admirer_gender,mutual_friend_id_array,next_process_index);
 			}
 			else
 				 // if all mutual friends have been exhausted, then proceed to next initialization routine
-				initialize_method4(display_id,admirer_gender)
+				initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0)
 		} // close off else all q blocks have been fetched
 	}; // close off filter_fetched_ids
 				
 	// ================================================================	
 	// METHOD 4: attmpet to grab FOF's from 9 friends of crush via YUI
 	// ================================================================
-	var initialize_method4 = function(display_id,admirer_gender){
+	var initialize_method4 = function(display_id,admirer_gender,mutual_friend_id_array,process_index){
 		 window.matched_id_array=[]; // scrap our results to date - worthless now :(
 		console.log("HEY DONE");
 		// FAIL HANDLING
@@ -289,6 +280,8 @@ $(document).ready(function()
 	// HELPER METHOD: send matched id results back to server and launch lineup
 	// ================================================================
 	var finalize_initialization= function(display_id){	
+		alert("success: " + window.matched_id_array);
+		return; // return for now for testing purposes
 		post_dictionary={};
 		post_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
 		for (key in window.matched_id_array)
