@@ -34,7 +34,7 @@ def admirers(request,show_lineup=None):
                                'admirer_relationships':progressing_admirer_relationships,
                                'past_admirers_count': past_admirers_count,
                                'show_lineup': show_lineup,
-                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[2],
+                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
                                'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,                               
                                })    

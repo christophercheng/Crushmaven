@@ -227,7 +227,7 @@ LINEUP_STATUS_CHOICES = {0:'Not Initialized',
                          2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  We will notify you via email when it is ready.',
                          3:'You do not have enough friends to create a lineup at this time.',
                          4:'Sorry, we are having difficulty getting data from Facebook to create a lineup.  Please try again later.',
-                         5:'Sorry, we are having difficulty initializing a lineup.  Please try again later.',
+                         5:'Sorry, we are having difficulty initializing a lineup.  Please try again later.', # temporary failure - user can restart lineup initialization
                          }
 
 FEATURES = {

@@ -67,7 +67,8 @@ $(document).ready(function()
 		// call method 1, if that fails, method 1 calls method 2, if that fails 2 calls 3, and 3 calls 4.  
 		// if 4 fails, it calls final FAIL handilng
 	
-		initialize_method1(display_id,admirer_gender);
+		initialize_method4(display_id,admirer_gender);
+		//initialize_method1(display_id,admirer_gender);
 	
 	});
 	
@@ -77,6 +78,7 @@ $(document).ready(function()
 	var initialize_method1 = function(display_id,admirer_gender){
 		// Obtain all mutual friends
 		url='/ajax_get_mutual_friends/' + display_id;
+		// replace this call to internal server with a call to facebook - use with privacy-friends data to filter out mutual friends with SELF or NO_FRIENDS status
 		$.get(url,function(data){			
 			mutual_friend_id_array=data;
 			initialize_method2(display_id,admirer_gender,data,0);
@@ -133,7 +135,7 @@ $(document).ready(function()
 					if (process_index < mutual_friend_id_array.length) // process next mutual friend
 						initialize_method3(display_id,admirer_gender,mutual_friend_id_array,process_index);
 					else
-						initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0);
+						initialize_method4(display_id,admirer_gender);
 				}
 			}).fail(function(){// close off getJSON for calculating mutual friend's friendlist count
 				console.log("Failure to get number of friends of mutual friend");
@@ -142,7 +144,7 @@ $(document).ready(function()
 				if (process_index < mutual_friend_id_array.length) // process next mutual friend
 					initialize_method3(display_id,admirer_gender,mutual_friend_id_array,process_index);
 				else
-					initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0);
+					initialize_method4(display_id,admirer_gender);
 			}); // close of getJSON fail handling
 		}; //close off get_lineup_from_mutual_friend
 		
@@ -261,21 +263,249 @@ $(document).ready(function()
 			}
 			else
 				 // if all mutual friends have been exhausted, then proceed to next initialization routine
-				initialize_method4(display_id,admirer_gender,mutual_friend_id_array,0)
+				initialize_method4(display_id,admirer_gender)
 		} // close off else all q blocks have been fetched
 	}; // close off filter_fetched_ids
 				
 	// ================================================================	
-	// METHOD 4: attmpet to grab FOF's from 9 friends of crush via YUI
+	// METHOD 4: attempt to grab FOF's from 9 friends of crush via YUI
 	// ================================================================
-	var initialize_method4 = function(display_id,admirer_gender,mutual_friend_id_array,process_index){
-		 window.matched_id_array=[]; // scrap our results to date - worthless now :(
-		console.log("HEY DONE");
-		// FAIL HANDLING
-		$('#lineup_btn[display_id="' + display_id + '"]').load('/ajax_update_lineup_status/' + display_id + '/2/');
+	var initialize_method4 = function(display_id,admirer_gender){
+		window.matched_id_array=[]; // scrap our results to date - worthless now :(
+
+		// grab top 500 friends
+			// build query string
+		var query_string= 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1="' + {{request.user.username}} + '")) ORDER BY friend_count DESC LIMIT 500'
+		url = 'https://graph.facebook.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
+		console.log("fetch top 500 friends of crush",url);
+		crush_friend_fetch = $.getJSON(url);
+		
+		// crush friend fetch fail handling
+		crush_friend_fetch.fail(function(response){
+			initialize_fail(display_id,5);// 5 status allows user to try again 
+		}); // close of crush_friend_fetch.fail handler
+		
+		// crush friend fetch success handling
+		crush_friend_fetch.done(function(response){
+
+			window.friend_universe=response.data;// [uid=323523523,uid=2352323535,...]
+			//randomize the friend list
+			console.log("start random");
+			console.timeStamp();
+			// randomize the array 						
+			var i = window.friend_universe.length, j, tempi, tempj;
+		  while ( --i ) {
+		     j = Math.floor( Math.random() * ( i + 1 ) );
+		     tempi = window.friend_universe[i];
+		     tempj = window.friend_universe[j];
+		     window.friend_universe[i] = tempj;
+		     window.friend_universe[j] = tempi;
+		   } // close of randomize array while loop
+		console.timeStamp();
+		console.log("stop random");
+			//sort universe by id 
+			window.friend_universe.sort(function(a,b){return a['uid']-b['uid']});
+			process_f_index=0; // index at where to process the friend universe array
+			batch_fetch_friends(display_id,admirer_gender,process_f_index);
+			if (window.friend_universe.length < 10)
+				initialize_fail(display_id,2); // 2 status does not allow user to try again
+		}); // close of crush_friend_fetch.done handler
 	};
 
+	// ================================================================	
+	// METHOD 4 - Subroutine A: Batch Fetch Handler - iteratively fetch 9 friends at given index
+	// ================================================================
+	var batch_fetch_friends = function(display_id, admirer_gender,process_f_index){
+		next_process_f_index = process_f_index + 20;
+		if (next_process_f_index > window.friend_universe.length)
+			next_process_f_index = window.friend_universe.length;
+		window.batch_friends_requested=0; // use this variable to determine if all requests have been retrieved and we can process final results
+		window.batch_friends_received=0;
+		var x;
+		for (x=process_f_index;x<next_process_f_index;x++){ // iterate through next 9 friends
+			window.batch_friends_requested++;
+			var current_friend = window.friend_universe[x]['uid'];
+			// call a single person handler
+			start_single_friend_fetch(display_id,admirer_gender,process_f_index,current_friend);		
+		}// close of for loop through friend universe
+	};//close off METHOD 4 - Subroutine A
 
+	// ================================================================	
+	// METHOD 4 - Subroutine B: Single Person Fetch Handler - build q block array and fire off processing for each block
+	// ================================================================
+	var start_single_friend_fetch = function(display_id, admirer_gender,process_f_index,current_friend){
+
+		// create q block array
+		var q_block_num_array=[];
+		// calculate max q block by finding total friend count
+		// calculate total number of friends for this mutual friend (and determine if friendlist public)
+		url = "https://graph.facebook.com/fql?q=SELECT friend_count FROM user WHERE uid=" + current_friend + "&access_token={{request.user.access_token}}&callback=?";
+		// getJSON Call
+		fetch_friend_count = $.getJSON(url);
+		
+		//getJSON fail handler
+		fetch_friend_count.fail(function(){
+			// skip this friend so continue on to next function and pass on variables
+			finished_processing_friend(display_id, admirer_gender,process_f_index,current_friend)
+		});
+		
+		//getJSON success handler
+		fetch_friend_count.done(function(response){			
+			var number_friends=response.data[0].friend_count;
+			if (number_friends){
+				max_q_block = Math.floor(number_friends/24);
+				console.log("got friend count for user #",current_friend,number_friends);
+				// build array of blocks to process
+				q_block_array=[];
+				for (var x = 0;x<=max_q_block;x++)
+					q_block_array.push(x*24);
+				// randomize the array 						
+				var i = q_block_array.length, j, tempi, tempj;
+			  while ( --i ) {
+			     j = Math.floor( Math.random() * ( i + 1 ) );
+			     tempi = q_block_array[i];
+			     tempj = q_block_array[j];
+			     q_block_array[i] = tempj;
+			     q_block_array[j] = tempi;
+			   } // close of randomize array while loop
+			  // kick of processing of a batch of q blocks
+				process_friend_block(display_id,admirer_gender,process_f_index,current_friend,q_block_array,0);
+			} // close off if (number_friends){ 
+			else { //user has no accessible friend count
+				console.log("no friends for user#",current_friend);
+				//skip this friend and continue on to next function while passing on variables
+				finished_processing_friend(display_id, admirer_gender,process_f_index,current_friend);
+			} // close off - else handle for user having no accessible friend count
+		}); // close off getJSON success handler
+
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine C: Single BLOCK Fetch Handler 
+	// ================================================================
+	var process_friend_block = function(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index){
+	
+		var fetch_url='https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=' + q_block_array[q_index] + '&uid=' + current_friend;
+		console.log("FETCH block #",q_index," for user #",current_friend);
+		YUI().use('gallery-yql-rest-client', function(Y) {
+	    Y.YQLRESTClient.request({
+	        method: 'get',
+	        url: fetch_url,
+	  	    accept:'*/*',     
+	    }, function (result) {
+	    		if (result!=null){
+		    		// if a result is no public data - then i need to prematurely end entire function
+		    		var result_string=result.response;
+			    	var parsed_results = result_string.match(/(?=user.php\?id=)(.*?)(?=\\")/mgi);
+		
+			    	if (parsed_results!=null){
+			    		  console.log("RECEIVED parsed results for user#",current_friend," at q block#", q_index, parsed_results);
+			    		// clean up the results
+			    		for (x=0;x<parsed_results.length;x++)
+			    			parsed_results[x]=parsed_results[x].substring(12)
+		    			//console.log("q block results for user#",current_friend," at block:",q_block_array[q_index],parsed_results);
+		    			// filter out the parsed results for those that match admirer conditions
+		    			filter_ids_by_admirer_conditions(display_id, admirer_gender,process_f_index, current_friend,q_block_array,q_index,parsed_results);
+		    		} // close off if(parsed_results)
+		    		else { // no parsed results, so just continue ahead and pass empty results
+		    			console.log("RECEIVED NO RESULTS for user#",current_friend," at q block:",q_index, result,"returned q block results response length",result.response.length);
+		    			// try another friend cause fetching more blocks from this friend will be worthless
+							finished_processing_friend(display_id, admirer_gender,process_f_index,current_friend);
+		    		}
+		    	} // close off if (results!=null
+		    	else
+		    		get_another_friend_block(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index);
+	    	} // close off success handler
+	    ) // close off YQLRESTClient.request function
+	   });// close off YUI.use function
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine D: FILTER out user id's by admirer conditions 
+	// ================================================================	
+	var filter_ids_by_admirer_conditions = function(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index,parsed_results){
+
+		//filter out genders that don't match via FQL query
+ 		query_string = 'SELECT uid FROM user WHERE uid IN (';
+		for (key in parsed_results)
+			query_string = query_string + parsed_results[key] + ',';
+		if (query_string.length > 0)
+			query_string = query_string.slice(0,-1);
+		query_string = query_string + ') AND sex="' + admirer_gender + '"';
+		url = "https://graph.facebook.com/fql?q=" + query_string + "&callback=?"; // don't need access token for this query
+		var filter_fetched_ids = $.getJSON(url);
+		
+		filter_fetched_ids.fail(function(){
+			get_another_friend_block(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index);
+		});
+		
+		filter_fetched_ids.done(function(response){
+			//console.log("filtering complete",response,"length:",response.data.length);
+			if (response.data!=null & response.data.length > 0) {// !SUCCESS BLOCK FETCH
+				window.matched_id_array.push(response.data[0]);
+				//console.log("GOT A MEMBER from user#:",current_friend," current matched id array: ",window.matched_id_array);
+				if (window.matched_id_array.length == {{ideal_lineup_members}}) // we have enough lineup members so call final routine // if we get more ingore the others
+					clean_results(display_id);
+			} // close off if(response.data.length > 0)
+			finished_processing_friend(display_id, admirer_gender,process_f_index,current_friend); //report in!
+		}); // close off filter_fetched_ids success handler
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine E: Go back and fetch another block 
+	// ================================================================	
+	var get_another_friend_block = function(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index){
+
+		q_index = q_index + 1;
+		console.log("fetching another block for user ",current_friend, "at",q_index);
+		if (q_index < q_block_array.length)
+			setTimeout(function(){process_friend_block(display_id, admirer_gender,process_f_index,current_friend,q_block_array,q_index);},1);//don't call too soon or you'll attract attention
+		else
+			finished_processing_friend(display_id, admirer_gender,process_f_index,current_friend)
+			
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine F: Go WAY back and fetch another batch of friends 
+	// ================================================================	
+	var finished_processing_friend = function(display_id, admirer_gender,process_f_index,current_friend){
+		window.batch_friends_received++;
+		console.log("checking in: ",current_friend,"# batch friends received:",window.batch_friends_received, "total sent:",window.batch_friends_requested, "matched id's:",window.matched_id_array);
+		if (window.batch_friends_received == window.batch_friends_requested) {
+				process_f_index = process_f_index + window.batch_friends_requested;
+				if (process_f_index < window.friend_universe.length && window.matched_id_array.length < {{ideal_lineup_members}})
+					batch_fetch_friends(display_id, admirer_gender,process_f_index);
+				else{// no more people to fetch
+						if (window.matched_id_array.length < {{ideal_lineup_members}})
+							if (window.matched_id_array.length >= {{minimum_lineup_members}}) // take what we got!
+								clean_results(display_id);
+							else
+								initialize_fail(display_id,2);
+				} // end - no more people to fetch
+		} // have to wait until all batch requests get here before requesting a new batch
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine G: clean up results before calling finalize_initialization
+	// ================================================================	
+	var clean_results = function(display_id){
+		temp_array = window.matched_id_array;
+		window.matched_id_array=[];
+		for (key in temp_array)
+			window.matched_id_array.push(temp_array[key]['uid']);
+		finalize_initialization(display_id);
+	};
+	
+	// ================================================================	
+	// METHOD 4 - Subroutine: Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
+	// ================================================================
+	var initialize_fail = function(display_id, status){
+		// FAIL HANDLING
+		status = typeof status !== 'undefined' ? status : 2; // default status is 2
+		console.log("fail with status",status,"display id:",display_id);
+		$('#lineup_btn[display_id="' + display_id + '"]').load('/ajax_update_lineup_status/' + display_id + '/' + status + '/');
+	};
+	
 	// ================================================================	
 	// HELPER METHOD: send matched id results back to server and launch lineup
 	// ================================================================

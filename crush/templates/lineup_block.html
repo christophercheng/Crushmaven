@@ -28,7 +28,7 @@ this is for loading fake lineup members for an uninitialized friend-of-friend li
 	{% endif %}
 {% elif relationship.friendship_type == 1 %} 
 	
-	{% if relationship.lineup_initialization_status < 1 %}
+	{% if relationship.lineup_initialization_status < 1 or relationship.lineup_initialization_status == 5 %}
 		{% if relationship.source_person.gender == 'M' %}
 			<a href="#" class="initialize_lineup" display_id="{{relationship.admirer_display_id}}" admirer_gender="male">View Lineup</a>
 		{% else %}
