@@ -59,6 +59,8 @@ urlpatterns += patterns('crush.views.admirer_views',
     
     url(r'^admirers/$', 'admirers',name="admirers_show_all"),
     
+    (r'^ajax_try_fof_initialization/(?P<display_id>\d+)/$','ajax_try_fof_initialization'),
+    
     (r'^ajax_get_mutual_friends/(?P<display_id>\d+)/$','ajax_get_mutual_friends'),
     
     (r'^ajax_update_lineup_status/(?P<display_id>\d+)/(?P<status>\d+)/$','ajax_update_lineup_status'),

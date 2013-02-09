@@ -15,7 +15,6 @@ class LineupMemberManager(models.Manager):
     # need to retest!!!!
     def get_all_friends_data_array(self,crush,admirer_gender,exclude_facebook_id_array):
         exclude_facebook_ids=self.comma_delimit_list(exclude_facebook_id_array)
-        '(uid1 = me() AND NOT (uid2 IN (" + exclude_facebook_ids + ")) )'
         fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1="' + crush.username + '" AND NOT (uid2 IN (' + exclude_facebook_ids + ')))) AND sex = "' + admirer_gender + '"'
         fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,crush.access_token))
         fql_query_results = json.load(fql_query_results)['data'] 
@@ -36,31 +35,23 @@ class LineupMemberManager(models.Manager):
         return active_friend_array
     
     # build a comma delimited list of usernames that should not be fetched from facebook
-    # list consists of all crushes, all platonic friends, all undecided lineup members (decided lineup members fall into previous lists)
+    # list consists of all of the crush's crushes, platonic friends & undecided lineup members (decided lineup members fall into previous lists)
     def get_exclude_id_array(self,relationship):
-        exclude_facebook_id_array=[]
-        if relationship.friendship_type == 0:
-            builder_user = relationship.target_person # crush is building lineup from his friend list
-            builder_crushes= builder_user.crush_targets.all()
-            builder_just_friends = builder_user.just_friends_targets.all()
-            builder_incomplete_admirer_rels = CrushRelationship.objects.progressing_admirers(builder_user)
-        else:
-            builder_user = relationship.source_person # admirer is building lineup from his friend list
-            builder_crushes= relationship.target_person.crush_targets.all()
-            builder_just_friends = relationship.target_person.just_friends_targets.all()
-            builder_incomplete_admirer_rels = CrushRelationship.objects.progressing_admirers(relationship.target_person)
+        exclude_facebook_id_array=[relationship.source_person.username] # the admirer will be manually inserted into lineup
+        exclude_facebook_id_array.append(relationship.target_person.username) # don't put the crush themself in lineup, duh
+        crush = relationship.target_person # crush is building lineup from his friend list
+        crush_crushes= crush.crush_targets.all()
+        crush_just_friends = crush.just_friends_targets.all()
+        crush_progressing_admirer_rels = CrushRelationship.objects.progressing_admirers(crush)
         # loop through all their just_friends_targets and all their crush_targets and add their ids to a fql friendlist list
-        for crush in builder_crushes:
-            exclude_facebook_id_array.append(crush.username)
-        for just_friend in builder_just_friends:
+        for other_crush in crush_crushes:
+            exclude_facebook_id_array.append(other_crush.username)
+        for just_friend in crush_just_friends:
             exclude_facebook_id_array.append(just_friend.username)
-        for rel in builder_incomplete_admirer_rels:
-            builder_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
-        for member in builder_undecided_lineup_members:
+        for rel in crush_progressing_admirer_rels:
+            crush_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
+        for member in crush_undecided_lineup_members:
             exclude_facebook_id_array.append(member.username)
-        # list all friends usernames who do not have a family relationship with me and are of a certain gender limited to top 9 results
-        if relationship.friendship_type != 1: 
-            exclude_facebook_id_array.append(relationship.source_person.username)
         return exclude_facebook_id_array
     
     def comma_delimit_list(self,array):
@@ -271,13 +262,18 @@ class LineupMemberManager(models.Manager):
             relationship.save(update_fields=['lineup_initialization_status'])
             return      
         print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
+        self.create_lineup(relationship,acceptable_id_array)
+        return True
+
+    # returns true if successful, false otherwise
+    # called by either initialize_lineup above, or by admirer_views functions try_mf_initialization & try_cf_initialization (fof initialization)
+    def create_lineup(self,relationship,acceptable_id_array):
         # determine where the admirer should randomly fall into the lineup
         # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
         random_end = len(acceptable_id_array) - 1
         admirer_position=random.randint(0, random_end) # normally len(data) should be 9
         index = 0
         for lineup_id in acceptable_id_array:
-            print "iteration execution"
             # if the current lineup position is where the admirer should go, then insert the admirer
             if index==admirer_position:
                 LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
@@ -293,8 +289,6 @@ class LineupMemberManager(models.Manager):
 
         relationship.lineup_initialization_status=1
         relationship.save(update_fields=['lineup_initialization_status'])
-        
-        return True
 
 # details about each crush's secret admirer lineup (SAL)
 class LineupMember(models.Model):

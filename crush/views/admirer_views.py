@@ -78,6 +78,109 @@ def ajax_display_lineup_block(request, display_id):
 
     return render(request,'lineup_block.html', {'relationship':relationship})
 
+
+# returns json:
+    # 1st element: 'status': 0 or 1
+# if status = 1, then no client side initialization needed, redirect to lineup page
+# if status = 0, then proceed with client side initializatin using the next two element dictionaries
+    # 2nd element (if status = 0) dictionary of mutual friend id : friend count
+    # 3rd element (if status = 0) dictionary of admirer friend id : friend count
+
+@login_required
+def ajax_try_fof_initialization(request,display_id):
+
+    try:
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=display_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound()
+    exclude_id_array=LineupMember.objects.get_exclude_id_array(relationship)
+    exclude_id_string=LineupMember.objects.comma_delimit_list(exclude_id_array)
+    post_dict = {};
+    post_dict['access_token'] = request.user.access_token
+    crush_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM+user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + request.user.username + ' AND NOT (uid2 IN (' + exclude_id_string + ')))"}'
+    crush_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + request.user.username + ' AND NOT (uid2 IN (' + exclude_id_string + '))) AND is_app_user"}'
+    mutual_friend_id_dict='{"method":"GET","name":"mutual-friends","relative_url":"' + request.user.username +'/mutualfriends/' + relationship.source_person.username + '"}'
+    mutual_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + '))"}'
+    mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
+    
+    post_dict['batch'] = '[' + mutual_friend_id_dict + ',' + mutual_friend_dict + ',' + mutual_app_friend_dict + ',' + crush_friend_dict + ',' + crush_app_friend_dict  + ']'
+    post_dict=urllib.urlencode(post_dict)    
+    url='https://graph.facebook.com'
+    fb_result = urllib.urlopen(url,post_dict)
+    fb_result = json.load(fb_result)
+
+    mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
+    random.shuffle(mutual_app_friend_array)
+    crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
+    random.shuffle(crush_app_friend_array)
+    
+    response_data={}
+    response_data['success']=1
+    if try_mf_initialization(mutual_app_friend_array,exclude_id_string,relationship)==False:
+        if try_cf_initialization(crush_app_friend_array,exclude_id_string,relationship)==False:
+            response_data['success']=0
+            crush_friend_array=json.loads(fb_result[3][u'body'])['data']
+            random.shuffle(crush_friend_array)
+            mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
+            random.shuffle(mutual_friend_array)
+            response_data['mutual_friend_array']=mutual_friend_array
+            response_data['crush_friend_array']=crush_friend_array
+            response_data['exclude_id_string']=exclude_id_string
+
+    return HttpResponse(json.dumps(response_data),content_type="application/json")
+
+# try to initialize lineup with 9 friends from a single mutual friend
+# called by ajax_try_fof_initialization
+def try_mf_initialization(mutual_app_friend_array,exclude_id_string,relationship):
+    for mutual_friend in mutual_app_friend_array:
+        if mutual_friend['friend_count'] <settings.MINIMUM_LINEUP_MEMBERS:
+            continue
+        # grab all friends of mutual app with admirer sex, friend sorted by friend count - via graph api
+        fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1=' + str(mutual_friend['uid']) + ' AND NOT (uid2 IN (' + exclude_id_string + ')))) AND sex = "' + relationship.source_person.get_fb_gender() + '" ORDER BY friend_count DESC LIMIT ' + str(settings.IDEAL_LINEUP_MEMBERS)
+        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.target_person.access_token))
+        fql_query_results=json.load(fql_query_results)
+        print fql_query_results
+        fql_query_results = fql_query_results['data'] 
+        # if less than minimum lineup members, go on to next mutual friend
+        if len(fql_query_results) < settings.MINIMUM_LINEUP_MEMBERS:
+            continue 
+        acceptable_id_array=[]
+        for result in fql_query_results:
+            acceptable_id_array.append(result['uid'])
+        # else add to lineup id array and setup in lineup
+        LineupMember.objects.create_lineup(relationship,acceptable_id_array)
+        return True
+    # if for loop ended without returning, then return False cause no lineup was created
+    return False
+
+# try to initialize lineup with 9 friends from 9 separate crush friends
+# called by ajax_try_fof_initialization
+def try_cf_initialization(crush_app_friend_array,exclude_id_string,relationship):
+    if len(crush_app_friend_array) < settings.MINIMUM_LINEUP_MEMBERS:
+        return False
+    acceptable_id_array=[]
+    # iterate through all crush app friends
+    for friend in crush_app_friend_array:
+        # get each crush app friend's friends sorted by friend_count and filtered by gender & exclude id list - limit result to 1
+        fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1=' + str(friend['uid']) + ' AND NOT (uid2 IN (' + exclude_id_string + ')))) AND sex = "' + relationship.source_person.get_fb_gender() + '" ORDER BY friend_count DESC LIMIT 1'
+        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.target_person.access_token))
+        fql_query_results=json.load(fql_query_results)
+        fql_query_results = fql_query_results['data'] 
+        # if result < 0 skip rest of loop
+        if len(fql_query_results) == 0:
+            continue
+        # else grab the result and add to acceptable id_array
+        acceptable_id_array.append(fql_query_results[0]['uid'])
+        exclude_id_string = exclude_id_string + ',' + fql_query_results[0]['uid']
+        # if acceptable id_array length == ideal lineup members then break out of loop entirely
+        if len(acceptable_id_array) >= settings.IDEAL_LINEUP_MEMBERS:
+            break
+    # after loop, count the acceptable id_array_length, if greater than minimum lineup member setting, then call create_lineup
+    if len(acceptable_id_array) >= settings.MINIMUM_LINEUP_MEMBERS:
+        LineupMember.objects.create_lineup(relationship,acceptable_id_array)
+        return True
+    return False
+    
 # called when an client side initialization of friend-of-friend admirer starts
 @login_required
 def ajax_get_mutual_friends(request,display_id):

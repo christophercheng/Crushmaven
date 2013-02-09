@@ -94,8 +94,7 @@ class FacebookUserManager(UserManager):
             user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
    
         return user
-
-
+    
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
     
@@ -229,7 +228,13 @@ class FacebookUser(AbstractUser):
     
     # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_all_new_incomplete_admirer_relations(self):
-      return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
+        return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
+    
+    def get_fb_gender(self):
+        if self.gender==u'M':
+            return 'male'
+        else:
+            return 'female'
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):

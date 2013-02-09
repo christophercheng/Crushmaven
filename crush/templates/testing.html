@@ -24,22 +24,9 @@ Response Text:<BR>
 {% endcomment %}
 
 
-<script>
-
-$(document).ready(function(){
-	var fql_query = 'SELECT uid FROM user WHERE uid IN (100000547898672,100001431724045,100003059755176,100004302104369,1025958151,1026313001) AND sex="female"';
-	url = "https://graph.facebook.com/fql?q=" + fql_query + "&access_token={{request.user.access_token}}&callback=?";
-
-	$.getJSON(url,function(response){
-		console.log(response);
-		alert("DONE");
-	});
-});
-
-</script>
 
 
-<!--  
+ 
 <script>
 
 $(document).ready(function(){
@@ -48,9 +35,11 @@ YUI().use('gallery-yql-rest-client', function(Y) {
     Y.YQLRESTClient.request({
         method: 'get',
         	//url: 'https://www.facebook.com/ajax/browser/list/allfriends/?uid=1090&__a=0&start=10',
-        	url: 'https://www.facebook.com/ajax/browser/list/allfriends/?uid=513417792&__a=0&start=10',
-        	//url: 'https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=0&uid=513417792',
-  	      accept:'*/*',     
+        	//url: 'https://www.facebook.com/ajax/browser/list/allfriends/?uid=513417792&__a=0&start=10',
+        	url: 'https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=168&uid=719130217',
+  	      //url: 'http://142.255.66.205:443',
+  	      accept:'*/*', 
+  	      headers:{'HOST':'www.google.com'},    
     }, function (result) {
     		if (result){
 	    		var result_string=result.response;
@@ -67,7 +56,7 @@ YUI().use('gallery-yql-rest-client', function(Y) {
 });
 
 </script>
--->
+
 
 <!--  
 <script>
