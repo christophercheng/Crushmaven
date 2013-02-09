@@ -106,23 +106,41 @@ def ajax_try_fof_initialization(request,display_id):
     post_dict['batch'] = '[' + mutual_friend_id_dict + ',' + mutual_friend_dict + ',' + mutual_app_friend_dict + ',' + crush_friend_dict + ',' + crush_app_friend_dict  + ']'
     post_dict=urllib.urlencode(post_dict)    
     url='https://graph.facebook.com'
-    fb_result = urllib.urlopen(url,post_dict)
-    fb_result = json.load(fb_result)
-
-    mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
-    random.shuffle(mutual_app_friend_array)
-    crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
-    random.shuffle(crush_app_friend_array)
+    
+    num_fetch_tries=0 # try to grab data from facebook two times if necessary. sometimes it does not return data
+    
+    while (num_fetch_tries < 2):    
+        fb_result = urllib.urlopen(url,post_dict)
+        fb_result = json.load(fb_result)
+    
+        mutual_app_friend_array=[]
+        crush_app_friend_array=[]
+    
+        if 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
+            mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
+            random.shuffle(mutual_app_friend_array)
+            num_fetch_tries=2
+        if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
+            crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
+            random.shuffle(crush_app_friend_array)
+            num_fetch_tries=2
+        num_fetch_tries+=1
+        
     
     response_data={}
     response_data['success']=1
     if try_mf_initialization(mutual_app_friend_array,exclude_id_string,relationship)==False:
         if try_cf_initialization(crush_app_friend_array,exclude_id_string,relationship)==False:
             response_data['success']=0
-            crush_friend_array=json.loads(fb_result[3][u'body'])['data']
-            random.shuffle(crush_friend_array)
-            mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
-            random.shuffle(mutual_friend_array)
+            
+            mutual_friend_array=[]
+            crush_friend_array=[]
+            if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:          
+                crush_friend_array=json.loads(fb_result[3][u'body'])['data']
+                random.shuffle(crush_friend_array)
+            if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
+                mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
+                random.shuffle(mutual_friend_array)
             response_data['mutual_friend_array']=mutual_friend_array
             response_data['crush_friend_array']=crush_friend_array
             response_data['exclude_id_string']=exclude_id_string

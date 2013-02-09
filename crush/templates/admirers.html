@@ -90,8 +90,8 @@ $(document).ready(function()
 		graph_api_initialization.done(function(data){
 			console.log(data);
 			if (data['success']==1){
-				alert("PARTY!");
-				return;	
+//				alert("PARTY!");
+//				return;	
 				// redirect to lineup
      		load_url="/ajax_show_lineup_slider/" + display_id + "/";
 				$("#lineup_modal").load(load_url);   	
@@ -103,9 +103,9 @@ $(document).ready(function()
 				window.crush_friend_array=data['crush_friend_array'];
 				window.mutual_friend_array=data['mutual_friend_array'];
 				window.exclude_id_string=data['exclude_id_string'];
+				window.initialization_finished=false;
 
-				//initialize_method3(0)
-				initialize_method4()
+				initialize_method3(0)
 		}); // close off graph_api_initialization.done handler
 		
 	}; // close off initialize_method1
@@ -118,6 +118,7 @@ $(document).ready(function()
 	// ==================================================================
 
 	var initialize_method3 = function(process_mf_index){
+			console.timeStamp("started method 3");
 			var q_block_num_array=[];
 			var current_mutual_friend = window.mutual_friend_array[process_mf_index]['uid'];
 			var number_friends=window.mutual_friend_array[process_mf_index]['friend_count'];
@@ -140,6 +141,18 @@ $(document).ready(function()
 			   console.log("q_block for mutual friend " + current_mutual_friend + " : ",q_block_array);
 			  // kick of processing of a batch of q blocks
 				process_batch_blocks(process_mf_index,q_block_array,0);
+				
+				// check back after 60 seconds - if either the initialization has not completed , or the previous batch has not finished, then auto restart the next batch
+				clearTimeout(window.batch_fetch_timeout); // if previous timeout set, clear it
+				window.batch_fetch_timeout = setTimeout(function(){
+					if (window.initialization_finished == false && window.batch_blocks_received < window.batch_blocks_requested){
+						if (window.matched_id_array.length >= {{minimum_lineup_members}}) // take what we got!
+								finalize_initialization();
+						}
+					else
+						initialize_fail(5);
+				  },60000);
+				
 			} // close off if(number_friends)
 			else {//number of friends is null (privatized) or less than 10
 				// try to process the next friend
@@ -197,7 +210,6 @@ $(document).ready(function()
 			}// close off try {
 			catch(e){
 				console.log("caught error on first YUI:",e);
-				alert("YUI error 1");
 				window.batch_blocks_received++;// consider this block processed
 				if (window.batch_blocks_received==window.batch_blocks_requested)
 					process_batch_results(process_mf_index,q_block_array,process_q_index);
@@ -296,6 +308,8 @@ $(document).ready(function()
 	// METHOD 4 - Subroutine A: Batch Fetch Handler - iteratively fetch 20 friends at given index
 	// ================================================================
 	var batch_fetch_friends = function(process_f_index){
+
+		console.timeStamp("Started method 4 batch fetch at index: ",process_f_index);
 		next_process_f_index = process_f_index + 18;
 		if (next_process_f_index > window.crush_friend_array.length)
 			next_process_f_index = window.crush_friend_array.length;
@@ -307,6 +321,17 @@ $(document).ready(function()
 			// call a single person handler
 			start_single_friend_fetch(x);		
 		}// close of for loop through friend universe
+		
+		// check back after 60 seconds - if either the initialization has not completed , or the previous batch has not finished, then auto restart the next batch
+		clearTimeout(window.batch_fetch_timeout); // if previous timeout set, clear it
+		window.batch_fetch_timeout = setTimeout(function(){
+			if (window.initialization_finished == false && window.batch_friends_received < window.batch_friends_requested){
+				if (window.matched_id_array.length >= {{minimum_lineup_members}}) // take what we got!
+						finalize_initialization();
+				}
+			else
+				initialize_fail(5);
+		  },60000);
 	};//close off METHOD 4 - Subroutine A
 
 	// ================================================================	
@@ -383,7 +408,6 @@ $(document).ready(function()
 	   }
    	catch(e){
 			console.log("caught error on second YUI:",e);
-			alert("YUI error 2");
 			get_another_friend_block(process_f_index,q_block_array,q_index);
 		}
 	   
@@ -456,7 +480,7 @@ $(document).ready(function()
 			return;
 		window.batch_friends_received++;
 		console.log("checking in: ",window.crush_friend_array[process_f_index],"# batch friends received:",window.batch_friends_received, "total sent:",window.batch_friends_requested, "matched id's:",window.matched_id_array);
-		if (window.batch_friends_received == window.batch_friends_requested) {
+		if (window.batch_friends_received >= window.batch_friends_requested) {
 				process_f_index = process_f_index + window.batch_friends_requested;
 				if (process_f_index < window.crush_friend_array.length && window.matched_id_array.length < {{ideal_lineup_members}})
 					batch_fetch_friends(process_f_index);
@@ -475,7 +499,9 @@ $(document).ready(function()
 	// METHOD 4 - Subroutine: Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
 	// ================================================================
 	var initialize_fail = function(status){
+		clearTimeout(window.batch_fetch_timeout);
 		// FAIL HANDLING
+		window.initialization_finished=true;
 		status = typeof status !== undefined ? status : 2; // default status is 2
 		console.log("fail with status",status,"display id:",window.display_id);
 		$('#lineup_btn[display_id="' + window.display_id + '"]').load('/ajax_update_lineup_status/' + window.display_id + '/' + status + '/');
@@ -484,9 +510,10 @@ $(document).ready(function()
 	// ================================================================	
 	// HELPER METHOD: send matched id results back to server and launch lineup
 	// ================================================================
-	var finalize_initialization= function(){	
-		alert("success: " + window.matched_id_array);
-		return; // return for now for testing purposes
+	var finalize_initialization= function(){
+		clearTimeout(window.batch_fetch_timeout);
+		console.timeStamp("finished initialization");
+		window.initialization_finished=true;	
 		post_dictionary={};
 		post_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
 		for (key in window.matched_id_array)
@@ -501,7 +528,7 @@ $(document).ready(function()
 		});
 		post_function.fail(function(){
 			// FAIL HANDLING
-			$('#lineup_btn[display_id="' + window.display_id + '"]').load('/ajax_update_lineup_status/' + window.display_id + '/2/');
+			$('#lineup_btn[display_id="' + window.display_id + '"]').load('/ajax_update_lineup_status/' + window.display_id + '/5/');
 		}); // close off post_function.fail handler
 	}; // close off finalize_initialization function
 	
