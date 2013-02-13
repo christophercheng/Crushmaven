@@ -88,15 +88,16 @@ $(document).ready(function()
 		}); 
 		
 		graph_api_initialization.done(function(data){
+			return;
 			console.log(data);
 			if (data['success']==1){
-//				alert("PARTY!");
-//				return;	
+				alert("PARTY!");
+				return;	
 				// redirect to lineup
      		load_url="/ajax_show_lineup_slider/" + display_id + "/";
 				$("#lineup_modal").load(load_url);   	
-      	$("#lineup_modal").dialog("open");
-      	return;
+	      	$("#lineup_modal").dialog("open");
+	      	return;
 			}
 				window.display_id=display_id;
 				window.admirer_gender=admirer_gender;

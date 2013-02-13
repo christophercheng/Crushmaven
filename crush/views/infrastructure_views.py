@@ -10,7 +10,6 @@ import urllib, json
 import cookielib
 import subprocess
 from StringIO import StringIO    
-import pycurl
 import time
 import random
 from itertools import islice

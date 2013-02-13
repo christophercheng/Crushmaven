@@ -93,6 +93,12 @@ def ajax_try_fof_initialization(request,display_id):
         relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=display_id)
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound()
+    
+    LineupMember.objects.initialize_lineup(relationship)
+    response_data={}
+    response_data['success']=1
+    return HttpResponse(json.dumps(response_data),content_type="application/json")
+  
     exclude_id_array=LineupMember.objects.get_exclude_id_array(relationship)
     exclude_id_string=LineupMember.objects.comma_delimit_list(exclude_id_array)
     post_dict = {};
