@@ -52,8 +52,7 @@ class LineupMemberManager(models.Manager):
         g_batch_friends_requested= next_cf_index-cf_index # use this variable to determine if all requests have been retrieved and we can process final results
         g_batch_friends_received = 0
         for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
-            # call a single person handler
-            #self.start_single_friend_fetch(x)  
+            # call a single person handler 
             thread.start_new_thread(self.start_single_friend_fetch,(x,)) #initialize lineup asynchronously            
                   
 
@@ -197,22 +196,20 @@ class LineupMemberManager(models.Manager):
     def finalize_initialization(self):
         print "finalized initialization with ids: " + str(g_filtered_id_array)
         #console.timeStamp("finished initialization")   
-        #self.create_lineup(g_relationship,filtered_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
-            
-
+        self.create_lineup(g_relationship,g_filtered_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
     
     # try to build an array with 9 friends from a single mutual friend (non-api)
     def try_nonapi_mf_initialization(self,relationship,exclude_id_string):
         global g_exclude_id_string,g_relationship,g_filtered_id_array
 
         if len(g_mutual_friend_array) > 0:
-            random.shuffle(g_mutual_friend_array)
-            self.process_mutual_friend(0)
-        else:
             # set some of the global variables
             g_exclude_id_string=exclude_id_string
             g_relationship=relationship
             g_filtered_id_array=[]
+            random.shuffle(g_mutual_friend_array)
+            self.process_mutual_friend(0)
+        else:
             self.try_nonapi_cf_initialization()
        
     def process_mutual_friend(self,mf_index):
@@ -301,7 +298,7 @@ class LineupMemberManager(models.Manager):
                 acceptable_id_array.append(item['uid'])
             #sort array
             acceptable_id_array.sort(key=int)
-            #self.create_lineup(g_relationship,acceptable_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
+            self.create_lineup(g_relationship,acceptable_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
             return
         else:
             next_q_index = q_start_index + g_batch_blocks_received
@@ -431,13 +428,11 @@ class LineupMemberManager(models.Manager):
             g_mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
                 g_crush_friend_array=json.loads(fb_result[3][u'body'])['data']
-                #self.try_nonapi_mf_initialization(relationship,exclude_id_string)
-                self.try_nonapi_cf_initialization(relationship,exclude_id_string)
+                self.try_nonapi_mf_initialization(relationship,exclude_id_string)
                 return
 
         # if got here then we failed cause of bad facebook data fetch, so allow user to start it up again
-        relationship.lineup_initialization_status=5
-        relationship.save(update_fields=['lineup_initialization_status'])
+        self.initialize_fail(5)
     
     def initialize_friend_or_nonfriend_crush(self,relationship,exclude_facebook_id_array):
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
@@ -454,18 +449,16 @@ class LineupMemberManager(models.Manager):
                 data = json.load(fql_query_results)['data'] 
         except:
             print "Key or Value Error on Fql Query Fetch read!"
-            relationship.lineup_initialization_status=5
-            relationship.save(update_fields=['lineup_initialization_status'])
+            self.initialize_fail(5)
             return
         for item in data:
             acceptable_id_array.append(item['uid'])
             
         if len(acceptable_id_array) < settings.MINIMUM_LINEUP_MEMBERS:
             if relationship.friendship_type == 0:
-                relationship.lineup_initialization_status=3
+                self.initialize_fail(3)
             else:
-                relationship.lineup_initialization_status=2
-            relationship.save(update_fields=['lineup_initialization_status'])
+                self.initialize_fail(2)
         else:      
             print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
             self.create_lineup(relationship,acceptable_id_array)

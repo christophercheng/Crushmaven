@@ -3,7 +3,7 @@ from django.db import models
 import datetime
 from smtplib import SMTPException
 from django.core.mail import send_mail
-import random
+import random,urllib,json
 from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
@@ -160,6 +160,7 @@ class CrushRelationship(BasicRelationship):
             
     source_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_source')
     target_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_target')
+    mutual_friends=models.CommaSeparatedIntegerField(null=True,default=None,max_length=3000)
     
     #dynamically tie in the target person's response as a lookup time optimization
     TARGET_STATUS_CHOICES = (
@@ -262,15 +263,23 @@ class CrushRelationship(BasicRelationship):
                         self.target_status = 0
                         # see if any active users are friends with this new inactive crush - solicit their help
                         #self.target_person.find_active_friends_of_inactivated_crush()         
-            # check to see if there are any incomplete lineups that have this crush as an undecided member, if so , preset their decision
-            incomplete_admirer_rels = self.source_person.crush_relationship_set_from_target.filter(date_lineup_finished=None)
-            for rel in incomplete_admirer_rels:
-                try:
-                    duplicate_lineup_member = rel.lineupmember_set.get(username=self.target_person.username)
-                    duplicate_lineup_member.decision = 0
-                    duplicate_lineup_member.save(update_fields=['decision'])
-                except crush.models.lineup_models.LineupMember.DoesNotExist:
-                    pass      
+                    if self.friendship_type==1:
+                        # calculate mutual friends, when crush finally initializes lineup, this list of mf's will be needed
+                        #try:
+                        mf_results = urllib.urlopen('https://graph.facebook.com/' + self.source_person.username + '/mutualfriends/' + self.target_person.username + '/?access_token=%s' % self.source_person.access_token)
+                        mf_results = json.load(mf_results)
+                        if len(mf_results['data'])>0:
+                            csvString = ''
+                            for friend in mf_results['data']:
+                                csvString+= friend['id'] + ","
+                            if len(csvString) < 3000:
+                                self.mutual_friends=csvString
+                        #except:
+                        #    pass # this ins't mission critical data
+        
+            # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,
+                # this check is performed when the lineup slide is pulled
+   
         else:
             # check if the target status is being changed so that a possible notification can be sent out
             original_relationship = CrushRelationship.objects.get(pk=self.pk)
