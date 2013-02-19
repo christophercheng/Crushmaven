@@ -30,8 +30,7 @@ def admirers(request,show_lineup=None):
         error_relationship.save(update_fields=['lineup_initialization_status'])
     
     uninitialized_friend_relationships = uninitialized_relationships.filter(friendship_type=0) 
-    uninitialized_fof_relationships = uninitialized_relationships.filter(friendship_type=1) 
-    uninitialized_nonfriend_relationships = uninitialized_relationships.filter(friendship_type=2) 
+    uninitialized_nonfriend_relationships = uninitialized_relationships.exclude(friendship_type=0) 
     
     # initialize friend relationships serially, albeit in a separate asynchronously fired process 
     if len(uninitialized_friend_relationships) > 0:
@@ -45,48 +44,7 @@ def admirers(request,show_lineup=None):
     for relationship in uninitialized_nonfriend_relationships:
         thread.start_new_thread(initialize_lineup,(relationship,)) 
         #initialize_lineup(relationship)
-        
-    if len(uninitialized_fof_relationships) == 1:
-        thread.start_new_thread(initialize_lineup,(uninitialized_fof_relationships[0],))
-        #initialize_lineup(uninitialized_fof_relationships[0])
 
-    elif len(uninitialized_fof_relationships)>1:
-        # separate out conflicting fof_relationships (that share at least one mutual friend)
-        separated_relationships=[]
-        for relationship in uninitialized_fof_relationships:
-            if relationship not in separated_relationships:
-                other_relationships = uninitialized_fof_relationships.exclude(id=relationship.id)
-                if len(other_relationships) == 0:
-                    break
-                relationship_mf_array=relationship.mutual_friends.split(',')
-                for friend in relationship_mf_array:
-                    conflicting_relationships = other_relationships.filter(mutual_friends__icontains=friend)
-                    if len(conflicting_relationships) > 0:
-                        # add the source relationship and its conflicting relationships to a separate queue
-                        separated_relationships.append(relationship)
-                        uninitialized_fof_relationships=uninitialized_fof_relationships.exclude(id=relationship.id)
-                        for conflict in conflicting_relationships:
-                            separated_relationships.append(conflict)
-                            uninitialized_fof_relationships=uninitialized_fof_relationships.exclude(id=conflict.id)
-                        break # break out of the current for loop
-                        # remove the relationships from the query set before proceeding
-
-        # run the rest in current process via multi-processing:
-        for relationship in uninitialized_friend_relationships:
-            #initialize_lineup(relationship)
-            thread.start_new_thread(initialize_lineup,(relationship,))
-
-        if len(separated_relationships)>0:
-            new_initialization_timeout=25 + ((len(separated_relationships)-1)*5)# add time to timeout if multiple separated relationships
-            if new_initialization_timeout > g_initialization_timeout:
-                g_initialization_timeout=new_initialization_timeout
-            # run the separated relationships in their own process
-            fof_pool=Pool(1)
-            for relationship in separated_relationships:
-                #initialize_lineup(relationship)
-                #thread.start_new_thread(initialize_lineup,(relationship,))
-                fof_pool.apply_async(initialize_lineup,[relationship])     
-                
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -116,12 +74,12 @@ def ajax_display_lineup_block(request, display_id):
         print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
         if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
             break
-        elif counter==25: # if 30 seconds have passed then give up
+        elif counter==1: # if 30 seconds have passed then give up
             print "giving up on admirer:" + str(display_id)
             relationship.lineup_initialization_status = 5
             relationship.save(update_fields=['lineup_initialization_status'])
             break
-        time.sleep(1) # wait a quarter second
+        time.sleep(5) # wait a quarter second
         counter+=1
 
     if relationship.lineup_initialization_status > 3: # for data fetching errors show a button that allows user to restart the initialization 
