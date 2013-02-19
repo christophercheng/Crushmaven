@@ -107,12 +107,12 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         return admirer_user.crush_relationship_set_from_source.all()
     
     def progressing_crushes(self,admirer_user):   
-        print "progressing crushes"
+        #print "progressing crushes"
         crush_relationships = admirer_user.crush_relationship_set_from_source
         return crush_relationships.exclude(target_status__gt = 3,date_target_responded__lt=datetime.datetime.now())  
     # known responded crushes are can be shown to both users
     def known_responded_crushes(self,admirer_user):
-        print "known responded crushes"
+        #print "known responded crushes"
         crush_relationships = admirer_user.crush_relationship_set_from_source
         return crush_relationships.exclude(is_results_paid=True).filter(target_status__gt = 3,date_target_responded__lt = datetime.datetime.now())
     # unknown responded crushes cannot be shown to either user because they are in a wait period
@@ -131,7 +131,7 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         return self.progressing_admirers(crush_user).filter(target_status__lt = 3)
     
     def progressing_admirers(self,crush_user):
-        print "progressing admirers"
+        #print "progressing admirers"
         # 1) start with all relationships where the target is the crush user
         admirer_relationships = crush_user.crush_relationship_set_from_target.filter(date_lineup_finished=None)
         # 2) if the lineup has not yet been started, then filter out any relationships where the source_user is either a crush or platonic target of crush 
@@ -286,7 +286,7 @@ class CrushRelationship(BasicRelationship):
             if 'update_fields' in kwargs and 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                 print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.first_name + " " + self.source_person.last_name + " and target: " + self.target_person.first_name + " " + self.target_person.last_name
                 self.notify_source_person(crush_relationship=self,target_status=self.target_status)
-        print "finished saving crush relationship object: 12"
+        #print "finished saving crush relationship object"
         super(CrushRelationship,self).save(*args,**kwargs)
         
     def handle_lineup_paid(self): 

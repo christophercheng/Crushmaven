@@ -5,10 +5,9 @@ from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
 from crush.models.lineup_models import initialize_lineup
 import datetime
-from multiprocessing import Pool
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,random,thread
-from django.db import transaction
+from django.db.models import Q
 
 g_initialization_timeout=None
 
@@ -16,35 +15,32 @@ g_initialization_timeout=None
 @login_required
 def admirers(request,show_lineup=None):
     global g_initialization_timeout
-    g_initialization_timeout=25 # how much time should elapse before ajax initialization call fails
+    g_initialization_timeout=25 # minimum time before ajax initialization call fails
     me = request.user 
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
-    # initialize any uninitialized relationship lineups
-    uninitialized_relationships = progressing_admirer_relationships.exclude(lineup_initialization_status=1) 
+    # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
+    uninitialized_relationships = progressing_admirer_relationships.exclude(Q(lineup_initialization_status=1) | Q(lineup_initialization_status=0)) 
     
-    # reset the initialization status of any relationships that previously erred out:
-    for error_relationship in uninitialized_relationships.filter(lineup_initialization_status__gt=1):
-        error_relationship.lineup_initialization_status=0
-        error_relationship.save(update_fields=['lineup_initialization_status'])
-    
+    for relationship in uninitialized_relationships: 
+        relationship.lineup_initialization_status=0
+        relationship.save(update_fields=['lineup_initialization_status'])
+        thread.start_new_thread(initialize_lineup,(relationship,))
+     
+    # determine how long to wait for initialization    
     uninitialized_friend_relationships = uninitialized_relationships.filter(friendship_type=0) 
-    uninitialized_nonfriend_relationships = uninitialized_relationships.exclude(friendship_type=0) 
+    uninitialized_fof_relationships = uninitialized_relationships.filter(friendship_type=1) 
     
-    # initialize friend relationships serially, albeit in a separate asynchronously fired process 
-    if len(uninitialized_friend_relationships) > 0:
-        friend_pool=Pool(1)
-        g_initialization_timeout=25 + ((len(uninitialized_friend_relationships)-1)*5)# add time to timeout if multiple separated relationships
-        for relationship in uninitialized_friend_relationships:
-            #initialize_lineup(relationship)
-            friend_pool.apply_async(initialize_lineup,[relationship])  
-            
-    # initialize non friend relationships asynchronously at once using threads
-    for relationship in uninitialized_nonfriend_relationships:
-        thread.start_new_thread(initialize_lineup,(relationship,)) 
-        #initialize_lineup(relationship)
+    friend_duration = len(uninitialized_friend_relationships)*5
+    fof_duration = len(uninitialized_fof_relationships)*10
+    
+    if friend_duration > g_initialization_timeout:
+        g_initialization_timeout=friend_duration
 
+    if fof_duration > g_initialization_timeout:
+        g_initialization_timeout=fof_duration
+        
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -71,15 +67,15 @@ def ajax_display_lineup_block(request, display_id):
         except CrushRelationship.DoesNotExist:
             ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
             return HttpResponse(ajax_response)   
-        print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
+        #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
         if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
             break
-        elif counter==1: # if 30 seconds have passed then give up
+        elif counter>=g_initialization_timeout: # if 30 seconds have passed then give up
             print "giving up on admirer:" + str(display_id)
             relationship.lineup_initialization_status = 5
             relationship.save(update_fields=['lineup_initialization_status'])
             break
-        time.sleep(5) # wait a quarter second
+        time.sleep(1) # wait a second
         counter+=1
 
     if relationship.lineup_initialization_status > 3: # for data fetching errors show a button that allows user to restart the initialization 

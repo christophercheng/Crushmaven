@@ -263,18 +263,17 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
         relationship.lineup_initialization_status = 0
         relationship.save(update_fields=['lineup_initialization_status'])
-        # we don't need to call initialize_lineup via asynchronous pooling since we are already calling it from client via ajax asynchronously
-        LineupMember.objects.initialize_lineup(relationship)
+
     if relationship.lineup_initialization_status == 0:
         # wait for a certain amount of time before returning a response
         counter = 0
         while True:
-            print "trying crush lineup initialization for " + relationship.target_person.last_name + " on try: " + str(counter) 
+            #print "trying crush lineup initialization for " + relationship.target_person.last_name + " on try: " + str(counter) 
 
             if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
                 break
             elif counter==25: # if these number of seconds have passed then give up
-                print "giving up on crush: " + relationship.target_person.last_name
+                #print "giving up on crush: " + relationship.target_person.last_name
                 relationship.lineup_initialization_status = 5
                 relationship.save(update_fields=['lineup_initialization_status'])
                 break
