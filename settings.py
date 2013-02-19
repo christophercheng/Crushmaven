@@ -23,6 +23,7 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
+             
 }
 
 # for testing I am running a temporary python "dumb" SMTP server that receives emails locally and displays them to the terminal

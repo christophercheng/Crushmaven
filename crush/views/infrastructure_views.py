@@ -26,18 +26,18 @@ from django.conf import settings
 # handles both member and guest home page
 #@csrf_exempt
 def home(request):
-    print "HI from home"
-    output_dict={}
-    for header in request.META:
-        output_dict[str(header)] = str(request.META[header])
-    output_string=''
-    for key in sorted(output_dict.iterkeys()):
-        output_string = output_string + key + " : " + output_dict[key] + "\n"
-        print str(key) + " : " + str(output_dict[key])
-    output_string="FUCK"
-    text_file = open("header_output", "w")
-    text_file.write(output_string)
-    text_file.close()
+    #print "HI from home"
+    #output_dict={}
+    #for header in request.META:
+    #    output_dict[str(header)] = str(request.META[header])
+    #output_string=''
+    #for key in sorted(output_dict.iterkeys()):
+    #    output_string = output_string + key + " : " + output_dict[key] + "\n"
+    #    print str(key) + " : " + str(output_dict[key])
+    #output_string="FUCK"
+    #text_file = open("header_output", "w")
+    #text_file.write(output_string)
+    #text_file.close()
     
     if request.user.is_authenticated():
         #if len(FacebookUser.objects.all()) == 1 and request.user.username==:

@@ -2,71 +2,77 @@ from django.db import models
 import urllib, json,urllib2
 from django.conf import settings
 from  crush.models.relationship_models import CrushRelationship
-from crush.models.user_models import FacebookUser   
-from random import shuffle
+
 import random
-import re,time,thread
+import re,thread
+
+# returns true if successful, false otherwise
+def initialize_lineup(relationship):
+    global g_init_dict
+    rel_id=str(relationship.id)
+    print "initializing relationship for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name
+    if 'g_init_dict' not in globals():
+        g_init_dict={}
+    g_init_dict[rel_id]={}    
+    g_init_dict[rel_id]['g_initialization_completed']=False
+    exclude_facebook_id_array=LineupMember.objects.get_exclude_id_array(relationship)
+    if relationship.friendship_type==1:
+        LineupMember.objects.initialize_friend_of_friend_crush(relationship,exclude_facebook_id_array)
+    else:
+        LineupMember.objects.initialize_friend_or_nonfriend_crush(relationship,exclude_facebook_id_array)      
+    return
+
 
 class LineupMemberManager(models.Manager):
     class Meta:
     # this allows the models to be broken into separate model files
         app_label = 'crush'
 
-    g_relationship=None
-    g_exclude_id_string=None
-    g_mutual_friend_array=None
-    g_crush_friend_array=None
-    g_batch_blocks_requested=None
-    g_batch_blocks_received=None
-    g_filtered_id_array=None
-    g_batch_id_array=None
-    
-    g_batch_friends_requested=None
-    g_batch_friends_received=None
+    g_init_dict = None
 
     #================================================================    
     # METHOD 4 -     # try to build an array with 9 friends from a single mutual friend (non-api)
     # ================================================================
 
-    def try_nonapi_cf_initialization(self,relationship,exclude_id_string):
-        global g_relationship,g_exclude_id_string,g_filtered_id_array,g_crush_friend_array
-        if len(g_crush_friend_array) < settings.MINIMUM_LINEUP_MEMBERS:
-            self.initialize_fail(2)
+    def try_nonapi_cf_initialization(self,rel_id):
+        global g_init_dict
+        print "TRY METHOD 4"
+        if len(g_init_dict[rel_id]['g_crush_friend_array']) < settings.MINIMUM_LINEUP_MEMBERS:
+            self.initialize_fail(g_init_dict[rel_id]['g_relationship'],2)
             return
         else:
-            g_relationship=relationship
-            g_exclude_id_string=exclude_id_string
-            g_filtered_id_array=[]#scrap results to date
-            random.shuffle(g_crush_friend_array)
-            self.batch_fetch_friends(0)
+            g_init_dict[rel_id]['g_initialization_completed']=False
+            g_init_dict[rel_id]['g_filtered_id_array']=[]#scrap results to date
+            random.shuffle(g_init_dict[rel_id]['g_crush_friend_array'])
+            self.batch_fetch_friends(rel_id,0)
     
     #================================================================    
     # METHOD 4 - Subroutine A: Batch Fetch Handler - iteratively fetch 20 friends at given index
     # ================================================================
-    def batch_fetch_friends(self,cf_index):
-        global g_batch_friends_requested,g_batch_friends_received
+    def batch_fetch_friends(self,rel_id,cf_index):
+        global g_init_dict
+        g_init_dict[rel_id]['g_batch_start_cf_index']=cf_index
         print "Starting batch fetch at index: " + str(cf_index)
         next_cf_index = cf_index + 18
-        if next_cf_index > len(g_crush_friend_array):
-            next_cf_index = len(g_crush_friend_array)
-        g_batch_friends_requested= next_cf_index-cf_index # use this variable to determine if all requests have been retrieved and we can process final results
-        g_batch_friends_received = 0
+        if next_cf_index > len(g_init_dict[rel_id]['g_crush_friend_array']):
+            next_cf_index = len(g_init_dict[rel_id]['g_crush_friend_array'])
+        g_init_dict[rel_id]['g_batch_friends_requested']= next_cf_index-cf_index # use this variable to determine if all requests have been retrieved and we can process final results
+        g_init_dict[rel_id]['g_batch_friends_received'] = 0
         for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
             # call a single person handler 
-            thread.start_new_thread(self.start_single_friend_fetch,(x,)) #initialize lineup asynchronously            
-                  
+            thread.start_new_thread(self.start_single_friend_fetch,(rel_id,x)) #initialize lineup asynchronously            
+            #self.start_single_friend_fetch(rel_id,x)     
 
     # ================================================================    
     # METHOD 4 - Subroutine B: Single Person Fetch Handler - build q block array and fire off processing for each block
     # ================================================================
-    def start_single_friend_fetch(self,cf_index):
-        # create q block array
-        q_block_num_array=[]
+    def start_single_friend_fetch(self,rel_id,cf_index):
+
         # calculate max q block by finding total friend count
-        number_friends=g_crush_friend_array[cf_index]['friend_count']
+        number_friends=g_init_dict[rel_id]['g_crush_friend_array'][cf_index]['friend_count']
         if number_friends==None or number_friends < 5:
             # skip this friend so continue on to next function and pass on variables
-            self.finished_processing_friend(cf_index)
+            self.finished_processing_friend(rel_id,cf_index)
             return
         
         max_q_block = (number_friends/24) + 1
@@ -77,16 +83,16 @@ class LineupMemberManager(models.Manager):
         # randomize the array                         
         random.shuffle(q_block_array)
         # kick of processing of a batch of q blocks
-        self.process_friend_block(cf_index,q_block_array,0)
+        self.process_friend_block(rel_id,cf_index,q_block_array,0)
     
     # ================================================================    
     # METHOD 4 - Subroutine C: Single BLOCK Fetch Handler 
     # ================================================================
-    def process_friend_block(self,cf_index,q_block_array,q_index):
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS: 
+    def process_friend_block(self,rel_id,cf_index,q_block_array,q_index):
+        if g_init_dict[rel_id]['g_initialization_completed']==True: 
             # other threads have already completed the job
             return
-        crush_friend=g_crush_friend_array[cf_index]
+        crush_friend=g_init_dict[rel_id]['g_crush_friend_array'][cf_index]
         fetch_url='https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=' + str(q_block_array[q_index]) + '&uid=' + str(crush_friend['uid'])
         #console.log("FETCH block #",q_block_array[q_index]," for user object: ",window.crush_friend_array[process_f_index])
         opener = urllib2.build_opener()
@@ -98,30 +104,30 @@ class LineupMemberManager(models.Manager):
             fetch_response = opener.open(fetch_response)
             fetch_response = fetch_response.read()
         except:
-            self.get_another_friend_block(cf_index,q_block_array,q_index)
+            self.get_another_friend_block(rel_id,cf_index,q_block_array,q_index)
             return
 
         extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
         if len(extracted_id_list)>0:
-            self.filter_ids_by_admirer_conditions(cf_index,q_block_array,q_index,extracted_id_list)
+            self.filter_ids_by_admirer_conditions(rel_id,cf_index,q_block_array,q_index,extracted_id_list)
         else:
             #try another friend cause fetching more blocks from this friend will be worthless
-            self.finished_processing_friend(cf_index)
+            self.finished_processing_friend(rel_id,cf_index)
     
     # ================================================================    
     # METHOD 4 - Subroutine D: FILTER out user id's by admirer conditions 
     # ================================================================    
-    def filter_ids_by_admirer_conditions(self,cf_index,q_block_array,q_index,extracted_id_list):
-        global g_filtered_id_array,g_exclude_id_string
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS: 
+    def filter_ids_by_admirer_conditions(self,rel_id,cf_index,q_block_array,q_index,extracted_id_list):
+        global g_init_dict
+        if g_init_dict[rel_id]['g_initialization_completed']==True: 
             # other threads have already completed the job
             return
         # filter batch id_array with gender   
         query_string = "SELECT uid FROM user WHERE uid IN ("
         query_string += ",".join(extracted_id_list)
-        query_string += ") AND NOT (uid IN (" + str(g_exclude_id_string) + ")) AND sex='" + g_relationship.source_person.get_fb_gender() + "'"
+        query_string += ") AND NOT (uid IN (" + str(g_init_dict[rel_id]['g_exclude_id_string']) + ")) AND sex='" + g_init_dict[rel_id]['g_relationship'].source_person.get_fb_gender() + "'"
         url = "https://graph.facebook.com/fql?q=" + query_string # don't need access token for this query             
         try:
             filtered_batch_id_array = urllib.urlopen(url)
@@ -129,97 +135,101 @@ class LineupMemberManager(models.Manager):
             filtered_batch_id_array = filtered_batch_id_array['data']
             #print str(g_mutual_friend_array[mf_index]['uid']) + " - finished batch process. Result for q_start_index: " + str(q_start_index) + " : " + str(filtered_batch_id_array)
         except:
-            self.get_another_friend_block(cf_index,q_block_array,q_index)
+            self.get_another_friend_block(rel_id,cf_index,q_block_array,q_index)
             return
-          
-        g_filtered_id_array.append(filtered_batch_id_array[0]['uid'])    
-        #console.log("GOT A MEMBER from user#:",window.crush_friend_array[process_f_index]," current matched id array: ",window.matched_id_array);
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS:
-            # we have enough lineup members so call final routine // if we get more ingore the others
-            self.finalize_initialization()
-            return
-        else:# update the exclude id string with the latest addition
-            g_exclude_id_string = g_exclude_id_string + ',' + str(filtered_batch_id_array[0]['uid'])
-            self.finished_processing_friend(cf_index) #report in!
-            return
+        if len(filtered_batch_id_array)>0:
+            g_init_dict[rel_id]['g_filtered_id_array'].append(filtered_batch_id_array[0]['uid'])    
+            #console.log("GOT A MEMBER from user#:",window.crush_friend_array[process_f_index]," current matched id array: ",window.matched_id_array);
+            if len(g_init_dict[rel_id]['g_filtered_id_array']) >= settings.IDEAL_LINEUP_MEMBERS:
+                # we have enough lineup members so call final routine // if we get more ingore the others
+                self.finalize_initialization(rel_id)
+                return
+            else:# update the exclude id string with the latest addition
+                g_init_dict[rel_id]['g_exclude_id_string'] = g_init_dict[rel_id]['g_exclude_id_string'] + ',' + str(filtered_batch_id_array[0]['uid'])
+        self.finished_processing_friend(rel_id,cf_index) #report in!
+        return
     
     # ================================================================    
     # METHOD 4 - Subroutine E: Go back and fetch another block - all friends were of wrong sex
     # ================================================================    
-    def get_another_friend_block(self,cf_index,q_block_array,q_index):
+    def get_another_friend_block(self,rel_id,cf_index,q_block_array,q_index):
         
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS: 
+        if g_init_dict[rel_id]['g_initialization_completed']==True: 
             # other threads have already completed the job
             return
         q_index = q_index + 1
         #console.log("fetching another block for user ",window.crush_friend_array[process_f_index], "at",q_index)
         if q_index < len(q_block_array):
-            self.process_friend_block(cf_index,q_block_array,q_index) 
+            self.process_friend_block(rel_id,cf_index,q_block_array,q_index) 
         else:
-            self.finished_processing_friend(cf_index)
+            self.finished_processing_friend(rel_id,cf_index)
     
     # ================================================================    
     # METHOD 4 - Subroutine F: Go WAY back and fetch another batch of friends 
     # ================================================================    
-    def finished_processing_friend(self,cf_index):
-        global g_batch_friends_received
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS: 
+    def finished_processing_friend(self,rel_id,cf_index):
+        global g_init_dict
+        if g_init_dict[rel_id]['g_initialization_completed']==True: 
             # other threads have already completed the job
             return
-        g_batch_friends_received += 1
-        print " - finished processing friend # " + str(g_batch_friends_received) + " with number of ids: " + str(len(g_filtered_id_array))
+        g_init_dict[rel_id]['g_batch_friends_received'] += 1
+        print " - finished processing friend # " + str(g_init_dict[rel_id]['g_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(g_init_dict[rel_id]['g_filtered_id_array']))
         #console.log("checking in: ",window.crush_friend_array[process_f_index],"# batch friends received:",window.batch_friends_received, "total sent:",window.batch_friends_requested, "matched id's:",window.matched_id_array)
-        if g_batch_friends_received >= g_batch_friends_requested:
-            cf_index = cf_index + g_batch_friends_requested
-            if len(g_filtered_id_array) < settings.IDEAL_LINEUP_MEMBERS:
-                if cf_index < len(g_crush_friend_array):
-                    self.batch_fetch_friends(cf_index)
+        if g_init_dict[rel_id]['g_batch_friends_received'] == g_init_dict[rel_id]['g_batch_friends_requested']:
+            if len(g_init_dict[rel_id]['g_filtered_id_array']) < settings.IDEAL_LINEUP_MEMBERS:
+                cf_index = g_init_dict[rel_id]['g_batch_start_cf_index'] + g_init_dict[rel_id]['g_batch_friends_requested']
+                
+                if cf_index < len(g_init_dict[rel_id]['g_crush_friend_array']):
+                    self.batch_fetch_friends(rel_id,cf_index)
                 else: #no more people to fetch
-                    if len(g_filtered_id_array) >= settings.MINIMUM_LINEUP_MEMBERS: 
+                    print "no more friends to process"
+                    if len(g_init_dict[rel_id]['g_filtered_id_array']) >= settings.MINIMUM_LINEUP_MEMBERS: 
                         # take what we got!
-                        self.finalize_initialization()
+                        print "take what we got and call finalize initialization"
+                        self.finalize_initialization(rel_id)
                     else:
-                        self.initialize_fail(2)
+                        self.initialize_fail(g_init_dict[rel_id]['g_relationship'],2)
 
     # ================================================================    
     # METHOD 4 - Subroutine: Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
     # ================================================================
-    def initialize_fail(self,status=2):
-        global g_relationship
-        g_relationship.lineup_initialization_status=status
-        g_relationship.save(update_fields=['lineup_initialization_status'])
+    def initialize_fail(self,relationship,status=2):
+        global g_init_dict
+        g_init_dict[relationship.id]['g_initiailization_completed'] = True
+        relationship.lineup_initialization_status=status
+        relationship.save(update_fields=['lineup_initialization_status'])
         return
     
     # ================================================================    
     # HELPER METHOD: send matched id results back to server and launch lineup
     # ================================================================
-    def finalize_initialization(self):
-        print "finalized initialization with ids: " + str(g_filtered_id_array)
+    def finalize_initialization(self,rel_id):
+        global g_init_dict
+        if g_init_dict[rel_id]['g_initialization_completed']==True: # another thread has already taken care of this!
+            return
+        print "finalized initialization with ids: " + str(g_init_dict[rel_id]['g_filtered_id_array'])
         #console.timeStamp("finished initialization")   
-        self.create_lineup(g_relationship,g_filtered_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
+        self.create_lineup(g_init_dict[rel_id]['g_relationship'],g_init_dict[rel_id]['g_filtered_id_array'][:int(settings.IDEAL_LINEUP_MEMBERS)])
     
     # try to build an array with 9 friends from a single mutual friend (non-api)
-    def try_nonapi_mf_initialization(self,relationship,exclude_id_string):
-        global g_exclude_id_string,g_relationship,g_filtered_id_array
-
-        if len(g_mutual_friend_array) > 0:
+    def try_nonapi_mf_initialization(self,rel_id):
+        global g_init_dict
+        if len(g_init_dict[rel_id]['g_mutual_friend_array']) > 0:
             # set some of the global variables
-            g_exclude_id_string=exclude_id_string
-            g_relationship=relationship
-            g_filtered_id_array=[]
-            random.shuffle(g_mutual_friend_array)
-            self.process_mutual_friend(0)
+            random.shuffle(g_init_dict[rel_id]['g_mutual_friend_array'])
+            self.process_mutual_friend(rel_id,0)
+        
         else:
-            self.try_nonapi_cf_initialization()
+            self.try_nonapi_cf_initialization(rel_id)
        
-    def process_mutual_friend(self,mf_index):
-        global g_filtered_id_array
-        g_filtered_id_array=[] # reset for each mutual friend processed
-        mfriend=g_mutual_friend_array[mf_index]
-        print "Process Mutual Friend: " + str(mfriend['uid'])
+    def process_mutual_friend(self,rel_id,mf_index):
+        global g_init_dict
+        g_init_dict[rel_id]['g_filtered_id_array']=[] # reset for each mutual friend processed
+        mfriend=g_init_dict[rel_id]['g_mutual_friend_array'][mf_index]
+        print "Process Mutual Friend: " + str(mfriend['uid']) + " at mf_index: " + str(mf_index)
         num_friends = mfriend['friend_count']
         if num_friends < settings.MINIMUM_LINEUP_MEMBERS or num_friends == None:
-            self.finished_process_mutual_friend(mf_index)
+            self.finished_process_mutual_friend(rel_id,mf_index)
             return
         else:
             # build array of blocks to process (each block has up to 24 friends)
@@ -229,103 +239,105 @@ class LineupMemberManager(models.Manager):
                 q_block_array.append(24*x)
             random.shuffle(q_block_array)
             # kick off process of a batch of q blocks
-            self.process_batch_blocks(mf_index,q_block_array,0)
+            self.process_batch_blocks(rel_id,mf_index,q_block_array,0)
             return # finished processing all mutual friends and did not find enough lineup members for each
     
     # nonapi_mf_initialization routine
     # request up to 5 blocks from facebook
-    def process_batch_blocks(self,mf_index,q_block_array,q_start_index):
-        global g_batch_blocks_requested,g_batch_blocks_received, g_batch_id_array
+    def process_batch_blocks(self,rel_id,mf_index,q_block_array,q_start_index):
+        global g_init_dict
         # reset batch_blocks received and requested before we kickoff a new batch
-        g_batch_blocks_requested=0
-        g_batch_blocks_received=0
-        g_batch_id_array=[]
-        print str(g_mutual_friend_array[mf_index]['uid']) + " - batch process 5 q_blocks starting at " + str(q_block_array[q_start_index])
+        g_init_dict[rel_id]['g_batch_blocks_received']=0
+        g_init_dict[rel_id]['g_batch_id_array']=[]
+        print str(g_init_dict[rel_id]['g_mutual_friend_array'][mf_index]['uid']) + " - batch process 5 q_blocks starting at q-index: " + str(q_start_index)
         last_fetch_index=q_start_index+5
         if last_fetch_index>len(q_block_array):
             last_fetch_index = len(q_block_array)
-        g_batch_blocks_requested=last_fetch_index - q_start_index
+        g_init_dict[rel_id]['g_batch_blocks_requested']=last_fetch_index - q_start_index
         for x in range(q_start_index,last_fetch_index):
-            thread.start_new_thread(self.fetch_block,(mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
-            #self.fetch_block(mf_index,q_block_array,q_start_index,x)
+            thread.start_new_thread(self.fetch_block,(rel_id,mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
+            #self.fetch_block(rel_id,mf_index,q_block_array,q_start_index,x)
 
-    def fetch_block(self,mf_index,q_block_array,q_start_index,q_index):
-        global g_mutual_friend_array
-        print "process mutual friend: " + str(g_mutual_friend_array[mf_index]['uid']) + ", q block: " + str(q_block_array[q_index])   
+    def fetch_block(self,rel_id,mf_index,q_block_array,q_start_index,q_index):
+        global g_init_dict
+
         opener = urllib2.build_opener()
         opener.addheaders.append(('Host', 'http://www.facebook.com'))
         opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
         opener.addheaders.append( ('Accept', '*/*') )
-        fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(g_mutual_friend_array[mf_index]['uid']) + "&__a=1&start=" + str(q_block_array[q_index])
+        fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(g_init_dict[rel_id]['g_mutual_friend_array'][mf_index]['uid']) + "&__a=1&start=" + str(q_block_array[q_index])
         try:
             fetch_response = urllib2.Request(fetch_url)
             fetch_response = opener.open(fetch_response)
             fetch_response = fetch_response.read()
         except:
-            LineupMember.objects.fetch_block_finished(mf_index,q_block_array,q_start_index, [])
+            LineupMember.objects.fetch_block_finished(rel_id,mf_index,q_block_array,q_start_index, [])
             return
         extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
-        print "extracted ids: " + str(extracted_id_list)
-        LineupMember.objects.fetch_block_finished(mf_index,q_block_array,q_start_index,extracted_id_list)
+        print "single fetch results at mf_index: " + str(mf_index) + ", num extracted items: " + str(len(extracted_id_list))     
+        print "single fetch results for mutual friend: " + str((g_init_dict[rel_id]['g_mutual_friend_array'])[mf_index]['uid']) 
+        LineupMember.objects.fetch_block_finished(rel_id,mf_index,q_block_array,q_start_index,extracted_id_list)
 
-    def fetch_block_finished(self,mf_index,q_block_array,q_start_index,extracted_id_list):
-        global g_batch_blocks_requested,g_batch_blocks_received,g_batch_id_array,g_filtered_id_array
-        g_batch_id_array+=extracted_id_list
-        g_batch_blocks_received  += 1 # TODO replace this with F function to prevent race function
+    def fetch_block_finished(self,rel_id,mf_index,q_block_array,q_start_index,extracted_id_list):
+        global g_init_dict
+        print "# in g_init_dict: " + str(len(g_init_dict))
+        g_init_dict[rel_id]['g_batch_id_array']+=extracted_id_list
+        g_init_dict[rel_id]['g_batch_blocks_received']  += 1 # TODO replace this with F function to prevent race function
 
-        if g_batch_blocks_received < g_batch_blocks_requested:
+        if g_init_dict[rel_id]['g_batch_blocks_received'] < g_init_dict[rel_id]['g_batch_blocks_requested']:
             return
-        if len(g_batch_id_array)==0:
+        if len(g_init_dict[rel_id]['g_batch_id_array'])==0:
             # this mutual friend probably has a privatized friend list
-            self.finished_process_mutual_friend(mf_index)
+            self.finished_process_mutual_friend(rel_id,mf_index)
             return
         # all fetches have completed
         # filter batch id_array with gender   
         query_string = "SELECT uid FROM user WHERE uid IN ("
-        query_string += ",".join(g_batch_id_array)
-        query_string += ") AND NOT (uid IN (" + g_exclude_id_string + ")) AND sex='" + g_relationship.source_person.get_fb_gender() + "'"
+        query_string += ",".join(g_init_dict[rel_id]['g_batch_id_array'])
+        query_string += ") AND NOT (uid IN (" + g_init_dict[rel_id]['g_exclude_id_string'] + ")) AND sex='" + g_init_dict[rel_id]['g_relationship'].source_person.get_fb_gender() + "'"
         url = "https://graph.facebook.com/fql?q=" + query_string # don't need access token for this query             
         filtered_batch_id_array = urllib.urlopen(url)
         filtered_batch_id_array= json.load(filtered_batch_id_array)
         filtered_batch_id_array = filtered_batch_id_array['data']
-        print str(g_mutual_friend_array[mf_index]['uid']) + " - finished batch process. Result for q_start_index: " + str(q_start_index) + " : " + str(filtered_batch_id_array)
-        g_filtered_id_array += filtered_batch_id_array
-        if len(g_filtered_id_array) >= settings.IDEAL_LINEUP_MEMBERS:
+        print str(g_init_dict[rel_id]['g_mutual_friend_array'][mf_index]['uid']) + " - finished batch process at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array))
+        g_init_dict[rel_id]['g_filtered_id_array'] += filtered_batch_id_array
+        if len(g_init_dict[rel_id]['g_filtered_id_array']) >= settings.IDEAL_LINEUP_MEMBERS:
             acceptable_id_array=[]
-            for item in g_filtered_id_array:
+            for item in g_init_dict[rel_id]['g_filtered_id_array']:
                 acceptable_id_array.append(item['uid'])
             #sort array
             acceptable_id_array.sort(key=int)
-            self.create_lineup(g_relationship,acceptable_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
+            self.create_lineup(g_init_dict[rel_id]['g_relationship'],acceptable_id_array[:int(settings.IDEAL_LINEUP_MEMBERS)])
             return
         else:
-            next_q_index = q_start_index + g_batch_blocks_received
+            next_q_index = q_start_index + g_init_dict[rel_id]['g_batch_blocks_received']
             if next_q_index >= len(q_block_array):
                 # done processing this mutual friend
-                if len(g_filtered_id_array) >= settings.MINIMUM_LINEUP_MEMBERS:
+                if len(g_init_dict[rel_id]['g_filtered_id_array']) >= settings.MINIMUM_LINEUP_MEMBERS:
                     # acceptable results from this mutual friend
                     acceptable_id_array=[]
-                    for item in g_filtered_id_array:
+                    for item in g_init_dict[rel_id]['g_filtered_id_array']:
                         acceptable_id_array.append(item['uid'])
                         #sort array
                         acceptable_id_array.sort(key=int)
-                        #self.create_lineup(g_relationship,acceptable_id_array) # return whole array cause we know it is > minimum and < ideal
+                        # return whole array cause we know it is > minimum and < ideal
+                        self.create_lineup(g_init_dict[rel_id]['g_relationship'],acceptable_id_array)
                         return
                 else:
                     # no results to show for. try for next one
-                    return self.finished_process_mutual_friend(mf_index)
+                    return self.finished_process_mutual_friend(rel_id,mf_index)
             else: # process the next batch of q blocks
-                return self.process_batch_blocks(mf_index,q_block_array,next_q_index)
+                return self.process_batch_blocks(rel_id,mf_index,q_block_array,next_q_index)
 
-    def finished_process_mutual_friend(self,mf_index):
+    def finished_process_mutual_friend(self,rel_id,mf_index):
         # try to process next mutual friend
         next_mf_index = mf_index + 1
-        if next_mf_index < len(g_mutual_friend_array):
-            self.process_mutual_friend(next_mf_index)
+        if next_mf_index < len(g_init_dict[rel_id]['g_mutual_friend_array']):
+            self.process_mutual_friend(rel_id,next_mf_index)
         else:
-            self.try_nonapi_cf_initialization()
+            self.try_nonapi_cf_initialization(rel_id)
         # if no more mutual friends, then we'll have to switch to next lineup initialization process
 
     # try to build an array with 9 friends from a single mutual friend
@@ -378,7 +390,7 @@ class LineupMemberManager(models.Manager):
             return []
       
     def initialize_friend_of_friend_crush(self,relationship,exclude_id_array):
-        global g_relationship,g_exclude_id_string,g_mutual_friend_array,g_crush_friend_array
+        global g_init_dict
 
         exclude_id_string=LineupMember.objects.comma_delimit_list(exclude_id_array)
         post_dict = {}
@@ -400,7 +412,7 @@ class LineupMemberManager(models.Manager):
             fb_result = urllib.urlopen(url,post_dict)
             fb_result = json.load(fb_result)
         
-            if 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
+            if fb_result[2] and 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
                 mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
                 random.shuffle(mutual_app_friend_array)
                 num_fetch_tries=9
@@ -425,16 +437,21 @@ class LineupMemberManager(models.Manager):
         
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
         if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
-            g_mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
+            rel_id=str(relationship.id)
+            print "initialized g_init_dict with relationship id# " + rel_id
+            g_init_dict[rel_id]['g_mutual_friend_array']=json.loads(fb_result[1][u'body'])['data']
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
-                g_crush_friend_array=json.loads(fb_result[3][u'body'])['data']
-                self.try_nonapi_mf_initialization(relationship,exclude_id_string)
+                g_init_dict[rel_id]['g_crush_friend_array']=json.loads(fb_result[3][u'body'])['data']
+                g_init_dict[rel_id]['g_exclude_id_string'] = exclude_id_string
+                g_init_dict[rel_id]['g_relationship']=relationship
+                self.try_nonapi_mf_initialization(rel_id)
                 return
 
         # if got here then we failed cause of bad facebook data fetch, so allow user to start it up again
-        self.initialize_fail(5)
+        self.initialize_fail(relationship,5)
     
     def initialize_friend_or_nonfriend_crush(self,relationship,exclude_facebook_id_array):
+        print "Initialize friend or non friend crush"
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         exclude_facebook_ids=self.comma_delimit_list(exclude_facebook_id_array)
         acceptable_id_array=[]
@@ -449,16 +466,16 @@ class LineupMemberManager(models.Manager):
                 data = json.load(fql_query_results)['data'] 
         except:
             print "Key or Value Error on Fql Query Fetch read!"
-            self.initialize_fail(5)
+            self.initialize_fail(relationship,5)
             return
         for item in data:
             acceptable_id_array.append(item['uid'])
             
         if len(acceptable_id_array) < settings.MINIMUM_LINEUP_MEMBERS:
             if relationship.friendship_type == 0:
-                self.initialize_fail(3)
+                self.initialize_fail(relationship,3)
             else:
-                self.initialize_fail(2)
+                self.initialize_fail(relationship,2)
         else:      
             print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
             self.create_lineup(relationship,acceptable_id_array)
@@ -486,22 +503,16 @@ class LineupMemberManager(models.Manager):
     def comma_delimit_list(self,array):
         myString = ",".join(array)
         return myString
-    
-    # returns true if successful, false otherwise
-    def initialize_lineup(self,relationship):
-        print "initializing relationship for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name
-        exclude_facebook_id_array=self.get_exclude_id_array(relationship)
-        if relationship.friendship_type==1:
-            self.initialize_friend_of_friend_crush(relationship,exclude_facebook_id_array)
-        else:
-            self.initialize_friend_or_nonfriend_crush(relationship,exclude_facebook_id_array)      
-        return
 
     # returns true if successful, false otherwise
     # called by either initialize_lineup above, or by admirer_views functions try_mf_initialization & try_cf_initialization (fof initialization)
     def create_lineup(self,relationship,acceptable_id_array):
+        global g_init_dict
+        rel_id=str(relationship.id)
+        if g_init_dict[rel_id]['g_initialization_completed']==True:
+            return
         print "CREATING LINEUP WITH MEMBERS: " + str(acceptable_id_array)
-        
+        g_init_dict[rel_id]['g_initialization_completed']=True
         # determine where the admirer should randomly fall into the lineup
         # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
         random_end = len(acceptable_id_array) - 1
@@ -510,19 +521,20 @@ class LineupMemberManager(models.Manager):
         for lineup_id in acceptable_id_array:
             # if the current lineup position is where the admirer should go, then insert the admirer
             if index==admirer_position:
-                LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
+                #LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
                 print "put crush in position: " + str(index) 
                 index = index + 1            
-            LineupMember.objects.create(position=index,username=lineup_id,relationship=relationship,decision=None)
+            #LineupMember.objects.create(position=index,username=lineup_id,relationship=relationship,decision=None)
             index = index + 1
         # the following condition (to put admirer in last position) should not occur, but just in case let's handle it    
-        if len(acceptable_id_array)==admirer_position:
-            LineupMember.objects.create(position=len(acceptable_id_array),username=relationship.source_person.username,relationship=relationship,decision=None)
+        #if len(acceptable_id_array)==admirer_position:
+        #    LineupMember.objects.create(position=len(acceptable_id_array),username=relationship.source_person.username,relationship=relationship,decision=None)
       
         print "number lineup members: " + str(relationship.lineupmember_set.count())
 
-        relationship.lineup_initialization_status=1
+        relationship.lineup_initialization_status=5
         relationship.save(update_fields=['lineup_initialization_status'])
+        print "rel_id: " + str(relationship.id) + " saved initialization status: " + str(relationship.lineup_initialization_status)
 
 # details about each crush's secret admirer lineup (SAL)
 class LineupMember(models.Model):

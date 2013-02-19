@@ -3,45 +3,90 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
+from crush.models.lineup_models import initialize_lineup
 import datetime
 from multiprocessing import Pool
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,random,thread
+from django.db import transaction
+
+g_initialization_timeout=None
 
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
-
+    global g_initialization_timeout
+    g_initialization_timeout=25 # how much time should elapse before ajax initialization call fails
     me = request.user 
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize any uninitialized relationship lineups
     uninitialized_relationships = progressing_admirer_relationships.exclude(lineup_initialization_status=1) 
+    
+    # reset the initialization status of any relationships that previously erred out:
+    for error_relationship in uninitialized_relationships.filter(lineup_initialization_status__gt=1):
+        error_relationship.lineup_initialization_status=0
+        error_relationship.save(update_fields=['lineup_initialization_status'])
+    
     uninitialized_friend_relationships = uninitialized_relationships.filter(friendship_type=0) 
     uninitialized_fof_relationships = uninitialized_relationships.filter(friendship_type=1) 
     uninitialized_nonfriend_relationships = uninitialized_relationships.filter(friendship_type=2) 
     
+    # initialize friend relationships serially, albeit in a separate asynchronously fired process 
+    if len(uninitialized_friend_relationships) > 0:
+        friend_pool=Pool(1)
+        g_initialization_timeout=25 + ((len(uninitialized_friend_relationships)-1)*5)# add time to timeout if multiple separated relationships
+        for relationship in uninitialized_friend_relationships:
+            #initialize_lineup(relationship)
+            friend_pool.apply_async(initialize_lineup,[relationship])  
+            
     # initialize non friend relationships asynchronously at once using threads
     for relationship in uninitialized_nonfriend_relationships:
-        thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
+        thread.start_new_thread(initialize_lineup,(relationship,)) 
+        #initialize_lineup(relationship)
+        
+    if len(uninitialized_fof_relationships) == 1:
+        thread.start_new_thread(initialize_lineup,(uninitialized_fof_relationships[0],))
+        #initialize_lineup(uninitialized_fof_relationships[0])
 
-    # separate out fof_relationships that share at least one mutual friend
-  
-    fof_pool=Pool(1)
-    for relationship in uninitialized_fof_relationships:
-        fof_pool.apply_async(LineupMember.objects.initialize_lineup,[relationship]) 
-    
-    friend_pool=Pool(1)
-    for relationship in uninitialized_friend_relationships:
-        friend_pool.apply_async(LineupMember.objects.initialize_lineup,[relationship])   
+    elif len(uninitialized_fof_relationships)>1:
+        # separate out conflicting fof_relationships (that share at least one mutual friend)
+        separated_relationships=[]
+        for relationship in uninitialized_fof_relationships:
+            if relationship not in separated_relationships:
+                other_relationships = uninitialized_fof_relationships.exclude(id=relationship.id)
+                if len(other_relationships) == 0:
+                    break
+                relationship_mf_array=relationship.mutual_friends.split(',')
+                for friend in relationship_mf_array:
+                    conflicting_relationships = other_relationships.filter(mutual_friends__icontains=friend)
+                    if len(conflicting_relationships) > 0:
+                        # add the source relationship and its conflicting relationships to a separate queue
+                        separated_relationships.append(relationship)
+                        uninitialized_fof_relationships=uninitialized_fof_relationships.exclude(id=relationship.id)
+                        for conflict in conflicting_relationships:
+                            separated_relationships.append(conflict)
+                            uninitialized_fof_relationships=uninitialized_fof_relationships.exclude(id=conflict.id)
+                        break # break out of the current for loop
+                        # remove the relationships from the query set before proceeding
 
-    #    print "hey, found an uninitialized relationship"
-    #    pool=Pool(1) #must be 1 or things go bad!
-    #    for relationship in uninitialized_relationships:
-    #        pool.apply_async(LineupMembership.objects.initialize_lineup,[relationship]) #initialize lineup asynchronously
-            #LineupMembership.objects.initialize_lineup(relationship)
+        # run the rest in current process via multi-processing:
+        for relationship in uninitialized_friend_relationships:
+            #initialize_lineup(relationship)
+            thread.start_new_thread(initialize_lineup,(relationship,))
 
+        if len(separated_relationships)>0:
+            new_initialization_timeout=25 + ((len(separated_relationships)-1)*5)# add time to timeout if multiple separated relationships
+            if new_initialization_timeout > g_initialization_timeout:
+                g_initialization_timeout=new_initialization_timeout
+            # run the separated relationships in their own process
+            fof_pool=Pool(1)
+            for relationship in separated_relationships:
+                #initialize_lineup(relationship)
+                #thread.start_new_thread(initialize_lineup,(relationship,))
+                fof_pool.apply_async(initialize_lineup,[relationship])     
+                
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -52,23 +97,23 @@ def admirers(request,show_lineup=None):
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
                                'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,                               
                                })    
-
+    
 @login_required
 def ajax_display_lineup_block(request, display_id):
     int_display_id=int(display_id)
     print "ajax initialize lineup with display id: " + str(int_display_id)
     ajax_response = ""
-    try:    
-        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
-    except CrushRelationship.DoesNotExist:
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
-        return HttpResponse(ajax_response) # this is a catch all error return state
   
     # wait for a certain amount of time before returning a response
     counter = 0
     while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress
-        print "trying admirer lineup initialization for " + relationship.target_person.last_name + ":" + display_id + " on try: " + str(counter) 
-       
+        #print "trying admirer lineup initialization for " + relationship.target_person.last_name + ":" + display_id + " on try: " + str(counter)       
+        try:    
+            relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+        except CrushRelationship.DoesNotExist:
+            ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+            return HttpResponse(ajax_response)   
+        print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
         if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
             break
         elif counter==25: # if 30 seconds have passed then give up

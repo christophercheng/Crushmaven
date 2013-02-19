@@ -137,7 +137,7 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         # 2) if the lineup has not yet been started, then filter out any relationships where the source_user is either a crush or platonic target of crush 
         #    (hint: relationship will have a date_responded field set)
         
-        admirer_relationships = admirer_relationships.exclude(~Q(date_target_responded = None), lineup_initialization_status = None)
+        admirer_relationships = admirer_relationships.exclude(~Q(date_target_responded = None), ~Q(lineup_initialization_status = 1))
         return admirer_relationships
       
     def past_admirers(self,crush_user):
@@ -273,7 +273,7 @@ class CrushRelationship(BasicRelationship):
                             for friend in mf_results['data']:
                                 csvString+= friend['id'] + ","
                             if len(csvString) < 3000:
-                                self.mutual_friends=csvString
+                                self.mutual_friends=csvString[:-1]
                         #except:
                         #    pass # this ins't mission critical data
         
