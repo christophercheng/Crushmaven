@@ -160,7 +160,6 @@ class CrushRelationship(BasicRelationship):
             
     source_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_source')
     target_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_target')
-    mutual_friends=models.CommaSeparatedIntegerField(null=True,default=None,max_length=3000)
     
     #dynamically tie in the target person's response as a lookup time optimization
     TARGET_STATUS_CHOICES = (
@@ -187,7 +186,7 @@ class CrushRelationship(BasicRelationship):
                            (4,settings.LINEUP_STATUS_CHOICES[4]),# error - facebook data fetch error
                            (5,settings.LINEUP_STATUS_CHOICES[5]) # unknown error
                            )
-    lineup_initialization_status = models.IntegerField(default=None, choices=LINEUP_INITIALIZATION_STATUS_CHOICES,null=True)
+    lineup_initialization_status = models.IntegerField(default=None, choices=LINEUP_INITIALIZATION_STATUS_CHOICES,null=True,blank=True)
     # lineup initialized and paid can be combined into a single state variable 
     is_lineup_paid=models.BooleanField(default=False)
 
@@ -263,19 +262,6 @@ class CrushRelationship(BasicRelationship):
                         self.target_status = 0
                         # see if any active users are friends with this new inactive crush - solicit their help
                         #self.target_person.find_active_friends_of_inactivated_crush()         
-                    if self.friendship_type==1:
-                        # calculate mutual friends, when crush finally initializes lineup, this list of mf's will be needed
-                        #try:
-                        mf_results = urllib.urlopen('https://graph.facebook.com/' + self.source_person.username + '/mutualfriends/' + self.target_person.username + '/?access_token=%s' % self.source_person.access_token)
-                        mf_results = json.load(mf_results)
-                        if len(mf_results['data'])>0:
-                            csvString = ''
-                            for friend in mf_results['data']:
-                                csvString+= friend['id'] + ","
-                            if len(csvString) < 3000:
-                                self.mutual_friends=csvString[:-1]
-                        #except:
-                        #    pass # this ins't mission critical data
         
             # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,
                 # this check is performed when the lineup slide is pulled

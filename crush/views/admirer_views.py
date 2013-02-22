@@ -3,43 +3,34 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
-from crush.models.lineup_models import initialize_lineup
+from crush.models.globals import g_init_dict
 import datetime
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,random,thread
 from django.db.models import Q
-
-g_initialization_timeout=None
+from threading import Lock
 
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
-    global g_initialization_timeout
-    g_initialization_timeout=25 # minimum time before ajax initialization call fails
+    global g_init_dict
     me = request.user 
+
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
-    uninitialized_relationships = progressing_admirer_relationships.exclude(Q(lineup_initialization_status=1) | Q(lineup_initialization_status=0)) 
+    uninitialized_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=None) | Q(lineup_initialization_status__gt=1))
+
+    # reset initialize the global variable and set the number of relationships to initialize
+    g_init_dict[me.username]={}    
+    g_init_dict[me.username]['initialization_count'] = len(uninitialized_relationships)    
     
     for relationship in uninitialized_relationships: 
         relationship.lineup_initialization_status=0
         relationship.save(update_fields=['lineup_initialization_status'])
-        thread.start_new_thread(initialize_lineup,(relationship,))
-     
-    # determine how long to wait for initialization    
-    uninitialized_friend_relationships = uninitialized_relationships.filter(friendship_type=0) 
-    uninitialized_fof_relationships = uninitialized_relationships.filter(friendship_type=1) 
-    
-    friend_duration = len(uninitialized_friend_relationships)*5
-    fof_duration = len(uninitialized_fof_relationships)*10
-    
-    if friend_duration > g_initialization_timeout:
-        g_initialization_timeout=friend_duration
-
-    if fof_duration > g_initialization_timeout:
-        g_initialization_timeout=fof_duration
+        #LineupMember.objects.initialize_lineup(relationship)
+        thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
         
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -54,29 +45,39 @@ def admirers(request,show_lineup=None):
     
 @login_required
 def ajax_display_lineup_block(request, display_id):
+    global g_init_dict
     int_display_id=int(display_id)
     print "ajax initialize lineup with display id: " + str(int_display_id)
     ajax_response = ""
-  
+    try:    
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+    except CrushRelationship.DoesNotExist:
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        return HttpResponse(ajax_response)
+    
+    crush_id = relationship.target_person.username
+    rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
-    while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress
-        #print "trying admirer lineup initialization for " + relationship.target_person.last_name + ":" + display_id + " on try: " + str(counter)       
-        try:    
-            relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
-        except CrushRelationship.DoesNotExist:
-            ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
-            return HttpResponse(ajax_response)   
+    while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
         #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
-        if relationship.lineup_initialization_status > 0: # initialization was either a success or failed
+        
+        if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
             break
-        elif counter>=g_initialization_timeout: # if 30 seconds have passed then give up
+        elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
             print "giving up on admirer:" + str(display_id)
             relationship.lineup_initialization_status = 5
             relationship.save(update_fields=['lineup_initialization_status'])
             break
         time.sleep(1) # wait a second
         counter+=1
+        
+    # refetch the relationship to get updated initialization status
+    try:    
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+    except CrushRelationship.DoesNotExist:
+        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        return HttpResponse(ajax_response)
 
     if relationship.lineup_initialization_status > 3: # for data fetching errors show a button that allows user to restart the initialization 
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + ' <button id="initialize_lineup_btn" display_id="' + display_id + '">Re-initialize</button>'

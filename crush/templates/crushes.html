@@ -274,8 +274,12 @@ $(document).ready(function()
 <script>
 
 </script>		
+
+
 		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
 {% if crush.friendship_type > 1 %}
+{% comment %}
+	I'm going to handle non-friend crush initialization at the crush end (late initialization)
 	{% if crush.lineup_initialization_status == None or crush.lineup_initialization_status == 0 %}
 		<div id="initialize_lineup"><div id="initialize_lineup_btn" class="fake" username="{{crush.target_person.username}}"></div>		
 		</div> <!--  close off initialize_lineup div -->
@@ -288,7 +292,7 @@ $(document).ready(function()
 		* {{ lineup_status_choice_5 }}
 		</div><!--  close off initialize_lineup div -->
 	{% endif %}
-	
+{% endcomment %}
 {% endif %}
 		
 		<!--  start: normal bullet points -->
