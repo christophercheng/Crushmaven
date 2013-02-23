@@ -7,18 +7,15 @@
 
 
 <div id="dialog_attraction_add" title="Attraction Confirmation ">
-	<span id="platonic_add_text">Let them know what you find attractive about them - to increase your chances of receiving a response.</span><BR>
-	<input type="text" name="attraction_comment" placeholder="Enter an optional comment" size="30" maxlength="50"> 
 	<input type="checkbox"checked="true">By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
 </div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation">
 	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
-	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
-	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
-	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
-	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
 	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
-	<input type="text" name="rating_comment" placeholder="Enter an optional comment" size="30" maxlength="50"> 
+	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
+	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
+	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
+	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
 </div>
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
@@ -224,6 +221,10 @@ $(document).ready(function() // handling for the slider
 			"Cancel": function() {$(this).dialog("close");
 				}, // end of cancel handler
 			"Submit": function() { 
+			
+				var rating = $('#dialog_platonic_add input:checked').val();
+				url += rating + "/";
+				alert("URL: " + url);
 				parent.load(url, function(){
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					if (next_position < {{member_set.count}})	{
@@ -238,6 +239,8 @@ $(document).ready(function() // handling for the slider
 						process_completed_lineup();
 					}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close");
+					// reset the dialog's checked radio button
+					$('#dialog_platonic_add input:radio[value=3]').attr('checked',true);
 				}   // end of add handler
 			}); // end of .dialog handler
     $("#dialog_platonic_add").dialog("open");

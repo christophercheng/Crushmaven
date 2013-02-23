@@ -207,11 +207,11 @@ FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 h
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
 PLATONIC_RATINGS = {
-                    5:'very attractive - just not for me',
-                    4:'somewhat attractive - just not for me', 
+                    1:'very attractive - just not for me',
+                    2:'somewhat attractive - just not for me', 
                     3:"I'm indifferent",
-                    2:'slightly unattractive',
-                    1:'very unattractive',
+                    4:'slightly unattractive',
+                    5:'very unattractive',
 
 
 

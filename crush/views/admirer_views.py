@@ -8,7 +8,6 @@ import datetime
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,random,thread
 from django.db.models import Q
-from threading import Lock
 
 # -- Admirer List Page --
 @login_required
@@ -180,7 +179,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     return HttpResponse(ajax_response)
 
 @login_required
-def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
+def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id,rating=3):
     print "adding member to a list"
     me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
@@ -209,7 +208,7 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id):
             ajax_response = '<div id="choice" class="crush">You added ' + target_user.first_name + ' ' + target_user.last_name + ' as a crush!</div>'
             lineup_member.decision=0
         else:
-            PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user)
+            PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
             ajax_response = '<div id="choice" class="platonic">You added ' + target_user.first_name + ' ' + target_user.last_name + ' as a platonic friend.</div>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])

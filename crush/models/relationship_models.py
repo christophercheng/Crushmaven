@@ -61,9 +61,9 @@ class PlatonicRelationship(BasicRelationship):
     source_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_source')  
     target_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_target')
  
-    target_rating = models.IntegerField(default=3,max_length=1) # how source rated the target's attraction
-    target_rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
-    target_rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
+    rating = models.IntegerField(default=3,max_length=1) # how source rated the target's attraction
+    #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
+    #rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
  
     def save(self,*args, **kwargs):  
         #  print "saving platonic relationship object"
@@ -200,7 +200,7 @@ class CrushRelationship(BasicRelationship):
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     admirer_display_id = models.IntegerField(default=0, max_length=60, blank=True,null=True)
     # short message that admirer can leave for crush (as seen in their lineup
-    admirer_display_message = models.CharField(default=None,max_length=50, blank=True,null=True)
+    #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
