@@ -6,8 +6,9 @@ from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,Fac
 from crush.models.globals import g_init_dict
 import datetime
 from django.http import HttpResponseNotFound,HttpResponseForbidden
-import time,random,thread
+import time,thread
 from django.db.models import Q
+import urllib,json
 
 # -- Admirer List Page --
 @login_required
@@ -150,6 +151,18 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_member_user.get_facebook_picture() + '" height="80" width="10"></div>'
     ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
     ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank">view facebook profile</a></div>'
+
+    # if the relationship is friend-of-friend, then show pictures of mutual friends:
+    if admirer_rel.friendship_type==1:
+        ajax_response +='<div id=mutual_friends>Mutual Friends: '
+        friend_profile = urllib.urlopen('https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + lineup_member.username + '/?access_token=%s' % request.user.access_token)
+        friend_profile = json.load(friend_profile)
+        friendlist_string=''
+        if len(friend_profile['data'])>0:
+            for friend in friend_profile['data']:
+                ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?type=small" title="' + friend['name'] + '">'
+        ajax_response += '</div>'
+    
     ajax_response +='<div id="decision" username="' + lineup_member_user.username + '">'
     
     # check to see if there is an existing crush relationship or platonic relationship:
@@ -174,8 +187,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     #2) facebook button 
     #3) crush button 
     #4) platonic friend button  #
-    
-    
+        
     return HttpResponse(ajax_response)
 
 @login_required
