@@ -55,7 +55,7 @@ def ajax_submit_feedback(request):
     email = request.user.email
     if email=="":
         email=request.user.username + '@attractedto.com'
-    send_mail('Feedback',request.POST['message'],request.user.email,['christopher.cheng@outlook.com'])
+    send_mail('Feedback',request.POST['message'],request.user.email,['attractedto@gmail.com'])
     return HttpResponse("")
 
 # -- Logout --
