@@ -148,22 +148,22 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     # build the basic elements
     # 1) name, photo, position info 
     ajax_response +='<div id="name">' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</div>'
-    ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_member_user.get_facebook_picture() + '" height="80" width="10"></div>'
+    ajax_response +='<div id="mugshot" style="width:80px;height:80px"><img src="' + lineup_member_user.get_facebook_picture() + '" height="80" ></div>'
     ajax_response +='<div id="position_info"><span>member ' + str(display_position)  + ' out of ' + str(lineup_count) + '<span></div>'
     ajax_response +='<div id="facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank">view facebook profile</a></div>'
 
     # if the relationship is friend-of-friend, then show pictures of mutual friends:
     if admirer_rel.friendship_type==1:
-        ajax_response +='<div id=mutual_friends>Mutual Friends: '
+        ajax_response +='<div id="mutual_friends">Connected through: '
         friend_profile = urllib.urlopen('https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + lineup_member.username + '/?access_token=%s' % request.user.access_token)
         friend_profile = json.load(friend_profile)
-        friendlist_string=''
+        print str(friend_profile)
         if len(friend_profile['data'])>0:
-            for friend in friend_profile['data']:
-                ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?type=small" title="' + friend['name'] + '">'
+            friend=friend_profile['data'][0]
+            ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;">'
         ajax_response += '</div>'
     
-    ajax_response +='<div id="decision" username="' + lineup_member_user.username + '">'
+    ajax_response +='<div id="decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
     
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():

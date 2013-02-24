@@ -40,7 +40,7 @@ kept anonymous. They receive a lineup - with you in it!
 </div>  <!--  close off bx-pager div -->
 <!-- Just a shell for the slideshow container -->
 
-<ul class="bxslider">
+<ul class="bxslider" style="display:none">
 {% for member in member_set %}
 	{% if member.decision != None %}
 		
@@ -134,6 +134,8 @@ $(document).ready(function() // handling for the slider
 			slideSelector:'li#preload',
 			onLastSlideNext: window.handleLastSlideNext
 			});
+		$('#lineup_container').find('.bxslider').show();
+		console.log($('#lineup_container').find('.bxslider'));
 		setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
 		updateFooterMsg();
 	};	
