@@ -226,7 +226,6 @@ $(document).ready(function() // handling for the slider
 			
 				var rating = $('#dialog_platonic_add input:checked').val();
 				url += rating + "/";
-				alert("URL: " + url);
 				parent.load(url, function(){
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					if (next_position < {{member_set.count}})	{
