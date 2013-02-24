@@ -1,20 +1,13 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from crush.models import CrushRelationship
+from django.core.mail import send_mail
 
 # imports for testing
 import urllib2
-import urllib, json
-import cookielib
-import subprocess
-from StringIO import StringIO    
-import time
-import random
-from itertools import islice
-from crush.models import LineupMember
-from django.conf import settings
+
 # end imports for testing
 
 #from django.contrib.auth.models import Use
@@ -54,6 +47,16 @@ def home(request):
 
     else:
         return render(request,'guest_home.html')
+
+
+@login_required
+def ajax_submit_feedback(request):
+    print"GOT FEEDBACK!"
+    email = request.user.email
+    if email=="":
+        email=request.user.username + '@attractedto.com'
+    send_mail('Feedback',request.POST['message'],request.user.email,['christopher.cheng@outlook.com'])
+    return HttpResponse("")
 
 # -- Logout --
 @login_required

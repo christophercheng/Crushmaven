@@ -16,6 +16,8 @@
 	<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
 <!-- Add Facebook Friend Selector JS -->
 	<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
+	
+
   	
 	<title>AttractedTo... | Anonymously connect with attractive friends and friends-of-friends</title>
 </head>
@@ -23,6 +25,10 @@
 <body>
 
  <div id="fb-root"></div>
+ 
+ <!-- FOR THE EMAIL INVITE POPUP -->
+ <div id="app_invite_modal" title="Send Application Invites"></div>
+
  <script>
     (function() {
       var e = document.createElement('script'); e.async = true;
@@ -40,7 +46,7 @@
   </script>  
 
 <script type="text/javascript">
-  jQuery(document).ready(function($) {
+jQuery(document).ready(function($) {
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
@@ -65,14 +71,11 @@
         selectedCountResult: "You have choosen {0} people.",
         selectedLimitResult: "Limit is {0} people."
       },
-      onStart: function(response){ return null },
-      onClose: function(response){ return null },
       onSubmit: function(response){
 			add_friends_to_db(response);
       }
     });
-  });
-  
+
   function add_friends_to_db(response)
   {	      
 		results = String(response).split(','); // response looks like a comma delimited list of facebook id's
@@ -84,45 +87,48 @@
   		// on success redirect to the crush page
   		document.location.href='/attractions/'; // reload page
   	});
-  	};
-</script>
-			<div id="app_invite_modal" title="Send Application Invites"></div>
-<!-- FOR THE EMAIL INVITE POPUP -->
-<script type="text/javascript">
-$(document).ready(function() 
-{
+  };
 
-				var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
-        $(".app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+	var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
+  $(".app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
+		app_div_element = $("#app_invite_modal");
+		app_div_element.html('<div id="admirer-loading"></div>');
+		app_div_element.dialog(options).dialog("open");
+		var crush_username=$(this).attr('crush_username');	
+		app_div_element.load("/app_invite_form/" + crush_username + "/");  
+		//app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
+		e.preventDefault();
+    return false;
+	});     
 
-        $(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
-				 app_div_element = $("#app_invite_modal");
-				 app_div_element.html('<div id="admirer-loading"></div>');
-				 app_div_element.dialog(options).dialog("open");
-				 var crush_username=$(this).attr('crush_username');	
-				 app_div_element.load("/app_invite_form/" + crush_username + "/");  
-				 //app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
-				 e.preventDefault();
-         return false;
-        });     
-});
-</script>
-<script type="text/javascript">
-jQuery(document).ready(function($) {
   $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/');
-
-});
+  
+  
+}); // close of jQuery(document).ready
 
 </script>
 <div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
+
+
+</div><!-- sliding feedback tab -->
+
 <div class="main_container">
-	<div class="left_panel"><div class="left_content_container">{% include "navigation_left.html" %}</div></div> <!-- close off left side bar -->
+	<div class="left_panel">
+	<!--start contactable -->
+<div id="contactable"><!-- contactable html placeholder --></div>
+<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
+<script>$(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});</script>
+<!--end contactable -->
+	<div class="left_content_container">{% include "navigation_left.html" %}</div></div> <!-- close off left side bar -->
 	<div class="center_panel"><div class="center_content_container">
 		{% block content %}
 		{% endblock %}
 	</div></div> <!-- close off main_content_container -->
 	<div class="right_panel"><div class="right_content_container">{% include "navigation_right.html" %}</div></div> <!-- close off right side bar -->
 </div> <!-- close off main container -->
+
 <!--  <fb:like></fb:like>
 <BR><BR><a href="/admin/">Admin</a><br>-->
  
