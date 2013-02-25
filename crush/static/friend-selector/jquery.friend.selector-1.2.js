@@ -363,7 +363,7 @@
       var facebook_friends = response.data;
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
-      if (facebook_friends.length < 10) {
+      if (facebook_friends.length < 3) {
     	  alert("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
     	  _close();
       }

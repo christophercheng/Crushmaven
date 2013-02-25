@@ -227,8 +227,9 @@ class FacebookUser(AbstractUser):
         return u'http://graph.facebook.com/%s/picture?type=large' % self.username
     
     # called by lineup.html to determine what to do after jquery lineup slider closes
-    def get_all_new_incomplete_admirer_relations(self):
-        return self.crush_relationship_set_from_target.filter(is_lineup_paid=False)
+    def get_progressing_admirers(self):
+        print "here"
+        return crush.models.relationship_models.CrushRelationship.objects.progressing_admirers(self)
     
     def get_fb_gender(self):
         if self.gender==u'M':
