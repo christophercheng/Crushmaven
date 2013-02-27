@@ -124,10 +124,12 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
+
     # --------  END OF REQUIRED FIELDS
     
     # ----------  START OF OPTIONAL FIELDS
 
+    
     birthday_year = models.IntegerField(null=True,blank=True,max_length=4,choices=[(y,y) for y in range(1920,datetime.datetime.now().year-6)])
     age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(13,99)])
     age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(13,99)])

@@ -101,6 +101,13 @@ def attractions(request):
     me = request.user
   
     crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
+    
+    # if there is at least one friend attraction, then we need to check the user's facebook privacy setting.  if their app visibility is not set to "only me", then display warning dialog
+    if (len(crush_progressing_relationships.filter(friendship_type=0))>0):
+        check_fb_privacy=True
+    else:
+        check_fb_privacy=False
+            
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
@@ -112,7 +119,8 @@ def attractions(request):
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
                                'crushes_completed_count':crushes_completed_count,
                                'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
-                               'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5]
+                               'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
+                               'check_fb_privacy_setting':check_fb_privacy
                                })    
 
 # -- Crushes Completed Page --

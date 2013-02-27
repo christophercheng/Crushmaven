@@ -19,3 +19,7 @@ def help_privacy(request):
 # -- Contact Us Page --
 def help_contact(request):
     return render(request,'help_contact.html')
+
+# -- Facebook Privacy Settings --
+def help_fb_privacy_setting(request):
+    return render(request,'help_fb_privacy_setting.html')

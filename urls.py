@@ -136,6 +136,8 @@ urlpatterns += patterns('crush.views.static_file_views',
     (r'^help_privacy/$', 'help_privacy'),
         
     (r'^help_contact/$', 'help_contact'),
+    
+    (r'^help_fb_privacy_setting/$','help_fb_privacy_setting'),
 )
 
 urlpatterns += patterns('',

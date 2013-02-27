@@ -18,12 +18,14 @@
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
+<div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
+<div id="privacy_check"></div>
 
 <script type="text/javascript">
 $(document).ready(function() 
 {
   $("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
-
+  
   $("a.check_credit").click(function(e) {
    	var success_path=$(this).attr('success_path');	
    	var cancel_url = $(this).attr('cancel_url');
@@ -34,12 +36,11 @@ $(document).ready(function()
    		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
    	var feature_id=$(this).attr('feature_id');
    	load_url="/credit_checker/" + feature_id + "/" + unique_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
-       e.preventDefault();
-	$("#credit_check_modal").load(load_url)   	
-       $("#credit_check_modal").dialog("open");
-       return false;
+    e.preventDefault();
+		$("#credit_check_modal").load(load_url)   	
+    $("#credit_check_modal").dialog("open");
+    return false;
    });
-   
    
    /** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
 	* click handler for credit checker dialog - when ok-to-deduct is clicked
@@ -142,10 +143,29 @@ $(document).ready(function()
   });
   
   
-        
+  $("#privacy_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
+  $("#privacy_check").click(function(e) {
+    e.preventDefault();
+    $("#privacy_check_modal").html("Your Facebook privacy setting for this app's visibility is currently NOT set to <i>Only Me</i>. <BR><BR>In order to conceal your identity from your attraction, we strongly urge you to change your settings immediately. <BR><BR> <a href='/help_fb_privacy_setting/' target='_blank'>Learn how here.</a> <BR><BR>");
+		$('#privacy_check_modal').dialog("open");
+  	return false;
+  });
+  
+  {% if check_fb_privacy_setting %}
+  //check for privacy setting value
+	var query_string= 'SELECT name,value FROM privacy_setting WHERE name="default_stream_privacy"';
+	url = 'https://graph.facebook.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
+  privacy_fetch = $.getJSON(url);
+  privacy_fetch.done(function(response){
+  	if(response.data[0]['value'] != 'SELF')
+     $("#privacy_check").trigger('click');
+   });
+  		
+  {% endif %}  
 	// PROCEDURAL CODE ALWAYS RUN
 
 	auto_initialize_new_nonfriend_crushes();
+	
         
 });
 </script>
