@@ -39,10 +39,10 @@ $(document).ready(function()
     e.preventDefault();
     $("#credit_check_modal").html('<div id="site-loading"></div>');
 		$("#credit_check_modal").load(load_url,function(responseText,textStatus,XHR){
-			if (textStatus=='timeout' || textStatus=='error'){
+			if (textStatus!='success'){
 				$(this).html("{{ajax_error}}");
-				$("#site-loading").remove();
-				}
+				return false;
+			}
 		});   	
     $("#credit_check_modal").dialog("open");
     return false;
@@ -62,10 +62,13 @@ $(document).ready(function()
 		  var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 			var post_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
 		$.post(post_url,post_dict,function(data) {
+			$('#site-overlay').css('visibility','hidden');
+			$('#site-loading').remove();
 			// if successful then reload the page?
-		 document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
+		 	document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
+			// reloading page takes care of updating the notifications numbers
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
-			.error(function(data){
+			.fail(function(data){
 				alert("{{ajax_error}}");
 				$("#site-overlay").css('visibility','hidden');	
 				$("#site-loading").remove();
@@ -81,16 +84,7 @@ $(document).ready(function()
   	var initialize_div = $(this).parent('#initialize_lineup');
     initialize_div.html('<div id="loading">initializing lineup...</div>');
 		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username + '/';
-		initialize_div.load(load_url).error(function(){
-		// in case of server error just stop initialization process
-		//console.log(this);
-		//alert("bad stuff");
-		var initialize_div = $(this).html("");
-		});
-
-		//scrape_url="http://www.cnn.com/?";
-		//$.getJSON(scrape_url,function(json){
-		//console.log(json);alert("hi");
+		initialize_div.load(load_url);
 	});
 
 	

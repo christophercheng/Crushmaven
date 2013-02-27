@@ -46,7 +46,7 @@
     
   // set default time of 10 seconds for all ajax calls:  
 	$.ajaxSetup({
-		timeout: '15000'
+		timeout: '5000'
 	});
   </script>  
 
@@ -102,18 +102,15 @@ jQuery(document).ready(function($) {
 		app_div_element.html('<div id="site-loading"></div>');
 		app_div_element.dialog(options).dialog("open");
 		var crush_username=$(this).attr('crush_username');	
-		app_div_element.load("/app_invite_form/" + crush_username + "/",function(responseText,textStatus,XHR){
-			if (textStatus=='timeout' || textStatus=='error') {// user probably logged out of facebook
+		var load_url="/app_invite_form/" + crush_username + "/";
+		app_div_element.load(load_url,function(responseText,textStatus,XHR){
+			if (textStatus!="success")
 				$(this).html("{{ajax_error}}");
-				$("#site-loading").remove();	
-			}
-		});
-
+		});	
 		e.preventDefault();
     return false;
-	});     
-
-
+	});
+     
   $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/');
   
   

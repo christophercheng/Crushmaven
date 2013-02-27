@@ -173,7 +173,6 @@ $(document).ready(function() // handling for the slider
 	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false});
   $('#lineup_container li').on('click','a.attraction_add',function(e) {
 		var parent = $(this).parent();				//# decision div
-		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 	  var url;
 	  var bIsCrush=true;
 	  // obtain position of the next slide in deck for future loading
@@ -187,7 +186,7 @@ $(document).ready(function() // handling for the slider
 				"Cancel": function() {$(this).dialog("close");
 				}, // end of cancel handler
 				"Submit": function() { 
-				parent.post(url, post_dict, function(){
+				parent.load(url, function(){
 					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
@@ -213,7 +212,6 @@ $(document).ready(function() // handling for the slider
 	$("#dialog_platonic_add").dialog({modal: true, autoOpen: false});
   $('#lineup_container li').on('click','a.platonic_add',function(e) {
 		var parent = $(this).parent();				//# decision div
-		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 	  var url;
 	  // obtain position of the next slide in deck for future loading
 		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
@@ -228,7 +226,7 @@ $(document).ready(function() // handling for the slider
 			
 				var rating = $('#dialog_platonic_add input:checked').val();
 				url += rating + "/";
-				parent.poast(url,post_dict,function(){
+				parent.load(url,function(){
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
@@ -305,19 +303,20 @@ $(document).ready(function() // handling for the slider
 		var success_path='/admirers/{{admirer_rel.admirer_display_id}}/';
 		var cancel_url='http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
 		var feature_id = '1';
-  	// return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
-  	if(cancel_url.substr(-1) == '/') 
+  	if(cancel_url.substr(-1) == '/')  // return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
    		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
    	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
 		$("#credit_check_modal").html('<div id="site-loading"></div>');
-		$("#credit_check_modal").load(load_url,function(responseText,textStatus,XHR){
-		if (textStatus=='timeout' || textStatus=='error'){
-				$(this).html("{{ajax_error}}");
-				$("#site-loading").remove();
-				} 	
-   	$("#credit_check_modal").dialog("open");
-  	return false;         
+		$("#credit_check_modal").load(load_url,function(responseTxt,statusTxt,xhr){
+				if (statusTxt!="success"){
+					$(this).html("{{ajax_error}}");
+			    $("#site-loading").remove();
+			   }
+		}); 
+		$("#credit_check_modal").dialog("open");
+		return false;
    }; // close off window.launch_credit_check function
+   
 	
 	/** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
 	* click handler for credit checker dialog - when ok-to-deduct is clicked
@@ -332,14 +331,16 @@ $(document).ready(function() // handling for the slider
 		var post_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
+			$('#site-overlay').css('visibility','hidden');
+			$('#site-loading').remove();
 			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;
 			// adjust the credits number on the main site
 			$("#num_credits").load("/ajax_update_num_credits/");
-			}) // if fail (credit was suddenly not available or network problem), then do nothing
-			.error(function(){
+			}) 
+			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
 					alert("{{ajax_error}}");
 					$('#site-overlay').css('visibility','hidden');
 					$('#site-loading').remove();

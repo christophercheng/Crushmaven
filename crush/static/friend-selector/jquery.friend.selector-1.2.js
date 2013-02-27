@@ -55,17 +55,20 @@
     	  function(response){
     		if ('error_message' in response) {
     			alert(response.error_message);
+    			$("#fs-select-view #site-overlay").css('visibility','hidden');
     	        $('#fs-loading').remove();
     			return false;
     		}
     		else {
-
+ 
     	    	// find the original user in hte old container
-    	    	var selected_id = "fs-" +response.id;
+    	    	var selected_id = response.id + response.friend_type;
     			var duplicate_element = $('#fs-selected-user-list .fs-friends[value='+selected_id+']');
+    			console.log("duplicate?",duplicate_element);
 
     	    	if ($(duplicate_element).length > 0){
     	    		alert("You already selected this person");
+    	    		$("#fs-select-view #site-overlay").css('visibility','hidden');
     	    		$('#fs-loading').remove();
     	    		return false;
     			}
@@ -74,6 +77,7 @@
     	        selected_friend_count++;
     	        _enableContinueButton();
     			$('#nfs-input-text').val("");
+    			$("#fs-select-view #site-overlay").css('visibility','hidden');
     	        $('#fs-loading').remove();
     		} 			
     }).fail(function(){

@@ -152,7 +152,6 @@ def crushes_completed(request,reveal_crush_id=None):
 
 @login_required    
 def app_invite_form(request, crush_username):
-
     print "APP INVITE FORM!"
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
