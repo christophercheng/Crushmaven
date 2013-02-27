@@ -212,10 +212,6 @@ PLATONIC_RATINGS = {
                     3:"I'm indifferent",
                     4:'slightly unattractive',
                     5:'very unattractive',
-
-
-
-
                      }
 
 DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
@@ -242,6 +238,8 @@ FEATURES = {
         'COST': 1,
     }
 }
+
+AJAX_ERROR = "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p."
 
 # TODO - THESE MUST BE SET
 #RESOURCES_DIR = '/media/shared/src/django-paypal-store-example/samplesite/resources/'

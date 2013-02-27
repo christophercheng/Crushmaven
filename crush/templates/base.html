@@ -43,6 +43,11 @@
       xfbml: true,
       oauth: true}); 
     };
+    
+  // set default time of 10 seconds for all ajax calls:  
+	$.ajaxSetup({
+		timeout: '15000'
+	});
   </script>  
 
 <script type="text/javascript">
@@ -67,9 +72,10 @@ jQuery(document).ready(function($) {
         summaryBoxResult: "{1} best results for {0}",
         summaryBoxNoResult: "No results for {0}",
         searchText: "Enter a friend's name",
-        fbConnectError: "Sorry, there is a problem connecting to Facebook's server. Please try again later.",
+        fbConnectError: "You must be logged in to Facebook in order to use this feature.",
         selectedCountResult: "You have choosen {0} people.",
-        selectedLimitResult: "Limit is {0} people."
+        selectedLimitResult: "Limit is {0} people.",
+        ajaxError:"{{ajax_error}}",
       },
       onSubmit: function(response){
 			add_friends_to_db(response);
@@ -93,14 +99,20 @@ jQuery(document).ready(function($) {
   $(".app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
 	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
 		app_div_element = $("#app_invite_modal");
-		app_div_element.html('<div id="admirer-loading"></div>');
+		app_div_element.html('<div id="site-loading"></div>');
 		app_div_element.dialog(options).dialog("open");
 		var crush_username=$(this).attr('crush_username');	
-		app_div_element.load("/app_invite_form/" + crush_username + "/");  
-		//app_div_element.load("/app_invite_form/" + crush_username + "/ #app_invite_form_wrapper");  
+		app_div_element.load("/app_invite_form/" + crush_username + "/",function(responseText,textStatus,XHR){
+			if (textStatus=='timeout' || textStatus=='error') {// user probably logged out of facebook
+				$(this).html("{{ajax_error}}");
+				$("#site-loading").remove();	
+			}
+		});
+
 		e.preventDefault();
     return false;
 	});     
+
 
   $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/');
   
@@ -108,6 +120,7 @@ jQuery(document).ready(function($) {
 }); // close of jQuery(document).ready
 
 </script>
+<div id="site-overlay"></div>
 <div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
 
 

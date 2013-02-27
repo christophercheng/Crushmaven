@@ -37,7 +37,13 @@ $(document).ready(function()
    	var feature_id=$(this).attr('feature_id');
    	load_url="/credit_checker/" + feature_id + "/" + unique_id + "/?success_path=" + success_path + "&cancel_url=" + cancel_url;
     e.preventDefault();
-		$("#credit_check_modal").load(load_url)   	
+    $("#credit_check_modal").html('<div id="site-loading"></div>');
+		$("#credit_check_modal").load(load_url,function(responseText,textStatus,XHR){
+			if (textStatus=='timeout' || textStatus=='error'){
+				$(this).html("{{ajax_error}}");
+				$("#site-loading").remove();
+				}
+		});   	
     $("#credit_check_modal").dialog("open");
     return false;
    });
@@ -48,14 +54,22 @@ $(document).ready(function()
 	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
 	*/
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
+	 		$("#site-overlay").css('visibility','visible');
+	 		$("#site-overlay").html("<div id='site-loading'></div>");
+
 	  	var unique_id = $('#credit_check_modal').attr('unique_id');
 			// call ajax post function to deduct credit and change lineup_is_paid to true 
-			var get_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
-		$.get(get_url,function(data) {
+		  var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
+			var post_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
+		$.post(post_url,post_dict,function(data) {
 			// if successful then reload the page?
 		 document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
-			.error(function(data){alert(data.responseText);}); // end of $.get(get_url...)
+			.error(function(data){
+				alert("{{ajax_error}}");
+				$("#site-overlay").css('visibility','hidden');	
+				$("#site-loading").remove();
+				}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
    
   /** FUNCTION - HANDLE INITIALIZATION of NON_FRIEND CRUSH LINEUP
@@ -154,13 +168,12 @@ $(document).ready(function()
   {% if check_fb_privacy_setting %}
   //check for privacy setting value
 	var query_string= 'SELECT name,value FROM privacy_setting WHERE name="default_stream_privacy"';
-	url = 'https://graph.facebook.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
+	url = 'https://graph.facebooka.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
   privacy_fetch = $.getJSON(url);
   privacy_fetch.done(function(response){
   	if(response.data[0]['value'] != 'SELF')
      $("#privacy_check").trigger('click');
    });
-  		
   {% endif %}  
 	// PROCEDURAL CODE ALWAYS RUN
 

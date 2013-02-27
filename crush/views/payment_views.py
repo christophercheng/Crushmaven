@@ -6,6 +6,7 @@ from crush.models import CrushRelationship,FacebookUser, Purchase
 from crush import paypal
 from django.views.decorators.http import require_POST
 from django.db.models import F
+import time
 
 
 #from django.contrib.auth.models import Use
@@ -20,6 +21,7 @@ def ajax_update_num_credits(request):
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 @login_required
 def ajax_deduct_credit(request, feature_id, unique_id):
+
     print "deducting credit"
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     me=request.user

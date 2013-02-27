@@ -173,6 +173,7 @@ $(document).ready(function() // handling for the slider
 	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false});
   $('#lineup_container li').on('click','a.attraction_add',function(e) {
 		var parent = $(this).parent();				//# decision div
+		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 	  var url;
 	  var bIsCrush=true;
 	  // obtain position of the next slide in deck for future loading
@@ -186,7 +187,7 @@ $(document).ready(function() // handling for the slider
 				"Cancel": function() {$(this).dialog("close");
 				}, // end of cancel handler
 				"Submit": function() { 
-				parent.load(url, function(){
+				parent.post(url, post_dict, function(){
 					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
@@ -212,6 +213,7 @@ $(document).ready(function() // handling for the slider
 	$("#dialog_platonic_add").dialog({modal: true, autoOpen: false});
   $('#lineup_container li').on('click','a.platonic_add',function(e) {
 		var parent = $(this).parent();				//# decision div
+		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 	  var url;
 	  // obtain position of the next slide in deck for future loading
 		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
@@ -226,7 +228,7 @@ $(document).ready(function() // handling for the slider
 			
 				var rating = $('#dialog_platonic_add input:checked').val();
 				url += rating + "/";
-				parent.load(url, function(){
+				parent.poast(url,post_dict,function(){
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
 					if (next_position < {{member_set.count}})	{
 						updateFooterMsg();
@@ -296,9 +298,10 @@ $(document).ready(function() // handling for the slider
 	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
 	* 
 	*/
- 	$("#credit_check_modal").dialog({modal: true, autoOpen: false});    
+ 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});    
 	
 	window.launch_credit_check = function() {
+
 		var success_path='/admirers/{{admirer_rel.admirer_display_id}}/';
 		var cancel_url='http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
 		var feature_id = '1';
@@ -306,7 +309,12 @@ $(document).ready(function() // handling for the slider
   	if(cancel_url.substr(-1) == '/') 
    		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
    	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
-		$("#credit_check_modal").load(load_url);   	
+		$("#credit_check_modal").html('<div id="site-loading"></div>');
+		$("#credit_check_modal").load(load_url,function(responseText,textStatus,XHR){
+		if (textStatus=='timeout' || textStatus=='error'){
+				$(this).html("{{ajax_error}}");
+				$("#site-loading").remove();
+				} 	
    	$("#credit_check_modal").dialog("open");
   	return false;         
    }; // close off window.launch_credit_check function
@@ -318,8 +326,11 @@ $(document).ready(function() // handling for the slider
 	*/
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
 		// call ajax post function to deduct credit and change lineup_is_paid to true 
-		var get_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
-		$.get(get_url,function(data) {
+	 	$("#site-overlay").css('visibility','visible');
+	 	$("#site-overlay").html("<div id='site-loading'></div>");
+		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
+		var post_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
+		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
@@ -328,7 +339,11 @@ $(document).ready(function() // handling for the slider
 			// adjust the credits number on the main site
 			$("#num_credits").load("/ajax_update_num_credits/");
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
-			.error(function(data){alert(data.responseText);}); // end of $.get(get_url...)
+			.error(function(){
+					alert("{{ajax_error}}");
+					$('#site-overlay').css('visibility','hidden');
+					$('#site-loading').remove();
+			}); // end of $.post(post_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
 
 	/** FUNCTION - HANDLE FINISH BTN CLICK

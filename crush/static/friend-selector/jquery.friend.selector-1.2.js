@@ -46,7 +46,9 @@
      if (limit_state === false) {
         return false;
       }
+
 	$("#fs-user-list").append('<div id="fs-loading"></div>');
+	$("#fs-select-view #site-overlay").css('visibility','visible');
     var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
     // see if user exists
     $.get("/ajax_find_fb_user/", {username:username},
@@ -74,6 +76,10 @@
     			$('#nfs-input-text').val("");
     	        $('#fs-loading').remove();
     		} 			
+    }).fail(function(){
+    	alert(fsOptions.lang.ajaxError);
+    	$("#fs-select-view #site-overlay").css('visibility','hidden');
+    	$("#fs-loading").remove();
     });
 },
 
@@ -231,7 +237,7 @@
                       '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span></h2>' +
                       
                       
-                      '<div id="fs-select-view">' +
+                      '<div id="fs-select-view"><div id="site-overlay"></div>' +
                       
 	                      '<a href="javascript:{}" id="fs-tab" class="fs-button"><span>Friend</span></a>' +
 		                  '<a href="javascript:{}" id="nfs-tab" class="fs-button"><span>Non-Friend</span></a>' +
@@ -341,14 +347,16 @@
 	  		if ( response.error ) {
 	  			//alert ("error: " + response.error); // temporary
 	  			num_connect_tries+=1;
-	  			if (num_connect_tries < 10) 	
+	  			if (num_connect_tries < 7) 	
 	  				setTimeout(function () {
 	  					_getFacebookFriends();
 	  				}, 400); // if error connecting to facebook, wait .4 milliseconds before trying again
 	  			else // too many tries - give up
 	  			{
-	  		        alert(fsOptions.lang.fbConnectError);
-	  		        _close();
+	  				num_connect_tries=0;
+	  				alert(fsOptions.lang.fbConnectError);
+	  		        location.href="/facebook/login";
+	  		        //_close();
 	  		        return false;
 	  			}
 	  		}
@@ -363,7 +371,7 @@
       var facebook_friends = response.data;
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
-      if (facebook_friends.length < 3) {
+      if (facebook_friends.length < 2) {
     	  alert("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
     	  _close();
       }
@@ -876,7 +884,8 @@
       summaryBoxNoResult: "No results for {0}",
       searchText: "Enter a friend's name",
       nonFriendSearchText: "username",
-      fbConnectError: "Sorry, there is a problem connecting to Facebook.  Please try again later.",
+      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
+      ajaxError: "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p.",
       selectedCountResult: "You have choosen {0} people.",
       selectedLimitResult: "Limit is {0} people.",
       facebookInviteMessage: "Invite message"

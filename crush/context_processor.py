@@ -20,7 +20,8 @@ def context_processor(request):
             'num_new_responses' : known_responded_crushes.count(),
             'num_crushes_in_progress' : left_menu_crush_count,
             'num_platonic_friends' : me.just_friends_targets.count(),
-            'facebook_app_id': settings.FACEBOOK_APP_ID
+            'facebook_app_id': settings.FACEBOOK_APP_ID,
+            'ajax_error':settings.AJAX_ERROR,
             }
     else: # whenever a user is logged in, just use an empty dictionary
         return {}
