@@ -55,7 +55,6 @@ $(document).ready(function()
 	*/
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
 	 		$("#site-overlay").css('visibility','visible');
-	 		$("#site-overlay").html("<div id='site-loading'></div>");
 
 	  	var unique_id = $('#credit_check_modal').attr('unique_id');
 			// call ajax post function to deduct credit and change lineup_is_paid to true 
@@ -63,7 +62,6 @@ $(document).ready(function()
 			var post_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
 		$.post(post_url,post_dict,function(data) {
 			$('#site-overlay').css('visibility','hidden');
-			$('#site-loading').remove();
 			// if successful then reload the page?
 		 	document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
 			// reloading page takes care of updating the notifications numbers
@@ -71,7 +69,6 @@ $(document).ready(function()
 			.fail(function(data){
 				alert("{{ajax_error}}");
 				$("#site-overlay").css('visibility','hidden');	
-				$("#site-loading").remove();
 				}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
    

@@ -1,4 +1,13 @@
+<script>
+var morph_dialog = function(){
+$('#credit_check_content #site-loading').show();
+$('#content-holder').hide();
+};
+</script>
+
 <div id="credit_check_content">
+<div id="site-loading"></div>
+<div id="content-holder">
 Feature: {{ feature_name }}<br>
 Feature Cost: {{ feature_cost }}
 {% if feature_cost == 1 %}
@@ -16,6 +25,7 @@ credits
 <i><b>You have insufficient credit to purchase this item</b></i><BR>
 
 <h3>Add More Credits:</h3>
+
 <form method="post" action='{{ paypal_url }}'>{% csrf_token %}
 
 <input type = "radio" name="amount" value="5" onClick="document.getElementById('item_name_field').value='5 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=5';document.getElementById('notify_url').value='{{paypal_notify_url}}5/'">5 credits - $5 USD
@@ -40,12 +50,10 @@ credits
   
 
 <input type='button' onclick="$('#credit_check_modal').dialog('close');" value=Cancel>
-<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" >
-
-
-  
+<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" onclick="morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" >
 
 </form>
+</div>
 </div>
 
 

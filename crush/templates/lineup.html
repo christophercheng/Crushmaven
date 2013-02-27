@@ -324,15 +324,15 @@ $(document).ready(function() // handling for the slider
 	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
 	*/
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
+
 		// call ajax post function to deduct credit and change lineup_is_paid to true 
 	 	$("#site-overlay").css('visibility','visible');
-	 	$("#site-overlay").html("<div id='site-loading'></div>");
+	 		 alert("clicked");
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			$('#site-overlay').css('visibility','hidden');
-			$('#site-loading').remove();
 			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
@@ -343,7 +343,6 @@ $(document).ready(function() // handling for the slider
 			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
 					alert("{{ajax_error}}");
 					$('#site-overlay').css('visibility','hidden');
-					$('#site-loading').remove();
 			}); // end of $.post(post_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
 
