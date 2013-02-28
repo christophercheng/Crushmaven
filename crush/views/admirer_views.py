@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -9,6 +9,8 @@ from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,thread
 from django.db.models import Q
 import urllib,json
+from utils import graph_api_fetch
+from urllib2 import HTTPError
 
 # -- Admirer List Page --
 @login_required
@@ -154,14 +156,19 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
 
     # if the relationship is friend-of-friend, then show pictures of mutual friends:
     if admirer_rel.friendship_type==1:
-        ajax_response +='<div id="mutual_friends">Connected through: '
-        friend_profile = urllib.urlopen('https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + lineup_member.username + '/?access_token=%s' % request.user.access_token)
-        friend_profile = json.load(friend_profile)
-        print str(friend_profile)
-        if len(friend_profile['data'])>0:
-            friend=friend_profile['data'][0]
+        
+        try:
+            friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + lineup_member.username)
+            friend=friend_profile[0]
+            ajax_response +='<div id="mutual_friends">Connected through: '
             ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;">'
-        ajax_response += '</div>'
+            ajax_response += '</div>'
+        except HTTPError as e:
+            if e.code==400: # user's access token is invalid, so force user to log back in
+                return HttpResponseNotAllowed('HTTPError')
+            # no need to handle any other cases i.e. timeout since this isn't a vital function
+        except:
+            pass
     
     ajax_response +='<div id="decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
     

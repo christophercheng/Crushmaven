@@ -1,8 +1,8 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from crush.models import CrushRelationship
-
+from urllib2 import URLError,HTTPError
 import datetime
 
 
@@ -18,7 +18,14 @@ def ajax_friends_with_admirers_content(request):
     ajax_response=""
     me=request.user
 
-    me.find_inactive_friends_of_activated_user()
+    try:
+        me.find_inactive_friends_of_activated_user()
+    except HTTPError as e:
+        if e.code==400:
+            return HttpResponseNotAllowed(str(e))
+    except:
+        return HttpResponse('') # not key functionality, so don't do anything special
+        
     for counter,inactive_crush_friend in enumerate(me.friends_with_admirers.all()):
         print "creating html for: " + inactive_crush_friend.username
         ajax_response+="<div id='friend_admirer" + str(counter) + "'>"

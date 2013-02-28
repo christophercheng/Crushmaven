@@ -16,7 +16,7 @@ $(document).ready(function()
 		$("#ajaxwrapper").load(
 			form.attr('action') + ' #ajaxwrapper',
 			form.serializeArray(),
-			function(responseText, responseStatus) {
+			function(responseText, responseStatus,XHR) {
 				$("#sendbutton").removeAttr('disabled')
 			}
 			); // close off ajax load function

@@ -1,11 +1,13 @@
 from django.db import models
 # use signal to create user profile automatically when user created
-import urllib, json
+import urllib,urllib2, json
 import datetime
 from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.conf import settings
 import crush.models.relationship_models
+from utils import graph_api_fetch
+
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -70,8 +72,10 @@ class FacebookUserManager(UserManager):
         except FacebookUser.DoesNotExist:
             
             if fb_profile == None:
-                fb_profile = urllib.urlopen('https://graph.facebook.com/' + str(fb_id) + '/?access_token=%s' % fb_access_token)
-                fb_profile = json.load(fb_profile)
+                try:
+                    fb_profile=graph_api_fetch(fb_access_token,str(fb_id),expect_data=False)
+                except:
+                    return None # bad error handling, couldn't fetch data for this user
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
             default_notification_settings=crush.models.miscellaneous_models.NotificationSettings.objects.create()
@@ -151,6 +155,7 @@ class FacebookUser(AbstractUser):
     
     # many-to-many relationship with other friends with admirers
     friends_with_admirers = models.ManyToManyField('self',symmetrical=False,related_name='friends_with_admirers_set')
+    
     def add_inactive_crushed_friend_by_id(self, friend_id):
         print "adding inactive crushed friend: " + friend_id
         # get user with friend id
@@ -183,17 +188,22 @@ class FacebookUser(AbstractUser):
         print "list of all site inactive users: " + str(all_inactive_user_list)        
 
         fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me())"
-   
-        fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token))
-        print "attempting to load the json results"
-        fql_query_results = json.load(fql_query_results)['data']
+        try:
+            print "attempting to load the json results"
+            fql_query_results=graph_api_fetch(self.access_token,"me/friends")
+            #full_query_string=fql_query_results = 'https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token)
+            #fql_query_results=urllib.urlopen(full_query_string)
+            #fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token))
+            #fql_query_results = json.load(fql_query_results)['data']
+        except:
+            raise 
     
         # clear out past data
         self.friends_with_admirers_set.clear()
         # loop through all friends.  if any friend is in inactive user results, then add them to the friends_with_admirers list.
         for friend in fql_query_results:
-            if friend['uid'] in all_inactive_user_list:
-                self.add_inactive_crushed_friend_by_id(str(friend['uid']))
+            if friend['id'] in all_inactive_user_list:
+                self.add_inactive_crushed_friend_by_id(str(friend['id']))
         # mark the function complete flag so that future users/pages won't reprocess the user
         self.processed_activated_friends_admirers = datetime.datetime.now()
         self.save(update_fields=['processed_activated_friends_admirers'])
@@ -218,10 +228,10 @@ class FacebookUser(AbstractUser):
         return
     
     def get_facebook_profile(self):
-        fb_profile = urllib.urlopen(
-                        'https://graph.facebook.com/me?access_token=%s'
-                        % self.access_token)
-        data = json.load(fb_profile)
+        try:
+            data=graph_api_fetch(self.access_token,'me',expect_data=False)
+        except:
+            return None
         data.update({'picture': self.get_facebook_picture()})
         return data
 

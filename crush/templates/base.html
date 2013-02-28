@@ -48,6 +48,20 @@
 	$.ajaxSetup({
 		timeout: '5000'
 	});
+	
+	var access_token_error=function(responseText){
+		if (responseText.indexOf("HTTPError") != -1){
+			reauthorize_user();
+			return true;
+		}
+		else 
+			return false;
+	};
+	
+	var reauthorize_user=function(){
+		alert("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
+		location.href="/facebook/login";
+	};
   </script>  
 
 <script type="text/javascript">
@@ -79,7 +93,8 @@ jQuery(document).ready(function($) {
       },
       onSubmit: function(response){
 			add_friends_to_db(response);
-      }
+      },
+      onHTTPError:reauthorize_user,
     });
 
   function add_friends_to_db(response)
@@ -104,14 +119,19 @@ jQuery(document).ready(function($) {
 		var crush_username=$(this).attr('crush_username');	
 		var load_url="/app_invite_form/" + crush_username + "/";
 		app_div_element.load(load_url,function(responseText,textStatus,XHR){
-			if (textStatus!="success")
-				$(this).html("{{ajax_error}}");
+			if (textStatus!="success"){
+				if (!access_token_error(responseText))
+					$(this).html("{{ajax_error}}");
+			}
 		});	
 		e.preventDefault();
     return false;
 	});
      
-  $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/');
+  $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
+  	if (xhr.status==405)
+				reauthorize_user();
+  });
   
   
 }); // close of jQuery(document).ready

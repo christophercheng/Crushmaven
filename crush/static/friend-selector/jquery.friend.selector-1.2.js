@@ -80,8 +80,11 @@
     			$("#fs-select-view #site-overlay").css('visibility','hidden');
     	        $('#fs-loading').remove();
     		} 			
-    }).fail(function(){
-    	alert(fsOptions.lang.ajaxError);
+    }).fail(function(responseText,textStatus,XHR){
+		if (responseText.responseText.indexOf("HTTPError") != -1)
+			fsOptions.onHTTPError();
+		else
+			alert(fsOptions.ajaxError);
     	$("#fs-select-view #site-overlay").css('visibility','hidden');
     	$("#fs-loading").remove();
     });
@@ -375,7 +378,7 @@
       var facebook_friends = response.data;
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
-      if (facebook_friends.length < 2) {
+      if (facebook_friends.length < 1) {
     	  alert("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
     	  _close();
       }
@@ -899,7 +902,8 @@
     facebookInvite: false,
     onStart: function(response){ return null; },
     onClose: function(response){ return null; },
-    onSubmit: function(response){ return null; }
+    onSubmit: function(response){ return null; },
+    onHTTPError: function(response){location.href='/facebook/login';},
   };
 
 

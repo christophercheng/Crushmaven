@@ -159,7 +159,7 @@ $(document).ready(function()
   {% if check_fb_privacy_setting %}
   //check for privacy setting value
 	var query_string= 'SELECT name,value FROM privacy_setting WHERE name="default_stream_privacy"';
-	url = 'https://graph.facebooka.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
+	url = 'https://graph.facebook.com/fql?q=' + query_string + '&access_token={{request.user.access_token}}&callback=?';
   privacy_fetch = $.getJSON(url);
   privacy_fetch.done(function(response){
   	if(response.data[0]['value'] != 'SELF')

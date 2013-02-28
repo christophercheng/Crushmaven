@@ -144,7 +144,11 @@ $(document).ready(function() // handling for the slider
 	* Ajax load the next slide into the DOM
 	*/	
 	var load_next_slide = function(next_position, callback){
-		$('.bxslider li[lineup_position=' + next_position + ']').load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + next_position + '/', function(response, status, xhr) {
+		$('.bxslider li[lineup_position=' + next_position + ']').load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + next_position + '/', function(responseText, statusText, xhr) {
+			if (xhr.status==405){
+				reauthorize_user();
+				return;
+			}
 			// load the next thumbnail as well
 			var next_username =$(this).find('#decision').attr("username");
 			var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';

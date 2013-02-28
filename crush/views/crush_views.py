@@ -3,13 +3,14 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient
-import urllib, json
+import json
 import datetime
 from crush.appinviteform import AppInviteForm
 from smtplib import SMTPException
 import time
 from  django.http import HttpResponseNotFound,HttpResponseForbidden
-
+from utils import graph_api_fetch
+from urllib2 import URLError,HTTPError
 #from crush import friend_scraper
 
 # for mail testing 
@@ -168,7 +169,7 @@ def app_invite_form(request, crush_username):
             
             crush_name = crush_user.first_name + " " + crush_user.last_name
             crush_subject = 'Your Facebook friend is attracted to you - find out who.'
-            crush_body='Visit http://crushvibes.com to find out whom.'
+            crush_body='Visit http://attractedto.com to find out whom.'
             friend_subject = 'Your friend ' + crush_name + ' has a secret admirer and needs your help.'
             friend_body='Please forward this message to your friend, ' + crush_name + ':\n\n' + crush_body
 
@@ -203,11 +204,14 @@ def app_invite_form(request, crush_username):
                 return redirect('app_invite_success')
     else:
         # find mutual friends to pass to the app invite form
-        friend_profile = urllib.urlopen('https://graph.facebook.com/' + request.user.username + '/mutualfriends/' + crush_username + '/?access_token=%s' % request.user.access_token)
-        friend_profile = json.load(friend_profile)
+        fb_query_string = str(request.user.username + '/mutualfriends/' + crush_username)
+        try:           
+            friend_profile = graph_api_fetch(request.user.access_token,fb_query_string)
+        except:
+            raise 
         friendlist_string=''
-        if len(friend_profile['data'])>0:
-            for friend in friend_profile['data']:
+        if friend_profile != None:
+            for friend in friend_profile:
                 friendlist_string+=friend['name'] + ', '
             friendlist_string=friendlist_string[:-2] # strip out last comma 
         print "friendlist_string: " + friendlist_string
@@ -224,13 +228,11 @@ def ajax_find_fb_user(request):
         username=''
         username=request.REQUEST['username']
         me=request.user 
-        access_token = me.access_token
+        access_token=me.access_token
         print "accessing user: " + username
         # call fb api to get user info and put it in the cleaned_data function
-        fb_profile = urllib.urlopen('https://graph.facebook.com/' + username + '/?access_token=%s' % access_token)
-        fb_profile = json.load(fb_profile)
-        print "resulant profile: " + str(fb_profile)   
-
+        crush_id=None
+        fb_profile = graph_api_fetch('',username,expect_data=False)
         #raises KeyError if no id key/value pair exists in the fb_profile dictionary
         crush_id = fb_profile['id']
         if crush_id==me.username:
@@ -240,22 +242,38 @@ def ajax_find_fb_user(request):
             me.crush_targets.get(username=fb_profile['id'])
             response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as a crush.'
         except FacebookUser.DoesNotExist:
-            friend_profile = urllib.urlopen('https://graph.facebook.com/' + me.username + '/friends/' + crush_id + '/?access_token=%s' % access_token)
-            friend_profile = json.load(friend_profile)
-            if len(friend_profile['data'])>0:
-                friend_type=0
-            else:
-                friend_profile = urllib.urlopen('https://graph.facebook.com/' + me.username + '/mutualfriends/' + crush_id + '/?access_token=%s' % access_token)
-                friend_profile = json.load(friend_profile)
-                if len(friend_profile['data'])>0:
-                    friend_type=1
+            
+            try:
+                fb_query_string= me.username + '/friends/' + crush_id
+                friend_profile=graph_api_fetch(access_token,fb_query_string)
+                if len(friend_profile)>0:
+                    friend_type=0
                 else:
-                    friend_type=2
-            response_data['id']=fb_profile['id']
-            response_data['name']=fb_profile['name']
-            response_data['friend_type']=friend_type
-    except KeyError: # username not found on fb
-        response_data['error_message'] = 'Invalid facebook username: ' + username     
+                    fb_query_string= me.username + '/mutualfriends/' + crush_id
+                    friend_profile=graph_api_fetch(access_token,fb_query_string)
+    
+                    if len(friend_profile)>0:
+                        friend_type=1
+                    else:
+                        friend_type=2
+                response_data['id']=fb_profile['id']
+                response_data['name']=fb_profile['name']
+                response_data['friend_type']=friend_type
+            except:
+                raise
+    except HTTPError as e:
+        print "Error: " + str(e.code)
+        if e.code==404:
+            print "BAD QUERY STRING"
+            response_data['error_message'] = 'Invalid facebook username: ' + username
+        elif e.code==400:
+            print "BAD ACCESS TOKEN"
+            raise
+    except URLError as e: # most likley timeout
+        print "Timeout"  + str(e.reason)
+        if str(e.reason) == 'timed out': #timeout
+            response_data['error_message'] = settings.AJAX_ERROR 
+
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
  
 @login_required

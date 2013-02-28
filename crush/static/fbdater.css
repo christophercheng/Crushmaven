@@ -175,6 +175,7 @@ border-width:1px;
 border-color: LightSteelBlue;
 margin-bottom:15px;
 padding:10px;
+z-index:10;
 }
 
 #bx-pager a img  {

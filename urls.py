@@ -24,7 +24,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 
     (r'^logout_view/$', 'logout_view'),
     
-    (r'^testing/$','testing'),
+    #(r'^testing/$','testing'),
 )
    
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
