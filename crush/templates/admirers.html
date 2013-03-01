@@ -44,8 +44,17 @@ $(document).ready(function()
         var admirer_display_id=$(this).attr("display_id");
         var lineup_block_div = $(this).parent('.lineup_block');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
-        var ajax_url = '/ajax_display_lineup_block/' + admirer_display_id + '/'; 
-        lineup_block_div.load(ajax_url);
+        var ajax_url = '/ajax_display_lineup_blocka/' + admirer_display_id + '/'; 
+        $.ajax(ajax_url, {
+        
+   				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
+   				success: function (data) {
+       			lineup_block_div.html(data);
+   				},
+   				error: function(){
+   					lineup_block_div.html("{{fof_fail_status}}");
+   				} 
+				});
     });
     
 	// auto show lineup if one given

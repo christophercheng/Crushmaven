@@ -45,8 +45,9 @@
     };
     
   // set default time of 10 seconds for all ajax calls:  
+	// lineup initialization will require longer wait time
 	$.ajaxSetup({
-		timeout: '5000'
+		timeout: '10000'
 	});
 	
 	var access_token_error=function(responseText){

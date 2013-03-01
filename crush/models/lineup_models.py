@@ -702,7 +702,7 @@ class LineupMemberManager(models.Manager):
         if g_init_dict[crush_id]['initialization_count']==0:
             # wait 25 seconds for rest of threads to finish their work
             # after 25 seconds delete the main user key if another initialization routine has not been kickstarted
-            time.sleep(25)
+            time.sleep(15)
             if g_init_dict[crush_id]['initialization_count']==0:
                 del g_init_dict[crush_id]
             

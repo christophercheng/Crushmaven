@@ -23,7 +23,7 @@ def admirers(request,show_lineup=None):
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=None) | Q(lineup_initialization_status__gt=1))
-
+    print "Initializing: " + str(len(uninitialized_relationships)) + " relationships"
     # reset initialize the global variable and set the number of relationships to initialize
     g_init_dict[me.username]={}    
     g_init_dict[me.username]['initialization_count'] = len(uninitialized_relationships)    
