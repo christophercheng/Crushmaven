@@ -93,7 +93,7 @@ def ajax_display_lineup_block(request, display_id):
                                                 'fail_status_2':settings.LINEUP_STATUS_CHOICES[2],
                                                 'fail_status_3':settings.LINEUP_STATUS_CHOICES[3],})
 
-
+# called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason.
 @login_required
 def ajax_initialization_failed(request, display_id):
     int_display_id=int(display_id)

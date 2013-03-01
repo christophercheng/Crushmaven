@@ -30,6 +30,10 @@
  <div id="app_invite_modal" title="Send Application Invites"></div>
 
  <script>
+ 
+ // load friends asap if not already loaded
+ if (window.fb_friend_list == Null)
+ 
 (function() {
   var e = document.createElement('script'); e.async = true;
       e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
