@@ -63,6 +63,8 @@ urlpatterns += patterns('crush.views.admirer_views',
 
     (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     
+    (r'^ajax_initialization_failed/(?P<display_id>\d+)/$','ajax_initialization_failed'),
+    
     (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','ajax_show_lineup_slider'), 
     
     (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','ajax_get_lineup_slide'),

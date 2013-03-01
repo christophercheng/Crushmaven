@@ -30,42 +30,40 @@
  <div id="app_invite_modal" title="Send Application Invites"></div>
 
  <script>
-    (function() {
-      var e = document.createElement('script'); e.async = true;
-          e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-          document.getElementById('fb-root').appendChild(e);
-          }());
+(function() {
+  var e = document.createElement('script'); e.async = true;
+      e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+      document.getElementById('fb-root').appendChild(e);
+      }());
 
-    window.fbAsyncInit = function() {
-      FB.init({ appId: {{facebook_app_id}}, 
-      status: true, 
-      cookie: true,
-      xfbml: true,
-      oauth: true}); 
-    };
-    
-  // set default time of 10 seconds for all ajax calls:  
-	// lineup initialization will require longer wait time
-	$.ajaxSetup({
-		timeout: '10000'
-	});
-	
-	var access_token_error=function(responseText){
-		if (responseText.indexOf("HTTPError") != -1){
-			reauthorize_user();
-			return true;
-		}
-		else 
-			return false;
-	};
-	
-	var reauthorize_user=function(){
-		alert("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
-		location.href="/facebook/login";
-	};
-  </script>  
+window.fbAsyncInit = function() {
+  FB.init({ appId: {{facebook_app_id}}, 
+  status: true, 
+  cookie: true,
+  xfbml: true,
+  oauth: true}); 
+};
+   
+// set default time of 10 seconds for all ajax calls:  
+// lineup initialization will require longer wait time
+$.ajaxSetup({
+	timeout: '10000'
+});
 
-<script type="text/javascript">
+var access_token_error=function(responseText){
+	if (responseText.indexOf("HTTPError") != -1){
+		reauthorize_user();
+		return true;
+	}
+	else 
+		return false;
+};
+
+var reauthorize_user=function(){
+	alert("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
+	location.href="/facebook/login";
+};
+
 jQuery(document).ready(function($) {
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",

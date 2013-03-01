@@ -93,6 +93,20 @@ def ajax_display_lineup_block(request, display_id):
                                                 'fail_status_2':settings.LINEUP_STATUS_CHOICES[2],
                                                 'fail_status_3':settings.LINEUP_STATUS_CHOICES[3],})
 
+
+@login_required
+def ajax_initialization_failed(request, display_id):
+    int_display_id=int(display_id)
+    try:    
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)    
+    except CrushRelationship.DoesNotExist:
+        return
+    if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status == 0:
+        relationship.lineup_initialization_status = 5
+        relationship.save(update_fields=['lineup_initialization_status'])
+    
+    
+
 # -- Single Lineup (Ajax Content) Page --
 @login_required
 def ajax_show_lineup_slider(request,admirer_id):

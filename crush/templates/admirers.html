@@ -45,6 +45,7 @@ $(document).ready(function()
         var lineup_block_div = $(this).parent('.lineup_block');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
         var ajax_url = '/ajax_display_lineup_blocka/' + admirer_display_id + '/'; 
+        var ajax_fail_url='/ajax_initialization_failed/' + admirer_display_id + '/';
         $.ajax(ajax_url, {
         
    				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
@@ -53,6 +54,7 @@ $(document).ready(function()
    				},
    				error: function(){
    					lineup_block_div.html("{{fof_fail_status}}");
+   					$.get(ajax_fail_url);
    				} 
 				});
     });
