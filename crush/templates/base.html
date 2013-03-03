@@ -28,6 +28,7 @@
  
  <!-- FOR THE EMAIL INVITE POPUP -->
  <div id="app_invite_modal" title="Send Application Invites"></div>
+ <div id="alert_modal" title="AttractedTo.com Error"></div>
 
  <script>
  
@@ -61,11 +62,22 @@ var access_token_error=function(responseText){
 };
 
 var reauthorize_user=function(){
-	alert("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
+	window.alert_user("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
 	location.href="/facebook/login";
 };
 
 jQuery(document).ready(function($) {
+  
+  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false});
+  window.alert_user=function(message){
+    $("#alert_modal").html(message);
+    $("#alert_modal").dialog('option','buttons',{
+  		"Ok": function() {$(this).dialog("close");
+  		}
+  	});
+		$('#alert_modal').dialog("open");
+  };  
+
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
@@ -92,9 +104,11 @@ jQuery(document).ready(function($) {
         ajaxError:"{{ajax_error}}",
       },
       onSubmit: function(response){
-			add_friends_to_db(response);
+				add_friends_to_db(response);
       },
-      onHTTPError:reauthorize_user,
+      onError: function(){
+      	window.alert_user("{{ajax_error}}");
+      },
     });
 
   function add_friends_to_db(response)
@@ -111,7 +125,7 @@ jQuery(document).ready(function($) {
   };
 
 	var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
-  $(".app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+  $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
 	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
 		app_div_element = $("#app_invite_modal");
 		app_div_element.html('<div id="site-loading"></div>');
@@ -132,7 +146,6 @@ jQuery(document).ready(function($) {
   	if (xhr.status==405)
 				reauthorize_user();
   });
-  
   
 }); // close of jQuery(document).ready
 

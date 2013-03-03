@@ -81,10 +81,8 @@
     	        $('#fs-loading').remove();
     		} 			
     }).fail(function(responseText,textStatus,XHR){
-		if (responseText.responseText.indexOf("HTTPError") != -1)
-			fsOptions.onHTTPError();
-		else
-			alert(fsOptions.ajaxError);
+    	
+    	fsOptions.onError(fsOptions.lang.ajaxError);
     	$("#fs-select-view #site-overlay").css('visibility','hidden');
     	$("#fs-loading").remove();
     });
@@ -903,7 +901,7 @@
     onStart: function(response){ return null; },
     onClose: function(response){ return null; },
     onSubmit: function(response){ return null; },
-    onHTTPError: function(response){location.href='/facebook/login';},
+    onError: function(response){ return null; },
   };
 
 

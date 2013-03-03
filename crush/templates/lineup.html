@@ -7,7 +7,7 @@
 
 
 <div id="dialog_attraction_add" title="Attraction Confirmation ">
-	<input type="checkbox"checked="true">By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
+	<input type="checkbox" checked="true">By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
 </div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation">
 	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
@@ -189,7 +189,11 @@ $(document).ready(function() // handling for the slider
 	  $("#dialog_attraction_add").dialog('option', 'buttons', {
 				"Cancel": function() {$(this).dialog("close");
 				}, // end of cancel handler
-				"Submit": function() { 
+				"Submit": function() {
+				if ($(this).children('input:checked').length == 0){
+					window.alert_user("You must agree to the terms and conditions before continuing.");
+					return;
+				}
 				parent.load(url, function(){
 					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
 					if (next_position < {{member_set.count}})	{
@@ -265,7 +269,7 @@ $(document).ready(function() // handling for the slider
 		else {		
 			if (activeIndex+1 < {{member_set.count}}){ 
 				var member_name = activeSlideElement.children('#name').html();
-				alert("Sorry, you can not jump ahead without making a decision on " + member_name);
+				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
 			}
 		}
 	};
@@ -331,7 +335,7 @@ $(document).ready(function() // handling for the slider
 
 		// call ajax post function to deduct credit and change lineup_is_paid to true 
 	 	$("#site-overlay").css('visibility','visible');
-	 		 alert("clicked");
+
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
 		$.post(post_url,post_dict,function(data) {
@@ -345,7 +349,7 @@ $(document).ready(function() // handling for the slider
 			$("#num_credits").load("/ajax_update_num_credits/");
 			}) 
 			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
-					alert("{{ajax_error}}");
+					window.alert_user("{{ajax_error}}");
 					$('#site-overlay').css('visibility','hidden');
 			}); // end of $.post(post_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)

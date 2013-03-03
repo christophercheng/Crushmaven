@@ -50,7 +50,7 @@ $(document).ready(function()
             $("#reconsider_dialog").dialog('option', 'buttons', {
        			"Add": function() {
        				if (!$('#check_terms').is(':checked')){
-       					alert("You must agree to the terms & conditions before proceeding");
+       					window.alert_user("You must agree to the terms & conditions before proceeding");
        					return false;
        					} // close checkbox check block
        				$.post("/ajax_reconsider/",{rel_id:rel_id, csrfmiddlewaretoken:'{{csrf_token}}' },function(data){

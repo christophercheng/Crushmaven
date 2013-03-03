@@ -67,7 +67,7 @@ $(document).ready(function()
 			// reloading page takes care of updating the notifications numbers
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
 			.fail(function(data){
-				alert("{{ajax_error}}");
+				window.alert_user("{{ajax_error}}");
 				$("#site-overlay").css('visibility','hidden');	
 				}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
@@ -125,7 +125,7 @@ $(document).ready(function()
     		// deletion is possible, so open up the confirmation dialog
     		$("#dialog").dialog("open");
     	}).fail(function(response){
- 				alert(response.responseText);
+ 				window.alert_user(response.responseText);
  				return false;
 				});  
       e.preventDefault();
@@ -136,7 +136,7 @@ $(document).ready(function()
  					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	$("#dialog").dialog("close");
- 				alert(response.responseText);
+ 				window.alert_user(response.responseText);
 
  				});
  			},
