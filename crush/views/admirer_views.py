@@ -1,14 +1,12 @@
-from django.http import HttpResponse,HttpResponseNotAllowed
+from django.http import HttpResponse,HttpResponseNotAllowed,HttpResponseNotFound,HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
 from crush.models.globals import g_init_dict
 import datetime
-from django.http import HttpResponseNotFound,HttpResponseForbidden
 import time,thread
 from django.db.models import Q
-import urllib,json
 from utils import graph_api_fetch
 from urllib2 import HTTPError
 
@@ -100,10 +98,11 @@ def ajax_initialization_failed(request, display_id):
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)    
     except CrushRelationship.DoesNotExist:
-        return
+        return HttpResponseNotFound("")
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status == 0:
         relationship.lineup_initialization_status = 5
         relationship.save(update_fields=['lineup_initialization_status'])
+    return HttpResponse("")
     
     
 

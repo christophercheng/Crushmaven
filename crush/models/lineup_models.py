@@ -6,6 +6,7 @@ import random
 import re,thread,time
 from threading import Lock
 from crush.models.globals import g_init_dict
+from utils import graph_api_fetch,fb_fetch
 
 def comma_delimit_list(array):
     myString = ",".join(array)
@@ -55,10 +56,10 @@ class LineupMemberManager(models.Manager):
             if crush_id not in g_init_dict[crush_id]:
                 g_init_dict[crush_id][crush_id] = Lock()
             g_init_dict[crush_id][crush_id].acquire() 
-            print "REL ID: " + rel_id + " inside lock"
+            #print "REL ID: " + rel_id + " inside lock"
             fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-            fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.target_person.access_token))
-            data = json.load(fql_query_results)['data'] 
+            data = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
+
         except:
             g_init_dict[crush_id][crush_id].release()
             print "Key or Value Error on Fql Query Fetch read!"
@@ -93,8 +94,7 @@ class LineupMemberManager(models.Manager):
         
         try:
             fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-            fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.source_person.access_token))
-            data = json.load(fql_query_results)['data'] 
+            data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
         except:
             print "Key or Value Error on Fql Query Fetch read!"
             self.initialize_fail(relationship,5)
@@ -200,10 +200,11 @@ class LineupMemberManager(models.Manager):
             g_init_dict[crush_id][mfriend_id].acquire() 
             # grab all friends of mutual app with admirer sex, friend sorted by friend count - via graph api
             fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1=' + str(mutual_friend['uid']) + ' AND NOT (uid2 IN (' + g_init_dict[crush_id]['exclude_id_string'] + ')))) AND sex = "' + relationship.source_person.get_fb_gender() + '" ORDER BY friend_count DESC LIMIT ' + str(settings.IDEAL_LINEUP_MEMBERS)
-            fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.target_person.access_token))
-            fql_query_results=json.load(fql_query_results)
-            print fql_query_results
-            fql_query_results = fql_query_results['data'] 
+            try:
+                fql_query_results = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
+            except:
+                g_init_dict[crush_id][mfriend_id].release()
+                continue
             # if less than minimum lineup members, go on to next mutual friend
             if not fql_query_results or len(fql_query_results) < settings.MINIMUM_LINEUP_MEMBERS:
                 g_init_dict[crush_id][mfriend_id].release()
@@ -232,9 +233,10 @@ class LineupMemberManager(models.Manager):
         for friend in crush_app_friend_array:
             # get each crush app friend's friends sorted by friend_count and filtered by gender & exclude id list - limit result to 1
             fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1=' + str(friend['uid']) + ' AND NOT (uid2 IN (' + exclude_id_string + ')))) AND sex = "' + relationship.source_person.get_fb_gender() + '" ORDER BY friend_count DESC LIMIT 1'
-            fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,relationship.target_person.access_token))
-            fql_query_results=json.load(fql_query_results)
-            fql_query_results = fql_query_results['data'] 
+            try:
+                fql_query_results = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
+            except:
+                continue
             # if result < 0 skip rest of loop
             if len(fql_query_results) == 0:
                 continue
@@ -329,16 +331,8 @@ class LineupMemberManager(models.Manager):
         global g_init_dict
         crush_id=relationship.target_person.username
         rel_id=str(relationship.id)
-
-        opener = urllib2.build_opener()
-        opener.addheaders.append(('Host', 'http://www.facebook.com'))
-        opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-        opener.addheaders.append( ('Accept', '*/*') )
-        fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + "&__a=1&start=" + str(q_block_array[q_index])
         try:
-            fetch_response = urllib2.Request(fetch_url)
-            fetch_response = opener.open(fetch_response)
-            fetch_response = fetch_response.read()
+            fetch_response = fb_fetch(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid'],q_block_array[q_index])
         except:
             LineupMember.objects.fetch_block_finished(relationship,mf_index,q_block_array,q_start_index, [])
             return
@@ -372,10 +366,10 @@ class LineupMemberManager(models.Manager):
         query_string = "SELECT uid FROM user WHERE uid IN ("
         query_string += ",".join(g_init_dict[crush_id][rel_id+'_batch_id_array'])
         query_string += ") AND NOT (uid IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) AND sex='" + relationship.source_person.get_fb_gender() + "'"
-        url = "https://graph.facebook.com/fql?q=" + query_string # don't need access token for this query             
-        filtered_batch_id_array = urllib.urlopen(url)
-        filtered_batch_id_array= json.load(filtered_batch_id_array)
-        filtered_batch_id_array = filtered_batch_id_array['data']
+        try:
+            filtered_batch_id_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
+        except:
+            filtered_batch_id_array=[]
         print "REL ID:" + rel_id +" Method 3D (fetch_block_finished), mutual friend: " + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + " - finished batch at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array))
         g_init_dict[crush_id][rel_id+'_filtered_id_array'] += filtered_batch_id_array
         if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) >= settings.IDEAL_LINEUP_MEMBERS:
@@ -507,16 +501,9 @@ class LineupMemberManager(models.Manager):
             # other threads have already completed the job
             return
         crush_friend=g_init_dict[crush_id]['crush_friend_array'][cf_index]
-        fetch_url='https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=' + str(q_block_array[q_index]) + '&uid=' + str(crush_friend['uid'])
 
-        opener = urllib2.build_opener()
-        opener.addheaders.append(('Host', 'http://www.facebook.com'))
-        opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-        opener.addheaders.append( ('Accept', '*/*') )
         try:
-            fetch_response = urllib2.Request(fetch_url)
-            fetch_response = opener.open(fetch_response)
-            fetch_response = fetch_response.read()
+            fetch_response = fb_fetch(crush_friend['uid'],q_block_array[q_index])
         except:
             self.get_another_friend_block(relationship,cf_index,q_block_array,q_index)
             return
@@ -547,10 +534,7 @@ class LineupMemberManager(models.Manager):
         query_string += ") AND NOT (uid IN (" + str(g_init_dict[crush_id]['exclude_id_string']) + ")) AND sex='" + relationship.source_person.get_fb_gender() + "'"
         url = "https://graph.facebook.com/fql?q=" + query_string # don't need access token for this query             
         try:
-            filtered_batch_id_array = urllib.urlopen(url)
-            filtered_batch_id_array= json.load(filtered_batch_id_array)
-            filtered_batch_id_array = filtered_batch_id_array['data']
-            #print str(g_mutual_friend_array[mf_index]['uid']) + " - finished batch process. Result for q_start_index: " + str(q_start_index) + " : " + str(filtered_batch_id_array)
+            filtered_batch_id_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
         except:
             self.get_another_friend_block(relationship,cf_index,q_block_array,q_index)
             return

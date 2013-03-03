@@ -44,7 +44,7 @@ $(document).ready(function()
         var admirer_display_id=$(this).attr("display_id");
         var lineup_block_div = $(this).parent('.lineup_block');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
-        var ajax_url = '/ajax_display_lineup_blocka/' + admirer_display_id + '/'; 
+        var ajax_url = '/ajax_display_lineup_block/' + admirer_display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + admirer_display_id + '/';
         $.ajax(ajax_url, {
         

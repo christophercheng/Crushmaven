@@ -187,14 +187,10 @@ class FacebookUser(AbstractUser):
             all_inactive_user_list.append(int(crush_rel.target_person.username))
         print "list of all site inactive users: " + str(all_inactive_user_list)        
 
-        fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=me())"
         try:
             print "attempting to load the json results"
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
-            #full_query_string=fql_query_results = 'https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token)
-            #fql_query_results=urllib.urlopen(full_query_string)
-            #fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,self.access_token))
-            #fql_query_results = json.load(fql_query_results)['data']
+
         except:
             raise 
     
