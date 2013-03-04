@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient,LineupMember
 import json
 import datetime
 from crush.appinviteform import AppInviteForm
@@ -11,6 +11,9 @@ import time
 from  django.http import HttpResponseNotFound,HttpResponseForbidden
 from utils import graph_api_fetch
 from urllib2 import URLError,HTTPError
+import thread
+# for initialization routine
+from crush.models.globals import g_init_dict
 #from crush import friend_scraper
 
 # for mail testing 
@@ -19,6 +22,7 @@ from django.core.mail import send_mass_mail
 # called by crush selector upson submit button press
 @login_required
 def ajax_add_crush_targets(request):
+    global g_init_dict
     post_data = request.POST
     # this is just for testing, remove later
     counter=0
@@ -34,10 +38,20 @@ def ajax_add_crush_targets(request):
         # only create a new relationship if an existing one between the current user and the selected user does not exist 
         print "successfully got a new crush user with username: " + selected_user.facebook_username
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
-            CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
+            relationship=CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
-        # kick off the initialization process if the crush is a friend of friend
-
+            # kick off the initialization process if the crush is a non-friend
+            if friend_type==2:
+                target_username=selected_user.username
+                if not target_username in g_init_dict:
+                    g_init_dict[target_username]={}
+                if not 'initialization_count' in g_init_dict[target_username]:    
+                    g_init_dict[target_username]['initialization_count'] = 1
+                else:
+                    g_init_dict[target_username]['initialization_count'] += 1
+                relationship.lineup_initialization_status=0
+                relationship.save(update_fields=['lineup_initialization_status'])
+                thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
     
     if counter > 0:
         return HttpResponse()
