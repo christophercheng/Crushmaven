@@ -22,7 +22,7 @@
   _start = function() {
 
     if ( FB === undefined ){
-      alert('Facebook integration is not defined. View ' + fbDocUri);
+      window.alert_user('Facebook integration is not defined. View ' + fbDocUri);
       return false;
     }
 
@@ -54,7 +54,7 @@
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
     		if ('error_message' in response) {
-    			alert(response.error_message);
+    			window.alert_user(response.error_message);
     			$("#fs-select-view #site-overlay").css('visibility','hidden');
     	        $('#fs-loading').remove();
     			return false;
@@ -67,7 +67,7 @@
     			console.log("duplicate?",duplicate_element);
 
     	    	if ($(duplicate_element).length > 0){
-    	    		alert("You already selected this person");
+    	    		window.alert_user("You already selected this person");
     	    		$("#fs-select-view #site-overlay").css('visibility','hidden');
     	    		$('#fs-loading').remove();
     	    		return false;
@@ -175,7 +175,7 @@
 	// ensure the terms & conditions checkbox is checked
 	 
 	if (!$('#fs-terms-checkbox').is(':checked')){
-		alert("You can proceed without agreeing to the Terms & Conditions.");
+		window.alert_user("You can proceed without agreeing to the Terms & Conditions.");
 		return false;
   }
     var selected_friends = [];
@@ -347,7 +347,7 @@
 	    // add order info
 	    fql_query += " ORDER BY name";
 	 	    
-	  //alert("fql_query_string: " + fql_query);
+	  //window.alert_user("fql_query_string: " + fql_query);
 	  FB.api('fql',{q:fql_query}, function(response) {
 	  		if ( response.error ) {
 	  			//alert ("error: " + response.error); // temporary
@@ -359,7 +359,7 @@
 	  			else // too many tries - give up
 	  			{
 	  				num_connect_tries=0;
-	  				alert(fsOptions.lang.fbConnectError);
+	  				window.alert_user(fsOptions.lang.fbConnectError);
 	  		        location.href="/facebook/login";
 	  		        //_close();
 	  		        return false;
@@ -377,7 +377,7 @@
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
       if (facebook_friends.length < 0) {
-    	  alert("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
+    	  window.alert_user("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
     	  _close();
       }
       
@@ -411,7 +411,7 @@
 	  var friend1_elements = $('#fs-selected-user-list li').filter('#friend-type1');
 	  var friend2_elements = $('#fs-selected-user-list li').filter('#friend-type2');
 	  var friend0_elements = $('#fs-selected-user-list li').not('#friend-type2').not('#friend-type1');
-	  //alert("friend-count:" + $(friend0_elements).length + " friend_of_Friend_count:" + $(friend1_elements).length + " non_Friend_count:" + $(friend2_elements).length);
+	  //window.alert_user("friend-count:" + $(friend0_elements).length + " friend_of_Friend_count:" + $(friend1_elements).length + " non_Friend_count:" + $(friend2_elements).length);
 	  
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
