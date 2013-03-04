@@ -193,7 +193,7 @@ FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, us
 
 AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',
-    #'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 URLLIB_TIMEOUT=10
@@ -222,7 +222,7 @@ DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be remo
                    3: 'To prevent system gaming, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days have passed since the since the response was originally received.',
                    }
 
-LINEUP_STATUS_CHOICES = {0:'Not Initialized',
+LINEUP_STATUS_CHOICES = {0:'Initialization In Progress',
                          1:'Initialized',
                          2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  We will notify you via email when it is ready.',
                          3:'You do not have enough friends to create a lineup at this time.',

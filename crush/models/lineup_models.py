@@ -715,5 +715,10 @@ class LineupMember(models.Model):
                            (4,'Platonic 4'),
                            (5,'Platonic 5'),
                            )
-    decision = models.IntegerField(null=True, choices=DECISION_CHOICES, default=None)
-    comment = models.CharField(null=True,default=None,max_length=200)
+    decision = models.IntegerField(null=True, choices=DECISION_CHOICES, default=None,blank=True)
+    
+    def __unicode__(self):
+        if self.user != None:
+            return '(' + str(self.relationship) + ') ' + self.username + ': ' + self.user.first_name + ' ' + self.user.last_name 
+        else:
+            return '(' + str(self.relationship) + ') ' + self.username

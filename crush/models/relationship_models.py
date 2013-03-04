@@ -176,7 +176,7 @@ class CrushRelationship(BasicRelationship):
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
 
-    date_invite_last_sent=models.DateTimeField(null=True,default=None) 
+    date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     
     LINEUP_INITIALIZATION_STATUS_CHOICES = (
                            (0,settings.LINEUP_STATUS_CHOICES[0]),# initialization in progress
@@ -190,15 +190,15 @@ class CrushRelationship(BasicRelationship):
     # lineup initialized and paid can be combined into a single state variable 
     is_lineup_paid=models.BooleanField(default=False)
 
-    date_lineup_started = models.DateTimeField(default=None, null=True)
+    date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
-    date_lineup_finished = models.DateTimeField(default=None, null=True)
+    date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
         # keeps track of when the crush signed up
-    date_target_signed_up = models.DateTimeField(default=None,null=True)
+    date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of when the crush responded
-    date_target_responded = models.DateTimeField(default=None,null=True)    
+    date_target_responded = models.DateTimeField(default=None,null=True,blank=True)    
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
-    admirer_display_id = models.IntegerField(default=0, max_length=60, blank=True,null=True)
+    admirer_display_id = models.IntegerField(default=0, max_length=60)
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
@@ -301,9 +301,12 @@ class CrushRelationship(BasicRelationship):
         return True #must return True or else caller thinks payment failed
         # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
-        print "delete relationships fired"
+        print "delete relationships fired"        
         # check to see if there is a reciprocal relationship
         # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
+        lineup_members=self.lineupmember_set.all()
+        for member in lineup_members:
+            member.delete()
         try:
             print "attempting to find the crush relationship"
             reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
@@ -317,7 +320,9 @@ class CrushRelationship(BasicRelationship):
             print "cannot find a reciprocal crush relationship to delete!"
             pass
         print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
+        # delete any associated lineup members
         super(CrushRelationship, self).delete(*args,**kwargs)
+
         return
     
     
@@ -367,4 +372,4 @@ class CrushRelationship(BasicRelationship):
             print "crap: could not send notification email"
             
     def __unicode__(self):
-        return 'CrushRelationship:'  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return 'CrushRelationship: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)

@@ -109,7 +109,7 @@ class FacebookUser(AbstractUser):
     # ------- START OF REQUIRED FIELDS
     access_token = models.CharField(max_length=50)
     
-    notification_settings=models.OneToOneField('NotificationSettings')
+    notification_settings=models.OneToOneField('NotificationSettings',null=True)
     
     # this will be populated by the facebook username first, then the facebook id if username is non-existant
     facebook_username = models.CharField(max_length=60) 
@@ -118,7 +118,7 @@ class FacebookUser(AbstractUser):
                       (u'M', u'male'),
                       (u'F', u'female'),
                       )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False)
     
     GENDER_PREF_CHOICES = (
                            (u'M',u'male'),
@@ -154,7 +154,7 @@ class FacebookUser(AbstractUser):
     # for friends with admirers processing
     
     # many-to-many relationship with other friends with admirers
-    friends_with_admirers = models.ManyToManyField('self',symmetrical=False,related_name='friends_with_admirers_set')
+    friends_with_admirers = models.ManyToManyField('self',symmetrical=False,related_name='friends_with_admirers_set',blank=True)
     
     def add_inactive_crushed_friend_by_id(self, friend_id):
         print "adding inactive crushed friend: " + friend_id
@@ -166,7 +166,7 @@ class FacebookUser(AbstractUser):
             return False
         return
 
-    processed_activated_friends_admirers = models.DateTimeField(null=True,default=None)
+    processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.
     def find_inactive_friends_of_activated_user(self):
     # this is done whenever an active user is first created
@@ -247,4 +247,4 @@ class FacebookUser(AbstractUser):
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
-        return '(id:' + str(self.username) +') ' + self.facebook_username
+        return self.first_name + ' ' + self.last_name + ' (' + self.username + ')' 

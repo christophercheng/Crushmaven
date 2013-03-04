@@ -34,8 +34,10 @@ class Purchase(models.Model):
     price = models.DecimalField( decimal_places=2, max_digits=7 )
     purchaser = models.ForeignKey('FacebookUser')
     purchased_at = models.DateTimeField(auto_now_add=True)
-    tx = models.CharField( max_length=250 )
+    tx = models.CharField( max_length=250,blank=True,null=True )
     
+    def __unicode__(self):
+        return self.purchaser.first_name + ' ' + self.purchaser.last_name + ' (' + self.purchaser.username + '): $' + str(self.price) + ' (' + str(self.credit_total) + ' credits)' 
   
     def save(self,*args, **kwargs): 
         print "purchase save overridden function called" 
