@@ -11,6 +11,11 @@ urlpatterns = patterns('facebook.views',
    (r'^facebook/authentication_callback$', 'authentication_callback'),                    
 )
 
+# in case something bad has happened enable this view so that all site requests go here
+#urlpatterns += patterns('crush.views.infrastructure_views',    
+#    (r'', 'under_construction'),
+#)
+
 # ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
