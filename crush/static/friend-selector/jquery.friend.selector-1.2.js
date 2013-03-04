@@ -325,10 +325,11 @@
   },
   
   _getFacebookFriends  = function(){
-	  
-	  	// process the ids of excluded friends into a syntax that FQL understands (comma delimited list)
-	    
+	  	// BATCH request friends of gender preference and a second request of friends of same gender.  
+	  		// second request is to ensure user has enough friends to make non-friend attraction additions
+	  	// process the ids of excluded friends into a syntax that FQL understands (comma delimited list)    	  	
 	    var fql_query = "";
+	    var fql_samegender_query = "";
 	    // initialize fql query and add any exclude ids if provided as an argument
 	    if (fsOptions.excludeIds !==""){
 	    	//alert (fsOptions.excludeIds);
@@ -337,18 +338,35 @@
 	    else {
 	    	fql_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + ")";
 	    }
+	    fql_samegender_query += "SELECT uid, name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + fsOptions.facebookID + ")";
 	    // add gender preference
 	    if (fsOptions.malePref !== null){
 		    var genderPref = "Female";
 	    	if (fsOptions.malePref===true)
 	    		genderPref="Male";
 	    	fql_query += " AND sex='" + genderPref + "'";
-	    }	    
+	    }
+	    if (fsOptions.maleGender !== null){
+		    var gender = "Female";
+	    	if (fsOptions.maleGender===true)
+	    		gender="Male";
+	    	fql_samegender_query += " AND sex='" + gender + "'";
+	    }    
 	    // add order info
 	    fql_query += " ORDER BY name";
-	 	    
-	  //window.alert_user("fql_query_string: " + fql_query);
-	  FB.api('fql',{q:fql_query}, function(response) {
+  
+	  	var batch_query = {batch: [
+	  	               	  	  {
+	  	               	  		  'method':'get',
+	  	               	  		  'relative_url':'fql?q='+fql_query
+	  	               	  	  },
+	  	               	  	  {
+	  	               	  		  'method':'get',
+	  	               	  		  'relative_url':'fql?q='+fql_samegender_query
+	  	               	  	  }
+	  	               	  	                           ]};// close off batch_query
+		//FB.api('fql',{q:fql_query}, function(response) {
+	  	FB.api('/',"POST",batch_query, function(response) {
 	  		if ( response.error ) {
 	  			//alert ("error: " + response.error); // temporary
 	  			num_connect_tries+=1;
@@ -366,18 +384,22 @@
 	  			}
 	  		}
 	  		else {
-	  			_buildFacebookFriendGrid(response);  	
+	  			if (JSON.parse(response[1].body).data.length < fsOptions.minimum_samegender_friends){
+	  				window.alert_user("Sorry, you do not have the required number of friends to use this feature.");
+	  				_close();
+	  				return;
+	  			}
+	  			_buildFacebookFriendGrid(response[0]);  	
 	  	    	}
 	  }); // close fb.api call 
   },
     
   _buildFacebookFriendGrid = function(response) {
-	  
-      var facebook_friends = response.data;
+      var facebook_friends = JSON.parse(response.body).data;
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
-      if (facebook_friends.length < 0) {
-    	  window.alert_user("Sorry, but you do not have the minimum number of Facebook friends required to use this feature.");
+      if (facebook_friends.length < fsOptions.minimum_crushgender_friends) {
+    	  window.alert_user("Sorry, you do not have the required number of friends to use this feature.");
     	  _close();
       }
       
@@ -866,6 +888,9 @@
 	accessToken: null, // used to get facebook graph api data
 	facebookID:null,
     malePref: false, // pass in values: true (male), false (female), null (both)
+    maleGender: true,
+    minimum_samegender_friends:4,
+    minimum_crushgender_friends:4,
     max: null,
     excludeIds: "",
     getStoredFriends: [],

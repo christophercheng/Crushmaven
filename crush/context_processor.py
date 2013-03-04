@@ -22,6 +22,8 @@ def context_processor(request):
             'num_platonic_friends' : me.just_friends_targets.count(),
             'facebook_app_id': settings.FACEBOOK_APP_ID,
             'ajax_error':settings.AJAX_ERROR,
+            'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
+            'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             }
     else: # whenever a user is logged in, just use an empty dictionary
         return {}

@@ -82,33 +82,36 @@ jQuery(document).ready(function($) {
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
 	  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
-      max:18,
+    maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+    minimum_samegender_friends:"{{minimum_samegender_friends}}",
+    minimum_crushgender_friends:"{{minimum_crushgender_friends}}",
+    max:18,
 	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
-      closeOverlayClick: true,
-      overlayOpacity: "0.8",
-      overlayColor: '#000',
-      closeOnSubmit: true,
-      showSelectedCount: true,
-      color: "default",
-      showRandom:false,
-      lang: {
-        title: "Select Your Crushes step 1 of 2",
-        buttonSubmit: "Select",
-        buttonCancel: "Cancel",
-        summaryBoxResult: "{1} best results for {0}",
-        summaryBoxNoResult: "No results for {0}",
-        searchText: "Enter a friend's name",
-        fbConnectError: "You must be logged in to Facebook in order to use this feature.",
-        selectedCountResult: "You have choosen {0} people.",
-        selectedLimitResult: "Limit is {0} people.",
-        ajaxError:"{{ajax_error}}",
-      },
-      onSubmit: function(response){
-				add_friends_to_db(response);
-      },
-      onError: function(){
-      	window.alert_user("{{ajax_error}}");
-      },
+    closeOverlayClick: true,
+    overlayOpacity: "0.8",
+    overlayColor: '#000',
+    closeOnSubmit: true,
+    showSelectedCount: true,
+    color: "default",
+    showRandom:false,
+    lang: {
+      title: "Select Your Crushes step 1 of 2",
+      buttonSubmit: "Select",
+      buttonCancel: "Cancel",
+      summaryBoxResult: "{1} best results for {0}",
+      summaryBoxNoResult: "No results for {0}",
+      searchText: "Enter a friend's name",
+      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
+      selectedCountResult: "You have choosen {0} people.",
+      selectedLimitResult: "Limit is {0} people.",
+      ajaxError:"{{ajax_error}}",
+    },
+    onSubmit: function(response){
+		add_friends_to_db(response);
+    },
+    onError: function(){
+    	window.alert_user("{{ajax_error}}");
+    },
     });
 
   function add_friends_to_db(response)
