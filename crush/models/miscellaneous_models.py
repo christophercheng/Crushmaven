@@ -1,18 +1,6 @@
 from django.db import models
 from django.db.models import F
 
-class NotificationSettings(models.Model):
-    
-    class Meta:
-        # this allows the models to be broken into separate model files
-        app_label = 'crush' 
-        
-    bNotify_crush_signed_up = models.BooleanField(default=True)
-    bNotify_crush_signup_reminder = models.BooleanField(default=True)
-    bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
-    bNotify_crush_responded = models.BooleanField(default=True)
-    bNotify_new_admirer = models.BooleanField(default=True)
-
 class EmailRecipient(models.Model):
 
     class Meta:

@@ -4,13 +4,13 @@ Created on Dec 24, 2012
 @author: Chris Work
 '''
 from django.forms import ModelForm,EmailField
-from crush.models import NotificationSettings
+from crush.models import FacebookUser
 
 
 class NotificationSettingsForm(ModelForm):
 
     class Meta:
-        model = NotificationSettings
+        model = FacebookUser
         fields = ['email',  'bNotify_crush_signed_up',
                   'bNotify_crush_signup_reminder',
                   'bNotify_crush_started_lineup',

@@ -51,7 +51,6 @@ def settings_profile(request):
 # -- Notification settings --
 @login_required
 def settings_notifications(request):
-
     print "Settings Notification Form!"
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
@@ -60,25 +59,24 @@ def settings_notifications(request):
         if 'cancel' in data:
             return redirect('/settings_notifications/')
         else:
+            me=request.user
             form = NotificationSettingsForm(request.POST)
             if form.is_valid():
                 for element in request.POST:
                     print str(element) + " value: " + str(request.POST[element])
-                request.user.email=data['email']
-                settings=request.user.notification_settings
-                settings.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
-                settings.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
-                settings.bNotify_crush_signup_reminder = data.get('bNotify_crush_signup_reminder',False)
-                settings.bNotify_crush_started_lineup=data.get('bNotify_crush_started_lineup',False)
-                settings.bNotify_crush_responded=data.get('bNotify_crush_responded',False)  
-                settings.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
-                request.user.save(update_fields=['email'])
-                settings.save()                               
+                me.email=data['email']
+
+                me.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
+                me.bNotify_crush_signup_reminder = data.get('bNotify_crush_signup_reminder',False)
+                me.bNotify_crush_started_lineup=data.get('bNotify_crush_started_lineup',False)
+                me.bNotify_crush_responded=data.get('bNotify_crush_responded',False)  
+                me.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
+                me.save(update_fields=['email','bNotify_crush_signed_up','bNotify_crush_signup_reminder','bNotify_crush_started_lineup','bNotify_crush_responded','bNotify_new_admirer'])                            
                 return render(request,'settings_notifications.html',
                               { 'form': form,'updated':True})
     else:
         print "instantiating notifications form"
-        form=NotificationSettingsForm(instance=request.user.notification_settings, initial={'email':request.user.email})
+        form=NotificationSettingsForm(instance=request.user, initial={'email':request.user.email})
     return render(request,'settings_notifications.html',
                               { 'form': form})
 

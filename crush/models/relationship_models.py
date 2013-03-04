@@ -333,10 +333,9 @@ class CrushRelationship(BasicRelationship):
         target_person_email=target_person.email
         if (not target_person_email):
                 return
-        settings=target_person.notification_settings
         from_email="info@crushdiscovery.com"
         try:
-            if (settings.bNotify_new_admirer== True):
+            if (target_person.bNotify_new_admirer== True):
                 subject= "You have a new secret admirer!"
                 message="You have a new secret admirer!\nLog in now to find out who it is: " 
                 send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[target_person_email])
@@ -347,7 +346,6 @@ class CrushRelationship(BasicRelationship):
         print "notifying the source person of a change in target status: " + str(target_status)
         source_person=crush_relationship.source_person
         source_person_email=source_person.email
-        settings=source_person.notification_settings
         if (not source_person_email):
                 return
         from_email="info@crushdiscovery.com"
@@ -356,13 +354,13 @@ class CrushRelationship(BasicRelationship):
         
         try:
             subject=""
-            if (target_status==2 and settings.bNotify_crush_signed_up==True): # user signed up
+            if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
                 subject= target_person_name + " signed up!"
                 message=target_person_name + " signed up!"
-            elif (target_status==3 and settings.bNotify_crush_started_lineup==True): # user started line up
+            elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
                 subject= target_person_name + " started your secret admirer lineup!"
                 message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
-            elif (target_status > 3 and settings.bNotify_crush_responded==True): # user responded
+            elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
                 subject= target_person_name + " responded to your crush!"
                 message=target_person_name + " responded to your crush.  Continue to app to find out what they think of you."
             if subject !="":

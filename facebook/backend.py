@@ -2,7 +2,7 @@ import urllib, json, urlparse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from crush.models import FacebookUser
-#from django.core.urlresolvers import reverse CHC - reverse gives me problems
+
 
 class FacebookBackend:
 
@@ -25,6 +25,7 @@ class FacebookBackend:
         response = urlparse.parse_qs(target) 
       
         # CHC the response is a dictionary, so process the dictionary with a key lookup
+        access_token=''
         if (response.__contains__('access_token')): 
             access_token = response['access_token'][-1]
         # CHC they -1 index removes the start and end braces from the string, not sure why this works

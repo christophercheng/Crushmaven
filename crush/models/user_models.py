@@ -1,6 +1,5 @@
 from django.db import models
 # use signal to create user profile automatically when user created
-import urllib,urllib2, json
 import datetime
 from django.db import IntegrityError
 from django.contrib.auth.models import (UserManager, AbstractUser)
@@ -14,24 +13,34 @@ class FacebookUserManager(UserManager):
 
     # helper function used by find_or_create_user function to separate profile data extraction from facebook and insertion into the user profile object
     def update_user(self,facebook_user,fb_profile):
-        facebook_user.first_name = fb_profile['first_name']
-        facebook_user.last_name = fb_profile['last_name']
+        
+        if ('first_name' in fb_profile and facebook_user.first_name!=fb_profile['first_name']):
+            facebook_user.first_name = fb_profile['first_name']
+        
+        if ('last_name' in fb_profile and facebook_user.last_name!=fb_profile['last_name']):
+            facebook_user.last_name = fb_profile['last_name']
+        
         if (facebook_user.birthday_year==None and 'birthday' in fb_profile):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
                 facebook_user.birthday_year= int(date_pieces[2])   
-        if (facebook_user.email=='' and 'email' in fb_profile):
+        
+        if ('email' in fb_profile and facebook_user.email!=fb_profile['email']):
             facebook_user.email=fb_profile['email']
-        if (facebook_user.gender=='' and 'gender' in fb_profile):
+        
+        if (facebook_user.gender== '' and 'gender' in fb_profile):
             if fb_profile['gender']==u'male':
                 facebook_user.gender=u'M'
             elif fb_profile['gender']==u'female':
                 facebook_user.gender=u'F'
+        
         if ('relationship_status' in fb_profile):            
             rel_stat = fb_profile['relationship_status']
             if ((rel_stat == u'Married') | (rel_stat==u'In a relationship') | (rel_stat==u'Engaged') | (rel_stat==u'In a civil union') | (rel_stat==u'In a domestic partnership')):
                 facebook_user.is_single=False
-            else: facebook_user.is_single=True
+            else: 
+                facebook_user.is_single=True
+                
         if(facebook_user.gender_pref == '' and 'interested_in' in fb_profile):
             if len(fb_profile['interested_in'])==1: 
                 if fb_profile['interested_in'][0]==u'female':
@@ -52,6 +61,7 @@ class FacebookUserManager(UserManager):
         # Try and find existing user
             user = super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             # existing user was found!
+            
             if (is_this_for_me): 
                 user.access_token=fb_access_token #if logging user in then update his/her token
 
@@ -67,7 +77,11 @@ class FacebookUserManager(UserManager):
                         relation.updated_flag=True
                         relation.date_target_signed_up = datetime.datetime.now()
                         relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
-                user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+                
+                    user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+                else:
+                    user.save(update_fields=['access_token'])
+               
         # No existing user, create one
         except FacebookUser.DoesNotExist:
             
@@ -78,10 +92,9 @@ class FacebookUserManager(UserManager):
                     return None # bad error handling, couldn't fetch data for this user
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
-            default_notification_settings=crush.models.miscellaneous_models.NotificationSettings.objects.create()
             try:
                 print fb_username + ": creating username"
-                user = FacebookUser.objects.create_user(username=fb_id,notification_settings=default_notification_settings)
+                user = FacebookUser.objects.create_user(username=fb_id)
                 if is_this_for_me:
                     user.is_active=True
                     user.access_token=fb_access_token
@@ -108,8 +121,6 @@ class FacebookUser(AbstractUser):
         
     # ------- START OF REQUIRED FIELDS
     access_token = models.CharField(max_length=50)
-    
-    notification_settings=models.OneToOneField('NotificationSettings',null=True)
     
     # this will be populated by the facebook username first, then the facebook id if username is non-existant
     facebook_username = models.CharField(max_length=60) 
@@ -155,6 +166,12 @@ class FacebookUser(AbstractUser):
     
     # many-to-many relationship with other friends with admirers
     friends_with_admirers = models.ManyToManyField('self',symmetrical=False,related_name='friends_with_admirers_set',blank=True)
+    
+    bNotify_crush_signed_up = models.BooleanField(default=True)
+    bNotify_crush_signup_reminder = models.BooleanField(default=True)
+    bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
+    bNotify_crush_responded = models.BooleanField(default=True)
+    bNotify_new_admirer = models.BooleanField(default=True)    
     
     def add_inactive_crushed_friend_by_id(self, friend_id):
         print "adding inactive crushed friend: " + friend_id
