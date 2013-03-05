@@ -145,10 +145,11 @@ class LineupMemberManager(models.Manager):
             fb_result = urllib.urlopen(url,post_dict)
             fb_result = json.load(fb_result)
         
-            if fb_result[2] and 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
+            if len(fb_result)>3 and 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
                 mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
                 random.shuffle(mutual_app_friend_array)
                 num_fetch_tries=9
+            time.sleep(1)
             num_fetch_tries+=1
         
         # METHOD 1: API MUTUAL APP FRIEND

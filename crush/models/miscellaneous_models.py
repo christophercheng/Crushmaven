@@ -37,6 +37,16 @@ class InviteEmailManager(models.Manager):
                 oldest_invite_email.save(update_fields=['email'])
                 oldest_invite_email.send() # send email out right away
                 return oldest_invite_email
+            
+    def delete_activated_user_emails(self,crush_user):
+        # find all crush relationships where target_person=crush_user
+        crush_relationships=crush_user.crush_relationship_set_from_target.all()
+        for relationship in crush_relationships:
+            # find all emails associated with interated relationship
+            emails=self.filter(relationship=relationship)
+            for email in emails:
+                # delete every associated email
+                email.delete()
         
 class InviteEmail(models.Model):
 

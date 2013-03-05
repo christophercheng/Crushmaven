@@ -6,7 +6,8 @@ from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.conf import settings
 import crush.models.relationship_models
 from utils import graph_api_fetch
-
+from crush.models.miscellaneous_models import InviteEmail
+import thread
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -66,19 +67,7 @@ class FacebookUserManager(UserManager):
                 user.access_token=fb_access_token #if logging user in then update his/her token
 
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
-                    user.is_active=True# then activate their account
-                    # update their profile with facebook data; they're not always obtained indirectly
-                    self.update_user(user,fb_profile)
-                    # look for any admirers at this point so their relationships can get updated
-                    admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
-                    for relation in admirer_relationships:
-                        # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
-                        relation.target_status = 2
-                        relation.updated_flag=True
-                        relation.date_target_signed_up = datetime.datetime.now()
-                        relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
-                
-                    user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+                    thread.start_new_thread(self.activate_inactive_user,(user,fb_profile))
                 else:
                     user.save(update_fields=['access_token'])
                
@@ -112,6 +101,21 @@ class FacebookUserManager(UserManager):
    
         return user
     
+    def activate_inactive_user(self,user,fb_profile):
+        user.is_active=True# then activate their account
+        # update their profile with facebook data; they're not always obtained indirectly
+        self.update_user(user,fb_profile)
+        # look for any admirers at this point so their relationships can get updated
+        admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
+        for relation in admirer_relationships:
+            # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
+            relation.target_status = 2
+            relation.updated_flag=True
+            relation.date_target_signed_up = datetime.datetime.now()
+            relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
+        InviteEmail.objects.delete_activated_user_emails(user)
+        user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
+        
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
     
