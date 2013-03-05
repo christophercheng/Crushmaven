@@ -208,6 +208,9 @@ IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the sec
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
+MAXIMUM_CRUSH_INVITE_EMAILS=10
+MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
+MINIMUM_INVITE_RESEND_DAYS=2
 PLATONIC_RATINGS = {
                     1:'very attractive - just not for me',
                     2:'somewhat attractive - just not for me', 

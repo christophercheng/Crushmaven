@@ -99,6 +99,7 @@ $(document).ready(function()
   $("#dialog").dialog({modal: true, autoOpen: false});
 
   $("a.admin_delete").click(function(e) {
+  	alert('delete clicked');
   	var name=$(this).attr('name');	
       var username=$(this).attr('username');
       e.preventDefault();
@@ -337,7 +338,7 @@ $(document).ready(function()
 			* needs an email invitation from you to sign up and consider your relationship
 		{% elif crush.target_status == 1 %}
 			* not a member<br>
-			* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a>
+			* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a></span>
 		{% elif crush.target_status == 2 %}
 			{% if crush.date_target_signed_up %}
 				* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>

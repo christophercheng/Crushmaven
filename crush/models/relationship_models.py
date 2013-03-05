@@ -99,7 +99,7 @@ class PlatonicRelationship(BasicRelationship):
 # consider putting in a delete function later
           
     def __unicode__(self):
-        return 'Platonic relationship:' + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return 'Platonic Relation:' + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
 
 class CrushRelationshipQuerySet(models.query.QuerySet):
     
@@ -370,4 +370,4 @@ class CrushRelationship(BasicRelationship):
             print "crap: could not send notification email"
             
     def __unicode__(self):
-        return 'CrushRelationship: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)

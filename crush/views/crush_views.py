@@ -2,22 +2,18 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,EmailRecipient,LineupMember
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,LineupMember
 import json
 import datetime
 from crush.appinviteform import AppInviteForm
-from smtplib import SMTPException
 import time
 from  django.http import HttpResponseNotFound,HttpResponseForbidden
 from utils import graph_api_fetch
 from urllib2 import URLError,HTTPError
 import thread
+from smtplib import SMTPException
 # for initialization routine
 from crush.models.globals import g_init_dict
-#from crush import friend_scraper
-
-# for mail testing 
-from django.core.mail import send_mass_mail
 
 # called by crush selector upson submit button press
 @login_required
@@ -177,42 +173,36 @@ def app_invite_form(request, crush_username):
             crush_email_list=form.cleaned_data['crush_emails']
             friend_email_list=form.cleaned_data['mutual_friend_emails']
             try:
-                crush_user = FacebookUser.objects.get(username=crush_username)
-            except FacebookUser.DoesNotExist:
-                return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Plese try again later." })
+                crush_relationship = CrushRelationship.objects.get(source_person=request.user,target_person__username=crush_username)
+            except CrushRelationship.DoesNotExist:
+                return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Please try again later." })
             
-            crush_name = crush_user.first_name + " " + crush_user.last_name
-            crush_subject = 'Your Facebook friend is attracted to you - find out who.'
-            crush_body='Visit http://attractedto.com to find out whom.'
-            friend_subject = 'Your friend ' + crush_name + ' has a secret admirer and needs your help.'
-            friend_body='Please forward this message to your friend, ' + crush_name + ':\n\n' + crush_body
-
-            message_list = []
+            crush_email_success_array=[]
+            crush_email_fail_array=[]
+            friend_email_success_array=[]
+            friend_email_fail_array=[]
+            
             for email in crush_email_list:
-                message_list.append((crush_subject, crush_body, 'info@crushvibes.com',[email]))
+                try:
+                    InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=True)
+                    crush_email_success_array.append(email)
+                except SMTPException:
+                    crush_email_fail_array.append(email)
+                    continue
             for email in friend_email_list:
-                message_list.append((friend_subject, friend_body, 'info@crushvibes.com',[email]))
-            print str(message_list)
-            try:
-                send_mass_mail(message_list,fail_silently=False)
-                try: 
-                    crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person=crush_user)
-                    crush_relationship.date_invite_last_sent=datetime.datetime.now()
-                    crush_relationship.target_status = 1
-                    crush_relationship.save(update_fields=['date_invite_last_sent','target_status'])
-                    for email in crush_email_list:
-                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.datetime.now(),is_email_crush=True)
-                        
-                    for email in friend_email_list:
-                        EmailRecipient.objects.create(crush_relationship=crush_relationship,recipient_address=email,date_sent=datetime.datetime.now(),is_email_crush=False)                    
-                except CrushRelationship.DoesNotExist:
-                    pass #the database won't store app invite history, but that's ok as long as the actual emails were successfully sent
-            except SMTPException:
-                return render(request,"error.html",{ 'error': "App Invite Send encountered an unusual error.  Plese try again later." })
+                try:
+                    InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=False)
+                    friend_email_success_array.append(email)
+                except SMTPException:
+                    friend_email_fail_array.append(email)
+                    continue
             if request.is_ajax():
                 print "success and returning rendered template"
-                return render(request,'app_invite_success.html',{'crush_email_list':crush_email_list,
-                                                                 'friend_email_list':friend_email_list})
+                return render(request,'app_invite_success.html',{'crush_email_success_array':crush_email_success_array,
+                                                                 'crush_email_fail_array':crush_email_fail_array,
+                                                                 'friend_email_success_array':friend_email_success_array,
+                                                                 'friend_email_fail_array':friend_email_fail_array,
+                                                                 })
             else:
                 print "success and redirecting"                
                 return redirect('app_invite_success')

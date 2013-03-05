@@ -7,7 +7,7 @@ Created on Mar 4, 2013
 from django.contrib import admin
 from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
-from crush.models.miscellaneous_models import Purchase
+from crush.models.miscellaneous_models import Purchase,InviteEmail
 from crush.models.lineup_models import LineupMember
 
 class FacebookUserAdmin(admin.ModelAdmin):
@@ -51,8 +51,17 @@ class PurchaseAdmin(admin.ModelAdmin):
     fields=('purchaser','credit_total','price')
     raw_id_fields=('purchaser',)
 
+class InviteEmailAdmin(admin.ModelAdmin):
+    list_display = ('relationship','is_for_crush','email','date_last_sent')
+    search_fields = ('relationship','email')
+    list_filter = ('date_last_sent',)
+    ordering=('-date_last_sent','-is_for_crush','relationship','email')
+    fields=('relationship','email', 'is_for_crush','date_last_sent')
+    raw_id_fields=('relationship',)
+
 admin.site.register(FacebookUser,FacebookUserAdmin)
 admin.site.register(CrushRelationship,CrushRelationshipAdmin)
 admin.site.register(PlatonicRelationship,PlatonicRelationshipAdmin)
 admin.site.register(LineupMember,LineupMemberAdmin)
 admin.site.register(Purchase,PurchaseAdmin)
+admin.site.register(InviteEmail,InviteEmailAdmin)
