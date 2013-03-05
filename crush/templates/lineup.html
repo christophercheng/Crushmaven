@@ -252,7 +252,6 @@ $(document).ready(function() // handling for the slider
 	  		parent.show();
 				}, // end of cancel handler
 			"Submit": function() { 
-			
 				var rating = $('#dialog_platonic_add input:checked').val();
 				url += rating + "/";
 				parent.load(url,function(responseText,textStatus,XHR){
@@ -260,6 +259,7 @@ $(document).ready(function() // handling for the slider
 					if (textStatus!='success'){
 						window.alert_user("{{ajax_error}}");
 						parent.show();
+						$(".ui-icon-closethick").trigger('click'); // this closes out the entire lineup which i guess is ok for now
 						return false;
 					};
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
