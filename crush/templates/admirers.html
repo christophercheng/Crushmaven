@@ -29,11 +29,19 @@ $(document).ready(function()
     $('.admirer_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	
+		
+		$("#lineup_modal").html('<div id="site-loading"></div>');
+		$("#lineup_modal").dialog("open");
 		load_url="/ajax_show_lineup_slider/" + display_id + "/";
-	    e.preventDefault();
-	    $("#lineup_modal").load(load_url);   	
-	    $("#lineup_modal").dialog("open");
-	    return false;    
+    e.preventDefault();
+    $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
+		if (textStatus!='success'){
+			$(this).dialog("close");
+			window.alert_user("{{ajax_error}}");
+			return false;
+			}
+		});   
+	  return false;    
 	});			
   
     /** AUTOMATIC FUNCTION - WAIT FOR INITIALIZATION BEFORE RENDERING LINEUP BLOCK

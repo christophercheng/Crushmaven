@@ -149,7 +149,7 @@ class LineupMemberManager(models.Manager):
                 mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
                 random.shuffle(mutual_app_friend_array)
                 num_fetch_tries=9
-            time.sleep(1)
+            time.sleep(.5)
             num_fetch_tries+=1
         
         # METHOD 1: API MUTUAL APP FRIEND
