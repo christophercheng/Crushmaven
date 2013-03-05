@@ -190,10 +190,14 @@ $(document).ready(function() // handling for the slider
 		var next_position = parseInt(current_position) + 1;
 		next_position=next_position.toString(); 
 		url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + "/"; 
-
+	  parent.prev().show();
+	  parent.hide();
 	  e.preventDefault();
 	  $("#dialog_attraction_add").dialog('option', 'buttons', {
-				"Cancel": function() {$(this).dialog("close");
+				"Cancel": function() {
+					$(this).dialog("close");
+					parent.prev().hide();
+	  			parent.show();
 				}, // end of cancel handler
 				"Submit": function() {
 				if ($(this).children('input:checked').length == 0){
@@ -201,8 +205,10 @@ $(document).ready(function() // handling for the slider
 					return;
 				}
 				parent.load(url, function(responseText,textStatus,XHR){
-					if (textStatus!='success'){
+					parent.prev().hide();
+					if (textStatus!='success'){					
 						window.alert_user("{{ajax_error}}");
+						parent.show();
 						return false;
 					};
 					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
@@ -236,17 +242,24 @@ $(document).ready(function() // handling for the slider
 		var next_position = parseInt(current_position) + 1;
 		next_position=next_position.toString();
 		url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + "/"; 
+	  parent.prev().show();
+	  parent.hide();
 	  e.preventDefault();
 	  $("#dialog_platonic_add").dialog('option', 'buttons', {
-			"Cancel": function() {$(this).dialog("close");
+			"Cancel": function() {
+				$(this).dialog("close");
+				parent.prev().hide();
+	  		parent.show();
 				}, // end of cancel handler
 			"Submit": function() { 
 			
 				var rating = $('#dialog_platonic_add input:checked').val();
 				url += rating + "/";
 				parent.load(url,function(responseText,textStatus,XHR){
+					parent.prev().hide();
 					if (textStatus!='success'){
 						window.alert_user("{{ajax_error}}");
+						parent.show();
 						return false;
 					};
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				

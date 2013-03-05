@@ -118,6 +118,7 @@ a {
 	
 }
 
+
 #admirer-loading {
 	background-image:url(friend-selector/friend-selector-loader.gif);
 	margin: 5px; /* 0 0 -12px; */
@@ -136,6 +137,15 @@ a {
 	position: relative;
 	top: 10%;
 	left: 10%;
+}
+
+#preload #loading {
+	background-image:url(friend-selector/friend-selector-loader.gif);
+	height: 24px;
+	width: 24px;
+	top:0%;
+	position: relative;
+	display:none;
 }
 
 #site-overlay #site-loading {

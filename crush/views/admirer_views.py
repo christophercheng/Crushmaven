@@ -185,7 +185,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         except:
             pass
     
-    ajax_response +='<div id="decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
+    ajax_response +='<div id="loading"></div><div id="decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
     
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():
@@ -205,7 +205,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
             ajax_response += '<div class="crush" id="choice" >"You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as an attraction!</div>'
         else:
             ajax_response += '<div class="platonic" id="choice">You are Not Interested in ' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</div>'   
-    ajax_response += '</div>' # close off decision tag
+    ajax_response += '</div>' # close off decision holder and decision tag
     #2) facebook button 
     #3) crush button 
     #4) platonic friend button  #
