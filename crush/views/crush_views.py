@@ -127,7 +127,7 @@ def attractions(request,reveal_crush_id=None):
         except CrushRelationship.DoesNotExist:
             reveal_crush_id=None
             
-    responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
     return render(request,'crushes.html',
@@ -189,7 +189,7 @@ def crushes_completed(request,reveal_crush_id=None):
                 reveal_crush_id = None #reset the value in this error case
         except CrushRelationship.DoesNotExist:
             reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
     crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
     crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
     

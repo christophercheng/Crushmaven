@@ -37,7 +37,7 @@ def home(request):
         #        CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
         #                                                       friendship_type=0, updated_flag=True)
         
-        if len(CrushRelationship.objects.progressing_admirers(request.user))>0 and len(CrushRelationship.objects.known_responded_crushes(request.user)) == 0:
+        if len(CrushRelationship.objects.progressing_admirers(request.user))>0 and len(CrushRelationship.objects.visible_responded_crushes(request.user)) == 0:
             return HttpResponseRedirect('/admirers/')
         else:
             return HttpResponseRedirect('/attractions/')

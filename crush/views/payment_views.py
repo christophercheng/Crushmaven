@@ -38,7 +38,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         
     elif str(feature_id)=='2':
         try:
-            relationship=CrushRelationship.objects.known_responded_crushes(me).get(target_person__username=unique_id)
+            relationship=CrushRelationship.objects.visible_responded_crushes(me).get(target_person__username=unique_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
         if relationship.handle_results_paid() == False:    

@@ -114,14 +114,14 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         return crush_relationships.exclude(date_target_responded__lt = datetime.datetime.now())     
  
     # known responded crushes are can be shown to both users
-    def known_responded_crushes(self,admirer_user):
+    def visible_responded_crushes(self,admirer_user):
         #print "known responded crushes"
         crush_relationships = admirer_user.crush_relationship_set_from_source
         # first exclude completed relationship, then exclude all truly unresponded crushes, then exclude unknown responded crushes
         # ie. all relationships that arent' paid (not completed) and target status > 4 (not progressing) and date_target_responded is in past  (exclude date=none and  date in future)
         return crush_relationships.filter(date_target_responded__lt=datetime.datetime.now(), is_results_paid=False )
     # unknown responded crushes cannot be shown to either user because they are in a wait period
-    def unknown_responded_crushes(self,admirer_user):
+    def hidden_responded_crushes(self,admirer_user):
         crush_relationships = admirer_user.crush_relationship_set_from_source
         # get any crush relationships where we know the response but the date responded is either:
             # None: we're waiting for original admirer to see response
