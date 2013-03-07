@@ -27,7 +27,8 @@ def ajax_deduct_credit(request, feature_id, unique_id):
 
     if str(feature_id) == '1': # if feature is view lineup
         try:
-            relationship=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=unique_id)
+            new_admirers=CrushRelationship.objects.all_admirers(me)
+            relationship = new_admirers.get(admirer_display_id=unique_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
         if relationship.handle_lineup_paid() == False:    
@@ -37,7 +38,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         
     elif str(feature_id)=='2':
         try:
-            relationship=CrushRelationship.objects.all_crushes(me).get(target_person__username=unique_id)
+            relationship=CrushRelationship.objects.known_responded_crushes(me).get(target_person__username=unique_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
         if relationship.handle_results_paid() == False:    

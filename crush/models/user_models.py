@@ -255,6 +255,9 @@ class FacebookUser(AbstractUser):
     def get_facebook_picture(self):
         return u'http://graph.facebook.com/%s/picture?type=large' % self.username
     
+    def get_name(self):
+        return self.first_name + " " + self.last_name
+    
     # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_progressing_admirers(self):
         print "here"

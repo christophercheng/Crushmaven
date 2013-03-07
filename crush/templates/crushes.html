@@ -20,10 +20,17 @@
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
 <div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
 <div id="privacy_check"></div>
+<div id="response_modal" title = "Your Attraction's Response"></div>
 
 <script type="text/javascript">
 $(document).ready(function() 
 {
+
+ /* ---------------------------------------------
+ 	
+ 		CREDIT CHECK MODAL (PART I)
+ 	
+ * -------------------------------------------- */
   $("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
   
   $("a.check_credit").click(function(e) {
@@ -48,23 +55,25 @@ $(document).ready(function()
     return false;
    });
    
-   /** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
-	* click handler for credit checker dialog - when ok-to-deduct is clicked
-	*   calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
-	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
-	*/
+ /* ---------------------------------------------
+ 	
+ 		CREDIT CHECK MODAL (PART II): OK CLICK (DEDUCT CREDIT) HANDLER
+ 		- note: handles OK clicks from Sufficient Credit dialog - not Insufficient Credit Dialog
+ 		- calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
+ 		- if successfuly credit deduction via ajax post call, then redirect to completed
+ 		- after successful return from ajax call, updates global is_lineup_paid and advances lineup
+ 	
+ * -------------------------------------------- */   
+
 	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
 	 		$("#site-overlay").css('visibility','visible');
-
 	  	var unique_id = $('#credit_check_modal').attr('unique_id');
 			// call ajax post function to deduct credit and change lineup_is_paid to true 
 		  var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 			var post_url = '/ajax_deduct_credit/2/' + unique_id + '/' // feature is type 2, 1: user is target
 		$.post(post_url,post_dict,function(data) {
 			$('#site-overlay').css('visibility','hidden');
-			// if successful then reload the page?
-		 	document.location.href='/crushes_completed/' + unique_id + '/'; // reload page with the responded id appended to url
-			// reloading page takes care of updating the notifications numbers
+		 		display_response_modal(unique_id);
 			}) // if fail (credit was suddenly not available or network problem), then do nothing
 			.fail(function(data){
 				window.alert_user("{{ajax_error}}");
@@ -72,9 +81,85 @@ $(document).ready(function()
 				}); // end of $.get(get_url...)
 		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
    
-  /** FUNCTION - HANDLE INITIALIZATION of NON_FRIEND CRUSH LINEUP
-  *
-	*/  
+ /* ---------------------------------------------
+ 	
+ 		RESPONSE MODAL DIALOG AND HANDLER
+ 	
+ * -------------------------------------------- */
+
+	var send_fb_message = function(recipient_id){
+		FB.ui(
+			{
+          method: 'send',
+					to: recipient_id,
+					link:'http://www.attractedto.com',
+      },
+      function(response){
+				// regardless of whether user cancels or sends message, reload the appropriate attraction page
+				redirect_after_response_viewed();
+      }      
+    );
+	};
+  
+  var redirect_after_response_viewed = function(){
+    //refresh page unless there is just one responded relationship, then go to completed page
+   	{% if crush_type = 0 %}
+   		// we're on attractions page. figure out whether to reload or redirect to completed page
+   		if ({{responded_relationships.count}} > 1 || {{crushes_in_progress_count}} > 0)
+   			location.href="/attractions/";
+   		else
+   			location.href="/crushes_completed";
+   	{% else %}
+   		location.href="/crushes_completed/"; // reload page
+   	{% endif %}
+  };
+  
+  $("#response_modal").on('click', '#send_fb_message', function(){
+	   $(this).parent().dialog("close");
+	   var crush_id = $(this).attr('crush_id');
+	   send_fb_message(crush_id);
+  });
+  
+  $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,
+	  // handle the clicking of jquery modal's corner close button
+	  create: function() {
+	            $(this).closest('div.ui-dialog')
+	                   .find('a.ui-dialog-titlebar-close')
+	                   .click(function(e) {
+	                       redirect_after_response_viewed();
+	                   });
+    }
+  });
+  
+  var display_response_modal = function(crush_id) {
+
+   	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
+    
+    $("#response_modal").html('<div id="site-loading"></div>');
+		$("#response_modal").dialog('option', 'buttons', {
+  		"Ok": function() {$(this).dialog("close");redirect_after_response_viewed();}
+  		});
+		$("#response_modal").load(load_url,function(responseText,textStatus,XHR){
+			if (textStatus!='success'){
+				$(this).html("{{ajax_error}}");
+				return false;
+			}
+		});   	
+    $("#response_modal").dialog("open");
+    return false;
+   };
+   
+ 	// auto call previously defined display_response_modal if there is a server value 
+ 	{% if reveal_crush_id %}
+ 		display_response_modal('{{reveal_crush_id}}');
+ 	{% endif %}
+ 
+/* ---------------------------------------------
+ 	
+ 		INITIALIZATION OF Type 2 LINEUP
+ 	
+ * -------------------------------------------- */
+	
   $('.crush_block').on('click','#initialize_lineup_btn',function(e) {
 
   	var crush_username=$(this).parents('.crush_block').attr("username");
@@ -84,10 +169,6 @@ $(document).ready(function()
 		initialize_div.load(load_url);
 	});
 
-	
-	/** FUNCTION - AUTO-CALL RE_INITIALIZE LINEUP
-  *
-	*/  
 	var auto_initialize_new_nonfriend_crushes = function(){
 		var fake_initialize_btns = $('#initialize_lineup_btn.fake');
 		fake_initialize_btns.each(function(index,element){
@@ -95,6 +176,12 @@ $(document).ready(function()
 		});
 		return true;
 	};
+	auto_initialize_new_nonfriend_crushes();
+ /* ---------------------------------------------
+ 	
+ 		ADMIN DELETE DIALOG AND HANDLER
+ 	
+ * -------------------------------------------- */
 
   $("#dialog").dialog({modal: true, autoOpen: false});
 
@@ -147,6 +234,11 @@ $(document).ready(function()
       return false;
   });
   
+ /* ---------------------------------------------
+ 	
+ 		FACEBOOK PRIVACY SETTINGS CHECK MODAL DIALOG AND HANDLER
+ 	
+ * -------------------------------------------- */
   
   $("#privacy_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
   $("#privacy_check").click(function(e) {
@@ -165,11 +257,7 @@ $(document).ready(function()
   	if(response.data[0]['value'] != 'SELF')
      $("#privacy_check").trigger('click');
    });
-  {% endif %}  
-	// PROCEDURAL CODE ALWAYS RUN
-
-	auto_initialize_new_nonfriend_crushes();
-	
+  {% endif %}  	
         
 });
 </script>
@@ -199,6 +287,7 @@ $(document).ready(function()
 <!-- ALWAYS display responded crush relationships on top of page, if they exist -->
 
 {% if responded_relationships %}
+	<div id ="responses">
 	<font color="red"><b>You have responses!</b></font>
 	{% for crush in responded_relationships %}
 		<div class="crush_block" username="{{crush.target_person.username}}">
@@ -226,7 +315,7 @@ $(document).ready(function()
 		<!-- start: response button -->
 			&nbsp;&nbsp;&nbsp;
 			
-			<a href="#" class="check_credit" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="/crushes_completed/{{crush.target_person.username}}">View Response</a>
+			<a href="#" class="check_credit" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
 
 			
 		<!-- end: response button -->
@@ -244,6 +333,7 @@ $(document).ready(function()
 		<!-- end: secondary data -->
 	</div>
 	{% endfor %} 
+	</div>
 {% endif %} 
 
 <!-- Display the crush type navigation widget -->  
@@ -282,17 +372,13 @@ $(document).ready(function()
 
 <!-- start: crush status graphic -->	
 
-{% if crush.target_status < 2 %}
+{% if crush.get_display_status < 2 %}
 	<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;decided on you</font>
-	{% elif crush.target_status == 2 %}
+	{% elif crush.get_display_status == 2 %}
 		<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-		{% elif crush.target_status == 3  %}
-			<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
-			{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status != 1 %}
-					<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-				{% elif crush.date_target_responded|is_in_future == True and crush.lineup_initialization_status == 1 %}
-					<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>
-					{% else %}	
+		{% elif crush.get_display_status == 3 %}
+			<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>			
+			{% else%}
 						<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
 {% endif %}
 
@@ -333,29 +419,22 @@ $(document).ready(function()
 		
 		<!--  start: normal bullet points -->
 		
-		{% if crush.target_status == 0 %}
+		{% if crush.get_display_status == 0 %}
 			* needs an email invitation from you to sign up and consider your relationship
-		{% elif crush.target_status == 1 %}
+		{% elif crush.get_display_status == 1 %}
 			* not a member<br>
 			* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a></span>
-		{% elif crush.target_status == 2 %}
+		{% elif crush.get_display_status == 2 %}
 			{% if crush.date_target_signed_up %}
 				* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
 			{% else %}
 				* is an existing member<BR>
 			{% endif %}
 			* must start your crush line-up to assess your relationship
-		{% elif crush.target_status == 3 %}
+		{% elif crush.get_display_status == 3 %}
 			* started crush line-up<br>
 			* response expected soon
-		{% elif crush.date_target_responded|is_in_future == True %}
-			{% if crush.lineup_initialization != 1 %}
-				* is an existing member<BR>
-			{% else %}
-				* started crush line-up<br>
-				* response expected soon
-			{% endif %}
-		{% elif crush.target_status == 4 %} 
+		{% elif crush.get_display_status == 4 %} 
 			* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
 			* [send a message]
 		{% else %}

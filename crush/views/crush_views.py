@@ -56,12 +56,14 @@ def ajax_add_crush_targets(request):
     
 @login_required
 def ajax_admin_delete_crush_target(request,crush_username):
-    if (not request.user.is_superuser) or (not request.user.is_staff):
-        if request.user.username=="1057460663" or request.user.username=="651900292" or request.user.username=="100004192844461":
-            pass
-        else:
-            return HttpResponseForbidden()        try:
-        CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username).delete()
+    #if (not request.user.is_superuser) or (not request.user.is_staff):
+        #if request.user.username=="1057460663" or request.user.username=="651900292" or request.user.username=="100004192844461":
+        #    pass
+        #else:
+        #    return HttpResponseForbidden()        try:
+        relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
+        
+        relationship.delete()
         return HttpResponse()
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound()
@@ -107,7 +109,7 @@ def ajax_make_crush_target_platonic_friend(request,crush_username):
     
 # -- Crush List Page --
 @login_required
-def attractions(request):
+def attractions(request,reveal_crush_id=None):
     
     me = request.user
   
@@ -118,6 +120,12 @@ def attractions(request):
         check_fb_privacy=True
     else:
         check_fb_privacy=False
+    
+    if reveal_crush_id:
+        try:
+            reveal_crush_relationship = CrushRelationship.objects.completed_crushes(me).get(target_person__username=reveal_crush_id)
+        except CrushRelationship.DoesNotExist:
+            reveal_crush_id=None
             
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
@@ -131,8 +139,43 @@ def attractions(request):
                                'crushes_completed_count':crushes_completed_count,
                                'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
-                               'check_fb_privacy_setting':check_fb_privacy
+                               'check_fb_privacy_setting':check_fb_privacy,
+                               'reveal_crush_id':reveal_crush_id,
                                })    
+@login_required
+def ajax_load_response_dialog_content(request,crush_id):
+    # grab completed (paid) relationship from crush username
+    try:
+        relationship=CrushRelationship.objects.completed_crushes(request.user).get(target_person__username=crush_id)
+        crush=relationship.target_person
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+    ajax_response=''
+    # show the results of a responded attraction & show either congratulatory or sympathetic messaging
+        # show messaging on what to do next
+        # provide link for any next step action items
+    if relationship.target_status == 4:
+        ajax_response += "Congratulations! " 
+        ajax_response += crush.get_name() + " is mutually attracted to you.<BR><BR>"
+        ajax_response +=  "<a href='#' id='send_fb_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
+    else:
+        # get the crush's platonic rating
+        try: 
+            platonic_rating=None
+            crushes_platonic_relationships = PlatonicRelationship.objects.all_friends(relationship.target_person)
+            platonic_relationship=crushes_platonic_relationships.get(target_person = request.user)
+            platonic_rating = platonic_relationship.rating
+        except Exception as e:
+            print str(e)
+            pass
+        ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
+        
+        if platonic_rating:
+            ajax_response += "They did however rate your level of attractiveness.<BR><BR>"
+            ajax_response += str(platonic_rating) + " out of 5 (" + settings.PLATONIC_RATINGS[platonic_rating] + ") "
+            #ajax_response += "<a href='#' id='get_response_rating' crush_id='" + crush_id + "'>View your rating</a>"
+    
+    return HttpResponse(ajax_response)
 
 # -- Crushes Completed Page --
 @login_required
@@ -145,8 +188,7 @@ def crushes_completed(request,reveal_crush_id=None):
             if reveal_crush_relationship.is_results_paid == False:
                 reveal_crush_id = None #reset the value in this error case
         except CrushRelationship.DoesNotExist:
-            pass
-   
+            reveal_crush_id = None
     responded_relationships = CrushRelationship.objects.known_responded_crushes(me)
     crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
     crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()

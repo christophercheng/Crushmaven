@@ -199,11 +199,11 @@ AUTHENTICATION_BACKENDS = (
 URLLIB_TIMEOUT=10
 
 # auto delay the response between the start time and end time (in seconds)
-CRUSH_RESPONSE_DELAY_START = 43200 # default is 43200 seconds = 12 hours
-CRUSH_RESPONSE_DELAY_END = 86400 #86400 seconds = 24 hours
+CRUSH_RESPONSE_DELAY_START = 1#43200 # default is 43200 seconds = 12 hours
+CRUSH_RESPONSE_DELAY_END = 2#86400 #86400 seconds = 24 hours
 STARTING_CREDITS=100 # change to 1 in production
 INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times out
-MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
+MINIMUM_LINEUP_MEMBERS=1#4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
@@ -212,11 +212,11 @@ MAXIMUM_CRUSH_INVITE_EMAILS=10
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=2
 PLATONIC_RATINGS = {
-                    1:'very attractive - just not for me',
-                    2:'somewhat attractive - just not for me', 
+                    5:'very attractive - just not for me',
+                    4:'somewhat attractive - just not for me', 
                     3:"I'm indifferent",
-                    4:'slightly unattractive',
-                    5:'very unattractive',
+                    2:'slightly unattractive',
+                    1:'very unattractive',
                      }
 
 DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
@@ -225,7 +225,8 @@ DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be remo
                    3: 'To prevent system gaming, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days have passed since the since the response was originally received.',
                    }
 
-LINEUP_STATUS_CHOICES = {0:'Initialization In Progress',
+LINEUP_STATUS_CHOICES = {
+                         0:'Initialization In Progress',
                          1:'Initialized',
                          2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  We will notify you via email when it is ready.',
                          3:'You do not have enough friends to create a lineup at this time.',

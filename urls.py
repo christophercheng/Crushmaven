@@ -36,10 +36,12 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 urlpatterns += patterns('crush.views.crush_views',
  
     (r'^attractions/$', 'attractions'),
+    
+    (r'^attractions/(?P<reveal_crush_id>\w+)/$','attractions'),
             
     (r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','ajax_initialize_nonfriend_lineup'),
     
-    (r'^crushes_completed/(?P<reveal_crush_id>\d+)/$','crushes_completed'),
+    (r'^crushes_completed/(?P<reveal_crush_id>\w+)/$','crushes_completed'),
     
     (r'^crushes_completed/$','crushes_completed'),
     
@@ -51,6 +53,8 @@ urlpatterns += patterns('crush.views.crush_views',
     
     # called by crush selector dialog upon submit button press
     (r'^ajax_add_crush_targets/$','ajax_add_crush_targets'),
+    
+    (r'^ajax_load_response_dialog_content/(?P<crush_id>\w+)/$','ajax_load_response_dialog_content'),
 
     # deletion handling
     (r'^ajax_admin_delete_crush_target/(?P<crush_username>\w+)/$','ajax_admin_delete_crush_target'),

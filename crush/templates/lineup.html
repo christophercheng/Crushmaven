@@ -11,11 +11,11 @@
 </div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation">
 	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
-	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
-	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
-	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
-	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
 	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
+	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
+	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
+	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
+	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
 </div>
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
@@ -206,9 +206,9 @@ $(document).ready(function() // handling for the slider
 				}
 				parent.load(url, function(responseText,textStatus,XHR){
 					parent.prev().hide();
+					parent.show()
 					if (textStatus!='success'){					
 						window.alert_user("{{ajax_error}}");
-						parent.show();
 						return false;
 					};
 					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
@@ -256,9 +256,9 @@ $(document).ready(function() // handling for the slider
 				url += rating + "/";
 				parent.load(url,function(responseText,textStatus,XHR){
 					parent.prev().hide();
+					parent.show();
 					if (textStatus!='success'){
 						window.alert_user("{{ajax_error}}");
-						parent.show();
 						$(".ui-icon-closethick").trigger('click'); // this closes out the entire lineup which i guess is ok for now
 						return false;
 					};

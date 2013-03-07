@@ -145,10 +145,10 @@ class LineupMemberManager(models.Manager):
             fb_result = urllib.urlopen(url,post_dict)
             fb_result = json.load(fb_result)
         
-            if len(fb_result)>3 and 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
+            if len(fb_result)>4 and 'body' in fb_result[2] and 'data' in fb_result[2][u'body']:
                 mutual_app_friend_array=json.loads(fb_result[2][u'body'])['data']
                 random.shuffle(mutual_app_friend_array)
-                num_fetch_tries=9
+                break # get out of while loop - we've done our job here, move on
             time.sleep(.5)
             num_fetch_tries+=1
         
@@ -172,6 +172,7 @@ class LineupMemberManager(models.Manager):
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
         if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
             mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
+            #print "mutual_friend_array: " + str(len(mutual_friend_array)) + " : " + str(mutual_friend_array)
             # random.shuffle(mutual_friend_array) delay shuffling
             g_init_dict[crush_id][rel_id + '_mutual_friend_array']=mutual_friend_array
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
