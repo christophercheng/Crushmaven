@@ -20,11 +20,26 @@
   fbDocUri = 'http://developers.facebook.com/docs/reference/javascript/',
 
   _start = function() {
-
-    if ( FB === undefined ){
-      window.alert_user('Facebook integration is not defined. View ' + fbDocUri);
-      return false;
-    }
+	  if ( FB === undefined ){
+	      window.alert_user('Facebook integration is not defined. View ' + fbDocUri);
+	      return false;
+	    }
+	  
+	  FB.getLoginStatus(function(response) {
+	  	if (response.status === 'connected') {
+	      _start2();
+	  	} else if (response.status === 'not_authorized') {
+	     	// not_authorized
+	  		window.alert_user(fsOptions.lang.ajaxError);
+	  		return false;
+	  	} else {
+	      // not_logged_in
+	      login(_start2);
+	  	}
+		}); 
+  },
+  
+  _start2 = function() {
 
     fsOptions = $.extend(true, {}, defaults, fsOptions);
 

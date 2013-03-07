@@ -2,7 +2,6 @@
 {% block content %}
 {% load fbdater_extras %}
 <script type="text/javascript">
-
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-38751299-1']);
   _gaq.push(['_trackPageview']);
@@ -12,9 +11,7 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
 </script>
-
 
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
@@ -25,6 +22,30 @@
 <script type="text/javascript">
 $(document).ready(function() 
 {
+
+ /* ---------------------------------------------
+ 	
+ 		APP INVITE MODAL
+ 	
+ * -------------------------------------------- */
+	var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
+	 $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
+		app_div_element = $("#app_invite_modal");
+		app_div_element.html('<div id="site-loading"></div>');
+		app_div_element.dialog(options).dialog("open");
+		var crush_username=$(this).attr('crush_username');	
+		var load_url="/app_invite_form/" + crush_username + "/";
+		app_div_element.load(load_url,function(responseText,textStatus,XHR){
+			if (textStatus!="success"){
+				if (!access_token_error(responseText))
+					$(this).html("{{ajax_error}}");
+			}
+		});	
+		e.preventDefault();
+	   return false;
+	});
+
 
  /* ---------------------------------------------
  	

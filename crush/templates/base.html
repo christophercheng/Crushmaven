@@ -1,83 +1,58 @@
-<!DOCTYPE html>
-<html>
-    <head>
+<!DOCTYPE html><html><head>
+	<title>AttractedTo... | Anonymously connect with attractive friends and friends-of-friends</title>    	
 
-    	
-<!-- Add Facebook Friend Selector CSS -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<!-- bxSlider Javascript file -->
-	<script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
-<!-- bxSlider CSS file -->
-	<link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
-	
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-	<link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
-	<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
-<!-- Add Facebook Friend Selector JS -->
-	<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
-	
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
+		<link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
+		<link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
 
-  	
-	<title>AttractedTo... | Anonymously connect with attractive friends and friends-of-friends</title>
 </head>
-
 <body>
 
- <div id="fb-root"></div>
- 
- <!-- FOR THE EMAIL INVITE POPUP -->
- <div id="app_invite_modal" title="Send Application Invites"></div>
+<!-- INITIALIZE FB JS INTEGRATION -->
+<div id="fb-root"></div> 
+<script>
+	window.fbAsyncInit = function() {
+	  FB.init({ 
+	  	appId: {{facebook_app_id}}, 
+	  	status: true, 
+	  	cookie: true,
+	  	xfbml: true,
+	  	oauth: true,
+	  });
+  	  	// Additional init code here
+	};
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
 
-
- <script>
- 
-(function() {
-  var e = document.createElement('script'); e.async = true;
-      e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-      document.getElementById('fb-root').appendChild(e);
-      }());
-
-window.fbAsyncInit = function() {
-  FB.init({ appId: {{facebook_app_id}}, 
-  status: true, 
-  cookie: true,
-  xfbml: true,
-  oauth: true}); 
-};
-   
-// set default time of 10 seconds for all ajax calls:  
-// lineup initialization will require longer wait time
-$.ajaxSetup({
-	timeout: '10000'
-});
-
-var access_token_error=function(responseText){
-	if (responseText.indexOf("HTTPError") != -1){
-		reauthorize_user();
-		return true;
+	function login(connect_callback=null, cancel_callback=null) {
+    FB.login(function(response) {
+        if (response.authResponse) {
+        		if (connect_callback)
+        			connect_callback();
+            // connected
+        } else {
+            // cancelled
+            if (cancel_callback)
+            cancel_callback();
+        }
+    });
 	}
-	else 
-		return false;
-};
+</script>
 
-var reauthorize_user=function(){
-	window.alert_user("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
-	location.href="/facebook/login";
-};
-
+<!-- INITIALIZE ATTRACTION SELECTOR DIALOG -->   
+<script> 
 jQuery(document).ready(function($) {
-  
-  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999});
-  window.alert_user=function(message){
-    $("#alert_modal").html(message);
-    $("#alert_modal").dialog('option','buttons',{
-  		"Ok": function() {$(this).dialog("close");
-  		}
-  	});
-		$('#alert_modal').dialog("open");
-  };  
-
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
@@ -106,8 +81,11 @@ jQuery(document).ready(function($) {
       selectedLimitResult: "Limit is {0} people.",
       ajaxError:"{{ajax_error}}",
     },
+    onStart: function(response){
+
+    },
     onSubmit: function(response){
-		add_friends_to_db(response);
+			add_friends_to_db(response);
     },
     onError: function(){
     	window.alert_user("{{ajax_error}}");
@@ -126,57 +104,73 @@ jQuery(document).ready(function($) {
   		document.location.href='/attractions/'; // reload page
   	});
   };
+}); // close of jQuery(document).ready
+</script>
 
-	var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
-  $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
-	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
-		app_div_element = $("#app_invite_modal");
-		app_div_element.html('<div id="site-loading"></div>');
-		app_div_element.dialog(options).dialog("open");
-		var crush_username=$(this).attr('crush_username');	
-		var load_url="/app_invite_form/" + crush_username + "/";
-		app_div_element.load(load_url,function(responseText,textStatus,XHR){
-			if (textStatus!="success"){
-				if (!access_token_error(responseText))
-					$(this).html("{{ajax_error}}");
-			}
-		});	
-		e.preventDefault();
-    return false;
-	});
-     
+<!-- AJAX CALL INITIALIZATION -->
+<script>
+// default to 15 seconds for all ajax calls: (lineup initialization will require longer wait time)
+$.ajaxSetup({timeout: '15000'});
+</script>
+
+<!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
+<script>
+jQuery(document).ready(function($) {
+  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999});
+  
+  window.alert_user=function(message){
+    $("#alert_modal").html(message);
+    $("#alert_modal").dialog('option','buttons',{
+  		"Ok": function() {$(this).dialog("close");
+  		}
+  	});
+		$('#alert_modal').dialog("open");
+  };  
+  
+  var access_token_error=function(responseText){
+		if (responseText.indexOf("HTTPError") != -1){
+			reauthorize_user();
+			return true;
+		}
+		else 
+			return false;
+	};
+
+	var reauthorize_user=function(){
+		window.alert_user("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
+		location.href="/facebook/login";
+	};
+}); // close of jQuery(document).ready
+</script>
+
+<script>      
+// QUERY INACTIVE FRIENDS WITH ADMIRERS
   $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
   	if (xhr.status==405)
 				reauthorize_user();
-  });
-  
-}); // close of jQuery(document).ready
-
+  }); 
+// INITIALIZE FEEDBACK FORM 
+ $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
 </script>
 
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="AttractedTo.com Error"></div>
+<div id="app_invite_modal" title="Send Application Invites"></div>
+
 <div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
-
-
-</div><!-- sliding feedback tab -->
-
 <div class="main_container">
 	<div class="left_panel">
-	<!--start contactable -->
-<div id="contactable"><!-- contactable html placeholder --></div>
-<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
-<link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
-<script>$(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});</script>
-<!--end contactable -->
-	<div class="left_content_container">{% include "navigation_left.html" %}</div></div> <!-- close off left side bar -->
-	<div class="center_panel"><div class="center_content_container">
+		<div id="contactable"><!-- contactable html placeholder --></div>
+		<div class="left_content_container">{% include "navigation_left.html" %}</div>
+	</div> <!-- close off left_panel side -->
+	<div class="center_panel">
+		<div class="center_content_container">
 		{% block content %}
 		{% endblock %}
-	</div></div> <!-- close off main_content_container -->
-	<div class="right_panel"><div class="right_content_container">{% include "navigation_right.html" %}</div></div> <!-- close off right side bar -->
+		</div> <!-- close off center_content_container -->
+	</div> <!-- close off center_panel -->
+	<div class="right_panel">
+		<div class="right_content_container">{% include "navigation_right.html" %}
+		</div>
+	</div> <!-- close off right side bar -->
 </div> <!-- close off main container -->
-
-<!--  <fb:like></fb:like>
-<BR><BR><a href="/admin/">Admin</a><br>-->
- 

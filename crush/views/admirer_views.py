@@ -267,7 +267,7 @@ def ajax_update_num_crushes_in_progress(request):
 # called when a crush response is paid for
 @login_required
 def ajax_update_num_new_responses(request):
-    ajax_response = str(CrushRelationship.objects.known_responded_crushes(request.user).count())
+    ajax_response = str(CrushRelationship.objects.visible_responded_crushes(request.user).count())
     return HttpResponse(ajax_response)
 
 # called when a lineup goes past the payment stage
