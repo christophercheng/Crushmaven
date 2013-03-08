@@ -198,8 +198,8 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         lineup_member.save(update_fields=['decision'])
     else:    
         if lineup_member.decision == None:
-            ajax_response += '<a href="#" class="attraction_add" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position +  '">Add to Attractions</a>' 
-            ajax_response += '<br><a href="#" class="platonic_add" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
+            ajax_response += '<a href="#" class="decision" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position +  '">Add to Attractions</a>' 
+            ajax_response += '<br><a href="#" class="decision" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
        
         elif lineup_member.decision == 0:
             ajax_response += '<div class="crush" id="choice" >"You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as an attraction!</div>'

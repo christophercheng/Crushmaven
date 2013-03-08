@@ -1,5 +1,16 @@
 {% load fbdater_extras %}
-
+<div id="dialog_attraction_add" title="Attraction Confirmation ">
+	<input type="checkbox" checked>By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
+</div>
+<div id="dialog_platonic_add" title="Not Interested Confirmation">
+	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
+	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
+	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
+	<input type="radio" name="rating" value="3"checked>{{rating3}}</input><BR>
+	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
+	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
+</div>
+<div id="credit_check_modal" title="Premium Feature Purchase"></div>
 <link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
 <script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
     		<!-- Include the plugin *after* the jQuery library -->
@@ -7,20 +18,6 @@
 <!-- Include the basic styles -->
 <!--<link type="text/css" rel="Stylesheet" href="{{ STATIC_URL }}basic-slider/bjqs.css" />-->
 
-
-
-<div id="dialog_attraction_add" title="Attraction Confirmation ">
-	<input type="checkbox" checked="true">By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
-</div>
-<div id="dialog_platonic_add" title="Not Interested Confirmation">
-	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
-	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
-	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
-	<input type="radio" name="rating" value="3" checked="checked">{{rating3}}</input><BR>
-	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
-	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
-</div>
-<div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
 <!--  
 <h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
@@ -44,6 +41,7 @@ kept anonymous. They receive a lineup - with you in it!
 <!-- Just a shell for the slideshow container -->
 
 <ul class="bxslider" style="display:none">
+
 {% for member in member_set %}
 	{% if member.decision != None %}
 		
@@ -138,7 +136,6 @@ $(document).ready(function() // handling for the slider
 			onLastSlideNext: window.handleLastSlideNext
 			});
 		$('#lineup_container').find('.bxslider').show();
-		console.log($('#lineup_container').find('.bxslider'));
 		setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
 		updateFooterMsg();
 	};	
@@ -180,112 +177,91 @@ $(document).ready(function() // handling for the slider
 		},1000);
 	}; // close off resetAndAdvanceSlider
 	
-	/** FUNCTION - HANDLE ADD ATTRACTION CLICK
+	/** FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
 	* handle click to 'add member' as crush or platonic friend
 	*/
-	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false});
-  $('#lineup_container li').on('click','a.attraction_add',function(e) {
-		var parent = $(this).parent();				//# decision div
-	  var url;
-	  var bIsCrush=true;
-	  // obtain position of the next slide in deck for future loading
-		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
-		var next_position = parseInt(current_position) + 1;
-		next_position=next_position.toString(); 
-		url="/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  $(this).attr('username') + "/"; 
-	  parent.prev().show();
-	  parent.hide();
-	  e.preventDefault();
-	  $("#dialog_attraction_add").dialog('option', 'buttons', {
-				"Cancel": function() {
+	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false, close:function(event,ui){reset_dialog_attraction_add();}});
+  $("#dialog_platonic_add").dialog({modal: true, autoOpen: false, close:function(event,ui) {reset_dialog_platonic_add();}});
+  var reset_dialog_attraction_add = function(){
+  	dialog_element=$("#dialog_attraction_add");
+  	dialog_element.dialog("destroy"); // must destroy rather than close cause switching between two dialogs causes problems
+  	dialog_element.children('input').prop('checked',true);
+		dialog_element.dialog({modal: true, autoOpen: false, close:function(event,ui){reset_dialog_attraction_add();} });
+  };
+  var reset_dialog_platonic_add = function(){
+    dialog_element=$("#dialog_platonic_add");
+		dialog_element.dialog("destroy"); // must destroy rather than close cause switching between two dialogs causes problems
+		dialog_element.children('input[value=3]').attr('checked',true);
+  	dialog_element.dialog({modal: true, autoOpen: false, close:function(event,ui) {reset_dialog_platonic_add();}});
+  };
+   
+  $('#lineup_container li').on('click','a.decision',function(e) {
+		e.preventDefault();
+		//alert('hi');
+		var this_element = $(this);
+		var parent = this_element.parent();				//# decision div
+	  var url,decision_dialog,crush_decision;
+	  if (this_element.attr('add_type')=="crush") {
+	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  this_element.attr('username') + "/"; 
+	  	decision_dialog = $("#dialog_attraction_add");
+	  	crush_decision=true;
+	  }
+	  else {
+	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + this_element.attr('username') + "/"; 
+	  	decision_dialog = $("#dialog_platonic_add");
+	  	crush_decision=false;
+	  	decision_dialog.children('input[value=3]').attr('checked',true);
+	  }
+
+	  decision_dialog.dialog('option', 'buttons', {
+				"Cancel": function() {	
 					$(this).dialog("close");
-					parent.prev().hide();
-	  			parent.show();
 				}, // end of cancel handler
 				"Submit": function() {
-				if ($(this).children('input:checked').length == 0){
-					window.alert_user("You must agree to the terms and conditions before continuing.");
-					return;
-				}
-				parent.load(url, function(responseText,textStatus,XHR){
-					parent.prev().hide();
-					parent.show()
-					if (textStatus!='success'){					
-						window.alert_user("{{ajax_error}}");
-						return false;
-					};
-					$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
-					if (next_position < {{member_set.count}})	{
-						updateFooterMsg();
-						// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
-						if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
-							setTimeout(window.launch_credit_check,1000);
-						else 
-							load_next_slide(next_position, resetAndAdvanceSlider);	
-						} // close off - if not at last slide
-					else // enable finish button
-						process_completed_lineup();
-					}); // close off parent.load (making the decision and showing the html results		
-					$(this).dialog("close");
+					if (crush_decision==true){
+					 	if (decision_dialog.children('input:checked').length == 0){
+							window.alert_user("You must agree to the terms and conditions before continuing.");
+							return;
+						}
+					}
+					else {
+						url += decision_dialog.children('input:radio[name="rating"]:checked').val();
+					}	
+					parent.prev().show();parent.hide();
+					parent.load(url, function(responseText,textStatus,XHR){
+						parent.prev().hide();parent.show()
+						if (textStatus!='success'){					
+							window.alert_user("{{ajax_error}}");
+							return false;
+						};
+						goto_next_slide(parent.parent().attr('lineup_position'));
+						}); // close off parent.load (making the decision and showing the html results		
+					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
+					if (crush_decision==true) 
+						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
+					else 
+						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");
 				}   // end of add handler
 			}); // end of .dialog handler
-    $("#dialog_attraction_add").dialog("open");
-    return false;
-	}); // end of click handler: $('#lineup_container li').on('click','a.attraction_add',function(e)
+
+    decision_dialog.dialog("open");
+
+	}); // end of click handler: $('#lineup_container li').on('click','a.decision',function(e)
 	
-	/** FUNCTION - HANDLE ADD PLATONIC CLICK
-	* handle click to 'add member' as crush or platonic friend
-	*/
-	$("#dialog_platonic_add").dialog({modal: true, autoOpen: false});
-  $('#lineup_container li').on('click','a.platonic_add',function(e) {
-		var parent = $(this).parent();				//# decision div
-	  var url;
-	  // obtain position of the next slide in deck for future loading
-		var current_position = parent.parent().attr('lineup_position'); // e.g. 3 
+	var goto_next_slide = function(current_position)
+	{
 		var next_position = parseInt(current_position) + 1;
-		next_position=next_position.toString();
-		url="/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + $(this).attr('username') + "/"; 
-	  parent.prev().show();
-	  parent.hide();
-	  e.preventDefault();
-	  $("#dialog_platonic_add").dialog('option', 'buttons', {
-			"Cancel": function() {
-				$(this).dialog("close");
-				parent.prev().hide();
-	  		parent.show();
-				}, // end of cancel handler
-			"Submit": function() { 
-				var rating = $('#dialog_platonic_add input:checked').val();
-				url += rating + "/";
-				parent.load(url,function(responseText,textStatus,XHR){
-					parent.prev().hide();
-					parent.show();
-					if (textStatus!='success'){
-						window.alert_user("{{ajax_error}}");
-						$(".ui-icon-closethick").trigger('click'); // this closes out the entire lineup which i guess is ok for now
-						return false;
-					};
-						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");   				
-					if (next_position < {{member_set.count}})	{
-						updateFooterMsg();
-						// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
-						if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
-							setTimeout(window.launch_credit_check,1000);
-						else 
-							load_next_slide(next_position, resetAndAdvanceSlider);	
-						} // close off - if not at last slide
-					else // enable finish button
-						process_completed_lineup();
-					}); // close off parent.load (making the decision and showing the html results		
-					$(this).dialog("close");
-					// reset the dialog's checked radio button
-					$('#dialog_platonic_add input:radio[value=3]').attr('checked',true);
-				}   // end of add handler
-			}); // end of .dialog handler
-    $("#dialog_platonic_add").dialog("open");
-    return false;
-	}); // end of click handler: $('#lineup_container li').on('click','a.platonic_add',function(e)
-	
+		if (next_position < {{member_set.count}})	{
+			updateFooterMsg();
+			// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
+			if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
+				setTimeout(window.launch_credit_check,1000);
+			else 
+				load_next_slide(next_position.toString(), resetAndAdvanceSlider);	
+		} // close off - if not at last slide
+		else // enable finish button
+			process_completed_lineup();
+	};
 	
 	/** FUNCTION - HANDLE SLIDER LAST NEXT CLICK
 	* callback handler for slider called when last next button is clicked
@@ -296,8 +272,8 @@ $(document).ready(function() // handling for the slider
 		if (activeIndex == 0 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
 			window.launch_credit_check();
 		}
-		else {		
-			if (activeIndex+1 < {{member_set.count}}){ 
+		else {
+			if ((parseInt(activeIndex) + 1) < {{member_set.count}}){ 
 				var member_name = activeSlideElement.children('#name').html();
 				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
 			}
@@ -334,7 +310,11 @@ $(document).ready(function() // handling for the slider
 	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
 	* 
 	*/
- 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});    
+ 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false, close: function(event,ui){reset_credit_check_modal();}});    
+	var reset_credit_check_modal=function(){
+		$("#credit_check_modal").dialog("destroy");
+		$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false, close: function(event,ui){reset_credit_check_modal();}});  
+	}
 	
 	window.launch_credit_check = function() {
 
@@ -401,11 +381,6 @@ $(document).ready(function() // handling for the slider
 					location.reload();
 		}
 	};
-	
-	
-	$('.ui-dialog').on('click','a.ui-dialog-titlebar-close',function(e) {
-		handle_lineup_dialog_close();
-	});
 	
 	$('#lineup_modal').on('click','#finish-btn',function(e) {
 		handle_lineup_dialog_close();

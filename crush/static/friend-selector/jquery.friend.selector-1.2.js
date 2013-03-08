@@ -410,7 +410,8 @@
   },
     
   _buildFacebookFriendGrid = function(response) {
-      var facebook_friends = JSON.parse(response.body).data;
+      
+	  var facebook_friends = JSON.parse(response.body).data;
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
       if (facebook_friends.length < fsOptions.minimum_crushgender_friends) {

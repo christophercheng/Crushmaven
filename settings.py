@@ -203,7 +203,7 @@ CRUSH_RESPONSE_DELAY_START = 1#43200 # default is 43200 seconds = 12 hours
 CRUSH_RESPONSE_DELAY_END = 2#86400 #86400 seconds = 24 hours
 STARTING_CREDITS=100 # change to 1 in production
 INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times out
-MINIMUM_LINEUP_MEMBERS=1#4 # change to 4 in production = this value excludes the secret admirer themself
+MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7

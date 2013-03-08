@@ -23,6 +23,7 @@
 	  	cookie: true,
 	  	xfbml: true,
 	  	oauth: true,
+	  	//channelUrl : '/channel.html'
 	  });
   	  	// Additional init code here
 	};
@@ -35,7 +36,7 @@
      ref.parentNode.insertBefore(js, ref);
    }(document));
 
-	function login(connect_callback=null, cancel_callback=null) {
+	function login(connect_callback) {
     FB.login(function(response) {
         if (response.authResponse) {
         		if (connect_callback)
@@ -43,8 +44,7 @@
             // connected
         } else {
             // cancelled
-            if (cancel_callback)
-            cancel_callback();
+
         }
     });
 	}
@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
 	  facebookID: "{{request.user.username}}",
 	  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
     maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
-    minimum_samegender_friends:"{{minimum_samegender_friends}}",
-    minimum_crushgender_friends:"{{minimum_crushgender_friends}}",
+    minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
+    minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
     max:18,
 	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
     closeOverlayClick: true,
@@ -80,9 +80,6 @@ jQuery(document).ready(function($) {
       selectedCountResult: "You have choosen {0} people.",
       selectedLimitResult: "Limit is {0} people.",
       ajaxError:"{{ajax_error}}",
-    },
-    onStart: function(response){
-
     },
     onSubmit: function(response){
 			add_friends_to_db(response);
@@ -116,8 +113,11 @@ $.ajaxSetup({timeout: '15000'});
 <!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
 <script>
 jQuery(document).ready(function($) {
-  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999});
-  
+  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999, close: function(event,ui){reset_alert_modal();}});
+  var reset_alert_modal = function(){
+  	$("#alert_modal").dialog("destroy");
+  	$("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999, close: function(event,ui){reset_alert_modal();}});
+  };
   window.alert_user=function(message){
     $("#alert_modal").html(message);
     $("#alert_modal").dialog('option','buttons',{
