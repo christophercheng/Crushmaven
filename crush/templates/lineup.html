@@ -1,15 +1,9 @@
 {% load fbdater_extras %}
 <div id="dialog_attraction_add" title="Attraction Confirmation ">
-	<input type="checkbox" checked>By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>
 </div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation">
-	<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>
-	<input type="radio" name="rating" value="5">{{rating5}}</input><BR>
-	<input type="radio" name="rating" value="4">{{rating4}}</input><BR>
-	<input type="radio" name="rating" value="3"checked>{{rating3}}</input><BR>
-	<input type="radio" name="rating" value="2">{{rating2}}</input><BR>
-	<input type="radio" name="rating" value="1">{{rating1}}</input><BR>
 </div>
+
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 <link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
 <script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
@@ -180,37 +174,38 @@ $(document).ready(function() // handling for the slider
 	/** FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
 	* handle click to 'add member' as crush or platonic friend
 	*/
-	$("#dialog_attraction_add").dialog({modal: true, autoOpen: false, close:function(event,ui){reset_dialog_attraction_add();}});
-  $("#dialog_platonic_add").dialog({modal: true, autoOpen: false, close:function(event,ui) {reset_dialog_platonic_add();}});
-  var reset_dialog_attraction_add = function(){
-  	dialog_element=$("#dialog_attraction_add");
-  	dialog_element.dialog("destroy"); // must destroy rather than close cause switching between two dialogs causes problems
-  	dialog_element.children('input').prop('checked',true);
-		dialog_element.dialog({modal: true, autoOpen: false, close:function(event,ui){reset_dialog_attraction_add();} });
-  };
-  var reset_dialog_platonic_add = function(){
-    dialog_element=$("#dialog_platonic_add");
-		dialog_element.dialog("destroy"); // must destroy rather than close cause switching between two dialogs causes problems
-		dialog_element.children('input[value=3]').attr('checked',true);
-  	dialog_element.dialog({modal: true, autoOpen: false, close:function(event,ui) {reset_dialog_platonic_add();}});
-  };
-   
+	var attraction_dialog = $("#dialog_attraction_add");
+	attraction_dialog.dialog({modal: true, autoOpen: false});
+  attraction_dialog.on('click', function(e){e.stopPropagation();});
+	var dialog_attraction_html = '<input type="checkbox" checked>By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>';
+  
+  var platonic_dialog = $("#dialog_platonic_add");
+	platonic_dialog.dialog({modal: true, autoOpen: false});
+  platonic_dialog.on('click', function(e){e.stopPropagation();});
+  var dialog_platonic_html = '<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="5">{{rating5}}</input><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="4">{{rating4}}</input><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="3"checked>{{rating3}}</input><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="2">{{rating2}}</input><BR>';
+	  	dialog_platonic_html += '<input type="radio" name="rating" value="1">{{rating1}}</input><BR>';
+  
+  
   $('#lineup_container li').on('click','a.decision',function(e) {
 		e.preventDefault();
-		//alert('hi');
 		var this_element = $(this);
-		var parent = this_element.parent();				//# decision div
+  	var decision_div = this_element.parent(); 
 	  var url,decision_dialog,crush_decision;
 	  if (this_element.attr('add_type')=="crush") {
 	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  this_element.attr('username') + "/"; 
-	  	decision_dialog = $("#dialog_attraction_add");
+	  	decision_dialog = attraction_dialog;
+	  	decision_dialog.html(dialog_attraction_html);
 	  	crush_decision=true;
 	  }
 	  else {
 	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + this_element.attr('username') + "/"; 
-	  	decision_dialog = $("#dialog_platonic_add");
+	  	decision_dialog = platonic_dialog;
+	  	decision_dialog.html(dialog_platonic_html);
 	  	crush_decision=false;
-	  	decision_dialog.children('input[value=3]').attr('checked',true);
 	  }
 
 	  decision_dialog.dialog('option', 'buttons', {
@@ -227,14 +222,15 @@ $(document).ready(function() // handling for the slider
 					else {
 						url += decision_dialog.children('input:radio[name="rating"]:checked').val();
 					}	
-					parent.prev().show();parent.hide();
-					parent.load(url, function(responseText,textStatus,XHR){
-						parent.prev().hide();parent.show()
+					decision_div.prev().show();decision_div.hide();
+					decision_div.load(url, function(responseText,textStatus,XHR){
+						decision_div.prev().hide();decision_div.show()
 						if (textStatus!='success'){					
 							window.alert_user("{{ajax_error}}");
 							return false;
 						};
-						goto_next_slide(parent.parent().attr('lineup_position'));
+
+						goto_next_slide(decision_div.parent().attr('lineup_position'));
 						}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
 					if (crush_decision==true) 
@@ -243,13 +239,14 @@ $(document).ready(function() // handling for the slider
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");
 				}   // end of add handler
 			}); // end of .dialog handler
-
+    
     decision_dialog.dialog("open");
 
 	}); // end of click handler: $('#lineup_container li').on('click','a.decision',function(e)
 	
 	var goto_next_slide = function(current_position)
 	{
+
 		var next_position = parseInt(current_position) + 1;
 		if (next_position < {{member_set.count}})	{
 			updateFooterMsg();
@@ -310,11 +307,7 @@ $(document).ready(function() // handling for the slider
 	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
 	* 
 	*/
- 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false, close: function(event,ui){reset_credit_check_modal();}});    
-	var reset_credit_check_modal=function(){
-		$("#credit_check_modal").dialog("destroy");
-		$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false, close: function(event,ui){reset_credit_check_modal();}});  
-	}
+ 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});    
 	
 	window.launch_credit_check = function() {
 

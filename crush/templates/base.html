@@ -113,11 +113,8 @@ $.ajaxSetup({timeout: '15000'});
 <!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
 <script>
 jQuery(document).ready(function($) {
-  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999, close: function(event,ui){reset_alert_modal();}});
-  var reset_alert_modal = function(){
-  	$("#alert_modal").dialog("destroy");
-  	$("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999, close: function(event,ui){reset_alert_modal();}});
-  };
+  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999});
+ 
   window.alert_user=function(message){
     $("#alert_modal").html(message);
     $("#alert_modal").dialog('option','buttons',{
@@ -125,6 +122,7 @@ jQuery(document).ready(function($) {
   		}
   	});
 		$('#alert_modal').dialog("open");
+		$('#alert_modal').dialog("moveToTop");
   };  
   
   var access_token_error=function(responseText){
