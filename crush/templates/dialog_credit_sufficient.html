@@ -14,3 +14,23 @@ credits
 <button id="credit_deduct_ok" onclick="$('#credit_check_modal').dialog('close');">Ok</button> 
 
 </div>
+
+<script>
+$('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {	
+		// call ajax post function to deduct credit and change lineup_is_paid to true 
+	 	$("#site-overlay").css('visibility','visible');
+		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
+		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2
+		$.post(post_url,post_dict,function(data) {
+			// if successful then load next slide and thumbnail and auto go to that slide
+			$('#site-overlay').css('visibility','hidden');
+			{{purchase_callback_name}};
+			// adjust the credits number on the main site
+			$("#num_credits").load("/ajax_update_num_credits/");
+			}) 
+			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
+					window.alert_user("{{ajax_error}}");
+					$('#site-overlay').css('visibility','hidden');
+			}); // end of .fail handler
+		}); // close off #credit_deduct_ok handler 
+</script>

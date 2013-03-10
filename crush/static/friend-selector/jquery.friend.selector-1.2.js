@@ -9,6 +9,16 @@
 ;(function(window, document, $, undefined) {
   'use strict';
 
+  $.fn.fSelector = function ( options ) {
+	    this.unbind("click.fs");
+	    this.bind("click.fs", function(){
+	      fsOptions = options;
+	      _start();
+	    });
+	    return this;
+
+	  };
+	  
   var fsOptions = {},
   running = false, isShowSelectedActive = false,
   windowWidth = 0, windowHeight = 0, selected_friend_count = 1,
@@ -943,17 +953,6 @@
     onClose: function(response){ return null; },
     onSubmit: function(response){ return null; },
     onError: function(response){ return null; },
-  };
-
-
-  $.fn.fSelector = function ( options ) {
-    this.unbind("click.fs");
-    this.bind("click.fs", function(){
-      fsOptions = options;
-      _start();
-    });
-    return this;
-
   };
 
 })(window, document, jQuery);

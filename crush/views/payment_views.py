@@ -49,8 +49,16 @@ def ajax_deduct_credit(request, feature_id, unique_id):
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
-def credit_checker(request,feature_id,unique_id):
-    # obtain feature data from feature_id and settings
+def credit_checker(request):
+    # retrieve post data 
+    post_data = request.POST
+    feature_id = post_data['feature_id']
+    success_path = post_data['success_path']
+    cancel_url = post_data['cancel_url']
+    if cancel_url[-1] == '/':     
+        cancel_url = cancel_url[:-1];
+    purchase_callback_name = post_data['purchase_callback_name']
+    unique_id = post_data['unique_id']
     features_data=settings.FEATURES[feature_id]
     feature_cost = features_data['COST']
     feature_name = features_data['NAME']
@@ -59,10 +67,6 @@ def credit_checker(request,feature_id,unique_id):
     credit_available = request.user.site_credits
     credit_remaining = credit_available - feature_cost
     
-    success_path = request.GET.get('success_path',"home")
-    print "success_path: " + success_path
-    cancel_url = request.GET.get('cancel_url',"home")
-    print "cancel_url: " + cancel_url
     paypal_success_url = settings.PAYPAL_RETURN_URL + "/?feature_id=" + str(feature_id) + "&unique_id=" + str(unique_id) + "&username=" + request.user.username + "&success_path=" + success_path + "&cancel_url=" + cancel_url
     paypal_notify_url = settings.PAYPAL_NOTIFY_URL + request.user.username + "/"
     
@@ -72,6 +76,7 @@ def credit_checker(request,feature_id,unique_id):
         return render(request,'dialog_credit_insufficient.html',
                       {
                        'feature_cost':feature_cost,
+                       'unique_id':unique_id,
                        'feature_name':feature_name,
                        'credit_available':credit_available,
                        'paypal_url': settings.PAYPAL_URL, 
@@ -80,12 +85,15 @@ def credit_checker(request,feature_id,unique_id):
                        'paypal_cancel_url': cancel_url,
                        'paypal_notify_url':paypal_notify_url})
     else:
-        return render(request,'dialog_credit_sufficient.html',
-                      {'feature_cost':feature_cost,
+        return render(request,'dialog_credit_sufficient.html',{
+                       'feature_id':feature_id,
+                       'purchase_callback_name':purchase_callback_name,
+                       'feature_cost':feature_cost,
                        'feature_name':feature_name,
                        'credit_available':credit_available,
                        'credit_remaining': credit_remaining,
-                       'success_path':success_path})
+                       'unique_id':unique_id
+                       })
         
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 

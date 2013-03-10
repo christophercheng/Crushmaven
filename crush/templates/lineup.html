@@ -1,17 +1,8 @@
 {% load fbdater_extras %}
-<div id="dialog_attraction_add" title="Attraction Confirmation ">
-</div>
-<div id="dialog_platonic_add" title="Not Interested Confirmation">
-</div>
-
-<div id="credit_check_modal" title="Premium Feature Purchase"></div>
+<div id="dialog_attraction_add" title="Attraction Confirmation "></div>
+<div id="dialog_platonic_add" title="Not Interested Confirmation"></div>
 <link href="{{ STATIC_URL }}bxSlider/jquery.bxslider.css" rel="stylesheet" />
 <script src="{{ STATIC_URL }}bxSlider/jquery.bxslider.js"></script>
-    		<!-- Include the plugin *after* the jQuery library -->
-<!--<script src="{{ STATIC_URL }}basic-slider/bjqs-1.3.js"></script>-->
-<!-- Include the basic styles -->
-<!--<link type="text/css" rel="Stylesheet" href="{{ STATIC_URL }}basic-slider/bjqs.css" />-->
-
 
 <!--  
 <h2>Lineup for secret admirer id: {{admirer_rel.admirer_display_id}} ({{admirer_rel.source_person.first_name}} {{admirer_rel.source_person.last_name}})</h2>
@@ -81,9 +72,10 @@ $(document).ready(function() // handling for the slider
 		window.is_lineup_paid=false;
 		
 			
-	/** FUNCTION - PROCESS COMPLETED LINEUP
-  * enable finish button and add footer summary message
-	*/
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - PROCESS COMPLETED LINEUP
+  *		enable finish button and add footer summary message
+	*  ---------------------------------------------------------------------- */
 	var process_completed_lineup = function(){
 		footer_element=$('#lineup_modal #lineup-footer');
 		footer_element.children('#finish-btn').removeAttr('disabled');
@@ -102,9 +94,10 @@ $(document).ready(function() // handling for the slider
 		footer_msg_element.html(footer_msg_element_html);
 	};
 	
-	/** FUNCTION - UPDATE FOOTER MESSAGE
-  * called everytime a slide load is completed
-	*/
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - UPDATE FOOTER MESSAGE
+  *		called everytime a slide load is completed
+	*  ---------------------------------------------------------------------- */
 		var updateFooterMsg = function(){
 		footer_msg_element=$('#lineup_modal #lineup-footer #footer-msg');
 		// number of evaluated members
@@ -114,10 +107,12 @@ $(document).ready(function() // handling for the slider
 		var total_members="{{member_set.count}}";
 	  footer_msg_element.html('<div id="progressing">evaluated ' + total_decisions + ' of ' + total_members + ' members</div>');
 	};
-		
-	/** FUNCTION - LAUNCH SLIDER
-	*Launch the slider at a parameterized position
-	*/
+
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - LAUNCH SLIDER
+  *		Launch the slider at a parameterized position
+	*  ---------------------------------------------------------------------- */		
+
 	var launch_slider_at = function(last_loaded_slide){
 		window.slider_control = $('.bxslider').bxSlider({
 			pagerCustom: '#bx-pager',
@@ -134,9 +129,10 @@ $(document).ready(function() // handling for the slider
 		updateFooterMsg();
 	};	
 		
-	/** FUNCTION - AJAX LOAD NEXT SLIDE
-	* Ajax load the next slide into the DOM
-	*/	
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - AJAX LOAD NEXT SLIDE
+  *		Ajax load the next slide into the DOM
+	*  ---------------------------------------------------------------------- */			
 	var load_next_slide = function(next_position, callback){
 		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + next_position + '/';
 		$('.bxslider li[lineup_position=' + next_position + ']').load(load_url, function(responseText, textStatus, xhr) {
@@ -161,19 +157,21 @@ $(document).ready(function() // handling for the slider
 			}).attr("id", "preload"); // close off ajax load of next slide
 	}; // close off of helper function: load_next_slide
 	
-	/** FUNCTION - RESET SLIDER
-	* reset the slider (if # slides changed) and advance it to last slide 
-	*/
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - RESET SLIDER
+  *		reset the slider (if # slides changed) and advance it to last slide
+	*  ---------------------------------------------------------------------- */		
 	var resetAndAdvanceSlider = function(just_loaded_slide){
 		window.slider_control.reInitialize();						
 		setTimeout(function(){
 			window.slider_control.goToSlide(just_loaded_slide);
 		},1000);
 	}; // close off resetAndAdvanceSlider
-	
-	/** FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
-	* handle click to 'add member' as crush or platonic friend
-	*/
+
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
+  *		handle click to 'add member' as crush or platonic friend
+	*  ---------------------------------------------------------------------- */
 	var attraction_dialog = $("#dialog_attraction_add");
 	attraction_dialog.dialog({modal: true, autoOpen: false});
   attraction_dialog.on('click', function(e){e.stopPropagation();});
@@ -183,12 +181,11 @@ $(document).ready(function() // handling for the slider
 	platonic_dialog.dialog({modal: true, autoOpen: false});
   platonic_dialog.on('click', function(e){e.stopPropagation();});
   var dialog_platonic_html = '<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="5">{{rating5}}</input><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="5"checked>{{rating5}}</input><BR>';
 			dialog_platonic_html += '<input type="radio" name="rating" value="4">{{rating4}}</input><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="3"checked>{{rating3}}</input><BR>';
+			dialog_platonic_html += '<input type="radio" name="rating" value="3">{{rating3}}</input><BR>';
 			dialog_platonic_html += '<input type="radio" name="rating" value="2">{{rating2}}</input><BR>';
 	  	dialog_platonic_html += '<input type="radio" name="rating" value="1">{{rating1}}</input><BR>';
-  
   
   $('#lineup_container li').on('click','a.decision',function(e) {
 		e.preventDefault();
@@ -260,10 +257,11 @@ $(document).ready(function() // handling for the slider
 			process_completed_lineup();
 	};
 	
-	/** FUNCTION - HANDLE SLIDER LAST NEXT CLICK
-	* callback handler for slider called when last next button is clicked
-	*   checks to see if check-payment dialog should be launched (on second slide if lineup_paid is false)
-	*/
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - HANDLE SLIDER LAST NEXT CLICK
+  *		callback handler for slider called when last next button is clicked
+  *   checks to see if check-payment dialog should be launched (on second slide if lineup_paid is false)
+	*  ---------------------------------------------------------------------- */
 	window.handleLastSlideNext = function(activeSlideElement,activeIndex){
 		// if active slide is last slide (which is 1) and no decision has been made yet, then launch credit check
 		if (activeIndex == 0 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
@@ -304,81 +302,51 @@ $(document).ready(function() // handling for the slider
 		process_completed_lineup(); // if lineup is finished then just process it
 	}
 
-	/** FUNCTION - LAUNCH CREDIT CHECK DIALOG
-	* 
-	*/
- 	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});    
-	
-	window.launch_credit_check = function() {
-
-		var success_path='/admirers/{{admirer_rel.admirer_display_id}}/';
-		var cancel_url='http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
-		var feature_id = '1';
-  	if(cancel_url.substr(-1) == '/')  // return from paypal adds an extra trailing slash to cancel_url, so make sure it doesn't already have one
-   		cancel_url = cancel_url.substr(0, cancel_url.length - 1);
-   	load_url="/credit_checker/" + feature_id + "/{{admirer_rel.admirer_display_id}}/?success_path=" + success_path + "&cancel_url=" + cancel_url;
-		$("#credit_check_modal").html('<div id="site-loading"></div>');
-		$("#credit_check_modal").load(load_url,function(responseTxt,statusTxt,xhr){
-				if (statusTxt!="success"){
-					$(this).html("{{ajax_error}}");
-			    $("#site-loading").remove();
-			   }
-		}); 
-		$("#credit_check_modal").dialog("open");
-		return false;
-   }; // close off window.launch_credit_check function
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - LAUNCH_CREDIT_CHECK
+	*  ---------------------------------------------------------------------- */    
+ 	
+ 	window.launch_credit_check = function() {
+		data = {};
+		data['csrfmiddlewaretoken']="{{csrf_token}}";
+		data['success_path'] = '/admirers/{{admirer_rel.admirer_display_id}}/';
+		data['cancel_url'] = 'http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
+		data['unique_id'] = '{{admirer_rel.admirer_display_id}}';
+		data['feature_id'] = '1';
+		data['purchase_callback_name'] = 'window.lineup_purchased()';
+		data['ajax_error']='{{ajax_error}}';
+		purchase_feature(data);
+   }; 
    
-	
-	/** FUNCTION - HANDLE CREDICT CHECK OK-TO-DEDUCT CLICK
-	* click handler for credit checker dialog - when ok-to-deduct is clicked
-	*   calls ajax_deduct_credit so that server deducts credit and re-adjusts is_lineup_paid
-	*   after successful return from ajax call, updates global is_lineup_paid and advances lineup
-	*/
-	 $('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {
-
-		// call ajax post function to deduct credit and change lineup_is_paid to true 
-	 	$("#site-overlay").css('visibility','visible');
-
-		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
-		var post_url = '/ajax_deduct_credit/1/{{admirer_rel.admirer_display_id}}/' // feature is type 2
-		$.post(post_url,post_dict,function(data) {
-			// if successful then load next slide and thumbnail and auto go to that slide
-			$('#site-overlay').css('visibility','hidden');
+ 	window.lineup_purchased = function(){
 			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;
-			// adjust the credits number on the main site
-			$("#num_credits").load("/ajax_update_num_credits/");
-			}) 
-			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
-					window.alert_user("{{ajax_error}}");
-					$('#site-overlay').css('visibility','hidden');
-			}); // end of $.post(post_url...)
-		}); // close off credit_check handler - $('#credit_check_modal').on('click','#credit_deduct_ok',function(e)
+		}; 
+	 
 
-	/** FUNCTION - HANDLE FINISH BTN CLICK
-  *
-	*/
-	// need to also handle a.ui-dialog-titlebar-close"
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - HANDLE FINISH BUTTON 
+  *		
+	*  ---------------------------------------------------------------------- */
+
 	var handle_lineup_dialog_close = function(){
 		var current_href=document.location.href;
 		var decided_li_elements = $('.bxslider li#preload #decision #choice');	
 	 	var total_decisions=decided_li_elements.length;
-		$('#lineup_modal').dialog("close");
+		
 		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
 					document.location.href='/attractions/';
 				else
-					location.reload();
+					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 		}
 	};
-	
 	$('#lineup_modal').on('click','#finish-btn',function(e) {
 		handle_lineup_dialog_close();
 	});
-
 }); // close off jquery document ready
 
 </script>

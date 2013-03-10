@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
 		<link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
 		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
-
+		<script src="{{ STATIC_URL }}credit_check_dialog.js"></script>
 </head>
 <body>
 
@@ -149,11 +149,14 @@ jQuery(document).ready(function($) {
   }); 
 // INITIALIZE FEEDBACK FORM 
  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
+
 </script>
 
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="AttractedTo.com Error"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
+<div id="credit_check_modal" title="Premium Feature Purchase"></div>
+
 
 <div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
 <div class="main_container">

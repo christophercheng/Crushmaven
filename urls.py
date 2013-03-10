@@ -116,7 +116,8 @@ urlpatterns += patterns('crush.views.payment_views',
                          
     (r'^ajax_update_num_credits/$','ajax_update_num_credits'),
     
-    (r'^credit_checker/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','credit_checker'),
+#    (r'^credit_checker/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','credit_checker'),
+    (r'^credit_checker/$','credit_checker'),
     
     (r'^ajax_deduct_credit/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','ajax_deduct_credit'),
     
