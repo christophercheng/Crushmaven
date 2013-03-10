@@ -242,7 +242,11 @@ FEATURES = {
     '2': {
         'NAME':'View Crush Response',
         'COST': 1,
-    }
+    },
+    '3': {
+        'NAME':"View Crush's Rating of You",
+        'COST': 1,
+    },
 }
 
 AJAX_ERROR = "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p."

@@ -10,17 +10,18 @@ credits
 <BR>Credit Available: {{ credit_available }} 
 <BR>Credit Remaining after Purchase: {{ credit_remaining }}
 <BR><BR>
-<button id="credit_decuct_not_ok" onclick="$('#credit_check_modal').dialog('close');">Cancel</button> 
-<button id="credit_deduct_ok" onclick="$('#credit_check_modal').dialog('close');">Ok</button> 
+<button id="credit_deduct_not_ok"  onclick="$('#credit_check_modal').dialog('close');">Cancel</button> 
+<button id="credit_deduct_ok" feature_id="{{feature_id}}" onclick="$('#credit_check_modal').dialog('close');" feature="{{feature_id}}">Ok</button> 
 
 </div>
 
 <script>
-$('#credit_check_modal').on('click','#credit_deduct_ok',function(e) {	
+$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
 		// call ajax post function to deduct credit and change lineup_is_paid to true 
 	 	$("#site-overlay").css('visibility','visible');
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2
+		alert("deduct credit for feature: {{feature_id}}");
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			$('#site-overlay').css('visibility','hidden');

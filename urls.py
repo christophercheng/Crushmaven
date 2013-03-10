@@ -55,7 +55,9 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_add_crush_targets/$','ajax_add_crush_targets'),
     
     (r'^ajax_load_response_dialog_content/(?P<crush_id>\w+)/$','ajax_load_response_dialog_content'),
-
+    
+    (r'^ajax_get_platonic_rating/(?P<crush_id>\w+)/$','ajax_get_platonic_rating'),
+    
     # deletion handling
     (r'^ajax_admin_delete_crush_target/(?P<crush_username>\w+)/$','ajax_admin_delete_crush_target'),
     (r'^ajax_can_crush_target_be_platonic_friend/(?P<crush_username>\w+)/$','ajax_can_crush_target_be_platonic_friend'),    

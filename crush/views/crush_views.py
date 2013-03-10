@@ -159,23 +159,36 @@ def ajax_load_response_dialog_content(request,crush_id):
         ajax_response += crush.get_name() + " is mutually attracted to you.<BR><BR>"
         ajax_response +=  "<a href='#' id='send_fb_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
     else:
-        # get the crush's platonic rating
-        try: 
-            platonic_rating=None
-            crushes_platonic_relationships = PlatonicRelationship.objects.all_friends(relationship.target_person)
-            platonic_relationship=crushes_platonic_relationships.get(target_person = request.user)
-            platonic_rating = platonic_relationship.rating
-        except Exception as e:
-            print str(e)
-            pass
         ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
+        ajax_response += "They did however rate your level of attractiveness:<BR><BR>"
         
-        if platonic_rating:
-            ajax_response += "They did however rate your level of attractiveness.<BR><BR>"
-            ajax_response += str(platonic_rating) + " out of 5 (" + settings.PLATONIC_RATINGS[platonic_rating] + ") "
-            #ajax_response += "<a href='#' id='get_response_rating' crush_id='" + crush_id + "'>View your rating</a>"
+        if relationship.is_platonic_rating_paid:
+            rating = str(relationship.target_platonic_rating)
+            ajax_response += rating + " out of 5<BR>(" + settings.PLATONIC_RATINGS[rating] + ") "
+        else:
+            ajax_response += "<div id='view_rating'><a href='#' unique_id='" + crush_id + "'>View Rating</a></div>"
     
     return HttpResponse(ajax_response)
+
+@login_required
+def ajax_get_platonic_rating(request,crush_id):
+
+    try: 
+        platonic_rating=None
+        platonic_relationship = (request.user.platonic_relationship_set_from_target).get(source_person__username=crush_id)
+        platonic_rating = platonic_relationship.rating
+        crush_relationship=CrushRelationship.objects.completed_crushes(request.user).get(target_person__username=crush_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound(settings.AJAX_ERROR)
+    except Exception as e:
+        print str(e)
+        pass
+    except PlatonicRelationship.DoesNotExist:
+        return HttpResponseNotFound(settings.AJAX_ERROR)
+    if crush_relationship.is_platonic_rating_paid:
+        return HttpResponse(str(platonic_rating))
+    else:
+        return HttpResponseForbidden("Error: You have not paid to see your attraction rating.");
 
 # -- Crushes Completed Page --
 @login_required

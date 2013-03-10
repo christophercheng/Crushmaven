@@ -87,8 +87,9 @@ class PlatonicRelationship(BasicRelationship):
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                reciprocal_relationship.target_platonic_rating = self.rating
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
+                reciprocal_relationship.save();
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
@@ -178,10 +179,11 @@ class CrushRelationship(BasicRelationship):
                            (5,'Responded-platonic'),
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
-    
+    target_platonic_rating = models.IntegerField(null=True,default=None,blank=True)
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
+    is_platonic_rating_paid=models.BooleanField(default=False)
 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     
@@ -303,6 +305,10 @@ class CrushRelationship(BasicRelationship):
         else:
             return target_status
         
+    def get_target_platonic_rating_display(self):
+        if self.target_platonic_rating:
+            return settings.PLATONIC_RATINGS[self.target_platonic_rating]
+        
     def handle_lineup_paid(self): 
         feature_cost=int(settings.FEATURES['1']['COST'])
         if self.target_person.site_credits < feature_cost:
@@ -332,6 +338,18 @@ class CrushRelationship(BasicRelationship):
         self.save(update_fields=['is_results_paid','updated_flag'])
         self.source_person.save(update_fields=['site_credits'])
         return True #must return True or else caller thinks payment failed
+    
+    def handle_rating_paid(self):
+        feature_cost=int(settings.FEATURES['3']['COST'])
+        if self.source_person.site_credits < feature_cost:
+            return False
+        self.source_person.site_credits=F('site_credits') - feature_cost
+        self.is_platonic_rating_paid=True
+        # change the status of relationship's is_ratings_paid and save the object
+        self.save(update_fields=['is_platonic_rating_paid'])
+        self.source_person.save(update_fields=['site_credits'])
+        return True #must return True or else caller thinks payment failed
+ 
         # TODO!!! when/where this called?    
     def delete(self,*args, **kwargs):  
         print "delete relationships fired"        

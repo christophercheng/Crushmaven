@@ -38,7 +38,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         
     elif str(feature_id)=='2':
         try:
-            relationship=CrushRelationship.objects.visible_responded_crushes(me).get(target_person__username=unique_id)
+            relationship=(CrushRelationship.objects.visible_responded_crushes(me)).get(target_person__username=unique_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
         if relationship.handle_results_paid() == False:    
@@ -46,6 +46,17 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         else:
             return HttpResponse()
 
+    elif str(feature_id)=='3':
+        try:
+            relationships=CrushRelationship.objects.completed_crushes(me)
+            relationship = relationships.get(target_person__username=unique_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_rating_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse()
+        
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
