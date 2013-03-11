@@ -21,7 +21,6 @@ $('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}
 	 	$("#site-overlay").css('visibility','visible');
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2
-		alert("deduct credit for feature: {{feature_id}}");
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			$('#site-overlay').css('visibility','hidden');

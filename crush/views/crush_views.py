@@ -114,7 +114,7 @@ def attractions(request,reveal_crush_id=None):
     me = request.user
   
     crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
-    
+
     # if there is at least one friend attraction, then we need to check the user's facebook privacy setting.  if their app visibility is not set to "only me", then display warning dialog
     if (len(crush_progressing_relationships.filter(friendship_type=0))>0):
         check_fb_privacy=True

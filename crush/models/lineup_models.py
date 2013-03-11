@@ -51,13 +51,38 @@ class LineupMemberManager(models.Manager):
         acceptable_id_array=[]
         
         try:
-
             # prevent any other friend crush relationships from processing at same time with this 'crush' lock
             if crush_id not in g_init_dict[crush_id]:
                 g_init_dict[crush_id][crush_id] = Lock()
             g_init_dict[crush_id][crush_id].acquire() 
             #print "REL ID: " + rel_id + " inside lock"
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+            
+                        # get up to 3 admirers from most recent friends added in the last 250 posts)
+            fb_query_string = "SELECT description, description_tags, created_time FROM stream WHERE source_id = me()  AND type = 8 LIMIT 100"
+            friend_posts = graph_api_fetch(relationship.target_person.access_token,fb_query_string,True,True)
+            new_friend_array=[]
+            for feed in friend_posts:
+                group_post = feed['description_tags']
+                for key in group_post.keys():
+                    if key != '0':
+                        new_friend_array.append(str(group_post[key][0]['id']))
+            if len(new_friend_array) > 0:
+                random.shuffle(new_friend_array)
+                # filter id's of users with same gender as admirer   
+                query_string = "SELECT uid FROM user WHERE uid IN ("
+                query_string += ",".join(new_friend_array)
+                query_string += ") AND NOT (uid IN ('" + g_init_dict[crush_id]['exclude_id_string'] + "') ) AND sex='" + admirer_gender + "' LIMIT 3"
+        
+                new_friend_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
+                for new_friend in new_friend_array:
+                    id = str(new_friend[u'uid'])
+                    acceptable_id_array.append(id)
+                    g_init_dict[crush_id]['exclude_id_string'] += "," + id
+        except:
+            pass # we're still good, just won't have any recent friends i list
+        try:
+            num_members_needed = 9 - len(acceptable_id_array) 
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT " + str(num_members_needed)
             data = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
 
         except:
@@ -73,6 +98,8 @@ class LineupMemberManager(models.Manager):
         for item in data:
             g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
             acceptable_id_array.append(item['uid'])
+            
+        random.shuffle(acceptable_id_array)
         
         print "REL ID: " + rel_id + " lineup results: " + str(acceptable_id_array)
         g_init_dict[crush_id][crush_id].release()     
