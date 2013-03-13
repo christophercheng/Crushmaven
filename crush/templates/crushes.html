@@ -12,7 +12,6 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-
 <div id="dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
 <div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
 <div id="privacy_check"></div>
@@ -151,10 +150,11 @@ $(document).ready(function()
 			$.get('/ajax_get_platonic_rating/' + unique_id, function(rating){
 					rating_element = $('#view_rating');
 					if (rating_element.parent().attr("id") == "response_modal"){
-						rating_element.html(rating + " out of 5<br>({{crush.get_target_platonic_rating_display}})");
+						alert("hey");
+						rating_element.html(rating);
 					}
 					else {
-						rating_element.html("* rated your attractiveness:  " + rating + " out of 5 ({{crush.get_target_platonic_rating_display}})");
+						rating_element.html("* rated your attractiveness:  " + rating );
 					}
 				}).fail(function(){
 					window.alert_user("{{ajax_error}}");
@@ -274,10 +274,6 @@ $(document).ready(function()
         
 });
 </script>
-
-<!-- Test of an ajax modal dialog 
-<a href="#" class="modal_ajax_test">Ajax Modal Test</a><br>
- End Test -->
 
 {% if userlist %}
 <h3>The following users were added to your secret crushlist:</h3>

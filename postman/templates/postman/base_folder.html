@@ -1,0 +1,86 @@
+{% extends "postman/base.html" %}
+{% load url from future %}
+{% load i18n postman_tags %}{% load pagination_tags %}{% comment %}
+WARNING: 'pagination_tags' is a name from the django-pagination application.
+For convenience, the design of this template is done with the use of that application.
+Django-postman will still be working, even if that application is not installed, by providing a mock
+for the template tag library.
+If the real implementation is to be used, just make sure that 'pagination' is declared before 'postman'
+in the INSTALLED_APPS setting.
+{% endcomment %}
+{% block content %}
+<div id="postman">
+<h1>{% block pm_folder_title %}{% endblock %}</h1>
+{% autopaginate pm_messages %}
+{% if invalid_page %}
+<p>{% trans "Sorry, this page number is invalid." %}</p>
+{% else %}
+<a href="{% url 'postman_write' %}">Create Message</a>
+{% if pm_messages %}
+<div id=action_links>
+{% block pm_sender_header %}sort by: 
+	<a href="{% postman_order_by sender %}">{% trans "attraction" %}</a>{% endblock %}&nbsp;|&nbsp;
+ 	<a href="{% postman_order_by date %}">date</a>
+ </div>
+<div id="pm_messages">
+
+<h3>Received Messages</h3>
+{% for message in pm_messages %}
+{% if message.recipient == request.user %} 
+	  <div id="conversation_row" onclick='location.href="{% if by_conversation and message.thread_id %}{% url 'postman_view_conversation' message.thread_id %}{% else %}{{message.get_absolute_url }}{% endif %}?next={{ current_url|urlencode }}"'>
+	<div id="first_column">
+		<img src="{{ message.id|attraction_pic:request.user.username }}">
+	</div> 
+	<div id="second_column"><div id="attraction_name">{{message.id|attraction_name:request.user.username}} </div> 
+		<div id="last_sent">
+		received {{ message.sent_at|compact_date:_("g:i A,M j,n/j/y") }}</div><BR>
+	   <div id="conversation_body">{% if message.read_at == None  %}<strong><span class="MercuryReceivedIndicator"></span>{% endif %}
+			
+	    {{message.body|truncatebody:140}}({{ message.thread_id|thread_count:request.user.username }}) 
+	    
+	    {% if message.read_at == None %}</strong>{% endif %}
+	   </div>
+	   </div>
+	  </div>
+	{% endif %}
+ {% endfor %}
+
+
+<h3>Sent Messages</h3>
+{% for message in pm_messages %}
+{% if message.sender == request.user %} 
+	  <div id="conversation_row" onclick='location.href="{% if by_conversation and message.thread_id %}{% url 'postman_view_conversation' message.thread_id %}{% else %}{{message.get_absolute_url }}{% endif %}?next={{ current_url|urlencode }}"'>
+
+	<div id="first_column">
+		<img src="{{ request.user|user_pic:30 }}"> <span class="MercuryRepliedIndicator"></span><img src="{{ message.id|attraction_pic:request.user.username }}">
+	</div> 
+	<div id="second_column" class="received"><div id="attraction_name">{{message.id|attraction_name:request.user.username}}</div> 
+		<div id="last_sent">
+		sent {{ message.sent_at|compact_date:_("g:i A,M j,n/j/y") }}</div><BR>
+	   <div id="conversation_body">{% if message.read_at == None %}<strong>{% endif %}
+
+	    	{% if message.read_at %}
+	    		<span class="MercuryRepliedIndicator seenByListener repliedLast seenByAll"></span>
+	    	{% else %}
+	    		<span class="MercuryRepliedIndicator seenByListener repliedLast"></span>
+	    	{% endif %}
+	    {{message.body|truncatebody:105}} ({{ message.thread_id|thread_count:request.user.username }})
+
+	   {% if message.read_at == None %}</strong>{% endif %}
+	   </div>
+	   </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+
+
+</div>
+
+{% paginate %}
+{% else %}
+<p>{% trans "No messages." %}</p>
+{% endif %}
+{% endif %}
+{% block pm_footer_info %}{% endblock %}
+</div>
+{% endblock content %}

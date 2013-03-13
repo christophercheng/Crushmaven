@@ -5,7 +5,7 @@ import urllib2,json,urllib
 # if the access_token is invalid, then returns HTTPError (subclass of URLError) with code 400
 # if the query string is invalid, then returns HTTPError with code 404
 # if urllib2 times out then returns URLError with reason="timed out"
-def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False):
+def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,num_tries=0):
     
     try:
         if not fql_query:
@@ -26,12 +26,21 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False)
             if 'data' in results:
                 return results['data']
             else:
-                return None
+                # retry once more
+                if num_tries == 0:
+                    return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
+                else:
+                    return None
         else:
             return results  
     except Exception as e: 
-        raise e # pass on the exception for the caller to handle
-
+        if num_tries == 0:
+            # retry once more
+            return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
+            
+        else:
+            raise e # pass on the exception for the caller to handle
+        
 def fb_fetch(fb_user_id,start_index):
     
     opener = urllib2.build_opener()

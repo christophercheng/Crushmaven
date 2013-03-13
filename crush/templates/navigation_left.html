@@ -4,16 +4,21 @@
 
 		<!-- Left Bar Links -->	
 			<a class="{% navactive request 'attractions' %}"
-				href="{% url 'crush.views.crush_views.attractions' %}">Attractions (<span id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>)</a><BR>
+				href="{% url 'crush.views.crush_views.attractions' %}">Attractions {% if num_crushes_in_progress %}(<span id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>){% endif %}</a><BR>
 
 			<BR><a class="{% navactive request 'admirers' %}"
-				href="{% url 'crush.views.admirer_views.admirers' %}">Admirers ({{num_admirers_in_progress}})</a><BR>
+				href="{% url 'crush.views.admirer_views.admirers' %}">Admirers {% if num_admirers_in_progress %}({{num_admirers_in_progress}}){% endif %}</a><BR>
 
 			<BR><a class="{% navactive request 'just_friends' %}"
-				href="{% url 'crush.views.platonic_friend_views.just_friends' %}">Just Friends (<span id="num_platonic_friends">{{num_platonic_friends}}</span>)</a><BR>
+				href="{% url 'crush.views.platonic_friend_views.just_friends' %}">Just Friends {% if num_platonic_friends%}(<span id="num_platonic_friends">{{num_platonic_friends}}</span>){% endif %}</a><BR>
 
 			<BR><a class="{% navactive request 'friends_with_admirers' %}"
 				href="{% url 'crush.views.friends_with_admirers_views.friends_with_admirers' %}">Friends with Admirers</a><BR>
+			
+			<BR><a class="{% navactive request 'messages' %}"
+				href="{% url 'postman_inbox' %}">Messages{% if num_new_messages %} <strong>({{ num_new_messages }})</strong>{% endif %}</a><BR>
+
 			<BR><a href="javascript:{}" class="bt-fs-dialog">Add Crush</a>
 			
 		</div>	<!-- close off left_bar -->
+				{% block postman_menu %}{% endblock %}

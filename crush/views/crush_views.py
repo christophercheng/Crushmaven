@@ -186,7 +186,7 @@ def ajax_get_platonic_rating(request,crush_id):
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound(settings.AJAX_ERROR)
     if crush_relationship.is_platonic_rating_paid:
-        return HttpResponse(str(platonic_rating))
+        return HttpResponse(str(platonic_rating) + " (" + crush_relationship.get_target_platonic_rating_display() + ")")
     else:
         return HttpResponseForbidden("Error: You have not paid to see your attraction rating.");
 

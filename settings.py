@@ -150,6 +150,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'facebook',
     'crush',
+    'postman',
+    'ajax_select' #for postman app
 )
 
 # A sample logging configuration. The only tangible logging
@@ -203,7 +205,7 @@ CRUSH_RESPONSE_DELAY_START = 1#43200 # default is 43200 seconds = 12 hours
 CRUSH_RESPONSE_DELAY_END = 2#86400 #86400 seconds = 24 hours
 STARTING_CREDITS=100 # change to 1 in production
 INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times out
-MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
+MINIMUM_LINEUP_MEMBERS=2 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=43200 # default is 43200 seconds which = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7
@@ -247,6 +249,10 @@ FEATURES = {
         'NAME':"View Crush's Rating of You",
         'COST': 1,
     },
+    '4': {
+        'NAME':"Send a Message",
+        'COST': 1,
+    },
 }
 
 AJAX_ERROR = "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p."
@@ -272,4 +278,20 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 #except ImportError:
 #    print 'local development settings could not be imported'
 #    pass
+
+# POSTMAN SETTINGS
+POSTMAN_DISALLOW_ANONYMOUS=True
+POSTMAN_DISALLOW_MULTIRECIPIENTS=True
+POSTMAN_DISALLOW_COPIES_ON_REPLY=True
+POSTMAN_AUTO_MODERATE_AS=True
+POSTMAN_SHOW_USER_AS='get_name'
+AJAX_LOOKUP_CHANNELS={'postman_users':('crush.models.user_models','NamesLookup')}
+POSTMAN_AUTOCOMPLETER_APP={
+    'name':'ajax_select',
+    'field':'AutoCompleteField',
+    'arg_name':'channel',
+    'arg_default':'postman_users'}
+AJAX_SELECT_BOOTSTRAP = True
+AJAX_SELECT_INLINES = 'inline'
+
 

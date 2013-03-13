@@ -3,6 +3,8 @@ from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from ajax_select import urls as ajax_select_urls
+
 admin.autodiscover()
 
 # Facebook Backend Authentication URL's   
@@ -156,8 +158,14 @@ urlpatterns += patterns('crush.views.static_file_views',
 
 urlpatterns += patterns('',
     # -- ADMIN PAGE -- #
+    # include the lookup urls
+    (r'^admin/lookups/', include(ajax_select_urls)),
     (r'^admin/', include(admin.site.urls)),                        
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+)
+
+urlpatterns += patterns('',
+    (r'^messages/',include('postman.urls'))
 )

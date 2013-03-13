@@ -8,7 +8,7 @@ import crush.models.relationship_models
 from utils import graph_api_fetch
 from crush.models.miscellaneous_models import InviteEmail
 import thread
-
+from django.db.models import Q
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
 
@@ -255,6 +255,12 @@ class FacebookUser(AbstractUser):
     def get_facebook_picture(self):
         return u'http://graph.facebook.com/%s/picture?type=large' % self.username
     
+    def get_facebook_pic(self,size):
+        
+        src =  'http://graph.facebook.com/' + self.username + '/picture?width=' + size + '&height=' + size
+        print src
+        return src
+    
     def get_name(self):
         return self.first_name + " " + self.last_name
     
@@ -271,4 +277,27 @@ class FacebookUser(AbstractUser):
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
-        return self.first_name + ' ' + self.last_name + ' (' + self.username + ')' 
+        return self.first_name + ' ' + self.last_name + ' (' + self.username + ')'
+     
+# used for message-write: recipient auto lookup     
+class NamesLookup(object):
+
+    def get_query(self,q,request):
+        """ return a query set.  you also have access to request.user if needed """
+        return crush.models.relationship_models.CrushRelationship.objects.completed_crushes(request.user).filter(Q(target_person__first_name__contains=q) | Q(target_person__last_name__icontains=q) )
+
+    def format_result(self,relationship):
+        user=relationship.target_person
+        """ the search results display in the dropdown menu.  may contain html and multiple-lines. will remove any |  """
+        return  u"%s %s (%s)" % (user.first_name, user.last_name, user.username)
+
+    def format_item(self,relationship):
+        user=relationship.target_person
+        """ the display of a currently selected object in the area below the search box. html is OK """
+        #return unicode(user)
+        return '<img src="http://graph.facebook.com/' + user.username + '/picture?width=20&height=20">' +  u"%s %s" % (user.first_name, user.last_name)
+    def get_objects(self,ids):
+        """ given a list of ids, return the objects ordered as you would like them on the admin page.
+            this is for displaying the currently selected items (in the case of a ManyToMany field)
+        """
+        return FacebookUser.objects.filter(pk__in=ids).order_by('first_name','last_name')

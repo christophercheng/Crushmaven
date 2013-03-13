@@ -10,6 +10,17 @@ from django.utils.timesince import timesince
 
 register = template.Library()
 
+@register.simple_tag
+def navactive(request, url):
+    # request.path is the current URL minus the host name
+    # the following logic checks if the current page exists within the list of URLs passed in
+        # if found ,active is returned, else empty string returned
+    if url in request.path:
+        return "active"
+    return ""
+
+
+
 # don't return any value if less than 2 minutes have not passed
 @register.filter
 def datetime_since(value): 

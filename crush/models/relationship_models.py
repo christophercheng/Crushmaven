@@ -306,7 +306,7 @@ class CrushRelationship(BasicRelationship):
             return target_status
         
     def get_target_platonic_rating_display(self):
-        if self.target_platonic_rating:
+        if self.target_platonic_rating!=None:
             return settings.PLATONIC_RATINGS[self.target_platonic_rating]
         
     def handle_lineup_paid(self): 

@@ -271,7 +271,7 @@ class LineupMemberManager(models.Manager):
                 continue
             # else grab the result and add to acceptable id_array
             acceptable_id_array.append(fql_query_results[0]['uid'])
-            exclude_id_string = exclude_id_string + ',' + fql_query_results[0]['uid']
+            exclude_id_string = exclude_id_string + ',' + str(fql_query_results[0]['uid'])
             # if acceptable id_array length == ideal lineup members then break out of loop entirely
             if len(acceptable_id_array) >= settings.IDEAL_LINEUP_MEMBERS:
                 break
