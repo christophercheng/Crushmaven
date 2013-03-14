@@ -70,17 +70,7 @@ $(document).ready(function()
  * -------------------------------------------- */
 
 	var send_fb_message = function(recipient_id){
-		FB.ui(
-			{
-          method: 'send',
-					to: recipient_id,
-					link:'http://www.attractedto.com',
-      },
-      function(response){
-				// regardless of whether user cancels or sends message, reload the appropriate attraction page
-				redirect_after_response_viewed();
-      }      
-    );
+		location.href="/messages/conversate/" + recipient_id;
 	};
   
   var redirect_after_response_viewed = function(){
@@ -445,7 +435,7 @@ $(document).ready(function()
 			* response expected soon
 		{% elif crush.get_display_status == 4 %} 
 			* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
-			* [send a message]
+			* <a href = "/messages/conversate/{{crush.target_person.username}}">send a message</a>
 		{% elif crush.is_platonic_rating_paid %}
 			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})	<BR>	
 			* rated your attractiveness: {{crush.target_platonic_rating}} out of 5 ({{crush.get_target_platonic_rating_display}})

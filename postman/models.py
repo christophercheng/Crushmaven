@@ -86,12 +86,6 @@ def get_user_representation(user):
 class MessageManager(models.Manager):
     """The manager for Message."""
 
-    @property
-    def _last_in_thread(self):
-        """Return the latest message id for each conversation."""
-        return self.filter(thread__isnull=False).values('thread').annotate(models.Max('pk'))\
-            .values_list('pk__max', flat=True).order_by()
-
     def _folder(self, related, filters, option=None, order_by=None):
             """Base code, in common to the folders."""
             if related:
@@ -121,6 +115,12 @@ class MessageManager(models.Manager):
                 # For single message, 'count' is returned as 0. Should be acceptable if known.
                 # If not, replace "COUNT(*)" by "1+COUNT(*)" and add:
                 # ' AND T."id" <> T."thread_id"'
+    @property
+    def _last_in_thread(self):
+        """Return the latest message id for each conversation."""
+        return self.filter(thread__isnull=False).values('thread').annotate(models.Max('pk'))\
+            .values_list('pk__max', flat=True).order_by()
+            
 
     def inbox(self, user, related=True, **kwargs):
         """
@@ -136,10 +136,13 @@ class MessageManager(models.Manager):
         order_by=kwargs.pop('order_by',None)
         if order_by:
             qs = qs.order_by(order_by)
+        # get all valid readable emails
         qs = qs.filter(Q(Q(recipient=user) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |
                              Q(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) )
-
+        # separate out   
+            # group messages into those between two users, then grab the last one
         return qs.filter(id__in=self._last_in_thread)
+    
         # For single message, 'count' is returned as 0. Should be acceptable if known.
         # If not, replace "COUNT(*)" by "1+COUNT(*)" and add:
         # ' AND T."id" <> T."thread_id"'    
@@ -254,6 +257,7 @@ class Message(models.Model):
     email = models.EmailField(_("visitor"), blank=True)  # instead of either sender or recipient, for an AnonymousUser
     parent = models.ForeignKey('self', related_name='next_messages', null=True, blank=True, verbose_name=_("parent message"))
     thread = models.ForeignKey('self', related_name='child_messages', null=True, blank=True, verbose_name=_("root message"))
+    recipient_paid = models.BooleanField(default=False)
     sent_at = models.DateTimeField(_("sent at"), default=now)
     read_at = models.DateTimeField(_("read at"), null=True, blank=True)
     replied_at = models.DateTimeField(_("replied at"), null=True, blank=True)

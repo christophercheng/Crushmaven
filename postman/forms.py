@@ -26,6 +26,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from postman.fields import CommaSeparatedUserField
 from postman.models import Message
 from postman.utils import WRAP_WIDTH
+from django.db.models import Q
 
 
 class BaseWriteForm(forms.ModelForm):
@@ -99,7 +100,9 @@ class BaseWriteForm(forms.ModelForm):
         return recipients
 
     @transaction.commit_on_success
-    def save(self, recipient=None, parent=None, auto_moderators=[]):
+    def save(self, recipient=None, thread=None, auto_moderators=[]):
+        
+
         """
         Save as many messages as there are recipients.
 
@@ -111,21 +114,23 @@ class BaseWriteForm(forms.ModelForm):
         Return False if one of the messages is rejected.
 
         """
+        STATUS_PENDING = 'p'
+        STATUS_ACCEPTED = 'a'
+        STATUS_REJECTED = 'r'
         recipients = self.cleaned_data.get('recipients', [])
-        if parent and not parent.thread_id:  # at the very first reply, make it a conversation
-            parent.thread = parent
-            parent.save()
-            # but delay the setting of parent.replied_at to the moderation step
-        if parent:
-            self.instance.parent = parent
-            self.instance.thread_id = parent.thread_id
-        else:
-            try:
-                last_threaded_message = Message.objects.filter(sender=self.instance.sender).latest('sent_at')
-                self.instance.thread_id=last_threaded_message.thread_id + 1
-            except Exception as e:
-                print str(e)
-                self.instance.thread_id = 1 
+        try:
+            earliest_message=Message.objects.filter(Q(Q(recipient=self.instance.sender,sender=self.instance.recipient ) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |\
+                     Q(Q(sender=self.instance.sender,recipient=self.instance.recipient) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))).latest('sent_at')
+            if earliest_message.thread_id:
+                self.instance.thread_id = earliest_message.thread_id
+            else:
+                earliest_message.thread_id=earliest_message.id
+                earliest_message.save(update_fields=['thread_id'])
+                self.instance.thread_id=earliest_message.id
+        except Exception as e:
+            print e
+            pass
+                
         initial_moderation = self.instance.get_moderation()
         initial_dates = self.instance.get_dates()
         initial_status = self.instance.moderation_status
@@ -160,7 +165,7 @@ class BaseWriteForm(forms.ModelForm):
 class WriteForm(BaseWriteForm):
     """The form for an authenticated user, to compose a message."""
     # specify help_text only to avoid the possible default 'Enter text to search.' of ajax_select v1.2.5
-    recipients = CommaSeparatedUserField(label=(_("Recipients"), _("Recipient")), help_text='')
+    recipients = CommaSeparatedUserField(label=(_("Recipients"), _("Mutual Attraction")), help_text='')
 
     class Meta(BaseWriteForm.Meta):
         fields = ('recipients', 'body')
@@ -184,17 +189,19 @@ class BaseReplyForm(BaseWriteForm):
     def __init__(self, *args, **kwargs):
         recipient = kwargs.pop('recipient', None)
         super(BaseReplyForm, self).__init__(*args, **kwargs)
-        self.recipient = recipient
+        self.instance.recipient = recipient
 
     def clean(self):
         """Check that the recipient is correctly initialized."""
-        if not self.recipient:
+        if not self.instance.recipient:
             raise forms.ValidationError(ugettext("Undefined recipient."))
         return super(BaseReplyForm, self).clean()
 
     def save(self, *args, **kwargs):
-        return super(BaseReplyForm, self).save(self.recipient, *args, **kwargs)
-
+        super(BaseReplyForm, self).save(self.instance.recipient, *args, **kwargs)
+        if self.instance.thread_id==None:
+            self.instance.thread_id=self.instance.id
+            self.instance.save(update_fields=['thread_id'])
 
 class QuickReplyForm(BaseReplyForm):
     """

@@ -67,13 +67,13 @@ def compact_date(value, arg):
 
 
 @register.filter
-def thread_count(value,arg):
-    try:
-        messages = Message.objects.filter(Q(thread_id=value,sender__username=arg,sender_archived=False,sender_deleted_at__isnull=True)|Q(thread_id=value,recipient__username=arg,recipient_archived=False,recipient_deleted_at__isnull=True))
-        return str(len(messages))
-    except Exception as e:
-        print str(e)
-        return 'error'  
+def thread_count(user,crush):
+    STATUS_PENDING = 'p'
+    STATUS_ACCEPTED = 'a'
+    STATUS_REJECTED = 'r'
+
+    return Message.objects.filter(Q(Q(recipient=user,sender=crush) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient=crush) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))).count()
+ 
     
 @register.filter
 def attraction_name(msg_id,username):
