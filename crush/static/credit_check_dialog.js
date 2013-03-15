@@ -28,3 +28,23 @@ function purchase_feature(data){
 	return false;
 };
 
+function purchase_conversation(csrf_token,attraction_id,purchase_callback_name='') {
+			data = {};
+			data['csrfmiddlewaretoken']=csrf_token;
+			data['success_path'] = '/messages/converse/' + attraction_id;	
+			data['cancel_url'] =  '{{request.get_full_path}}';
+			var unique_id = attraction_id;
+			data['unique_id'] = unique_id;
+			data['feature_id'] = '4';
+			if (purchase_callback_name=='')
+				data['purchase_callback_name'] = 'window.redirect_to_conversation(' + attraction_id + ')';
+			else
+				data['purchase_callback_name'] = purchase_callback_name;
+			data['ajax_error']='{{ajax_error}}';
+			purchase_feature(data);
+	
+}; 
+	   
+window.redirect_to_conversation=function(attraction_id){
+  	location.href="/messages/converse/" + attraction_id;
+};

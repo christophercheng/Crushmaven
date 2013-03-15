@@ -14,7 +14,6 @@ from django.template.defaultfilters import date
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from crush.models.user_models import FacebookUser
-
 from postman.models import ORDER_BY_KEY, ORDER_BY_MAPPER, Message,\
     get_user_representation
 
@@ -117,7 +116,24 @@ def truncatebody(message,length):
         return message
     else:
         return message[0:length-4] + '...'
+
+@register.filter
+def can_view(inbox_user,message):
+    if message.sender==inbox_user:
+        target_person = message.recipient
+    else:
+        target_person = message.sender
     
+    try: 
+        crush_relationship = inbox_user.crush_relationship_set_from_source.get(target_person=target_person)
+        date_msg_expires = crush_relationship.date_messaging_expires
+        if date_msg_expires is not None and datetime.date.today() < date_msg_expires:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print str(e)
+        return False    
 
 #######
 # tags

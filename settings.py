@@ -250,8 +250,8 @@ FEATURES = {
         'COST': 1,
     },
     '4': {
-        'NAME':"Send a Message",
-        'COST': 1,
+        'NAME':"Converse with this attraction for the next 2 weeks",
+        'COST': 2,
     },
 }
 
@@ -285,6 +285,7 @@ POSTMAN_DISALLOW_MULTIRECIPIENTS=True
 POSTMAN_DISALLOW_COPIES_ON_REPLY=True
 POSTMAN_AUTO_MODERATE_AS=True
 POSTMAN_SHOW_USER_AS='get_name'
+# note that NamesLookup is a class that handles the magic behind the dynamic drop down dialog
 AJAX_LOOKUP_CHANNELS={'postman_users':('crush.models.user_models','NamesLookup')}
 POSTMAN_AUTOCOMPLETER_APP={
     'name':'ajax_select',

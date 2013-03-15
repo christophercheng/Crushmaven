@@ -1,6 +1,6 @@
 from django.db import models
 # use signal to create user profile automatically when user created
-import datetime
+from datetime import  datetime,timedelta
 from smtplib import SMTPException
 from django.core.mail import send_mail
 import random,urllib,json
@@ -86,7 +86,7 @@ class PlatonicRelationship(BasicRelationship):
                 reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
-                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                reciprocal_relationship.date_target_responded=datetime.now()
                 reciprocal_relationship.target_platonic_rating = self.rating
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
                 reciprocal_relationship.save();
@@ -112,7 +112,7 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         # exclude any known responded relationships and completed relationship
             # both those relationships contain a date_target_responded date that is in the past 
             # if a relationship has a future date_target_responded date, then include it.
-        return crush_relationships.exclude(date_target_responded__lt = datetime.datetime.now())     
+        return crush_relationships.exclude(date_target_responded__lt = datetime.now())     
  
     # known responded crushes are can be shown to both users
     def visible_responded_crushes(self,admirer_user):
@@ -120,14 +120,14 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         crush_relationships = admirer_user.crush_relationship_set_from_source
         # first exclude completed relationship, then exclude all truly unresponded crushes, then exclude unknown responded crushes
         # ie. all relationships that arent' paid (not completed) and target status > 4 (not progressing) and date_target_responded is in past  (exclude date=none and  date in future)
-        return crush_relationships.filter(date_target_responded__lt=datetime.datetime.now(), is_results_paid=False )
+        return crush_relationships.filter(date_target_responded__lt=datetime.now(), is_results_paid=False )
     # unknown responded crushes cannot be shown to either user because they are in a wait period
     def hidden_responded_crushes(self,admirer_user):
         crush_relationships = admirer_user.crush_relationship_set_from_source
         # get any crush relationships where we know the response but the date responded is either:
             # None: we're waiting for original admirer to see response
             # Future date: we're not telling the admirer that their crush has already decided that theyy're not interseted
-        return crush_relationships.filter(target_status__gt = 3).exclude( date_target_responded__lt=datetime.datetime.now() )
+        return crush_relationships.filter(target_status__gt = 3).exclude( date_target_responded__lt=datetime.now() )
     
     def completed_crushes(self,admirer_user):
         crush_relationships = admirer_user.crush_relationship_set_from_source
@@ -183,6 +183,7 @@ class CrushRelationship(BasicRelationship):
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
+    date_messaging_expires = models.DateField(default=None,null=True,blank=True)
     is_platonic_rating_paid=models.BooleanField(default=False)
 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
@@ -235,7 +236,7 @@ class CrushRelationship(BasicRelationship):
                 # let the other relationship know right away that there is a response by setting the date_target_responded field to current time
                     # NOTE: we do not set the newly created relationship yet.  We wait for the original admirer to see the response
                     # this ordered delay obfuscates the originator of the mutual crushes. it also increases chance that admirer pays to see response
-                reciprocal_relationship.date_target_responded=datetime.datetime.now()
+                reciprocal_relationship.date_target_responded=datetime.now()
                 # both relationships should show the 'updated' or 'new' signs when first displayed to their respective users
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
@@ -251,7 +252,7 @@ class CrushRelationship(BasicRelationship):
                     # don't tell this user that their crush isn't attracted to them right away
                         # without delay, admirer would eventually realize that immediate responses = negative responses - and not pay to see response
                     response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                    self.date_target_responded=datetime.datetime.now() + datetime.timedelta(0,response_wait)
+                    self.date_target_responded=datetime.now() + timedelta(0,response_wait)
                     self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 except PlatonicRelationship.DoesNotExist:
                     # print "did not find a reciprocal platonic or crush relationship"
@@ -280,7 +281,7 @@ class CrushRelationship(BasicRelationship):
                         # find the reciprocal crush relationship if it exists 
                         reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person,date_target_responded=None)
                         # set the reciprocal crush relationship date_target_responded field
-                        reciprocal_crush_relationship.date_target_responded=datetime.datetime.now()
+                        reciprocal_crush_relationship.date_target_responded=datetime.now()
                         reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
                         # send the other relationship's admirer a notification
                         reciprocal_crush_relationship.notify_source_person()
@@ -300,7 +301,7 @@ class CrushRelationship(BasicRelationship):
         target_status=self.target_status
         if target_status < 4:
             return target_status
-        if self.date_target_responded==None or self.date_target_responded > datetime.datetime.now():
+        if self.date_target_responded==None or self.date_target_responded > datetime.now():
             return 2
         else:
             return target_status
@@ -347,6 +348,17 @@ class CrushRelationship(BasicRelationship):
         self.is_platonic_rating_paid=True
         # change the status of relationship's is_ratings_paid and save the object
         self.save(update_fields=['is_platonic_rating_paid'])
+        self.source_person.save(update_fields=['site_credits'])
+        return True #must return True or else caller thinks payment failed
+    
+    def handle_messaging_paid(self):
+        feature_cost=int(settings.FEATURES['4']['COST'])
+        if self.source_person.site_credits < feature_cost:
+            return False
+        self.source_person.site_credits=F('site_credits') - feature_cost
+        self.date_messaging_expires=datetime.today() + timedelta(days=14)
+        # change the status of relationship's is_ratings_paid and save the object
+        self.save(update_fields=['date_messaging_expires'])
         self.source_person.save(update_fields=['site_credits'])
         return True #must return True or else caller thinks payment failed
  

@@ -99,7 +99,7 @@ OPTIONS = OPTION_MESSAGES
 
 urlpatterns = patterns('postman.views',
     url(r'^inbox/(?:(?P<option>'+OPTIONS+')/)?$', 'inbox', name='postman_inbox'),
-    url(r'^conversate/(?P<crush_id>[\w]+)/$', 'conversate', name='postman_conversate'),
+    url(r'^converse/(?P<crush_id>[\w]+)/$', 'converse', name='postman_converse'),
     url(r'^delete/$', 'delete', name='postman_delete'),
     url(r'^undelete/$', 'undelete', name='postman_undelete'),
     url(r'^write/(?:(?P<recipients>[\w.@+-:]+)/)?$', 'write', name='postman_write'),

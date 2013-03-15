@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -157,7 +157,7 @@ def ajax_load_response_dialog_content(request,crush_id):
     if relationship.target_status == 4:
         ajax_response += "Congratulations! " 
         ajax_response += crush.get_name() + " is mutually attracted to you.<BR><BR>"
-        ajax_response +=  "<a href='#' id='send_fb_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
+        ajax_response +=  "<a href='#' id='send_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
     else:
         ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
         ajax_response += "They did however rate your level of attractiveness:<BR><BR>"
@@ -370,3 +370,16 @@ def ajax_initialize_nonfriend_lineup(request,target_username):
     else:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response)
+
+# called by new message write form to determine if attraction is messageeable
+@login_required
+def ajax_user_can_message(request,crush_id):
+    # grab completed (paid) relationship from crush username
+    try:
+        relationship=CrushRelationship.objects.completed_crushes(request.user).get(target_person__username=crush_id)
+        if relationship.date_messaging_expires is not None and datetime.date.today() <= relationship.date_messaging_expires:
+            return HttpResponse("");
+        else:
+            return HttpResponseForbidden("");
+    except CrushRelationship.DoesNotExist:
+        return HttpResponseNotFound("Error: Could not find a matching crush relationship.")

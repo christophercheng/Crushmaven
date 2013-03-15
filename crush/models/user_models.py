@@ -295,7 +295,7 @@ class NamesLookup(object):
         user=relationship.target_person
         """ the display of a currently selected object in the area below the search box. html is OK """
         #return unicode(user)
-        return '<img src="http://graph.facebook.com/' + user.username + '/picture?width=20&height=20">' +  u"%s %s" % (user.first_name, user.last_name)
+        return '<img src="http://graph.facebook.com/' + user.username + '/picture?width=20&height=20">&nbsp;' +  u"%s %s" % (user.first_name, user.last_name)
     def get_objects(self,ids):
         """ given a list of ids, return the objects ordered as you would like them on the admin page.
             this is for displaying the currently selected items (in the case of a ManyToMany field)

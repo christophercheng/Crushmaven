@@ -23,6 +23,7 @@ from postman.urls import OPTION_MESSAGES
 from postman.utils import email_visitor, notify_user
 
 from django.db.models import Q
+from crush.models.relationship_models import CrushRelationship
 
 # moderation constants
 STATUS_PENDING = 'p'
@@ -257,7 +258,6 @@ class Message(models.Model):
     email = models.EmailField(_("visitor"), blank=True)  # instead of either sender or recipient, for an AnonymousUser
     parent = models.ForeignKey('self', related_name='next_messages', null=True, blank=True, verbose_name=_("parent message"))
     thread = models.ForeignKey('self', related_name='child_messages', null=True, blank=True, verbose_name=_("root message"))
-    recipient_paid = models.BooleanField(default=False)
     sent_at = models.DateTimeField(_("sent at"), default=now)
     read_at = models.DateTimeField(_("read at"), null=True, blank=True)
     replied_at = models.DateTimeField(_("replied at"), null=True, blank=True)
@@ -305,7 +305,7 @@ class Message(models.Model):
     def is_replied(self):
         """Tell if the recipient has written a reply to the message."""
         return self.replied_at is not None
-
+            
     def _obfuscated_email(self):
         """
         Return the email field as obfuscated, to keep it undisclosed.

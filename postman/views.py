@@ -50,6 +50,7 @@ def _folder(request, folder_name, view_name, option, template_name):
     if order_by:
         kwargs.update(order_by=order_by)
     msgs = getattr(Message.objects, folder_name)(request.user, **kwargs)
+        
     return render_to_response(template_name, {
         'pm_messages': msgs,  # avoid 'messages', already used by contrib.messages
         'by_conversation': option is None,
@@ -76,7 +77,7 @@ def inbox(request, option=None, template_name='postman/inbox.html'):
     return _folder(request, 'inbox', 'postman_inbox', option, template_name)
 
 @login_required
-def conversate(request, crush_id, *args, **kwargs):
+def converse(request, crush_id, *args, **kwargs):
     user = request.user
     try:
         attraction_user = request.user.crush_targets.get(username=crush_id)
@@ -161,7 +162,7 @@ def reply(request, attraction_id, form_class=FullReplyForm, formatters=(format_s
         else:
             messages.warning(request, _("Message rejected for at least one recipient."), fail_silently=True)
         print "successfully sent message via reply form " 
-        return redirect('/messages/conversate/' + attraction_id)
+        return redirect('/messages/converse/' + attraction_id)
 def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm), autocomplete_channels=None,
         template_name='postman/write.html', success_url=None,
         user_filter=None, exchange_filter=None, max=None, auto_moderators=[]):
@@ -183,6 +184,7 @@ def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm)
     user = request.user
     # if an existing thread exists between two users, then create a FullReplyForm class, otherwise use WriteForm
     if request.method == 'POST':
+        print "submittted!"
         post_data = request.POST
         recipient_username = post_data['recipients']
         recipient_username=recipient_username[recipient_username.find("(")+1:recipient_username.find(")")]

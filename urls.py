@@ -65,6 +65,8 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_can_crush_target_be_platonic_friend/(?P<crush_username>\w+)/$','ajax_can_crush_target_be_platonic_friend'),    
     (r'^ajax_make_crush_target_platonic_friend/(?P<crush_username>\w+)/$','ajax_make_crush_target_platonic_friend'),
     
+    # called by new message form 
+    (r'^ajax_user_can_message/(?P<crush_id>\w+)/$','ajax_user_can_message'),
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
