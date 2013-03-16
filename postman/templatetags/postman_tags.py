@@ -71,7 +71,7 @@ def thread_count(user,crush):
     STATUS_ACCEPTED = 'a'
     STATUS_REJECTED = 'r'
 
-    return Message.objects.filter(Q(Q(recipient=user,sender=crush) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient=crush) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))).count()
+    return Message.objects.filter(Q(Q(recipient=user,sender=crush) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient=crush) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True))).count()
  
     
 @register.filter

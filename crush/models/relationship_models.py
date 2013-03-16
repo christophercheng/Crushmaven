@@ -1,6 +1,6 @@
 from django.db import models
 # use signal to create user profile automatically when user created
-from datetime import  datetime,timedelta
+from datetime import  datetime,timedelta,date
 from smtplib import SMTPException
 from django.core.mail import send_mail
 import random,urllib,json
@@ -8,6 +8,7 @@ from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
 from django.db.models import F,Q
+from postman.models import Message
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -275,17 +276,26 @@ class CrushRelationship(BasicRelationship):
                 # get the original relationship (which excludes the uncommitted changes)
                 original_relationship = CrushRelationship.objects.get(pk=self.pk)
                 # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
+                # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
                 if 'is_results_paid' in kwargs['update_fields'] and (original_relationship.is_results_paid != self.is_results_paid):
                     #print "admirer paid to see crush response result for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                     try:                     
-                        # find the reciprocal crush relationship if it exists 
-                        reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person,date_target_responded=None)
-                        # set the reciprocal crush relationship date_target_responded field
-                        reciprocal_crush_relationship.date_target_responded=datetime.now()
-                        reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
-                        # send the other relationship's admirer a notification
-                        reciprocal_crush_relationship.notify_source_person()
-                    except: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
+                        # find the reciprocal crush relationship if it exists ( but only if the reciprocal relationship doesn't already know - use date_target_responded to figure that out)
+                        reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)#,date_target_responded=None)
+                        if reciprocal_crush_relationship.date_target_responded==None:
+                            # set the reciprocal crush relationship date_target_responded field
+                            reciprocal_crush_relationship.date_target_responded=datetime.now()
+                            reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
+                            # send the other relationship's admirer a notification
+                            reciprocal_crush_relationship.notify_source_person()
+                            # look for previously hidden messages from the target person
+                        else:
+                            STATUS_PENDING = 'p'
+                            STATUS_ACCEPTED = 'a'
+                            STATUS_REJECTED = 'r'
+                            hidden_messages=reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=STATUS_REJECTED).update(moderation_status=STATUS_ACCEPTED,recipient_deleted_at=None)
+                    except Exception as e: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
+                        print e
                         pass # do nothing
                 if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
@@ -305,6 +315,14 @@ class CrushRelationship(BasicRelationship):
             return 2
         else:
             return target_status
+        
+    def can_message(self):
+    
+        if self.date_messaging_expires == None or date.today() > self.date_messaging_expires:
+            return False
+        else:
+            return True
+
         
     def get_target_platonic_rating_display(self):
         if self.target_platonic_rating!=None:
@@ -356,7 +374,7 @@ class CrushRelationship(BasicRelationship):
         if self.source_person.site_credits < feature_cost:
             return False
         self.source_person.site_credits=F('site_credits') - feature_cost
-        self.date_messaging_expires=datetime.today() + timedelta(days=14)
+        self.date_messaging_expires=date.today() + timedelta(days=14)
         # change the status of relationship's is_ratings_paid and save the object
         self.save(update_fields=['date_messaging_expires'])
         self.source_person.save(update_fields=['site_credits'])
@@ -373,15 +391,24 @@ class CrushRelationship(BasicRelationship):
         try:
             print "attempting to find the crush relationship"
             reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            if reciprocal_relationship.target_status > 2:
+            #if reciprocal_relationship.target_status > 2:
                 # once a target has started a crush line-up, the crush can no longer be deleted
-                if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
-                    return # change this to: if user is not a staff (admin) member then return
+            #    if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
+            #        return # change this to: if user is not a staff (admin) member then return
             reciprocal_relationship.target_status=2
             reciprocal_relationship.save(update_fields=['target_status'])
+            
+            # delete any messages that this user has sent out to the crush (regardless of state)
+            now = datetime.now()
+            Message.objects.as_recipient(self.source_person, Q(sender=self.target_person)).update(recipient_deleted_at=now)
+            Message.objects.as_sender(self.source_person, Q(recipient=self.target_person)).update(sender_deleted_at=now)
+               
+                    
+            
         except CrushRelationship.DoesNotExist:
             print "cannot find a reciprocal crush relationship to delete!"
             pass
+        
         print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
         # delete any associated lineup members
         super(CrushRelationship, self).delete(*args,**kwargs)

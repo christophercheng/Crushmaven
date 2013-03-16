@@ -120,7 +120,7 @@ class BaseWriteForm(forms.ModelForm):
         recipients = self.cleaned_data.get('recipients', [])
         try:
             earliest_message=Message.objects.filter(Q(Q(recipient=self.instance.sender,sender=self.instance.recipient ) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |\
-                     Q(Q(sender=self.instance.sender,recipient=self.instance.recipient) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))).latest('sent_at')
+                     Q(Q(sender=self.instance.sender,recipient=self.instance.recipient) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True))).latest('sent_at')
             if earliest_message.thread_id:
                 self.instance.thread_id = earliest_message.thread_id
             else:

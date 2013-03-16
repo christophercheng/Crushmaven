@@ -97,13 +97,26 @@ from django.views.generic.base import RedirectView
 OPTION_MESSAGES = 'm'
 OPTIONS = OPTION_MESSAGES
 
+# auto-moderation function sets status of message to rejected if the intended recipient has not paid to see results of mutual crush yet
+def mod1(message):
+    try:
+        crush_relationship = message.recipient.crush_relationship_set_from_source().get(target_person=message.recipient)
+        if crush_relationship.is_results_paid == True:
+            return True
+        else:
+            return 99
+    except:
+        return 0
+    return 0
+
+
 urlpatterns = patterns('postman.views',
     url(r'^inbox/(?:(?P<option>'+OPTIONS+')/)?$', 'inbox', name='postman_inbox'),
     url(r'^converse/(?P<crush_id>[\w]+)/$', 'converse', name='postman_converse'),
     url(r'^delete/$', 'delete', name='postman_delete'),
     url(r'^undelete/$', 'undelete', name='postman_undelete'),
-    url(r'^write/(?:(?P<recipients>[\w.@+-:]+)/)?$', 'write', name='postman_write'),
-    url(r'^reply/(?P<attraction_id>[\d]+)/$', 'reply', name='postman_reply'),
+    url(r'^write/(?:(?P<recipients>[\w.@+-:]+)/)?$', 'write',{'auto_moderators': mod1}, name='postman_write'),
+    url(r'^reply/(?P<attraction_id>[\d]+)/$', 'reply',{'auto_moderators': mod1},name='postman_reply'),
     #url(r'^sent/(?:(?P<option>'+OPTIONS+')/)?$', 'sent', name='postman_sent'),
     #url(r'^archives/(?:(?P<option>'+OPTIONS+')/)?$', 'archives', name='postman_archives'),
     #url(r'^trash/(?:(?P<option>'+OPTIONS+')/)?$', 'trash', name='postman_trash'),

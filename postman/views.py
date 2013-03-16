@@ -90,7 +90,7 @@ def converse(request, crush_id, *args, **kwargs):
 
 # ord
 
-    msg_filter=Q(Q(recipient=user,sender__username=crush_id ) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient__username=crush_id) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))
+    msg_filter=Q(Q(recipient=user,sender__username=crush_id ) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient__username=crush_id) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True))
     
     formatters=(format_subject,format_body),
     

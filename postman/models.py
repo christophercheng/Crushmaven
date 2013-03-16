@@ -23,7 +23,7 @@ from postman.urls import OPTION_MESSAGES
 from postman.utils import email_visitor, notify_user
 
 from django.db.models import Q
-from crush.models.relationship_models import CrushRelationship
+from crush.models.user_models import FacebookUser
 
 # moderation constants
 STATUS_PENDING = 'p'
@@ -37,8 +37,8 @@ STATUS_CHOICES = (
 # ordering constants
 ORDER_BY_KEY = 'o'  # as 'order'
 ORDER_BY_FIELDS = {
-    'f': 'sender__' + get_user_model().USERNAME_FIELD,     # as 'from'
-    't': 'recipient__' + get_user_model().USERNAME_FIELD,  # as 'to'
+    'f': 'sender__' + FacebookUser.USERNAME_FIELD,     # as 'from'
+    't': 'recipient__' + FacebookUser.USERNAME_FIELD,  # as 'to'
     's': 'subject',  # as 'subject'
     'd': 'sent_at',  # as 'date'
 }
@@ -137,13 +137,16 @@ class MessageManager(models.Manager):
         order_by=kwargs.pop('order_by',None)
         if order_by:
             qs = qs.order_by(order_by)
+        print "filtered messages 1 : " + str(qs)
         # get all valid readable emails
         qs = qs.filter(Q(Q(recipient=user) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |
-                             Q(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) )
+                             Q(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True)) )
+        print "filtered messages 2 : " + str(qs)
         # separate out   
             # group messages into those between two users, then grab the last one
-        return qs.filter(id__in=self._last_in_thread)
-    
+        qs = qs.filter(id__in=self._last_in_thread)
+        print "filtered messages 3 : " + str(qs)
+        return qs
         # For single message, 'count' is returned as 0. Should be acceptable if known.
         # If not, replace "COUNT(*)" by "1+COUNT(*)" and add:
         # ' AND T."id" <> T."thread_id"'    
@@ -253,8 +256,8 @@ class Message(models.Model):
 
     subject = models.CharField(_("subject"), max_length=SUBJECT_MAX_LENGTH)
     body = models.TextField(_("body"), blank=True)
-    sender = models.ForeignKey(get_user_model(), related_name='sent_messages', null=True, blank=True, verbose_name=_("sender"))
-    recipient = models.ForeignKey(get_user_model(), related_name='received_messages', null=True, blank=True, verbose_name=_("recipient"))
+    sender = models.ForeignKey(FacebookUser, related_name='sent_messages', null=True, blank=True, verbose_name=_("sender"))
+    recipient = models.ForeignKey(FacebookUser, related_name='received_messages', null=True, blank=True, verbose_name=_("recipient"))
     email = models.EmailField(_("visitor"), blank=True)  # instead of either sender or recipient, for an AnonymousUser
     parent = models.ForeignKey('self', related_name='next_messages', null=True, blank=True, verbose_name=_("parent message"))
     thread = models.ForeignKey('self', related_name='child_messages', null=True, blank=True, verbose_name=_("root message"))
@@ -267,7 +270,7 @@ class Message(models.Model):
     recipient_deleted_at = models.DateTimeField(_("deleted by recipient at"), null=True, blank=True)
     # moderation fields
     moderation_status = models.CharField(_("status"), max_length=1, choices=STATUS_CHOICES, default=STATUS_PENDING)
-    moderation_by = models.ForeignKey(get_user_model(), related_name='moderated_messages',
+    moderation_by = models.ForeignKey(FacebookUser, related_name='moderated_messages',
         null=True, blank=True, verbose_name=_("moderator"))
     moderation_date = models.DateTimeField(_("moderated at"), null=True, blank=True)
     moderation_reason = models.CharField(_("rejection reason"), max_length=120, blank=True)
@@ -278,7 +281,7 @@ class Message(models.Model):
         verbose_name = _("message")
         verbose_name_plural = _("messages")
         ordering = ['-sent_at', '-id']
-
+        app_label = "postman"
     def __unicode__(self):
         return "{0}>{1}:{2}".format(self.obfuscated_sender, self.obfuscated_recipient, Truncator(self.subject).words(5))
 

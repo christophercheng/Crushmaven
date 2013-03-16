@@ -59,10 +59,10 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         
     elif str(feature_id)=='4':
         try:
-            relationships=CrushRelationship.objects.completed_crushes(me)
+            relationships=CrushRelationship.objects.all_crushes(me)
             relationship = relationships.get(target_person__username=str(unique_id))
         except CrushRelationship.DoesNotExist:
-            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+            return HttpResponseNotFound("Error: Could not find a matching completed crush relationship.")
         if relationship.handle_messaging_paid() == False:    
             return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
         else:

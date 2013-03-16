@@ -151,7 +151,7 @@ INSTALLED_APPS = (
     'facebook',
     'crush',
     'postman',
-    'ajax_select' #for postman app
+    'ajax_select', #for postman app
 )
 
 # A sample logging configuration. The only tangible logging

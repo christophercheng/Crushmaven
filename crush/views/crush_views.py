@@ -157,7 +157,11 @@ def ajax_load_response_dialog_content(request,crush_id):
     if relationship.target_status == 4:
         ajax_response += "Congratulations! " 
         ajax_response += crush.get_name() + " is mutually attracted to you.<BR><BR>"
-        ajax_response +=  "<a href='#' id='send_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
+        # check for any previously hidden messages from the target_person
+        if request.user.received_messages.filter(sender=relationship.target_person).count() == 0:           
+            ajax_response +=  "<a href='#' id='send_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
+        else:
+            ajax_response +=  crush.first_name + " sent you a message as well. <a href='#' id='send_message' crush_id='" + crush_id + "'>View message</a>"
     else:
         ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
         ajax_response += "They did however rate your level of attractiveness:<BR><BR>"

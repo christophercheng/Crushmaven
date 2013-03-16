@@ -9,19 +9,23 @@ from postman.models import Message
 from django.db.models import Q
 
 def context_processor(request):
+    # moderation constants
+    STATUS_PENDING = 'p'
+    STATUS_ACCEPTED = 'a'
+    STATUS_REJECTED = 'r'
     me = request.user
     if not me.is_anonymous():  
         progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
         visible_responded_crushes = CrushRelationship.objects.visible_responded_crushes(me)
         progressing_crushes = CrushRelationship.objects.progressing_crushes(me)
         left_menu_crush_count = progressing_crushes.count() + visible_responded_crushes.count()
-        new_messages=request.user.received_messages.filter(sender_archived=False,sender_deleted_at__isnull=True,read_at__isnull=True)
+        new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=STATUS_ACCEPTED).count()
            
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),
             'num_new_admirers': progressing_admirer_relationships.filter(target_status__lt = 3).count(), # progressing admirers who haven't started lineup (3 status)
             'num_new_responses' : visible_responded_crushes.count(),
-            'num_new_messages':new_messages.count(),
+            'num_new_messages':new_messages_count,
             'num_crushes_in_progress' : left_menu_crush_count,
             'num_platonic_friends' : me.just_friends_targets.count(),
             'facebook_app_id': settings.FACEBOOK_APP_ID,

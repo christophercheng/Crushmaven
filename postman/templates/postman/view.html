@@ -24,7 +24,7 @@
  </div>
 	<div id="second_column">
   	<div id="date">{{ message.sent_at|date:"DATETIME_FORMAT"}} </div>
-		{% if message.is_rejected %}  <div class="pm_status">{% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %} {{ message.moderation_reason }}{% endif %}</div>{% endif %}
+		{# {% if message.is_rejected %}  <div class="pm_status">{% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %} {{ message.moderation_reason }}{% endif %}</div>{% endif %} #}
 
  
  		<div class="pm_body">{{ message.body|linebreaksbr }}</div>
