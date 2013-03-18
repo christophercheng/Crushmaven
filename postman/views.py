@@ -188,7 +188,7 @@ def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm)
         post_data = request.POST
         recipient_username = post_data['recipients']
         recipient_username=recipient_username[recipient_username.find("(")+1:recipient_username.find(")")]
-        return reply(request, recipient_username)
+        return reply(request=request, attraction_id=recipient_username, auto_moderators =auto_moderators)
     else:
         form_class = form_classes[0] if user.is_authenticated() else form_classes[1]
         
