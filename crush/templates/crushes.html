@@ -139,7 +139,6 @@ $(document).ready(function()
 			$.get('/ajax_get_platonic_rating/' + unique_id, function(rating){
 					rating_element = $('#view_rating');
 					if (rating_element.parent().attr("id") == "response_modal"){
-						alert("hey");
 						rating_element.html(rating);
 					}
 					else {

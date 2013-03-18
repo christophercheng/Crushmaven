@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember
+from datetime import datetime
 
 from multiprocessing import Pool
 from django.http import HttpResponseNotFound
@@ -21,13 +22,15 @@ def ajax_reconsider(request):
             rel.delete()
             return HttpResponse("success") # crush relationship already exists for this person so don't do anything mo
         except CrushRelationship.DoesNotExist:
-            # create a new crushrelationship
-            new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True)
-           
-            if rel.friendship_type != 0: # for crushes with non-friends, the lineup must be initialized while the admirer is still logged in
-                pool=Pool(1)
-                pool.apply_async(LineupMember.objects.initialize_lineup,[new_crush],) #initialize lineup asynchronously
-                rel.delete()
+            try:# look for existing crush relationship. if one exists then we additionally need to set the date_target_repsonded field, cause there's no other process that will do that
+                reciprocal_crush_relation = rel_target_person.crush_relationship_set_from_source.all().get(target_person=me)              
+                new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True,date_target_responded=datetime.now())
+            except CrushRelationship.DoesNotExist:
+                try: # now look for existing platonic relationship. if one exists then we also need to set date_target_responded field
+                    reciprocal_platonic_relation = rel_target_person.platonic_relationship_set_from_source.all().get(target_person=me) 
+                    new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True,date_target_responded=datetime.now())
+                except PlatonicRelationship.DoesNotExist: # ok, so we didn't find a reciprocal relationship of any type, so create new crush relationships without setting date_target_responded field
+                    new_crush=CrushRelationship.objects.create(target_person=rel_target_person,source_person=request.user,friendship_type=rel.friendship_type,updated_flag=True)
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound("can't find the original platonic relationship") #can't find original platonic relationships so don't do anything more
     

@@ -164,13 +164,14 @@ def ajax_load_response_dialog_content(request,crush_id):
             ajax_response +=  crush.first_name + " sent you a message as well. <a href='#' id='send_message' crush_id='" + crush_id + "'>View message</a>"
     else:
         ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
-        ajax_response += "They did however rate your level of attractiveness:<BR><BR>"
-        
-        if relationship.is_platonic_rating_paid:
-            rating = str(relationship.target_platonic_rating)
-            ajax_response += rating + " out of 5<BR>(" + settings.PLATONIC_RATINGS[rating] + ") "
-        else:
-            ajax_response += "<div id='view_rating'><a href='#' unique_id='" + crush_id + "'>View Rating</a></div>"
+        if relationship.target_platonic_rating != None:
+            ajax_response += "They did however rate your level of attractiveness:<BR><BR>"
+            
+            if relationship.is_platonic_rating_paid:
+                rating = str(relationship.target_platonic_rating)
+                ajax_response += rating + " out of 5<BR>(" + settings.PLATONIC_RATINGS[rating] + ") "
+            else:
+                ajax_response += "<div id='view_rating'><a href='#' unique_id='" + crush_id + "'>View Rating</a></div>"
     
     return HttpResponse(ajax_response)
 
