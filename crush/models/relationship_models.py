@@ -61,7 +61,7 @@ class PlatonicRelationship(BasicRelationship):
     source_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_source')  
     target_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_target')
  
-    rating = models.IntegerField(default=3,max_length=1) # how source rated the target's attraction
+    rating = models.IntegerField(default=None,max_length=1,blank=True,null=True) # how source rated the target's attraction
     #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
     #rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
  
@@ -89,7 +89,7 @@ class PlatonicRelationship(BasicRelationship):
                 reciprocal_relationship.date_target_responded=datetime.now()
                 reciprocal_relationship.target_platonic_rating = self.rating
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-                reciprocal_relationship.save();
+                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','target_platonic_rating','updated_flag']);
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
@@ -387,31 +387,16 @@ class CrushRelationship(BasicRelationship):
         lineup_members=self.lineupmember_set.all()
         for member in lineup_members:
             member.delete()
-        try:
-            print "attempting to find the crush relationship"
-            reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
-            #if reciprocal_relationship.target_status > 2:
-                # once a target has started a crush line-up, the crush can no longer be deleted
-            #    if not ( (self.source_person.username == u'1057460663') | (self.source_person.username == u'651900292')):
-            #        return # change this to: if user is not a staff (admin) member then return
-            reciprocal_relationship.target_status=2
-            reciprocal_relationship.save(update_fields=['target_status'])
-            
-            # delete any messages that this user has sent out to the crush (regardless of state)
-            now = datetime.now()
-            
-            self.source_person.sent_messages.filter(recipient = self.target_person).update(sender_deleted_at=now)
-            self.source_person.received_messages.filter(sender=self.target_person).update(recipient_deleted_at=now)
-               
-                    
-            
-        except CrushRelationship.DoesNotExist:
-            print "cannot find a reciprocal crush relationship to delete!"
-            pass
-        
-        print "successfully updated target crush's settings, now calling super class's delete to take care of rest"
         # delete any associated lineup members
         super(CrushRelationship, self).delete(*args,**kwargs)
+
+        # automatically create a platonic relationship
+        PlatonicRelationship.objects.create(source_person=self.source_person, target_person=self.target_person)
+
+        # delete any messages that this user has sent out to the crush (regardless of state)
+        now = datetime.now()
+        self.source_person.sent_messages.filter(recipient = self.target_person).update(sender_deleted_at=now)
+        self.source_person.received_messages.filter(sender=self.target_person).update(recipient_deleted_at=now)
 
         return
         
@@ -450,8 +435,15 @@ class CrushRelationship(BasicRelationship):
                 subject= target_person_name + " started your secret admirer lineup!"
                 message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
             elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
-                subject= target_person_name + " responded to your crush!"
-                message=target_person_name + " responded to your crush.  Continue to app to find out what they think of you."
+                if self.is_results_paid == True: # target person changed their mind
+                    subject= target_person_name + " changed their mind."
+                    if target_status ==4:
+                        message=target_person_name + " changed " + target_person.get_gender_pronoun() + " mind.  They added you as an attraction!"
+                    else:
+                        message=target_person_name + " changed " + target_person.get_gender_pronoun() + "  mind.  They removed you from their attraction list."
+                else:
+                    subject= target_person_name + " responded to your crush!"
+                    message=target_person_name + " responded to your crush.  Continue to the app and find out what they think of you."
             if subject !="":
                 print "attemping to send email to " + str([source_person_email])
                 send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])

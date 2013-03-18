@@ -100,14 +100,14 @@ OPTIONS = OPTION_MESSAGES
 # auto-moderation function sets status of message to rejected if the intended recipient has not paid to see results of mutual crush yet
 def mod1(message):
     try:
-        crush_relationship = message.recipient.crush_relationship_set_from_source().get(target_person=message.recipient)
+        crush_relationship = message.recipient.crush_relationship_set_from_source.all().get(target_person=message.sender)
         if crush_relationship.is_results_paid == True:
             return True
         else:
-            return 99
-    except:
-        return 0
-    return 0
+            return False
+    except Exception as e:
+        print str(e)
+        return False
 
 
 urlpatterns = patterns('postman.views',

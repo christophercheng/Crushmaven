@@ -275,6 +275,12 @@ class FacebookUser(AbstractUser):
         else:
             return 'female'
     
+    def get_gender_pronoun(self):
+        if self.gender==u'M':
+            return 'his'
+        else:
+            return 'her'
+    
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
         return self.first_name + ' ' + self.last_name + ' (' + self.username + ')'
@@ -284,7 +290,7 @@ class NamesLookup(object):
 
     def get_query(self,q,request):
         """ return a query set.  you also have access to request.user if needed """
-        return crush.models.relationship_models.CrushRelationship.objects.completed_crushes(request.user).filter(Q(target_person__first_name__contains=q) | Q(target_person__last_name__icontains=q) )
+        return crush.models.relationship_models.CrushRelationship.objects.completed_crushes(request.user).filter(Q(target_status=4),Q(target_person__first_name__contains=q) | Q(target_person__last_name__icontains=q) )
 
     def format_result(self,relationship):
         user=relationship.target_person

@@ -439,12 +439,15 @@ $(document).ready(function()
 			{% else %}
 				* <a href = "#" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a>
 			{% endif %}
-		{% elif crush.is_platonic_rating_paid %}
-			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})	<BR>	
-			* rated your attractiveness: {{crush.target_platonic_rating}} out of 5 ({{crush.get_target_platonic_rating_display}})
 		{% else %}
-			* is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})	<BR>
-			<div id="view_rating"><a href="#" unique_id="{{crush.target_person.username}}">View Rating</a></div>
+		  * is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})   <BR>
+			{% if crush.target_platonic_rating != None %}
+			     {% if crush.is_platonic_rating_paid %}			
+				    * rated your attractiveness: {{crush.target_platonic_rating}} out of 5 ({{crush.get_target_platonic_rating_display}})
+                 {% else %}
+				    <div id="view_rating"><a href="#" unique_id="{{crush.target_person.username}}">View Rating</a></div>
+			     {% endif %}
+			{% endif %}
 		{% endif %}
     <!-- start: conditional button: send invite -->
         {% if crush.target_status == 0 %}

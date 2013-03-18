@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from ajax_select import urls as ajax_select_urls
 
+
 admin.autodiscover()
 
 # Facebook Backend Authentication URL's   
