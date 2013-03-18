@@ -242,7 +242,10 @@ class CrushRelationship(BasicRelationship):
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 # save the reciprocal crush relationship to database
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
-             
+                if reciprocal_relationship.is_results_paid==True:
+                    # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process wil do this
+                    response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                    self.date_target_responded=datetime.now() + timedelta(0,response_wait)
             except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
                 try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
                     PlatonicRelationship.objects.all_friends(self.target_person).get(target_person=self.source_person)
