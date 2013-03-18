@@ -8,7 +8,6 @@ from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
 from django.db.models import F,Q
-from postman.models import Message
 
 # details about each unique crush 
 class BasicRelationship(models.Model):
@@ -400,8 +399,9 @@ class CrushRelationship(BasicRelationship):
             
             # delete any messages that this user has sent out to the crush (regardless of state)
             now = datetime.now()
-            Message.objects.as_recipient(self.source_person, Q(sender=self.target_person)).update(recipient_deleted_at=now)
-            Message.objects.as_sender(self.source_person, Q(recipient=self.target_person)).update(sender_deleted_at=now)
+            
+            self.source_person.sent_messages.filter(recipient = self.target_person).update(sender_deleted_at=now)
+            self.source_person.received_messages.filter(sender=self.target_person).update(recipient_deleted_at=now)
                
                     
             
