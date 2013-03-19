@@ -118,6 +118,8 @@ urlpatterns += patterns('crush.views.friends_with_admirers_views',
     (r'^friends_with_admirers/$', 'friends_with_admirers'),
     
     (r'^ajax_friends_with_admirers_content/$', 'ajax_friends_with_admirers_content'), # right bar called via ajax    
+
+    (r'^ajax_friends_with_admirers_content/(?P<remove_username>\w+)/$', 'ajax_friends_with_admirers_content'), 
 )
     
 # ----      PAYMENT PROCESSING --

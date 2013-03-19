@@ -13,17 +13,21 @@ def friends_with_admirers(request):
 
 # -- Friends with Admirers Section (Ajax Content) --
 @login_required
-def ajax_friends_with_admirers_content(request):
+def ajax_friends_with_admirers_content(request,remove_username=None):
     print " called friends-with-admirers-section"
     ajax_response=""
     me=request.user
 
     try:
-        me.find_inactive_friends_of_activated_user()
+        if remove_username is not None:
+            me.update_friends_with_admirers(remove_username)
+        else:
+            me.find_inactive_friends()
     except HTTPError as e:
         if e.code==400:
             return HttpResponseNotAllowed(str(e))
-    except:
+    except Exception as e:
+        print str(e)
         return HttpResponse('') # not key functionality, so don't do anything special
         
     for counter,inactive_crush_friend in enumerate(me.friends_with_admirers.all()):
@@ -48,7 +52,7 @@ def ajax_friends_with_admirers_content(request):
             elapsed_days = str(elapsed_days) + " days ago"
             
         ajax_response += " (" + elapsed_days + ")"
-        ajax_response +='<br><span class="app_invite_link"><a class="app_invite" crush_username="' + inactive_crush_friend.username + '" href="#">help them sign up</a>'
+        ajax_response +='<br><span class="app_invite_link"><a id="send_fb_invite" crush_name="' + inactive_crush_friend.get_name() + '" crush_username="' + inactive_crush_friend.username + '" href="#">help them sign up</a>'
         ajax_response+="</small></span></div>"
     if ajax_response=="":
         ajax_response="You have no friends with admirers."

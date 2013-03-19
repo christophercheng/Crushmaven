@@ -140,10 +140,32 @@ jQuery(document).ready(function($) {
 		window.alert_user("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
 		location.href="/facebook/login";
 	};
-}); // close of jQuery(document).ready
-</script>
-
-<script>      
+	
+	var send_fb_invite = function(recipient_id,crush_name){
+  	FB.ui({method: 'send',
+  				name: crush_name + " was added as an 'attraction' by one of our users",
+  				to: recipient_id,
+  				link:'http://www.attractedto.com',
+  				description:'AttractedTo.com is a dating-discovery service, specifically designed for people who already have someone in mind.  One of our users expressed an interest in ' + crush_name + ' and would like to know if the feeling is mutual.'
+      },
+      function(response){
+         // regardless of whether user cancels or sends message, reload the appropriate attraction page
+         if (response != null){
+				  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
+  					if (xhr.status==405)
+							reauthorize_user();
+  				});
+  			} 
+      }      
+    );// close off fb.ui
+  }; // close off send_fb_message
+   
+  $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
+           var crush_id = $(this).attr('crush_username');
+           var crush_name = $(this).attr('crush_name');
+           send_fb_invite(crush_id,crush_name);
+  });
+  
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
   $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
   	if (xhr.status==405)
@@ -152,7 +174,11 @@ jQuery(document).ready(function($) {
 // INITIALIZE FEEDBACK FORM 
  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
 
+  
+}); // close of jQuery(document).ready
 </script>
+
+
 
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="AttractedTo.com Error"></div>

@@ -12,8 +12,8 @@
 			<BR><a class="{% navactive request 'just_friends' %}"
 				href="{% url 'crush.views.platonic_friend_views.just_friends' %}">Just Friends {% if num_platonic_friends%}(<span id="num_platonic_friends">{{num_platonic_friends}}</span>){% endif %}</a><BR>
 
-			<BR><a class="{% navactive request 'friends_with_admirers' %}"
-				href="{% url 'crush.views.friends_with_admirers_views.friends_with_admirers' %}">Friends with Admirers</a><BR>
+			{#<BR><a class="{% navactive request 'friends_with_admirers' %}"#}
+			{#	href="{% url 'crush.views.friends_with_admirers_views.friends_with_admirers' %}">Friends with Admirers</a><BR> #}
 			
 			<BR><a class="{% navactive request 'messages' %}"
 				href="{% url 'postman_inbox' %}">Messages{% if num_new_messages %} <strong>({{ num_new_messages }})</strong>{% endif %}</a><BR>
