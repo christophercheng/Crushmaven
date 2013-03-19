@@ -10,6 +10,7 @@ from crush.models.miscellaneous_models import InviteEmail
 import thread
 from django.db.models import Q
 from crush.models.globals import all_inactive_user_list
+
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
 
@@ -194,8 +195,11 @@ class FacebookUser(AbstractUser):
                     print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update.hours)
                     return
             
+            if len(all_inactive_user_list)==0:
+                all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)
+   
             # remove this once a scheduler is put in place
-            all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)#.only('target_person')
+            #all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)#.only('target_person')
 
             # get all inactive users into a queryset result but filter out users who are also crushes of user
             #all_inactive_crush_relationships = crush.models.relationship_models.CrushRelationship.objects.filter(Q(target_status__lt=2),~Q(source_person=self))#.only('target_person')
