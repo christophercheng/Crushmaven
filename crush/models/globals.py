@@ -3,6 +3,10 @@ Created on Feb 21, 2013
 
 @author: Chris Work
 '''
+
+import crush.models.user_models
+
+# used for initializing user's lineups
 g_init_dict={}
 
 # 1. { crush_target_username : {}, }
@@ -32,3 +36,5 @@ g_init_dict={}
     # state 1 : initialization finished but lineup creation not completed (threads can prematurely stop)
     # state 2 : initiazliation and lineup creation is complete
 
+# used for determining which friends of user are inactive and could use an invite (in right sidebar)
+all_inactive_user_list=[]
