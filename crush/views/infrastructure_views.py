@@ -4,12 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from crush.models import CrushRelationship
 from django.core.mail import send_mail
+from django.conf import settings
+from crush.models.miscellaneous_models import InviteEmail
 
 # end imports for testing
 
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
-#from django.views.decorators.csrf import csrf_exempt 
+from django.views.decorators.csrf import csrf_exempt 
+import hashlib, hmac
 # for mail testing 
 
 # -- Home Page --
@@ -65,7 +68,28 @@ def logout_view(request):
 def under_construction(request):
     return render(request,'under_construction.html')
 
+def verify_mailgun_post(token, timestamp, signature):
+    return signature == hmac.new(
+                             key=settings.MAILGUN_API_KEY,
+                             msg='{}{}'.format(timestamp, token),
+                             digestmod=hashlib.sha256).hexdigest()
+
 # -- Logout --
+@csrf_exempt
 def failed_email_send(request):
-    print str(request.POST)
+    post_data=request.POST
+    if not verify_mailgun_post(post_data['token'],post_data['timestamp'],post_data['signature']):
+        return
+    try:
+        bad_email_address=post_data['recipient']
+        print "bad email: " + str(bad_email_address) + " from " + str(request.user)
+        bad_email_results = InviteEmail.objects.filter(email=str(bad_email_address))
+        for bad_email in bad_email_results:
+            relationship=bad_email.relationship
+            bad_email.delete()
+            relationship.notify_source_person_bad_invite_email(bad_email_address)
+        
+    except Exception as e:
+        print e
+        pass
     return HttpResponse("Got it")

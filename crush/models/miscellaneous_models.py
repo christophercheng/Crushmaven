@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F,Q
 from django.conf import settings
 from smtplib import SMTPException
+import hashlib, hmac
 # for mail testing 
 #from django.core.mail import send_mail
 import datetime
@@ -68,7 +69,7 @@ class InviteEmail(models.Model):
             return self.email + '(mutual_friend) : ' +  str(self.relationship) 
 
     def send(self):
-        print "send this email"
+
         crush_user= self.relationship.target_person
         crush_name = crush_user.first_name + " " + crush_user.last_name
         crush_body='Visit http://attractedto.com to find out whom.'

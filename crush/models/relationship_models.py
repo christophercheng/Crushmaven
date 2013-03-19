@@ -478,7 +478,13 @@ class CrushRelationship(BasicRelationship):
                 #send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
         except Exception as e:
             print "MAIL PROBLEM! " + str(e)
-
             
+    def notify_source_person_bad_invite_email(self,bad_email_address):      
+        subject = "Attraction invite - delivery unsuccessful (" + self.target_person.get_name() + ")"
+        message = "Your invite email (" + str(bad_email_address) + ") to " + self.target_person.get_name() + " was not able to be delivered.  Please verify your attraction's email address and try again."
+        data_dict={"from": "AttractedTo.com <notifications@attractedTo.com>",\
+                           "to": self.source_person.email,"subject": subject,"text": message}  
+        requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)  
+    
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
