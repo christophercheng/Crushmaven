@@ -3,8 +3,9 @@ from django.db.models import F,Q
 from django.conf import settings
 from smtplib import SMTPException
 # for mail testing 
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 import datetime
+import requests
 
 class InviteEmailManager(models.Manager):
     def process(self,new_email,new_relationship,new_is_for_crush):
@@ -81,15 +82,16 @@ class InviteEmail(models.Model):
             message='Please forward this message to your friend, ' + crush_name + ':\n\n' + crush_body
 
         try:
-            send_mail(subject,message,'no-reply@attractedto.com',[self.email],fail_silently=False)
-            self.relationship.date_invite_last_sent=datetime.datetime.now()
-            self.relationship.target_status = 1
-            self.relationship.save(update_fields=['date_invite_last_sent','target_status'])
-            self.date_last_sent=datetime.datetime.now()
-            self.save(update_fields=['date_last_sent',])                  
-
-        except SMTPException:
-            raise        
+            #send_mail(subject,message,'no-reply@attractedto.com',[self.email],fail_silently=False)     
+            result = requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",\
+                     auth=("api", settings.MAILGUN_API_KEY),\
+                     data={"from": "AttractedTo.com <notifications@attractedTo.com>",\
+                           "to": self.email,\
+                           "subject": subject,\
+                           "text": message})
+            print "MailGun Response: " + str(result)          
+        except Exception as e:
+            print e
  
 class Purchase(models.Model):
 

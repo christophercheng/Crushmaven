@@ -23,8 +23,8 @@ try:
 except ImportError:
     from datetime import datetime
     now = datetime.now
-
-from postman.models import Message, STATUS_PENDING, STATUS_ACCEPTED
+from django.conf import settings
+from postman.models import Message
 
 def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
     """
@@ -39,7 +39,7 @@ def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
     """
     message = Message(subject=subject, body=body, sender=sender,
         sender_archived=True, sender_deleted_at=now(),
-        moderation_status=STATUS_ACCEPTED, moderation_date=now())
+        moderation_status=settings.STATUS_ACCEPTED, moderation_date=now())
     if not isinstance(recipients, (tuple, list)):
         recipients = (recipients,)
     for recipient in recipients:
@@ -47,7 +47,7 @@ def pm_broadcast(sender, recipients, subject, body='', skip_notification=False):
         message.pk = None
         message.save()
         if not skip_notification:
-            message.notify_users(STATUS_PENDING)
+            message.notify_users(settings.STATUS_PENDING)
 
 def pm_write(sender, recipient, subject, body='', skip_notification=False,
         auto_archive=False, auto_delete=False, auto_moderators=None):
@@ -69,7 +69,7 @@ def pm_write(sender, recipient, subject, body='', skip_notification=False,
     if auto_moderators:
         message.auto_moderate(auto_moderators)
     else:
-        message.moderation_status = STATUS_ACCEPTED
+        message.moderation_status = settings.STATUS_ACCEPTED
     message.clean_moderation(initial_status)
     if auto_archive:
         message.sender_archived = True

@@ -10,16 +10,13 @@ from django.db.models import Q
 
 def context_processor(request):
     # moderation constants
-    STATUS_PENDING = 'p'
-    STATUS_ACCEPTED = 'a'
-    STATUS_REJECTED = 'r'
     me = request.user
     if not me.is_anonymous():  
         progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
         visible_responded_crushes = CrushRelationship.objects.visible_responded_crushes(me)
         progressing_crushes = CrushRelationship.objects.progressing_crushes(me)
         left_menu_crush_count = progressing_crushes.count() + visible_responded_crushes.count()
-        new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=STATUS_ACCEPTED).count()
+        new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
            
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),

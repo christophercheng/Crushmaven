@@ -8,7 +8,9 @@ from django.conf import settings
 from crush.models.user_models import FacebookUser
 import crush.models.lineup_models
 from django.db.models import F,Q
-
+import requests
+from email import utils
+import time
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -243,9 +245,11 @@ class CrushRelationship(BasicRelationship):
                 # save the reciprocal crush relationship to database
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
                 if reciprocal_relationship.is_results_paid==True:
-                    # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process wil do this
+                    # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process will do this
                     response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                    self.date_target_responded=datetime.now() + timedelta(0,response_wait)
+                    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
+                    # notify the source person (notification will go out at the future date_target_responded time
+                    self.notify_source_person()
             except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
                 try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
                     PlatonicRelationship.objects.all_friends(self.target_person).get(target_person=self.source_person)
@@ -255,8 +259,10 @@ class CrushRelationship(BasicRelationship):
                     # don't tell this user that their crush isn't attracted to them right away
                         # without delay, admirer would eventually realize that immediate responses = negative responses - and not pay to see response
                     response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                    self.date_target_responded=datetime.now() + timedelta(0,response_wait)
+                    self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
                     self.updated_flag = True #show 'new' or 'updated' on crush relation block
+                     # notify the source person (notification will go out at the future date_target_responded time
+                    self.notify_source_person()
                 except PlatonicRelationship.DoesNotExist:
                     # print "did not find a reciprocal platonic or crush relationship"
                     if self.target_person.is_active == True:
@@ -292,10 +298,7 @@ class CrushRelationship(BasicRelationship):
                             reciprocal_crush_relationship.notify_source_person()
                             # look for previously hidden messages from the target person
                         else:
-                            STATUS_PENDING = 'p'
-                            STATUS_ACCEPTED = 'a'
-                            STATUS_REJECTED = 'r'
-                            hidden_messages=reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=STATUS_REJECTED).update(moderation_status=STATUS_ACCEPTED,recipient_deleted_at=None)
+                            hidden_messages=reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=settings.STATUS_REJECTED).update(moderation_status=settings.STATUS_ACCEPTED,recipient_deleted_at=None)
                     except Exception as e: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
                         print e
                         pass # do nothing
@@ -404,23 +407,34 @@ class CrushRelationship(BasicRelationship):
         return
         
     def notify_target_person(self):
-        print "notifying the target person of a new admirer: "
+
+        print "notifying the target person of a new admirer at : " 
         target_person=self.target_person
         target_person_email=target_person.email
         if (not target_person_email):
                 return
         from_email="info@crushdiscovery.com"
         try:
+            
             if (target_person.bNotify_new_admirer== True):
                 subject= "You have a new secret admirer!"
                 message="You have a new secret admirer!\nLog in now to find out who it is: " 
-                send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[target_person_email])
-        except SMTPException:
-            print "crap: could not send notification email"
+                print "attemping to send email to " + str([target_person_email])
+                result = requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",\
+                                     auth=("api", settings.MAILGUN_API_KEY),\
+                                     data={"from": "AttractedTo.com <notifications@attractedTo.com>",\
+                                           "to": target_person_email,\
+                                           "subject": subject,\
+                                           "text": message})
+                print "MailGun Response: " + str(result)
+                #send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[target_person_email])
+        except Exception as e:
+            print "MAIL PROBLEM! " + str(e)
             
     def notify_source_person(self):
-        target_status=self.target_status
+       
         print "notifying the source person of a change in target status: " + str(self.target_status)
+        target_status=self.target_status
         source_person=self.source_person
         source_person_email=source_person.email
         if (not source_person_email):
@@ -430,13 +444,15 @@ class CrushRelationship(BasicRelationship):
         target_person_name = target_person.first_name + " " + target_person.last_name
         
         try:
+            send_time=None
             subject=""
             if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
                 subject= target_person_name + " signed up!"
                 message=target_person_name + " signed up!"
-            elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
-                subject= target_person_name + " started your secret admirer lineup!"
-                message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
+            # don't send crush lineup started notifications any longer
+            #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
+            #    subject= target_person_name + " started your secret admirer lineup!"
+            #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
             elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
                 if self.is_results_paid == True: # target person changed their mind
                     subject= target_person_name + " changed their mind."
@@ -445,13 +461,24 @@ class CrushRelationship(BasicRelationship):
                     else:
                         message=target_person_name + " changed " + target_person.get_gender_pronoun() + "  mind.  They removed you from their attraction list."
                 else:
-                    subject= target_person_name + " responded to your crush!"
+                    if self.date_target_responded > datetime.now():
+                        send_time=self.date_target_responded
+                        send_time= send_time.timetuple()
+                        send_time=time.mktime(send_time)
+                        send_time = utils.formatdate(send_time)
+                    subject= target_person_name + " responded to your crush!" + str(send_time)
                     message=target_person_name + " responded to your crush.  Continue to the app and find out what they think of you."
-            if subject !="":
-                print "attemping to send email to " + str([source_person_email])
-                send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
-        except SMTPException:
-            print "crap: could not send notification email"
+            data_dict={"from": "AttractedTo.com <notifications@attractedTo.com>",\
+                           "to": source_person_email,"subject": subject,"text": message}
+            if send_time != None:
+                data_dict["o:deliverytime"]=str(send_time)        
+            print "sending email to " + str([source_person_email]) + " at time: " + str(send_time)
+            result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
+            print "MailGun Response: " + str(result)
+                #send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
+        except Exception as e:
+            print "MAIL PROBLEM! " + str(e)
+
             
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)

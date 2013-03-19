@@ -1,5 +1,6 @@
 # Django settings for fbdater project.
 import os, sys
+
 # this will set the project path to /fbdater 
 PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
@@ -137,6 +138,7 @@ TEMPLATE_DIRS = (
     #"templates"
 )
 
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,6 +155,7 @@ INSTALLED_APPS = (
     'postman',
     'ajax_select', #for postman app
 )
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -201,8 +204,8 @@ AUTHENTICATION_BACKENDS = (
 URLLIB_TIMEOUT=10
 
 # auto delay the response between the start time and end time (in seconds)
-CRUSH_RESPONSE_DELAY_START = 43200 # default is 43200 seconds = 12 hours
-CRUSH_RESPONSE_DELAY_END = 86400 #86400 seconds = 24 hours
+CRUSH_RESPONSE_DELAY_START = 1 # 180 default = 3hours x 60 minutes =  180
+CRUSH_RESPONSE_DELAY_END = 5 # 2160 default = 36 hours x 60 minutes = 2160
 STARTING_CREDITS=100 # change to 1 in production
 INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times out
 MINIMUM_LINEUP_MEMBERS=2 # change to 4 in production = this value excludes the secret admirer themself
@@ -280,11 +283,15 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 #    pass
 
 # POSTMAN SETTINGS
+STATUS_PENDING = 'p'
+STATUS_ACCEPTED = 'a'
+STATUS_REJECTED = 'r'
 POSTMAN_DISALLOW_ANONYMOUS=True
 POSTMAN_DISALLOW_MULTIRECIPIENTS=True
 POSTMAN_DISALLOW_COPIES_ON_REPLY=True
 POSTMAN_AUTO_MODERATE_AS=True
 POSTMAN_SHOW_USER_AS='get_name'
+MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
 # note that NamesLookup is a class that handles the magic behind the dynamic drop down dialog
 AJAX_LOOKUP_CHANNELS={'postman_users':('crush.models.user_models','NamesLookup')}
 POSTMAN_AUTOCOMPLETER_APP={

@@ -64,3 +64,8 @@ def logout_view(request):
 
 def under_construction(request):
     return render(request,'under_construction.html')
+
+# -- Logout --
+def failed_email_send(request):
+    print str(request.POST)
+    return HttpResponse("Got it")

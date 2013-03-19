@@ -25,9 +25,9 @@ from postman.utils import email_visitor, notify_user
 from django.db.models import Q
 
 # moderation constants
-STATUS_PENDING = 'p'
-STATUS_ACCEPTED = 'a'
-STATUS_REJECTED = 'r'
+STATUS_PENDING = settings.STATUS_PENDING
+STATUS_ACCEPTED = settings.STATUS_ACCEPTED
+STATUS_REJECTED = settings.STATUS_REJECTED
 STATUS_CHOICES = (
     (STATUS_PENDING, _('Pending')),
     (STATUS_ACCEPTED, _('Accepted')),

@@ -13,7 +13,6 @@ class NotificationSettingsForm(ModelForm):
         model = FacebookUser
         fields = ['email',  'bNotify_crush_signed_up',
                   'bNotify_crush_signup_reminder',
-                  'bNotify_crush_started_lineup',
                   'bNotify_crush_responded',
                   'bNotify_new_admirer']
     

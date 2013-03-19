@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from crush.models.user_models import FacebookUser
 from postman.models import ORDER_BY_KEY, ORDER_BY_MAPPER, Message,\
-    get_user_representation
+    get_user_representation,STATUS_ACCEPTED
 
 register = Library()
 
@@ -67,9 +67,6 @@ def compact_date(value, arg):
 
 @register.filter
 def thread_count(user,crush):
-    STATUS_PENDING = 'p'
-    STATUS_ACCEPTED = 'a'
-    STATUS_REJECTED = 'r'
 
     return Message.objects.filter(Q(Q(recipient=user,sender=crush) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) | Q(Q(sender=user,recipient=crush) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True))).count()
  

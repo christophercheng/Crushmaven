@@ -173,7 +173,7 @@ class FacebookUser(AbstractUser):
     
     bNotify_crush_signed_up = models.BooleanField(default=True)
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
-    bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
+    #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
     
