@@ -35,6 +35,3 @@ g_init_dict={}
     # state 0 : initialization not finished
     # state 1 : initialization finished but lineup creation not completed (threads can prematurely stop)
     # state 2 : initiazliation and lineup creation is complete
-
-# used to by scheduler command task that sends out message - email notifiactions
-date_message_notifications_last_sent=None
