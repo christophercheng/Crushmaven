@@ -93,3 +93,7 @@ def failed_email_send(request):
         print e
         pass
     return HttpResponse("Got it")
+
+# facebook javascript api requires a channel.html file for cross-site authentication
+def facebook_channel_file(request):
+    return render(request,'channel.html')

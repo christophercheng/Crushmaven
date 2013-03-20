@@ -222,13 +222,13 @@ class CrushRelationship(BasicRelationship):
                 print "duplicate crush relationships detected. doing nothing more"
                 return False
             except FacebookUser.DoesNotExist:
-                pass
+                pass # no duplicate crush relationship found
             try: # check if there is an existing platonic relationship, if so, delete it first
                 existing_platonic_relationship = self.source_person.platonic_relationship_set_from_source.get(target_person=self.target_person)
                 print "existing platonic relationship detected. deleting it before moving on"
                 existing_platonic_relationship.delete()
             except PlatonicRelationship.DoesNotExist:
-                pass          
+                pass # no duplicate platonic relationship found so continue on
             try:
                 # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
                 reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)

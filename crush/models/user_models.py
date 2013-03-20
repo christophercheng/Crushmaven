@@ -9,7 +9,8 @@ from utils import graph_api_fetch
 from crush.models.miscellaneous_models import InviteEmail
 import thread
 from django.db.models import Q
-from crush.models.globals import all_inactive_user_list
+from django.core.cache import cache
+
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -74,7 +75,7 @@ class FacebookUserManager(UserManager):
                 else:
                     user.save(update_fields=['access_token'])
                
-        # No existing user, create one
+        # No existing user, create one (happens when someone adds a crush but that crush is not already a user
         except FacebookUser.DoesNotExist:
             
             if fb_profile == None:
@@ -92,6 +93,10 @@ class FacebookUserManager(UserManager):
                     user.access_token=fb_access_token
                 else:
                     user.is_active=False
+                                # finally update the cached list of inactive_users
+                    all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
+                    all_inactive_user_list.append(user.username)
+                    cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
                 print fb_username + ": completed creation call"
             except IntegrityError:
                 print fb_username + " unable to create a new user, probably cause it's already been created"
@@ -101,7 +106,7 @@ class FacebookUserManager(UserManager):
             FacebookUser.objects.update_user(user,fb_profile)
                 
             user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
-   
+            
         return user
     
     def activate_inactive_user(self,user,fb_profile):
@@ -119,6 +124,10 @@ class FacebookUserManager(UserManager):
         InviteEmail.objects.delete_activated_user_emails(user)
         user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
         user.friends_that_invited_me.clear()
+        # update the cache inactive user list
+        all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
+        all_inactive_user_list.remove(user.username)
+        cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
         
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
@@ -194,21 +203,6 @@ class FacebookUser(AbstractUser):
                 if time_since_last_update < datetime.timedelta(hours=settings.FRIENDS_WITH_ADMIRERS_SEARCH_DELAY):
                     print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update.hours)
                     return
-            
-            if len(all_inactive_user_list)==0:
-                all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)
-   
-            # remove this once a scheduler is put in place
-            #all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)#.only('target_person')
-
-            # get all inactive users into a queryset result but filter out users who are also crushes of user
-            #all_inactive_crush_relationships = crush.models.relationship_models.CrushRelationship.objects.filter(Q(target_status__lt=2),~Q(source_person=self))#.only('target_person')
-            #print "list of all inactive crush relationships: " + str(all_inactive_crush_relationships)
-            # build list of all inactive users
-            #all_inactive_user_list=[]
-            #for crush_rel in all_inactive_crush_relationships:
-            #    all_inactive_user_list.append(crush_rel.target_person.username)
-            #print "list of all site inactive users: " + str(all_inactive_user_list)        
 
             print "attempting to load the json results"
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
@@ -216,6 +210,14 @@ class FacebookUser(AbstractUser):
         except Exception as e:
             print str(e)
             raise 
+
+        all_inactive_user_list = cache.get('all_inactive_user_list')         
+        if all_inactive_user_list==None:
+            print "updating cache with new all_inactive_user_list"
+            all_inactive_user_list = list(FacebookUser.objects.filter(is_active=False).values_list('username',flat=True))
+            cache.set('all_inactive_user_list',all_inactive_user_list)
+        else:
+            print "using cache's all_inactive_user_list " + str(all_inactive_user_list)
     
         # clear out past data
         self.friends_with_admirers.clear()

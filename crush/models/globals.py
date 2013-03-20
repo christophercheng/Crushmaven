@@ -36,8 +36,5 @@ g_init_dict={}
     # state 1 : initialization finished but lineup creation not completed (threads can prematurely stop)
     # state 2 : initiazliation and lineup creation is complete
 
-# used for determining which friends of user are inactive and could use an invite (in right sidebar)
-all_inactive_user_list=[]
-
 # used to by scheduler command task that sends out message - email notifiactions
 date_message_notifications_last_sent=None

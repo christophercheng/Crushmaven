@@ -156,6 +156,12 @@ INSTALLED_APPS = (
     'ajax_select', #for postman app
 )
 
+CACHES={
+        'default' : {
+          'BACKEND':'django.core.cache.backends.locmem.LocMemCache',         
+                     }
+        }
+INACTIVE_USER_CACHE_KEY = 'all_inactive_user_list'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
