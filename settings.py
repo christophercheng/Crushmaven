@@ -162,6 +162,7 @@ CACHES={
                      }
         }
 INACTIVE_USER_CACHE_KEY = 'all_inactive_user_list'
+DATE_NOTIFICATIONS_LAST_SENT_CACHE_KEY = 'date_notifiactions_last_sent'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

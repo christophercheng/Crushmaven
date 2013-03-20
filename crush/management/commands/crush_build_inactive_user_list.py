@@ -13,10 +13,11 @@ However, if the cache ever gets out of whack for some odd reason, this command w
 from django.core.management.base import NoArgsCommand
 from django.core.cache import cache
 from crush.models.user_models import FacebookUser
+from django.conf import settings
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
-        current_cache=cache.get('all_inactive_user_list',[])
+        current_cache=cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
         print "old cache has # elements: " + str(len(current_cache))
         all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)#.only('target_person')
 
