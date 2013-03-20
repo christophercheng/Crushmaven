@@ -24,21 +24,21 @@ class InviteEmailManager(models.Manager):
                 transpired_time = duplicate_relationship_email.date_last_sent - datetime.datetime.now() 
                 if abs(transpired_time.days) > settings.MINIMUM_INVITE_RESEND_DAYS:
                     duplicate_relationship_email.send()
-                return duplicate_relationship_email                 
+                                
         except: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
             invite_emails=self.filter(relationship=new_relationship,is_for_crush=new_is_for_crush).order_by('date_last_sent')
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
                 new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush)
                 new_invite.send()
-                return
 
             else: # user has already created a maximum number of crush emails
                 # overwrite the oldest invite email
-                oldest_invite_email=invite_emails[0]
-                oldest_invite_email.email=new_email
-                oldest_invite_email.save(update_fields=['email'])
-                oldest_invite_email.send() # send email out right away
-                return oldest_invite_email
+                    #oldest_invite_email=invite_emails[0]
+                    #oldest_invite_email.email=new_email
+                    #oldest_invite_email.save(update_fields=['email'])
+                    #oldest_invite_email.send() # send email out right away
+                return False
+        return True
             
     def delete_activated_user_emails(self,crush_user):
         # find all crush relationships where target_person=crush_user

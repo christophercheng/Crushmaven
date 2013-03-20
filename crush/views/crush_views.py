@@ -1,8 +1,8 @@
-from django.http import HttpResponse,Http404
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,LineupMember
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail#,LineupMember
 import json
 import datetime
 from crush.appinviteform import AppInviteForm
@@ -10,10 +10,10 @@ import time
 from  django.http import HttpResponseNotFound,HttpResponseForbidden
 from utils import graph_api_fetch
 from urllib2 import URLError,HTTPError
-import thread
 from smtplib import SMTPException
 # for initialization routine
-from crush.models.globals import g_init_dict
+#import thread
+#from crush.models.globals import g_init_dict
 
 # called by crush selector upson submit button press
 @login_required
@@ -34,20 +34,20 @@ def ajax_add_crush_targets(request):
         # only create a new relationship if an existing one between the current user and the selected user does not exist 
         print "successfully got a new crush user with username: " + selected_user.facebook_username
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
-            relationship=CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
+            CrushRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
             # kick off the initialization process if the crush is a non-friend
-            if friend_type==2:
-                target_username=selected_user.username
-                if not target_username in g_init_dict:
-                    g_init_dict[target_username]={}
-                if not 'initialization_count' in g_init_dict[target_username]:    
-                    g_init_dict[target_username]['initialization_count'] = 1
-                else:
-                    g_init_dict[target_username]['initialization_count'] += 1
-                relationship.lineup_initialization_status=0
-                relationship.save(update_fields=['lineup_initialization_status'])
-                thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
+            #if friend_type==2:
+            #    target_username=selected_user.username
+            #    if not target_username in g_init_dict:
+            #        g_init_dict[target_username]={}
+            #    if not 'initialization_count' in g_init_dict[target_username]:    
+            #        g_init_dict[target_username]['initialization_count'] = 1
+            #    else:
+            #        g_init_dict[target_username]['initialization_count'] += 1
+            #    relationship.lineup_initialization_status=0
+            #    relationship.save(update_fields=['lineup_initialization_status'])
+            #    thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
     
     if counter > 0:
         return HttpResponse()
@@ -244,18 +244,23 @@ def app_invite_form(request, crush_username):
             
             for email in crush_email_list:
                 try:
-                    InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=True)
-                    crush_email_success_array.append(email)
-                except SMTPException:
+                    if InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=True):
+                        crush_email_success_array.append(email)
+                    else:
+                        crush_email_fail_array.append(email)
+                except:
                     crush_email_fail_array.append(email)
                     continue
             for email in friend_email_list:
                 try:
-                    InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=False)
-                    friend_email_success_array.append(email)
-                except SMTPException:
+                    if InviteEmail.objects.process(new_email=email,new_relationship=crush_relationship,new_is_for_crush=False):
+                        friend_email_success_array.append(email)
+                    else:
+                        friend_email_fail_array.append(email)
+                except:
                     friend_email_fail_array.append(email)
                     continue
+
             if request.is_ajax():
                 print "success and returning rendered template"
                 return render(request,'app_invite_success.html',{'crush_email_success_array':crush_email_success_array,
@@ -267,6 +272,8 @@ def app_invite_form(request, crush_username):
                 print "success and redirecting"                
                 return redirect('app_invite_success')
     else:
+        # determine if they haven't surpassed the total number of users to send out emails to:
+        
         # find mutual friends to pass to the app invite form
         fb_query_string = str(request.user.username + '/mutualfriends/' + crush_username)
         try:           
