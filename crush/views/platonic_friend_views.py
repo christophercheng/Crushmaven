@@ -1,15 +1,16 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,LineupMember
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser
 from datetime import datetime,timedelta
 from django.conf import settings
 import random
+from django.db import transaction
 
-from multiprocessing import Pool
 from django.http import HttpResponseNotFound
 
 @login_required
+@transaction.commit_on_success # rollback entire function if something fails
 def ajax_reconsider(request):
 
     me = request.user

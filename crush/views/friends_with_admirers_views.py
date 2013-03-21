@@ -32,10 +32,13 @@ def ajax_friends_with_admirers_content(request,remove_username=None):
         
     for counter,inactive_crush_friend in enumerate(me.friends_with_admirers.all()):
         print "creating html for: " + inactive_crush_friend.username
-        ajax_response+="<div id='friend_admirer" + str(counter) + "'>"
-        ajax_response +="<img src='" + inactive_crush_friend.get_facebook_picture() + "' width=20 height=20><small>" + inactive_crush_friend.first_name + "&nbsp;&nbsp;" + inactive_crush_friend.last_name
+       
         all_admirers = CrushRelationship.objects.all_admirers(inactive_crush_friend)
         num_admirers = len(all_admirers)
+        if num_admirers==0:
+            continue # in this case, a user was added as a friend but then someone deleted them laster
+        ajax_response+="<div id='friend_admirer" + str(counter) + "'>"
+        ajax_response +="<img src='" + inactive_crush_friend.get_facebook_picture() + "' width=20 height=20><small>" + inactive_crush_friend.first_name + "&nbsp;&nbsp;" + inactive_crush_friend.last_name
         ajax_response += "<br>" + str(num_admirers) + " secret admirer"
         if num_admirers > 1:
             ajax_response += "s"

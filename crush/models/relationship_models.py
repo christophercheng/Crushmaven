@@ -1,16 +1,14 @@
 from django.db import models
 # use signal to create user profile automatically when user created
 from datetime import  datetime,timedelta,date
-from smtplib import SMTPException
-from django.core.mail import send_mail
-import random,urllib,json
+import random
 from django.conf import settings
 from crush.models.user_models import FacebookUser
-import crush.models.lineup_models
-from django.db.models import F,Q
+from django.db.models import F
 import requests
 from email import utils
 import time
+from django.db import transaction
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -67,6 +65,7 @@ class PlatonicRelationship(BasicRelationship):
     #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
     #rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
  
+    @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args, **kwargs):  
         #  print "saving platonic relationship object"
         if (not self.pk): # if creating a new platonic relationship
@@ -214,6 +213,7 @@ class CrushRelationship(BasicRelationship):
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
+    @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk): # this is a newly created crush relationship
@@ -261,7 +261,7 @@ class CrushRelationship(BasicRelationship):
                     response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
                     self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
                     self.updated_flag = True #show 'new' or 'updated' on crush relation block
-                     # notify the source person (notification will go out at the future date_target_responded time
+                    # notify the source person (notification will go out at the future date_target_responded time
                     self.notify_source_person()
                 except PlatonicRelationship.DoesNotExist:
                     # print "did not find a reciprocal platonic or crush relationship"
@@ -296,9 +296,10 @@ class CrushRelationship(BasicRelationship):
                             reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
                             # send the other relationship's admirer a notification
                             reciprocal_crush_relationship.notify_source_person()
-                            # look for previously hidden messages from the target person
+                            
                         else:
-                            hidden_messages=reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=settings.STATUS_REJECTED).update(moderation_status=settings.STATUS_ACCEPTED,recipient_deleted_at=None)
+                            # look for previously hidden messages from the target person and make them acceptable (to read)
+                            reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=settings.STATUS_REJECTED).update(moderation_status=settings.STATUS_ACCEPTED,recipient_deleted_at=None)
                     except Exception as e: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
                         print e
                         pass # do nothing
@@ -385,7 +386,7 @@ class CrushRelationship(BasicRelationship):
         self.source_person.save(update_fields=['site_credits'])
         return True #must return True or else caller thinks payment failed
  
-        # TODO!!! when/where this called?    
+    @transaction.commit_on_success # rollback entire function if something fails
     def delete(self,*args, **kwargs):  
         print "delete relationships fired"        
         # check to see if there is a reciprocal relationship
@@ -398,6 +399,8 @@ class CrushRelationship(BasicRelationship):
 
         # automatically create a platonic relationship
         PlatonicRelationship.objects.create(source_person=self.source_person, target_person=self.target_person)
+        
+        # if the target was previously inactive, then 
 
         # delete any messages that this user has sent out to the crush (regardless of state)
         now = datetime.now()
@@ -413,7 +416,6 @@ class CrushRelationship(BasicRelationship):
         target_person_email=target_person.email
         if (not target_person_email):
                 return
-        from_email="info@crushdiscovery.com"
         try:
             
             if (target_person.bNotify_new_admirer== True):
@@ -439,7 +441,7 @@ class CrushRelationship(BasicRelationship):
         source_person_email=source_person.email
         if (not source_person_email):
                 return
-        from_email="info@crushdiscovery.com"
+
         target_person=self.target_person
         target_person_name = target_person.first_name + " " + target_person.last_name
         

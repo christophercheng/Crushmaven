@@ -211,11 +211,13 @@ class FacebookUser(AbstractUser):
             print str(e)
             raise 
 
-        all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
+        all_inactive_user_list = None#cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
             print "updating cache with new all_inactive_user_list"
-            all_inactive_user_list = list(FacebookUser.objects.filter(is_active=False).values_list('username',flat=True))
+            all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_relationship_set_from_target=None)).values_list('username',flat=True))
+            print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+            
         else:
             print "using cache's all_inactive_user_list " + str(all_inactive_user_list)
     

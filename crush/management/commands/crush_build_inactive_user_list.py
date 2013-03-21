@@ -14,13 +14,13 @@ from django.core.management.base import NoArgsCommand
 from django.core.cache import cache
 from crush.models.user_models import FacebookUser
 from django.conf import settings
+from django.db.models import Q
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
         current_cache=cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
         print "old cache has # elements: " + str(len(current_cache))
-        all_inactive_user_list = FacebookUser.objects.filter(is_active=False).values_list('username',flat=True)#.only('target_person')
-
+        all_inactive_user_list = FacebookUser.objects.filter(Q(is_active=False),~Q(crush_relationship_set_from_target=None)).values_list('username',flat=True)#.only('target_person')
         cache.add('all_inactive_user_list',all_inactive_user_list)
         current_cache=cache.get('all_inactive_user_list')
         print "Updated cache's all_inactive_user_list with # elements: " + str(len(current_cache))
