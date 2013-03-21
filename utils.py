@@ -35,10 +35,12 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             return results  
     except Exception as e: 
         if num_tries == 0:
+            print "graph api fetch failed, trying again with access_token: " + str(access_token)
             # retry once more
             return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
             
         else:
+            print "passing on exception"
             raise e # pass on the exception for the caller to handle
         
 def fb_fetch(fb_user_id,start_index):

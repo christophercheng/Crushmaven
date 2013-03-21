@@ -8,7 +8,7 @@ class FacebookBackend:
 
     # Reads in Fb code and asks Fb if it's valid and what user it points to
     def authenticate(self, token=None, request=None):
-
+        print "called authenticate user"
         args = {
             'client_id': settings.FACEBOOK_APP_ID,
             'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback'),
@@ -35,11 +35,12 @@ class FacebookBackend:
         facebook_profile = urllib.urlopen(
                 'https://graph.facebook.com/me?access_token=%s' % access_token)
         facebook_profile = json.load(facebook_profile)
-        
+        # add access token to profile so it can be updated if it has changed
+        facebook_profile['access_token']=access_token
         # find existing site user with this id or create a new user 
         # called function is in a custom UserProfile manager because it is also used during login/authentication
         return get_user_model().objects.find_or_create_user(fb_id=facebook_profile['id'], fb_access_token=access_token, fb_profile=facebook_profile, is_this_for_me=True)
-
+    
     def get_user(self, user_id):
         """ Just returns the user of a given ID. """
         try:

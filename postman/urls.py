@@ -105,7 +105,7 @@ def mod1(message):
             return True
         else:
             return False
-    except Exception as e:
+    except Exception as e: # crush relationship not found most likely cause crush deleted their reciprocal relationship (they changed their mind)
         print str(e)
         return False
 

@@ -78,16 +78,17 @@ class LineupMemberManager(models.Manager):
                     id = str(new_friend[u'uid'])
                     acceptable_id_array.append(id)
                     g_init_dict[crush_id]['exclude_id_string'] += "," + id
-        except:
+        except Exception as e:
+            print str(e)
             pass # we're still good, just won't have any recent friends i list
         try:
             num_members_needed = 9 - len(acceptable_id_array) 
             fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT " + str(num_members_needed)
             data = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
 
-        except:
+        except Exception as e:
             g_init_dict[crush_id][crush_id].release()
-            print "Key or Value Error on Fql Query Fetch read!"
+            print "Friend Crush FQL Exception: " + str(e)
             self.initialize_fail(relationship,5)
             return
         if not data or len(data) < settings.MINIMUM_LINEUP_MEMBERS:

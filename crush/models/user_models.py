@@ -17,26 +17,38 @@ class FacebookUserManager(UserManager):
 
     # helper function used by find_or_create_user function to separate profile data extraction from facebook and insertion into the user profile object
     def update_user(self,facebook_user,fb_profile):
+        new_fields=[]
+        if ('is_active' in fb_profile and facebook_user.is_active!=fb_profile['is_active']):
+            facebook_user.is_active = fb_profile['is_active']
+            new_fields.append('is_active')
+        if ('access_token' in fb_profile and facebook_user.access_token!=fb_profile['access_token']):
+            facebook_user.access_token = fb_profile['access_token']
+            new_fields.append('access_token')
         
         if ('first_name' in fb_profile and facebook_user.first_name!=fb_profile['first_name']):
             facebook_user.first_name = fb_profile['first_name']
+            new_fields.append('first_name')
         
         if ('last_name' in fb_profile and facebook_user.last_name!=fb_profile['last_name']):
             facebook_user.last_name = fb_profile['last_name']
+            new_fields.append('last_name')
         
         if (facebook_user.birthday_year==None and 'birthday' in fb_profile):
             date_pieces=fb_profile['birthday'].split('/')
             if len(date_pieces)>2: # i only care to store birthday if it has a year
                 facebook_user.birthday_year= int(date_pieces[2])   
+            new_fields.append('birthday_year')
         
         if ('email' in fb_profile and facebook_user.email!=fb_profile['email']):
             facebook_user.email=fb_profile['email']
+            new_fields.append('email')
         
         if (facebook_user.gender== '' and 'gender' in fb_profile):
             if fb_profile['gender']==u'male':
                 facebook_user.gender=u'M'
             elif fb_profile['gender']==u'female':
                 facebook_user.gender=u'F'
+            new_fields.append('gender')
         
         if ('relationship_status' in fb_profile):            
             rel_stat = fb_profile['relationship_status']
@@ -44,6 +56,7 @@ class FacebookUserManager(UserManager):
                 facebook_user.is_single=False
             else: 
                 facebook_user.is_single=True
+            new_fields.append('relationship_status')
                 
         if(facebook_user.gender_pref == '' and 'interested_in' in fb_profile):
             if len(fb_profile['interested_in'])==1: 
@@ -53,7 +66,9 @@ class FacebookUserManager(UserManager):
                     facebook_user.gender_pref=u'M'
             elif len(fb_profile['interested_in']) > 1:
                 facebook_user.gender_pref=u'B'
-                
+            new_fields.append('gender_pref')
+        facebook_user.save(update_fields=new_fields)
+                     
     # find_or_create_user called in two cases:
     # 1) after someone adds a crush from the friend selector dialog (is_this_for_me = false)
     # 2) when facebook authenticates a user (is_this_for_me = true
@@ -66,15 +81,14 @@ class FacebookUserManager(UserManager):
             user = super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             # existing user was found!
             
-            if (is_this_for_me): 
-                user.access_token=fb_access_token #if logging user in then update his/her token
-
+            if (is_this_for_me):    
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
-                    thread.start_new_thread(self.activate_inactive_user,(user,fb_profile))
+                    fb_profile['is_active']=True
+                    self.update_user(user,fb_profile)
+                    thread.start_new_thread(self.handle_activated_user,(user,fb_profile))
                     #self.activate_inactive_user(user, fb_profile)
                 else:
-                    user.save(update_fields=['access_token'])
-               
+                    self.update_user(user,fb_profile)
         # No existing user, create one (happens when someone adds a crush but that crush is not already a user
         except FacebookUser.DoesNotExist:
             
@@ -86,33 +100,22 @@ class FacebookUserManager(UserManager):
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
             try:
-                print fb_username + ": creating username"
                 user = FacebookUser.objects.create_user(username=fb_id)
-                if is_this_for_me:
-                    user.is_active=True
-                    user.access_token=fb_access_token
-                else:
-                    user.is_active=False
-                                # finally update the cached list of inactive_users
+                fb_profile['is_active'] = is_this_for_me
+                if not is_this_for_me:
+                    # finally update the cached list of inactive_users
                     all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
                     all_inactive_user_list.append(user.username)
                     cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
-                print fb_username + ": completed creation call"
+            except Exception as e:
+                print str(e)
             except IntegrityError:
                 print fb_username + " unable to create a new user, probably cause it's already been created"
                 return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
-            print fb_username + ": calling the update_user function"
-            
-            FacebookUser.objects.update_user(user,fb_profile)
-                
-            user.save(update_fields=['access_token','is_active','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
-            
+            FacebookUser.objects.update_user(user,fb_profile)       
         return user
     
-    def activate_inactive_user(self,user,fb_profile):
-        user.is_active=True# then activate their account
-        # update their profile with facebook data; they're not always obtained indirectly
-        self.update_user(user,fb_profile)
+    def handle_activated_user(self,user,fb_profile):
         # look for any admirers at this point so their relationships can get updated
         admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
         for relation in admirer_relationships:
@@ -122,7 +125,6 @@ class FacebookUserManager(UserManager):
             relation.date_target_signed_up = datetime.datetime.now()
             relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
         InviteEmail.objects.delete_activated_user_emails(user)
-        user.save(update_fields=['is_active','access_token','birthday_year','email','gender','is_single','gender_pref','first_name','last_name'])
         user.friends_that_invited_me.clear()
         # update the cache inactive user list
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])

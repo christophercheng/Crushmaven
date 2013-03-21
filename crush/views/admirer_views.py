@@ -13,6 +13,7 @@ from urllib2 import HTTPError
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
+    print "starting view function admirers()"
     global g_init_dict
     me = request.user 
 
@@ -31,6 +32,7 @@ def admirers(request,show_lineup=None):
         for relationship in uninitialized_relationships: 
             relationship.lineup_initialization_status=0
             relationship.save(update_fields=['lineup_initialization_status'])
+            print "starting lineup"
             #LineupMember.objects.initialize_lineup(relationship)
             thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
             
