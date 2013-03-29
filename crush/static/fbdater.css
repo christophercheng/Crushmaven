@@ -7,8 +7,8 @@ body {
 	font-family: lucida grande,tahoma,verdana,arial,sans-serif;  
   font-size: 14px;  
   color: #333333;  
-  background-color:#F9FCFF;
- 	overflow-x: hidden;
+  background-color:Lavender;
+ 	overflow-x: hidden;	
 }
 
 
@@ -47,6 +47,7 @@ body {
 	width:980px;
 	margin-left: auto;
 	margin-right:auto;
+	background-color:red;
 }
 
 .left_panel {
@@ -56,7 +57,6 @@ body {
 	position:fixed;
 	top: 55px;
 	bottom:0;
-	background-color:GhostWhite;
 	padding: 0 5px;
 }
 
@@ -69,7 +69,7 @@ body {
 	position:fixed;
 	top: 55px;
 	bottom:0;
-	background-color:GhostWhite;
+	
 }
 
 .company_info a{
@@ -181,12 +181,12 @@ visibility:hidden;
 	
 background-color:GhostWhite;
 border-style:solid;
-border-width:1px;
+border-width:0px;
 border-color: LightSteelBlue;
 margin-bottom:15px;
 padding:10px;
 z-index:10;
-box-shadow: 10px 10px 10px rgba(0,0,0,.5);
+box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 }
 
 #bx-pager a img  {
