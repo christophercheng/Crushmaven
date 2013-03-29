@@ -180,7 +180,7 @@ def ajax_get_platonic_rating(request,crush_id):
 
     try: 
         platonic_rating=None
-        platonic_relationship = (request.user.platonic_relationship_set_from_target).get(source_person__username=crush_id)
+        platonic_relationship = (request.user.crush_platonicrelationship_set_from_target).get(source_person__username=crush_id)
         platonic_rating = platonic_relationship.rating
         crush_relationship=CrushRelationship.objects.completed_crushes(request.user).get(target_person__username=crush_id)
     except CrushRelationship.DoesNotExist:
@@ -199,7 +199,7 @@ def ajax_get_platonic_rating(request,crush_id):
 @login_required
 def crushes_completed(request,reveal_crush_id=None):
     me = request.user
-    crush_relationships = request.user.crush_relationship_set_from_source 
+    crush_relationships = request.user.crush_crushrelationship_set_from_source 
     if reveal_crush_id:
         try:
             reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)

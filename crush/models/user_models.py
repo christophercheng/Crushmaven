@@ -192,6 +192,7 @@ class FacebookUser(AbstractUser):
     #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
+    bNotify_new_recommendees_responded = models.BooleanField(default=True)
 
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.
@@ -216,7 +217,7 @@ class FacebookUser(AbstractUser):
         all_inactive_user_list = None#cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
             print "updating cache with new all_inactive_user_list"
-            all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_relationship_set_from_target=None)).values_list('username',flat=True))
+            all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
             print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
             
