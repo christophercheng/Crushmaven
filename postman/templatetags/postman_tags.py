@@ -122,7 +122,7 @@ def can_view(inbox_user,message):
         target_person = message.sender
     
     try: 
-        crush_relationship = inbox_user.crush_relationship_set_from_source.get(target_person=target_person)
+        crush_relationship = inbox_user.crush_crushrelationship_set_from_source.get(target_person=target_person)
         date_msg_expires = crush_relationship.date_messaging_expires
         if date_msg_expires is not None and datetime.date.today() < date_msg_expires:
             return True

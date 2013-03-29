@@ -42,7 +42,7 @@ class InviteEmailManager(models.Manager):
             
     def delete_activated_user_emails(self,crush_user):
         # find all crush relationships where target_person=crush_user
-        crush_relationships=crush_user.crush_relationship_set_from_target.all()
+        crush_relationships=crush_user.crush_crushrelationship_set_from_target.all()
         for relationship in crush_relationships:
             # find all emails associated with interated relationship
             emails=self.filter(relationship=relationship)

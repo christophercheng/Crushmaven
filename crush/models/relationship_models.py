@@ -18,7 +18,9 @@ class BasicRelationship(models.Model):
         app_label = 'crush' 
 
     date_added = models.DateTimeField(auto_now_add=True)    
-
+    source_person=models.ForeignKey(FacebookUser,related_name="%(app_label)s_%(class)s_set_from_source")
+    target_person=models.ForeignKey(FacebookUser,related_name="%(app_label)s_%(class)s_set_from_target")
+    
     FRIENDSHIP_TYPE_CHOICES = (
                                (0,'Friend'),
                                (1,'Friend of Friend'),
@@ -41,7 +43,7 @@ class BasicRelationship(models.Model):
 class PlatonicRelationshipQuerySet(models.query.QuerySet):
     
     def all_friends(self, source_user):
-        return source_user.platonic_relationship_set_from_source.all()
+        return source_user.crush_platonicrelationship_set_from_source.all()
     
 class PlatonicRelationshipManager(models.Manager):
     def get_query_set(self):
@@ -58,8 +60,8 @@ class PlatonicRelationship(BasicRelationship):
         
     objects = PlatonicRelationshipManager()
         
-    source_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_source')  
-    target_person=models.ForeignKey(FacebookUser,related_name='platonic_relationship_set_from_target')
+    #source_person=models.ForeignKey(FacebookUser,related_name='crush_platonicrelationship_set_from_source')  
+    #target_person=models.ForeignKey(FacebookUser,related_name='crush_platonicrelationship_set_from_target')
  
     rating = models.IntegerField(default=None,max_length=1,blank=True,null=True) # how source rated the target's attraction
     #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
@@ -84,7 +86,7 @@ class PlatonicRelationship(BasicRelationship):
             # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
             #if target platonic friend has a crush on this user, then platonic friend must be informed
             try:
-                reciprocal_relationship = self.target_person.crush_relationship_set_from_source.get(target_person=self.source_person)
+                reciprocal_relationship = self.target_person.crush_crushrelationship_set_from_source.get(target_person=self.source_person)
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.now()
@@ -105,11 +107,11 @@ class PlatonicRelationship(BasicRelationship):
 class CrushRelationshipQuerySet(models.query.QuerySet):
     
     def all_crushes(self,admirer_user):
-        return admirer_user.crush_relationship_set_from_source.all()
+        return admirer_user.crush_crushrelationship_set_from_source.all()
     
     def progressing_crushes(self,admirer_user):   
         #print "progressing crushes"
-        crush_relationships = admirer_user.crush_relationship_set_from_source          
+        crush_relationships = admirer_user.crush_crushrelationship_set_from_source          
         # exclude any known responded relationships and completed relationship
             # both those relationships contain a date_target_responded date that is in the past 
             # if a relationship has a future date_target_responded date, then include it.
@@ -118,39 +120,39 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
     # known responded crushes are can be shown to both users
     def visible_responded_crushes(self,admirer_user):
         #print "known responded crushes"
-        crush_relationships = admirer_user.crush_relationship_set_from_source
+        crush_relationships = admirer_user.crush_crushrelationship_set_from_source
         # first exclude completed relationship, then exclude all truly unresponded crushes, then exclude unknown responded crushes
         # ie. all relationships that arent' paid (not completed) and target status > 4 (not progressing) and date_target_responded is in past  (exclude date=none and  date in future)
         return crush_relationships.filter(date_target_responded__lt=datetime.now(), is_results_paid=False )
     # unknown responded crushes cannot be shown to either user because they are in a wait period
     def hidden_responded_crushes(self,admirer_user):
-        crush_relationships = admirer_user.crush_relationship_set_from_source
+        crush_relationships = admirer_user.crush_crushrelationship_set_from_source
         # get any crush relationships where we know the response but the date responded is either:
             # None: we're waiting for original admirer to see response
             # Future date: we're not telling the admirer that their crush has already decided that theyy're not interseted
         return crush_relationships.filter(target_status__gt = 3).exclude( date_target_responded__lt=datetime.now() )
     
     def completed_crushes(self,admirer_user):
-        crush_relationships = admirer_user.crush_relationship_set_from_source
+        crush_relationships = admirer_user.crush_crushrelationship_set_from_source
         return crush_relationships.filter(is_results_paid=True)
     
     def all_admirers(self,crush_user):
-        return crush_user.crush_relationship_set_from_target.all()
+        return crush_user.crush_crushrelationship_set_from_target.all()
     
     def new_admirers(self,crush_user):
-        return crush_user.crush_relationship_set_from_target.filter(target_status__lt = 3)
+        return crush_user.crush_crushrelationship_set_from_target.filter(target_status__lt = 3)
     
     def progressing_admirers(self,crush_user):
         #print "progressing admirers" 
         # progressing admirers are all relationships where the user is the target and date_lineup_finished is not set
-        admirer_relationships = crush_user.crush_relationship_set_from_target.filter(date_lineup_finished=None)\
+        admirer_relationships = crush_user.crush_crushrelationship_set_from_target.filter(date_lineup_finished=None)\
         # there is one exception: exclude any admirers who were previously added as the user's crush (and who responded)
             # (hint: relationship will have target_status set to 4 or 5 and the relationship's lineup will never be initialized)     
         admirer_relationships = admirer_relationships.exclude(target_status__gt = 3, lineup_initialization_status = None)
         return admirer_relationships
       
     def past_admirers(self,crush_user):
-        return crush_user.crush_relationship_set_from_target.exclude(date_lineup_finished=None)
+        return crush_user.crush_crushrelationship_set_from_target.exclude(date_lineup_finished=None)
     
 class CrushRelationshipManager(models.Manager):
     def get_query_set(self):
@@ -164,11 +166,11 @@ class CrushRelationship(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
-    
+
     objects = CrushRelationshipManager()
             
-    source_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_source')
-    target_person=models.ForeignKey(FacebookUser,related_name='crush_relationship_set_from_target')
+    #source_person=models.ForeignKey(FacebookUser,related_name='crush_crushrelationship_set_from_source')
+    #target_person=models.ForeignKey(FacebookUser,related_name='crush_crushrelationship_set_from_target')
     
     #dynamically tie in the target person's response as a lookup time optimization
     TARGET_STATUS_CHOICES = (
@@ -224,7 +226,7 @@ class CrushRelationship(BasicRelationship):
             except FacebookUser.DoesNotExist:
                 pass # no duplicate crush relationship found
             try: # check if there is an existing platonic relationship, if so, delete it first
-                existing_platonic_relationship = self.source_person.platonic_relationship_set_from_source.get(target_person=self.target_person)
+                existing_platonic_relationship = self.source_person.crush_platonicrelationship_set_from_source.get(target_person=self.target_person)
                 print "existing platonic relationship detected. deleting it before moving on"
                 existing_platonic_relationship.delete()
             except PlatonicRelationship.DoesNotExist:
@@ -278,7 +280,7 @@ class CrushRelationship(BasicRelationship):
                 # this check is performed when the lineup slide is pulled
             # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
                 # get total previous admirers (past and present) and add 1, hopefully this won't create a 
-            self.admirer_display_id=len(self.target_person.crush_relationship_set_from_target.all()) + 1
+            self.admirer_display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
         else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)
@@ -490,3 +492,47 @@ class CrushRelationship(BasicRelationship):
     
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+
+    
+class ReferralRelationship(CrushRelationship):
+    class Meta:
+        # this allows the models to be broken into separate model files
+        app_label = 'crush' 
+    
+    result_viewed = models.BooleanField(default=False)
+    @transaction.commit_on_success # rollback entire function if something fails
+    def save(self,*args,**kwargs):
+        print "calling save on crush relationship"
+        if (not self.pk): # this is a newly created crush relationship
+            # make sure: we're not adding a recommendation that has already been created (by any reommender)
+            if self.objects.filter(source_person=self.source_person,target_person=self.target_person).exists():
+                print "duplicate referral relationships detected. doing nothing more"
+                return False
+            # make sure: we're only adding people that are friends with recommender 
+
+            # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
+                # get total previous admirers (past and present) and add 1, hopefully this won't create a 
+            self.admirer_display_id=self.target_person.crush_referralrelationship_set_from_target.all().count() + 1
+        else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
+            if 'update_fields' in kwargs:
+                # get the original relationship (which excludes the uncommitted changes)
+                original_relationship = ReferralRelationship.objects.get(pk=self.pk)
+                # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
+                # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
+                if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
+                    #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
+                    self.notify_recommender_person()
+        # Don't forget to commit the relationship's changes to database!
+        # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
+        super.super(CrushRelationship,self).save(*args,**kwargs)
+
+    def notify_recommender_person(self):
+        if self.target_status > 3:
+            continue
+
+class Recommendation(models.Model):
+    class Meta:
+        app_label='crush'
+    referral_one = models.ForeignKey(ReferralRelationship)
+    referral_two = models.ForeignKey(ReferralRelationship)     
+    recommender_person=models.ForeignKey(FacebookUser,related_name="referralrelationship_set_from_recommender")       

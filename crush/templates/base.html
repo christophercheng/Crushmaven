@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
     minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
     minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
     max:18,
-	  excludeIds: "{% for crush_rel in request.user.crush_relationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
+	  excludeIds: "{% for crush_rel in request.user.crush_crushrelationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
     closeOverlayClick: true,
     overlayOpacity: "0.8",
     overlayColor: '#000',
