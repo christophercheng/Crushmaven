@@ -2,12 +2,12 @@
 	font-weight: bold;
 	font-color: red;
 }
-
+/* defaults for site */
 body {
-	/* background: url(45original.gif) repeat; */
-	font-family: "lucida grande" ,tahoma,verdana,arial,sans-serif;  
+	font-family: lucida grande,tahoma,verdana,arial,sans-serif;  
   font-size: 14px;  
   color: #333333;  
+  background-color:#F9FCFF;
  	overflow-x: hidden;
 }
 
@@ -186,6 +186,7 @@ border-color: LightSteelBlue;
 margin-bottom:15px;
 padding:10px;
 z-index:10;
+box-shadow: 10px 10px 10px rgba(0,0,0,.5);
 }
 
 #bx-pager a img  {

@@ -1,18 +1,28 @@
-<!DOCTYPE html><html><head>
-	<title>AttractedTo... | Anonymously connect with attractive friends and friends-of-friends	
-	{% block title %}{% endblock %}</title>    	
-{% block extrahead %}{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	    <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
+	    <meta name="description" content="When you already have someone in mind, but not sure they feel the same... Discover your relationship potential - safely and anonymously." />
+	    <meta name="robots" content="all,index" />
+	    <meta name="Revisit-After" content="30 Days" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
+		<title>AttractedTo |{% block title %}{% endblock %}</title>    	
+	    {% block extrahead %}{% endblock %}
+
+        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+        
+        <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>\
+
+        <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
 		<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
-		<link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
-		<link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
-		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
+
 		<script src="{{ STATIC_URL }}credit_check_dialog.js"></script>
 
-</head>
+		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
+    </head>
 <body>
 
 <!-- INITIALIZE FB JS INTEGRATION -->
