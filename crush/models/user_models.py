@@ -56,7 +56,7 @@ class FacebookUserManager(UserManager):
                 facebook_user.is_single=False
             else: 
                 facebook_user.is_single=True
-            new_fields.append('relationship_status')
+            new_fields.append('is_single')
                 
         if(facebook_user.gender_pref == '' and 'interested_in' in fb_profile):
             if len(fb_profile['interested_in'])==1: 
