@@ -528,11 +528,11 @@ class ReferralRelationship(CrushRelationship):
 
     def notify_recommender_person(self):
         if self.target_status > 3:
-            continue
+            pass
 
 class Recommendation(models.Model):
     class Meta:
         app_label='crush'
-    referral_one = models.ForeignKey(ReferralRelationship)
-    referral_two = models.ForeignKey(ReferralRelationship)     
+    recommended_person = models.ForeignKey(ReferralRelationship,related_name="referralrelationship_set_from_recommended_person")
+    recommended_friends = models.ManyToManyField(ReferralRelationship,related_name="referralrelationship_set_from_recommended_friends")     
     recommender_person=models.ForeignKey(FacebookUser,related_name="referralrelationship_set_from_recommender")       
