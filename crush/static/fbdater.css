@@ -15,7 +15,7 @@ padding-left: 1.4em; list-style: decimal;
 } ul {
 padding-left: 1.4em list-style: square;
 }
-
+html { height: 100%; }
 body {
 	font-family: lucida grande,tahoma,verdana,arial,sans-serif;  
   font-size: 14px;  
