@@ -37,7 +37,7 @@ def ajax_friends_with_admirers_content(request,remove_username=None):
         num_admirers = len(all_admirers)
         if num_admirers==0:
             continue # in this case, a user was added as a friend but then someone deleted them laster
-        ajax_response+="<div id='friend_admirer" + str(counter) + "'>"
+        ajax_response+="<li id='friend_admirer" + str(counter) + "'>"
         ajax_response +="<img src='" + inactive_crush_friend.get_facebook_picture() + "' width=20 height=20><small>" + inactive_crush_friend.first_name + "&nbsp;&nbsp;" + inactive_crush_friend.last_name
         ajax_response += "<br>" + str(num_admirers) + " secret admirer"
         if num_admirers > 1:
@@ -56,7 +56,7 @@ def ajax_friends_with_admirers_content(request,remove_username=None):
             
         ajax_response += " (" + elapsed_days + ")"
         ajax_response +='<br><span class="app_invite_link"><a id="send_fb_invite" crush_name="' + inactive_crush_friend.get_name() + '" crush_username="' + inactive_crush_friend.username + '" href="#">help them sign up</a>'
-        ajax_response+="</small></span></div>"
+        ajax_response+="</small></span></li>"
     if ajax_response=="":
-        ajax_response="You have no friends with admirers."
+        ajax_response='<li id="no_friends">no friends with admirers...</li>'
     return HttpResponse(ajax_response)

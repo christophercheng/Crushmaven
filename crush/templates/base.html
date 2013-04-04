@@ -1,3 +1,4 @@
+{% load base_extras %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,7 +15,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
         
         <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
-		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>\
+		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
 
         <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
 		<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
@@ -24,7 +25,6 @@
 		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
     </head>
 <body>
-
 <!-- INITIALIZE FB JS INTEGRATION -->
 <div id="fb-root"></div> 
 <script>
@@ -195,20 +195,23 @@ jQuery(document).ready(function($) {
 <div id="credit_check_modal" title="Premium Feature Purchase"></div>
 
 
-<div class="header"><div class="header_content_container">{% include "navigation_top.html" %}</div></div><!-- close off header divs -->
+<div class="header">
+	<div class="header_container">{% include "navigation_top.html" %}</div>
+</div><!-- close off header divs -->
+
 <div class="main_container">
-	<div class="left_panel">
+	<div class="left_sidebar">
+		<div class="left_sidebar_container">{% include "navigation_left.html" %}</div>
+	</div> <!-- close off left_sidebar -->
+	<div class="right_sidebar">
+		<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
 		<div id="contactable"><!-- contactable html placeholder --></div>
-		<div class="left_content_container">{% include "navigation_left.html" %}</div>
-	</div> <!-- close off left_panel side -->
+	</div> <!-- close off right_sidebar -->
 	<div class="center_panel">
-		<div class="center_content_container">
-		{% block content %}
-		{% endblock %}
+		<div class="center_panel_container">
+			{% block content %}
+			{% endblock %}
 		</div> <!-- close off center_content_container -->
 	</div> <!-- close off center_panel -->
-	<div class="right_panel">
-		<div class="right_content_container">{% include "navigation_right.html" %}
-		</div>
-	</div> <!-- close off right side bar -->
-</div> <!-- close off main container -->
+</div> <!-- close off main_container -->
+</body>

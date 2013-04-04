@@ -10,7 +10,8 @@ def navactive(request, url):
         # if found ,active is returned, else empty string returned
     if url in request.path:
         return "active"
-    return ""
+    else:
+        return "inactive"
 
 
 

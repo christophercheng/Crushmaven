@@ -335,7 +335,7 @@ $(document).ready(function()
 
 <!-- Display the crush type navigation widget -->  
 <font color="gray">
-{% if crush_type = 0 %}
+{% if crush_type = 0 and crush_relationships %}
 <b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_completed">Completed Crushes ({{crushes_completed_count}})</a>
 {% elif crush_type = 1 %}
 <a href="/attractions">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Completed Crushes ({{crushes_completed_count}})</b>
@@ -475,7 +475,7 @@ $(document).ready(function()
 	
 {% elif responded_relationships.count == 0 %}
 	{% if crush_type = 0 %}
-		<BR><BR>You have no crushes.  <a href="javascript:{}" class="bt-fs-dialog">Click here</a> to find a friend of interest.
+		<BR><BR>You do not have any attractions.  <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
 		<BR><BR>You have no completed crushes.
 	{% endif %}

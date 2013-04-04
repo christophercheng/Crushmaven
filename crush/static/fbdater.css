@@ -1,125 +1,101 @@
-.navbar .active {
-	font-weight: bold;
-	font-color: red;
-}
-/* defaults for site */
+/* ===========================   Site Reset & Defaults ========================= */
+* {-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;}
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-margin: 0; padding: 0; border: 0; font-size: 100%; vertical-align: baseline;
+margin: 0; padding: 0; border: 0;
 }
+
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 display: block;
-} body {
-line-height: 1.2;
-} ol {
-padding-left: 1.4em; list-style: decimal;
-} ul {
-padding-left: 1.4em list-style: square;
 }
 
 body {
-	font-family: lucida grande,tahoma,verdana,arial,sans-serif;  
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;  
   font-size: 14px;  
+  line-height: 1.2;
   color: #333333;  
-  background-color:Lavender;
+  #background-color:Lavender;
  	overflow-x: hidden;	
 }
 
+a {
+   font-size: 15px;
+
+   color: #3366ff;
+   cursor: pointer;
+   text-decoration: none;
+}
+
+/* ===========================   Site Layout ========================= */
+
+.main_container {
+	width:985px;
+	margin-left: auto;
+	margin-right:auto;
+	margin-top:40px;
+	padding-top:20px;
+	#background-color:green;
+}
 
 .header {
-	height: 45px;
-	background-color:Black;
+	height: 40px;
+	background-color:rgb(0,0,51);
 	color: white;
 	width:100%;
-	margin-left:-8px;
-	margin-right:-8px;
-	margin-top:-8px;
-	padding:0 13px;
-	border-bottom: 1px solid #020303;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.35);
-  left: 0;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
   position: fixed;
   top: 0;
+  padding-top:7px;
   width: 100%;
   z-index: 10000;
 }
 
-.header_content_container{
-	width:980px;
+.header_container{
+	width:985px;
 	margin-left: auto;
 	margin-right:auto;
-	top:0;
-	right:0;
-	bottom:0;
-	left:0;
-	margin-top:13px;
+	#background-color:rgba(255,255,255,.5);
 }
 
-.main_container {
-	height:100%;	
-	min-width: 980px;
-	width:980px;
-	margin-left: auto;
-	margin-right:auto;
-	background-color:red;
-}
-
-.left_panel {
-	height: 600px;
-	width:200px;
-	float:left;
+.left_sidebar {
+	width:210px;
 	position:fixed;
-	top: 55px;
-	bottom:0;
-	padding: 0 5px;
+	margin-left:0px;
+	margin-top:0px;
+	#background-color:rgba(255,0,0,.1);
+}
+.left_sidebar_container {
+	margin-right:10px;
+	#background-color:white;
 }
 
-
-.right_panel {
-	height:600px;
-	width:200px;
-	/*float:left;*/
-	margin-left:770px;
-	position:fixed;
-	top: 55px;
-	bottom:0;
-	
-}
-
-.company_info a{
-font-size:11px;
-font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
-}
 .center_panel {
-	height: 100%;
-	margin-top:55px;
-	position:relative;
-	width:100%;
-
+	width:575px;
+	margin-left:210px;
+	#background-color:blue;
+}
+.center_panel_container {
+	margin-left:15px;
+	margin-right:15px;
+	width:545px;
+	#background-color:white;
 }
 
-.center_content_container {
-	position:absolute;
-	margin-left:215px;
-	width:550px;
+.right_sidebar {
+	width:200px;
+	position:fixed;
+	float:right;
+	margin-top:0px;
+	margin-left:785px;
+	border:1px;
+	#background-color:rgba(255,0,0,.1);
+}
+.right_sidebar_container {
+	margin-left:10px;
+	background-color:white;
+	#box-shadow: 1px 2px 2px rgba(0,0,0,.5);
 }
 
-
-a {
-   font-weight: bold;
-   font-size: 15px; 
-   color: #3B5998;
-   cursor: pointer;
-   text-decoration: none;
-}
-  
-#fs-dialog #fs-selected-user-list a, #fs-dialog #fs-user-list a, #fs-dialog #fs-confirm-user-list a{
-  color: #333333;
-  font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
-  font-size: 11px;
-  line-height: normal !important;
-  width: 555px;
- 	font-weight: normal;
-}
+/* ===========================   Overlays & Loading Animation ========================= */
 
 #site-loading {
 	background-image:url(loading.gif);
@@ -128,9 +104,7 @@ a {
 	width: 32px;
   position: relative;
   top: 30px;
-	
 }
-
 
 #admirer-loading {
 	background-image:url(friend-selector/friend-selector-loader.gif);
@@ -168,12 +142,6 @@ a {
 	width: 32px;
   position: relative;
   top: 125px;
-	
-}
-
-#credit_check_content #site-loading {
-
-	display:none;
 }
 
 #site-overlay {
@@ -190,6 +158,146 @@ filter:alpha(opacity=75);
 visibility:hidden;
 }
 
+/* ===========================   Left Sidebar Container ========================= */
+
+
+.nav_header {
+	border-bottom: 1px solid #666699;
+	padding-left:6px;
+	font-weight:bold;
+	font-family:tahoma;
+	font-size:13px;
+	background-color:#99CCFF;
+	border-radius:10px 10px 0 0;
+	height:25px;
+	padding:5px;
+}
+
+.navbar {
+	list-style:none;	
+	border-left: 1px solid #666699;
+	border-right: 1px solid #666699;
+	background-color:#FFFFFF;
+	border-left: 1px solid #666699;
+	border-right: 1px solid #666699;
+	background-color:#FFFFFF;
+}
+
+#main_nav {
+	width:200px;
+	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+}
+
+#main_nav a {
+	display:block;
+	font-size:16px;
+	font-weight:bold;
+	text-decoration:none;
+	border-bottom:1px solid #666699;
+	height:50px;
+	padding:6px 8px 0px 14px;
+}
+
+.nav_subtext {
+	display:block;
+	font-size:11px;
+	font-weight:normal;
+	margin-top:3px;
+	}
+
+.navbar a.active {
+	background-color:#333366;
+	color:#FFF;
+}
+.navbar a.inactive {
+	background-color:white;
+	color:#565656;
+}
+
+a.button {
+
+	display:block;
+	background-color: #3366FF;
+	background:#3366FF;
+	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: -moz-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);	
+	border:1px solid #003399;
+	border-radius: 5px;
+	#box-shadow: inset 0px 0px 0px 1px rgba(0,51,153,0.4),0 1px 3px #003399;
+	text-decoration: none;
+	padding-top:8px;
+	color:#fff;
+	font: bold 16px/1 helvetica, arial,sans-serif;
+	height:35px;
+	margin:30px 8px 0;
+	text-align:center;
+	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
+}
+
+/* ===========================   Right Sidebar ========================= */
+
+#friend_referral_bar_header {
+	height:30px;
+	padding-left:15px;
+	padding-top:1px;
+}
+.header_subtext {
+	display:block;
+	font-size:11px;
+	font-weight:normal;
+	margin-top:-2px;
+	}
+	
+#friend_referral_bar{
+	width:190px;
+		box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+}
+
+#friend_referral_bar a {
+	display:block;
+	font-size:12px;
+	font-weight:normal;
+	text-decoration:none;
+	border-bottom:1px solid #666699;
+	height:60px;
+	padding:6px 8px 0px 14px;
+}
+
+ #friend_referral_bar li#no_friends {
+ 	padding-top:10px;
+ 	color:gray;
+ }
+
+ #friend_referral_bar li, #friend_referral_bar a {
+	display:block;
+	font-size:12px;
+	font-weight:normal;
+	text-decoration:none;
+	border-bottom:1px solid #666699;
+	height:55px;
+	padding:6px 8px 0px 14px;
+}
+
+
+
+.company_info {
+	margin-top:15px;
+	font-size:12px;
+	color:#565656;
+	padding-left:6px;
+}
+.company_info .subtext{
+	display:block;
+}
+.company_info a{
+	font-size:12px;
+
+}
+
+/* ===========================   Center Container ========================= */
+
 .crush_block,.admirer_block {
 	
 background-color:GhostWhite;
@@ -201,6 +309,13 @@ padding:10px;
 z-index:10;
 box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 }
+
+#credit_check_content #site-loading {
+
+	display:none;
+}
+
+/* ===========================   Admirer Lineup ========================= */
 
 #bx-pager a img  {
 	border: 1px solid black;
@@ -266,13 +381,6 @@ box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 }
 
 
-#fs-select-view #site-overlay {
-top:28px;
-opacity:0.25;
--moz-opacity:0.25;
-filter:alpha(opacity=25);
-
-}
 
 .MercuryRepliedIndicator.repliedLast{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
 .MercuryRepliedIndicator.repliedLast.seenByAll{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-285px -395px;display:inline-block;height:10px;width:10px;}
@@ -393,4 +501,20 @@ filter:alpha(opacity=25);
 	
 }
 
+/* ===========================   Friend Selector Dialog ========================= */
 
+#fs-dialog #fs-selected-user-list a, #fs-dialog #fs-user-list a, #fs-dialog #fs-confirm-user-list a{
+  color: #333333;
+  font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
+  font-size: 11px;
+  line-height: normal !important;
+  width: 555px;
+ 	font-weight: normal;
+}
+
+#fs-select-view #site-overlay {
+	top:28px;
+	opacity:0.25;
+	-moz-opacity:0.25;
+	filter:alpha(opacity=25);
+}
