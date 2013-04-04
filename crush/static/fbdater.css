@@ -7,7 +7,7 @@ margin: 0; padding: 0; border: 0;
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 display: block;
 }
-
+html { height: 100%; }
 body {
 	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;  
   font-size: 14px;  
