@@ -28,7 +28,8 @@ function purchase_feature(data){
 	return false;
 };
 
-function purchase_conversation(csrf_token,attraction_id,purchase_callback_name='') {
+function purchase_conversation(csrf_token,attraction_id,purchase_callback_name) {
+			purchase_callback_name = typeof purchase_callback_name !== 'undefined' ? purchase_callback_name : "";
 			data = {};
 			data['csrfmiddlewaretoken']=csrf_token;
 			data['success_path'] = '/messages/converse/' + attraction_id;	

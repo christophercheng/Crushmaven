@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Attractions{% endblock %}
 {% block content %}
 {% load fbdater_extras %}
 <script type="text/javascript">
@@ -474,11 +475,13 @@ $(document).ready(function()
 
 	
 {% elif responded_relationships.count == 0 %}
+<span id="no_content">
 	{% if crush_type = 0 %}
-		<BR><BR>You do not have any attractions.  <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
+		<BR><BR>You do not have any attractions. &nbsp;<BR><BR> <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
 		<BR><BR>You have no completed crushes.
 	{% endif %}
+	</span>
 {% endif %}
 {% endblock %}
 

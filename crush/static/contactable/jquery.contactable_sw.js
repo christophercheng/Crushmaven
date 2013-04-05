@@ -32,7 +32,7 @@
 		return this.each(function() {
 			//construct the form
 			var this_id_prefix = '#'+this.id+' ';
-			$(this).html('<div id="contactable_inner"></div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/></div></form>');
+			$(this).html('<div id="contactable_inner">Feedback</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/></div></form>');
 			//show / hide function
 			$(this_id_prefix+'div#contactable_inner').toggle(function() {
 				$(this_id_prefix+'#overlay').css({display: 'block'});

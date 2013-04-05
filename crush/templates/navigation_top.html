@@ -1,24 +1,54 @@
 {% load base_extras %}
 
-<div id="top_bar">
+<!-- ============ LOGO ============= -->	
 
-	<!-- Top Bar Links -->
-		<a href="{% url 'crush.views.infrastructure_views.home' %}"><font color=RoyalBlue>Attracted</font><font color=SeaShell><i>to...</i></font></a>
-<!-- NOTIFICATIONS (variables are processed in a custom context processor -->
+<!-- Top Bar Links -->
+<a class="logo" href="{% url 'crush.views.infrastructure_views.home' %}"><span id="attracted">Attracted</span><span id="to">to...</span></a>
 
-	(<a id="num_new_responses" href="/attractions/">{{num_new_responses}}</a>)
-	(<a id="num_new_admirers" href="/admirers/">{{num_new_admirers}}</a>)
-	
-<!-- END NOTIFICAIONS -->
-		&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add Crush</a>&nbsp;
-		<a href="{% url 'crush.views.static_file_views.help_how_it_works' %}">How it Works</a>
-		<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
-		<a href="{% url 'crush.views.settings_views.settings_credits' %}">Credits (<span id="num_credits">{{request.user.site_credits}}</span>)</a>	
-		<a href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
-		<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
-		
-					<img src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
-			<b>Settings </b>
+<!-- ============ NOTIFICATIONS ============= -->	
 
-</div> <!-- close off topbar div -->
+<ul id="notification_menu">
+	<li>
+		<a id = "notification_icon_responses" href="/attractions/" class="notification_block"></a>
+		{% if num_new_responses %}<a id="num_new_responses" class="header_notification_count" href="/attractions/">{{num_new_responses}}</a>{% endif %}
+	</li>
+	<li>
+		<a id = "notification_icon_admirers"href="/admirers/" class="notification_block"></a>
+		{% if num_new_admirers %}<a id="num_new_admirers" class="header_notification_count""href="/admirers/">{{num_new_admirers}}</a>{% endif %}
+	</li>
+	<li>
+	<a id = "notification_icon_messages" href="/messages/inbox/" class="notification_block"></a>
+		{% if num_new_messages %}<a id="num_new_messages" class="header_notification_count" href="/messages/inbox/">{{num_new_messages}}</a>{% endif %}
+	</li>
+</ul>
+
+<!-- ============ MIDDLE BUTTON(S) ============= -->	
+
+<a href="#" class="bt-fs-dialog">Add Attraction</a>
+
+<!-- ============ RIGHT HEADER ITEMS ============= -->	
+<ul id="right_header_menu" class="drop_down_menu_link">
+	<li>
+		<a href="{% url 'crush.views.static_file_views.help_how_it_works' %}">How it Works</a>		
+	</li>
+	<li class="pic">
+		<img src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
+	</li>
+	<li class="submenu">
+		<a  href="#">Settings<i class="icon down-dir">&#x25BC;</i></a>
+		<ul id="settings_menu">
+			<li>
+				<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
+			</li>
+			<li>
+				<a href="{% url 'crush.views.settings_views.settings_credits' %}">Credits (<span id="num_credits">{{request.user.site_credits}}</span>)</a>	
+			</li>
+			<li>
+				<a href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
+			<li>
+				<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
+			</li>
+		</ul><!-- close off settings_menu div -->
+	</li>
+</ul> <!-- close off right_header_menu div -->
 

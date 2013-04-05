@@ -1,4 +1,3 @@
-{% load base_extras %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,7 +6,7 @@
 	    <meta name="robots" content="all,index" />
 	    <meta name="Revisit-After" content="30 Days" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-		<title>AttractedTo |{% block title %}{% endblock %}</title>    	
+		<title>{% block title %}{% endblock %} | AttractedTo</title>    	
 	    {% block extrahead %}{% endblock %}
 
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
@@ -183,7 +182,23 @@ jQuery(document).ready(function($) {
 // INITIALIZE FEEDBACK FORM 
  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
 
-  
+// -------------  CSS additions ------------------
+// HANDLE SETTINGS MENU CLICK
+function openSubMenu() {
+	clearTimeout(window.submenu_toggle);
+	var show_me = $(this).find('ul');
+	window.submenu_show=setTimeout(function(){
+		if (show_me.parent().is(":hover"))
+			show_me.show(100);
+	},300); 
+};
+function closeSubMenu() {
+	clearTimeout(window.submenu_toggle);
+	var hide_me = $(this).find('ul');
+	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(300);},400);
+};
+$('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
+
 }); // close of jQuery(document).ready
 </script>
 
