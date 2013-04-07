@@ -78,9 +78,9 @@ $(document).ready(function()
    		if ({{responded_relationships.count}} > 1 || {{crushes_in_progress_count}} > 0)
    			location.href="/attractions/";
    		else
-   			location.href="/crushes_completed";
+   			location.href="/attractions_completed";
    	{% else %}
-   		location.href="/crushes_completed/"; // reload page
+   		location.href="/attractions_completed/"; // reload page
    	{% endif %}
   };
   
@@ -126,8 +126,8 @@ $(document).ready(function()
 	var purchase_rating = function(unique_id){
    		data = {};
 			data['csrfmiddlewaretoken']="{{csrf_token}}";
-			data['success_path'] = '/crushes_completed/' +  '/' + unique_id + '/';
-			data['cancel_url'] = 'http://{{request.get_host}}/crushes_completed/' +  '/' + unique_id + '/';
+			data['success_path'] = '/attractions_completed/' +  '/' + unique_id + '/';
+			data['cancel_url'] = 'http://{{request.get_host}}/attractions_completed/' +  '/' + unique_id + '/';
 			data['unique_id'] = unique_id;
 			data['feature_id'] = '3';
 			data['purchase_callback_name'] = 'window.rating_purchased(' + unique_id + ')';
@@ -335,13 +335,21 @@ $(document).ready(function()
 {% endif %} 
 
 <!-- Display the crush type navigation widget -->  
-<font color="gray">
 {% if crush_type = 0 and crush_relationships %}
-<b>Crushes in Progress ({{crushes_in_progress_count}})</b>&nbsp;&nbsp;<a href="/crushes_completed">Completed Crushes ({{crushes_completed_count}})</a>
+<ul class="nav_bar" id="nav_bar_attractions">
+	<li id="nav_bar_title">Attractions:</li>
+	<li class="nav_bar_active">in progress ({{crushes_in_progress_count}})</li>
+	<li class="nav_bar_inactive"><a href="/attractions_completed">responded ({{crushes_completed_count}})</a></li>
+	<li id="nav_bar_options">sort by <span id="down_arrow">&#x25BC;</span></li>
+</ul>
 {% elif crush_type = 1 %}
-<a href="/attractions">Crushes in Progress ({{crushes_in_progress_count}})</a><b>&nbsp;&nbsp;Completed Crushes ({{crushes_completed_count}})</b>
+<ul class="nav_bar" id="nav_bar_attractions">
+	<li id="nav_bar_title">Attractions:</li>
+	<li class="nav_bar_inactive"><a href="/attractions/">in progress ({{crushes_in_progress_count}})</a></li>
+	<li class="nav_bar_active">responded ({{attractions_completed_count}})</li>
+	<li id="nav_bar_options">sort by <span id="down_arrow">&#x25BC;</span></li>
+</ul>
 {% endif %}
-</font>
   
 <! -- End of crush type navigation widget -->  
 
@@ -389,12 +397,6 @@ $(document).ready(function()
 		<BR>
 		
 		<!--  start: bullet points -->
-		
-		
-<script>
-
-</script>		
-
 
 		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
 {% if crush.friendship_type > 1 %}

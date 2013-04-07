@@ -13,7 +13,7 @@ from admirer_views import admirers_past
 
 # crush view and creation views
 from crush_views import attractions
-from crush_views import crushes_completed
+from crush_views import attractions_completed
 from crush_views import app_invite_form
 from crush_views import ajax_find_fb_user
 from crush_views import ajax_initialize_nonfriend_lineup

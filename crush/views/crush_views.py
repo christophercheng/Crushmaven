@@ -197,7 +197,7 @@ def ajax_get_platonic_rating(request,crush_id):
 
 # -- Crushes Completed Page --
 @login_required
-def crushes_completed(request,reveal_crush_id=None):
+def attractions_completed(request,reveal_crush_id=None):
     me = request.user
     crush_relationships = request.user.crush_crushrelationship_set_from_source 
     if reveal_crush_id:

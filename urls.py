@@ -46,9 +46,9 @@ urlpatterns += patterns('crush.views.crush_views',
             
     (r'^ajax_initialize_nonfriend_lineup/(?P<target_username>\d+)/$','ajax_initialize_nonfriend_lineup'),
     
-    (r'^crushes_completed/(?P<reveal_crush_id>\w+)/$','crushes_completed'),
+    (r'^attractions_completed/(?P<reveal_crush_id>\w+)/$','attractions_completed'),
     
-    (r'^crushes_completed/$','crushes_completed'),
+    (r'^attractions_completed/$','attractions_completed'),
     
     (r'^app_invite_form/(?P<crush_username>\w+)/$','app_invite_form'),
     

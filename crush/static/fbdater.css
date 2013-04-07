@@ -78,7 +78,7 @@ a.button:hover {
 	background: -moz-linear-gradient(top, rgb(0,0,90),rgb(0,0,51));
 	background: -webkit-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
 	background: -0-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
-	background: linear-gradient(top, rgb(0,0,70),rgb(0,0,70));
+	background: linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
 	color: white;
 	width:100%;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
@@ -333,23 +333,19 @@ a.logo #to {
 	background-color:rgb(0,0,60);#rgb(0,0,70);
 	display:none;
 	border-radius: 0 0 8px 8px;
+	height:160px;
 }
+
 
 #settings_menu li a{
 	color:white;
 	display:block;
-	#border:1px solid white;
 	padding:7px 20px;
 	margin-top:-10px;
-
 }
 
 #settings_menu a:hover {
 	background-color:#333366;
-	#border-top:1px solid white;
-	#border-bottom:1px solid white;
-	#padding:6px 20px;
-	#color:rgb(0,0,51);
 }
 
 /* ===========================   Left Sidebar Container ========================= */
@@ -558,6 +554,73 @@ box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 }
 
 
+/* ===========================   Attractions Page ========================= */
+ul.nav_bar {
+	list-style:none;
+	border-radius:8px 8px 2px 2px;
+	color:white;
+	margin-bottom:10px;
+	background-image: -webkit-linear-gradient(top,#333366 0%, #333366 50%, rgb(0,0,70) 50%, rgb(0,0,70) 100%);	
+	background-image: -moz-linear-gradient(top,#333366 0%, #333366 50%, rgb(0,0,70) 50%, rgb(0,0,70) 100%);	
+	background-image: -o-linear-gradient(top,#333366 0%, #333366 50%, rgb(0,0,70) 50%, rgb(0,0,70) 100%);	
+	background-image: linear-gradient(top,#333366 0%, #333366 50%, rgb(0,0,70) 50%, rgb(0,0,70) 100%);
+	height:27px;	
+	
+}
+ul.nav_bar li {
+	display:inline-block;
+	#border: 1px solid white;
+	margin:0;
+	height:100%;
+	line-height:27px;
+}
+ul.nav_bar li.nav_bar_active {
+	background-color: rgb(102,102,153);	
+	box-shadow: inset 0px 0px 0px 1px rgba(0,51,153,0.4);
+	box-shadow: inset 1px 1px 1px 1px #333366;
+}
+
+ul.nav_bar li#nav_bar_title{
+	float:left;
+	font-weight:bold;
+	font-size:16px;
+	padding-right:15px;
+	padding-left:10px;
+	border-right:1px solid #333366;
+}
+ul.nav_bar li.nav_bar_inactive, ul.nav_bar li.nav_bar_active {
+	display:inline-block;
+	width:177px;
+	margin-right:-5px;
+	text-align:center;
+	font-size:12px;
+	border-right:1px solid #333366;
+}
+
+ul.nav_bar li a{
+	display:block;
+	font-size:12px;
+	color:white;
+}
+
+ul.nav_bar li a:hover {
+	background-color:#333366;
+	box-shadow: inset 0px 0px 0px 1px rgba(0,0,70,0.4);
+}
+
+ul.nav_bar li.nav_bar_active{
+	font-weight:bold;
+	color:white;}
+
+ul.nav_bar li#nav_bar_options{
+	float:right;
+	font-size:12px;
+	text-align:center;
+	padding-right:8px;
+	padding-left:8px;
+	display:block;
+}
+
 
 /* ===========================   Admirer Lineup ========================= */
 
@@ -623,8 +686,6 @@ box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 	background:black;
 	opacity:0.8;
 }
-
-
 
 .MercuryRepliedIndicator.repliedLast{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
 .MercuryRepliedIndicator.repliedLast.seenByAll{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-285px -395px;display:inline-block;height:10px;width:10px;}
