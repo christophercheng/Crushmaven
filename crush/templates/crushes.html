@@ -260,7 +260,22 @@ $(document).ready(function()
      $("#privacy_check").trigger('click');
    });
   {% endif %}  	
-        
+
+//$('.crush_block .progress_bar_canal .progress_bar').animate({width:$(this).attr('width')},3500);
+$.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
+	var attr_width = $(this).attr('width');
+	var animate_property = {width:attr_width};
+	var ease_function;
+	if (attr_width == '505px')
+		ease_function = "easeOutQuart";
+	else
+		ease_function = "easeOutBack"; 
+	var duration = 2000;//Math.floor((Math.random()*1500)+1000); 
+	$(this).animate(animate_property,duration,ease_function);
+		var status_bar = $(this).parent().parent().find('.attraction_status_bar');
+		status_bar.children('li.active_status').addClass('active_status_animated');
+		status_bar.children('li.past_status').addClass('past_status_animated');
+	});      
 });
 </script>
 

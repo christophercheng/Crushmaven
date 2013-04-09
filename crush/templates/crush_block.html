@@ -30,7 +30,7 @@
 </ul>
 		
 <span class="progress_bar_canal">
-	<span class="progress_bar"></span>
+	<span class="progress_bar" width="{% if crush.target_status < 2 %}271px{% elif crush.target_status == 2 %}347px{% elif crush.target_status == 3 %}413px{% else %}505px{% endif%}"></span>
 </span>
 
 <img src="{{crush.target_person.get_facebook_picture }}" class="profile_pic">
@@ -83,7 +83,7 @@
 	{% if not crush.is_results_paid %}
 		<a href="#" class="check_credit button" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
 	{% elif crush.target_status == 4 and not crush.can_message %}
-			<a href="#" class="button lower_button" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a></li>
+			<a href="#" class="button" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a></li>
 	{% endif %}
 {% endif %}
 
