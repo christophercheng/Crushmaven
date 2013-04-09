@@ -23,12 +23,13 @@ body {
 	background: linear-gradient(top,GhostWhite,GhostWhite 50%, rgba(0,0,40,.1));
 	height:1400px;
  	overflow-x: hidden;	
- 	overflow-y: scroll;#force vertical scrollbar on all pages so that main container doesn't jump between pages with and without content
+ 	overflow-y: scroll;
+ 	/*#force vertical scrollbar on all pages so that main container doesn't jump between pages with and without content
+	*/
 }
 
 a {
    font-size: 15px;
-
    color: #3366ff;
    cursor: pointer;
    text-decoration: none;
@@ -42,7 +43,7 @@ a.button {
 	background-image: -moz-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #333399 100%);
 	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
 	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);	
-	#border:1px solid #0033FF;
+	/*border:1px solid #0033FF;*/
 	border-radius: 8px;
 	text-decoration: none;
 	padding-top:8px;
@@ -113,13 +114,13 @@ a.button:hover {
 
 .center_panel {
 	width:575px;
-	margin-left:210px;
+	margin-left:205px;
 	#background-color:blue;
 }
 .center_panel_container {
 	margin-left:15px;
 	margin-right:15px;
-	width:545px;
+	width:550px;
 	#background-color:white;
 }
 
@@ -358,8 +359,8 @@ a.logo #to {
 	font-family:tahoma;
 	font-size:13px;
 	color:white;
-	#background-color:#99CCFF;
-	#background-color:#000033;
+	/*background-color:#99CCFF;*/
+	/*background-color:#000033;*/
 	background-color:rgb(0,0,70);
 	border-radius:8px 8px 0 0;
 	height:25px;
@@ -437,11 +438,6 @@ a.logo #to {
 	background-color: #333366; 
 	color:#FFF;
 }
-
-.navbar li.inactive a:active {
-	background-color: rgba(0,0,70,.6); 
-}
-
 
 .left_sidebar_container #add_icon{
 	position:absolute;
@@ -527,7 +523,7 @@ a.button {
 
 /* ===========================   Center Container ========================= */
 
-.crush_block,.admirer_block {
+.admirer_block {
 	
 background-color:white;
 border-style:solid;
@@ -554,7 +550,87 @@ box-shadow: 1px 4px 6px rgba(0,0,0,.5);
 }
 
 
-/* ===========================   Attractions Page ========================= */
+/* ===========================   Title Bar ========================= */
+.title_line{
+	display:block;
+	border-bottom: 1px solid #D0D0D0;
+	width:100%;
+	height:15px;
+}
+
+ul.title_bar {
+	list-style:none;
+	/*
+	#float:left;
+	#position:absolute;
+	#top:64px;
+	width:545px;
+		*/
+	margin-top:-16px;
+	margin-bottom:25px;
+}
+ul.title_bar > li {
+	display:inline-block;
+	/*#border: 1px solid gray;*/
+	background-color:white;
+	vertical-align:middle;
+	line-height:23px;
+}
+
+ul.title_bar li.title_bar_title{
+	font-size:20px;
+	color:#333366;
+	font-weight:bold;
+	padding-right:10px;
+}
+
+
+ul.title_bar li.title_bar_option {
+	float:right;
+	padding-left:10px;
+	padding-top:3px;
+	font-size:11px;
+	font-style:italic;
+	color:#A0A0A0;
+	position:relative;
+}
+ul.title_bar li.title_bar_option a{
+	font-style:normal;
+	margin-left: 3px;
+	font-size:11px;
+	color: #333366;
+}
+ul.title_bar li.title_bar_option a:hover{
+	text-decoration:underline;
+}
+.down_arrow{
+	font-size:9px;
+	margin-left:1px;
+}
+
+ul.title_bar li ul{
+	display:none;
+	list-style:none;
+	background-color:white;
+	position:absolute;
+	right:0px;
+	padding:5px 0 5px 0;
+	z-index:11;
+}
+
+ul.title_bar li ul li a{
+	border:1px solid #606060;
+	padding:7px 7px;
+	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+}
+ul.title_bar li.title_bar_option ul li a:hover{
+	text-decoration:none;
+	background-color:#333366;
+	color:white;
+	box-shadow: none;
+}
+
+
 ul.nav_bar {
 	list-style:none;
 	border-radius:8px 8px 2px 2px;
@@ -621,7 +697,245 @@ ul.nav_bar li#nav_bar_options{
 	display:block;
 }
 
+/* ===========================   Attraction Block ========================= */
 
+#title_new_responses{
+	display:block;
+	color:rgb(230,0,0);
+	font-weight:bold;
+	margin-bottom:15px;
+}
+
+.center_panel_container #no_content {
+	margin-top:100px;
+	display:inline-block;
+	position:relative;
+}
+
+#responses{
+	margin-bottom:30px;
+	/*#border:1px solid red;*/
+}
+
+.crush_block {
+background-color:white;
+background-color:rgba(204,204,153,.1);
+#border:1px solid #D0D0D0  ;
+border-radius:3px;
+margin-bottom:25px;
+padding:10px 15px 10px 20px;
+z-index:10;
+#box-shadow: 2px 1px 4px rgba(0,0,0,.5);
+position:relative;
+height:160px;
+#box-shadow: 1px 1px 4px #333366;/*#CC0000;*/
+border:1px solid rgba(0,0,50,.5);/*#CC0000;*/
+}
+
+.crush_status_0{
+	height:175px;
+}
+
+.crush_status_responded{
+box-shadow: 1px 1px 10px #003399;/*#CC0000;*/
+border:1px solid #003399;/*#CC0000;*/
+}
+
+.updated{
+	padding:0px 3px 2px 3px;
+	background-color:#FF6600;
+	color:white;
+	position:absolute;
+	top:-5px;
+	left:-6px;
+	font-size:10px;
+	font-weight:bold;
+}
+
+ul.attraction_status_bar{
+	list-style:none;
+	/*#border:1px solid gray;*/
+	height:35px;
+	margin-right:10px;
+}
+
+ul.attraction_status_bar li{
+	display:inline-block;
+	#border:1px solid blue;
+	font-family:"trebuchet MS";
+}
+
+ul.attraction_status_bar li p {
+	margin-top:-2px;
+}
+
+ul.attraction_status_bar li.status_signed_up,
+ul.attraction_status_bar li.status_responded {
+	margin-top:13px;
+}
+
+ul.attraction_status_bar li.status_bar_name{
+	width:180px;
+	font-style:italic;
+	font-weight:bold;
+	font-size:16px;
+	color:#333366;
+	padding:0;
+	margin:0;
+	vertical-align:-10px;
+  /*	#border:1px solid red;*/
+}
+
+ul.attraction_status_bar li.attraction_status{
+	float:right;
+	font-style:normal;
+	font-weight:normal;
+	margin-left:25px;
+	font-size:12px;
+	text-align:center;
+	color:rgb(102,102,153);
+	color:rgba(102,102,153,.8);
+}
+ul.attraction_status_bar li.active_status{
+	font-weight:bold;
+	font-style:italic;
+	color:#333366;
+}
+ul.attraction_status_bar li.past_status{
+	font-weight:normal;
+	font-style:italic;
+	color:#C0C0C0;
+}
+	
+/* =========   progress bar ========= */
+
+.progress_bar_canal{
+	display:inline-block;
+	width:505px;
+	height:4px;
+	background-color:gray;
+	background: -moz-linear-gradient(top,#E0E0E0 , white);
+	background: -webkit-linear-gradient(top,#D0D0D0 , white);
+	background: -0-linear-gradient(top,#D0D0D0 , white);
+	background: linear-gradient(top,#D0D0D0 , white);
+	border:1px solid #E0E0E0 ;
+	border-radius:8px;
+	top:45px;
+	left:19px;
+	position:absolute;
+}
+
+.progress_bar{
+	position:absolute;
+	top:-1px;
+	/*#display:inline-block;*/
+	width:271px;
+	height:3px;
+	background-color:#0066FF;
+	border:1px solid #003399 ;
+	border-radius:5px;
+}
+
+.crush_status_2 .progress_bar{
+		width:347px;
+}
+.crush_status_3 .progress_bar{
+		width:413px;
+}
+.crush_status_responded .progress_bar,
+.crush_status_5 .progress_bar,
+.crush_status_4 .progress_bar{
+		width:505px;
+}
+.crush_block img.profile_pic{
+	margin-top:15px;
+	height:80px;
+	width:80px;	
+	float:left;
+	border: 1px solid rgb(0,0,0);
+}
+
+.status_detail_box{
+	height:80px;
+	line-height:80px;
+	/*border:1px solid gray;*/
+	display:inline-block;
+	width:422px;
+	margin-top:15px;
+}
+.status_details{
+	line-height:16px;
+	vertical-align:middle;
+	display:inline-block;
+	/*#border:1px solid red;*/
+	list-style:circle;
+}
+.status_details li {
+	font-family:"lucida grande",tahoma,verona,arial,sans-serif;
+	/*#border:1px solid blue;*/
+	font-size:12px;
+	margin-left:27px;
+	line-height:16px;
+	padding:4px 0 12px 0;
+}
+
+/* special case: push up the bullets for the crush block with a button below */
+.crush_status_0 .status_detail_box,
+.crush_status_4 .status_detail_box  {
+	margin-top:5px;
+}
+
+.crush_status_0 a.button{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:-12px;
+	height:28px;
+	width:140px;
+	padding:7px 5px 2px 5px;
+	border-radius:5px;
+	font-family:arial;
+	/*#font-weight:normal;*/
+	font-size:14px;
+	position:relative;
+}
+.crush_status_responded a.button{
+	float:right;
+	margin-top:-55px;
+	margin-right:40px;
+	height:28px;
+	width:130px;
+	padding:7px 2px 0px 5px;
+	text-align:center;
+	border-radius:5px;
+	font-family:arial;
+	/*#font-weight:normal;*/
+	font-size:14px;
+	position:relative;
+}
+.crush_status_4 a.button{
+	float:right;
+	margin-top:-18px;
+	margin-right:200px;
+	height:28px;
+	width:130px;
+	padding:7px 2px 0px 5px;
+	text-align:center;
+	border-radius:5px;
+	font-family:arial;
+	/*#font-weight:normal;*/
+	font-size:14px;
+	position:relative;
+}
+
+.hint_anonymous {
+
+	position:absolute;
+	top:148px;
+	left:242px;
+	font-size:11px;
+	color:#909090;
+	
+}
 /* ===========================   Admirer Lineup ========================= */
 
 #bx-pager a img  {
@@ -656,7 +970,7 @@ ul.nav_bar li#nav_bar_options{
 	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
 	font-size: 11px;  
   line-height: 1.28;
-  text-align: left
+  text-align: left;
 	color: #333333;
 	background-color: #eceff6;
 	display: block;

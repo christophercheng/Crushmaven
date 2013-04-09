@@ -264,224 +264,64 @@ $(document).ready(function()
 });
 </script>
 
-{% if userlist %}
-<h3>The following users were added to your secret crushlist:</h3>
-<ul>
-	{% for user in userlist %}
-		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
-	{% endfor %}
-</ul>
-{% endif %}
-
-{% if duplicate_userlist %}
-<h3>The following users are already on your crush list::</h3>
-<ul>
-	{% for user in duplicate_userlist %}
-		<li>{{user.first_name}} {{user.last_name}} <small>({{user.username}})</small> <BR>
-	{% endfor %}
-</ul>
-{% endif %}
-
 <!-- ALWAYS display responded crush relationships on top of page, if they exist -->
 
 {% if responded_relationships %}
-	<div id ="responses">
-	<font color="red"><b>You have responses!</b></font>
+
+<div id ="responses">
+	<span id="title_new_responses">You have new responses!</span>
 	{% for crush in responded_relationships %}
-		<div class="crush_block" username="{{crush.target_person.username}}">
-		<!-- start: crush first and last name -->
-		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b>
-		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
-		
-		&nbsp;&nbsp;&nbsp;
-		<!-- end: crush first and last name -->
-
-		<!-- start: crush status graphic -->	
-		<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
-		<!--  end: crush status graphic -->
-		<BR>		
-		<!-- start: crush pic -->
-		<img src="{{crush.target_person.get_facebook_picture }}" height=80 width=80>
-		<!-- end: crush pic -->
-		<BR>
-		
-		<!--  start: bullet points -->
-		* responded to your crush<br>
-		* {{crush.date_target_responded|datetime_since}} ago<BR>
-		<!--  end: bullet points -->
-		
-		<!-- start: response button -->
-			&nbsp;&nbsp;&nbsp;
-			
-			<a href="#" class="check_credit" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
-
-			
-		<!-- end: response button -->
-		
-		<!-- start: secondary data -->
-		<br>
-		<i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp;
-		<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
-		&nbsp;|&nbsp;
-		
-		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete_crush" href="#" >remove as crush</a><BR>
-		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="admin_delete" href="#" >temporary admin: remove as crush</a>		
-		<!-- end: secondary data -->
-	</div>
+			{% with crush as crush %}
+				 	{% include "crush_block.html" %}
+				{% endwith %}
 	{% endfor %} 
-	</div>
+</div>
 {% endif %} 
 
 <!-- Display the crush type navigation widget -->  
-{% if crush_type = 0 and crush_relationships %}
-<ul class="nav_bar" id="nav_bar_attractions">
-	<li id="nav_bar_title">Attractions:</li>
-	<li class="nav_bar_active">in progress ({{crushes_in_progress_count}})</li>
-	<li class="nav_bar_inactive"><a href="/attractions_completed">responded ({{crushes_completed_count}})</a></li>
-	<li id="nav_bar_options">sort by <span id="down_arrow">&#x25BC;</span></li>
+<span class="title_line"></span>
+<ul class="title_bar" id="title_bar_attractions">
+	<li class="title_bar_title">Attractions</li>
+	<li class="title_bar_option">
+		sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
+	</li>
+	<li class="title_bar_option">
+		filter:
+		{% if crush_type = 0  %}
+		<a href="#" class="popup_link">not responded<span class="down_arrow">&#x25BC;</span></a>
+		<ul class="popup">
+			<li>
+				<a href="/attractions_completed/">responded ({{crushes_completed_count}})</a>
+			</li>
+		</ul>
+		{% else %}
+		<a href="#" class="popup_link">responded ({{crushes_completed_count}})<span class="down_arrow">&#x25BC;</span></a>
+		<ul class="popup">
+			<li>
+				<a href="/attractions/">not responded</a>
+			</li>
+		</ul>
+		{% endif %}
+	</li>
 </ul>
-{% elif crush_type = 1 %}
-<ul class="nav_bar" id="nav_bar_attractions">
-	<li id="nav_bar_title">Attractions:</li>
-	<li class="nav_bar_inactive"><a href="/attractions/">in progress ({{crushes_in_progress_count}})</a></li>
-	<li class="nav_bar_active">responded ({{attractions_completed_count}})</li>
-	<li id="nav_bar_options">sort by <span id="down_arrow">&#x25BC;</span></li>
-</ul>
-{% endif %}
-  
 <! -- End of crush type navigation widget -->  
 
 {% if crush_relationships %}
-
 	{% for crush in crush_relationships %}
-	
-	<div class="crush_block" username="{{crush.target_person.username}}">
-	
-<!-- Display NEW or UPDATED if relevant -->  
-		{% if crush.updated_flag == True %}
-			{% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
-				(New)
-			{% else %}
-				(Updated)
-			{% endif %}
-			{{ crush.resetUpdatedFlag }}
-		{% endif %}
-		
-<!-- start: crush first and last name -->
-		<b><i>{{crush.target_person.first_name}} {{crush.target_person.last_name}}</i></b> 
-		({% if crush.friendship_type == 0 %}friend{% elif crush.friendship_type == 1 %}friend-of-friend{% else %}non-friend{% endif %})
-		{% if crush_type = 1 %} <b>(YES)</b> {% elif crush_type = 2 %} <b>(NO)</b>{% endif %}
-		&nbsp;&nbsp;&nbsp;
-<!-- end: crush first and last name -->
-
-<!-- start: crush status graphic -->	
-
-{% if crush.get_display_status < 2 %}
-	<font color="red">not member&nbsp;&nbsp;</font><font color="gray">signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;decided on you</font>
-	{% elif crush.get_display_status == 2 %}
-		<font color="gray">not member&nbsp;&nbsp;</font><font color="red">signed up&nbsp;&nbsp;</font><font color="gray">started crush line-up&nbsp;&nbsp;decided on you</font>
-		{% elif crush.get_display_status == 3 %}
-			<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;</font><font color="red">started crush line-up&nbsp;&nbsp;</font><font color = gray>decided on you</font>			
-			{% else%}
-						<font color="gray">not member&nbsp;&nbsp;signed up&nbsp;&nbsp;started crush line-up&nbsp;&nbsp;</font><font color="red">decided on you</font>
-{% endif %}
-
-	<!--  end: crush status graphic -->
-		<BR>		
-		<!-- start: crush pic -->
-		<img src="{{crush.target_person.get_facebook_picture }}" height=80 width=80>
-		<!-- end: crush pic -->
-
-		<BR>
-		
-		<!--  start: bullet points -->
-
-		<!-- Handling for non-friend crushes whose lineups have not been auto-initialized yet -->
-{% if crush.friendship_type > 1 %}
-{% comment %}
-	I'm going to handle non-friend crush initialization at the crush end (late initialization)
-	{% if crush.lineup_initialization_status == None or crush.lineup_initialization_status == 0 %}
-		<div id="initialize_lineup"><div id="initialize_lineup_btn" class="fake" username="{{crush.target_person.username}}"></div>		
-		</div> <!--  close off initialize_lineup div -->
-	{% elif crush.lineup_initialization_status == 4 %} <!-- lineup initialization error 2 or 3 -->
-		<div id="initialize_lineup"><button id="initialize_lineup_btn">Re-initialize</button>
-		* {{ lineup_status_choice_4 }}
-		</div><!--  close off initialize_lineup div -->
-	{% elif crush.lineup_initialization_status == 5 %} <!-- lineup initialization error 2 or 3 -->
-		<div id="initialize_lineup"><button id="initialize_lineup_btn">Re-initialize</button>
-		* {{ lineup_status_choice_5 }}
-		</div><!--  close off initialize_lineup div -->
-	{% endif %}
-{% endcomment %}
-{% endif %}
-		
-		<!--  start: normal bullet points -->
-		
-		{% if crush.get_display_status == 0 %}
-			* needs an email invitation from you to sign up and consider your relationship
-		{% elif crush.get_display_status == 1 %}
-			* not a member<br>
-			* app invite(s) sent {{crush.date_invite_last_sent|datetime_since}} ago <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send More Invites</a></span>
-		{% elif crush.get_display_status == 2 %}
-			{% if crush.date_target_signed_up %}
-				* signed up {{crush.date_target_signed_up|datetime_since }} ago<BR>
-			{% else %}
-				* is an existing member<BR>
-			{% endif %}
-			* must start your crush line-up to assess your relationship
-		{% elif crush.get_display_status == 3 %}
-			* started crush line-up<br>
-			* response expected soon
-		{% elif crush.get_display_status == 4 %} 
-			* is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})<br>
-			{% if crush.can_message %} 
-				* <a href = "#" onclick='location.href="/messages/converse/{{crush.target_person.username}}"'>send a message</a>
-			{% else %}
-				* <a href = "#" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a>
-			{% endif %}
-		{% else %}
-		  * is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})   <BR>
-			{% if crush.target_platonic_rating != None %}
-			     {% if crush.is_platonic_rating_paid %}			
-				    * rated your attractiveness: {{crush.target_platonic_rating}} out of 5 ({{crush.get_target_platonic_rating_display}})
-                 {% else %}
-				    <div id="view_rating"><a href="#" unique_id="{{crush.target_person.username}}">View Rating</a></div>
-			     {% endif %}
-			{% endif %}
-		{% endif %}
-    <!-- start: conditional button: send invite -->
-        {% if crush.target_status == 0 %}
-                &nbsp;&nbsp;&nbsp;<B><span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a></span></B>
-        {% endif %}
-        <!-- end: conditional button: send invite -->           
-        
-        <!-- start: secondary data -->
-        <br>
-        <i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
-        <a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
-        &nbsp;|&nbsp;<BR>
-                
-		
-		<!-- Delete Functionality -->
-			
-			<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete_crush" href="#" >remove as crush</a><BR>	
-
-		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="admin_delete" href="#" >temporary admin: remove as crush</a>	
-		<!-- end: secondary data -->
-	</div> <!-- close off crush_block div -->
+		{% with crush as crush %}
+				 	{% include "crush_block.html" %}
+				{% endwith %}
 	{% endfor %}
 
-	
-{% elif responded_relationships.count == 0 %}
+{% else %}
+{% comment }{% elif responded_relationships.count == 0 %}{% endcomment %}
+
 <span id="no_content">
 	{% if crush_type = 0 %}
-		<BR><BR>You do not have any attractions. &nbsp;<BR><BR> <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
+		You do not have any {% if responded_relationships %} ongoing {% endif %}attractions.<BR><BR> <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
-		<BR><BR>You have no completed crushes.
+		You do not have any responded attractions.
 	{% endif %}
 	</span>
 {% endif %}

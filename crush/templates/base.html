@@ -199,10 +199,22 @@ function closeSubMenu() {
 };
 $('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
 
+// HANDLE TITLE BAR OPTIONS SUBMENU CLICK
+$('.title_bar_option a').bind('click',function(){
+	$(this).parent().children('ul').toggle();
+});
+
+	
+// auto close any popups when clicking elsewhere
+$('body').bind('click',function(){
+	$('.popup').hide();
+});
+$(".popup_link").click(function(e){
+  e.stopPropagation();
+});
+
 }); // close of jQuery(document).ready
 </script>
-
-
 
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="AttractedTo.com Error"></div>

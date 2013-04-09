@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Admirers{% endblock %}
 {% block content %}
 {% load fbdater_extras %}
 <script type="text/javascript">
@@ -71,14 +72,35 @@ $(document).ready(function()
 </script>
 
 <!-- Display the crush type navigation widget -->  
-<font color="gray">
-{% if admirer_type = 0 %}
-<b>Secret Admirers ({{admirer_relationships.count}})</b>&nbsp;&nbsp;<a href="/admirers_past">Past Admirers ({{past_admirers_count}})</a>
-{% else %}
-<a href="/admirers">Secret Admirers ({{progressing_admirers_count}})</a><b>&nbsp;&nbsp;Past Admirers ({{admirer_relationships.count}})</b>
-{% endif %}
-</font>
-<BR><BR>
+ 
+
+   
+<span class="title_line"></span>
+<ul class="title_bar" id="title_bar_admirers">
+	<li class="title_bar_title">Admirers</li>
+	<li class="title_bar_option">
+		sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
+	</li>
+	<li class="title_bar_option">
+		filter:
+		{% if admirer_type = 0 %}
+		<a href="#">lineup incomplete<span class="down_arrow">&#x25BC;</span></a>
+		<ul>
+			<li>
+				<a href="/admirers_past/">lineup completed ({{past_admirers_count}})</a>
+			</li>
+		</ul>
+		{% else %}
+		<a href="#">lineup completed ({{admirer_relationships.count}})<span class="down_arrow">&#x25BC;</span></a>
+		<ul>
+			<li>
+				<a href="/admirers/">lineup incomplete ({{progressing_admirers_count}})</a>
+			</li>
+		</ul>
+		{% endif %}
+	</li>
+</ul>
   
 <!-- End of crush type navigation widget -->  
 

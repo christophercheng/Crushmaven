@@ -285,7 +285,7 @@ def admirers_past(request):
    
     admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('date_added')
     progressing_admirers_count = CrushRelationship.objects.progressing_admirers(me).count()
-    
+
     return render(request,'admirers.html',
                               {
                                'admirer_type': 1, # 0 is in progress, 1 completed
