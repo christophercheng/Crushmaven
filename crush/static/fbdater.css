@@ -722,7 +722,7 @@ background-color:white;
 background-color:rgba(204,204,153,.1);
 #border:1px solid #D0D0D0  ;
 border-radius:3px;
-margin-bottom:20px;
+margin-bottom:40px;
 padding:10px 15px 10px 20px;
 z-index:10;
 #box-shadow: 2px 1px 4px rgba(0,0,0,.5);
@@ -800,7 +800,7 @@ ul.attraction_status_bar li.attraction_status{
 	color:rgb(102,102,153);
 	color:rgba(102,102,153,.8);
 	transition-property:color,font-weight;
-	transition-duration:2500ms,0ms;
+	transition-duration:2000ms,0ms;
 }
 
 ul.attraction_status_bar li.active_status_animated{
