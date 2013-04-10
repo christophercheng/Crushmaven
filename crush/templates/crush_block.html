@@ -33,7 +33,7 @@
 	<span class="progress_bar" width="{% if crush.get_display_status < 2 %}271{% elif crush.get_display_status == 2 %}347{% elif crush.get_display_status == 3 %}413{% else %}505{% endif%}"></span>
 </span>
 
-<img src="{{crush.target_person.get_facebook_picture }}" class="profile_pic">
+<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank"><img src="{{crush.target_person.get_facebook_picture }}" class="profile_pic"></a>     
 
 <div class="status_detail_box">
 <ul class="status_details">
@@ -41,7 +41,7 @@
 		<li>needs an email invitation from you to sign up and consider your relationship</li>
 	{% elif crush.get_display_status == 1 %}
 		<li>not a member</li>
-		<li>app invite(s) sent {% if crush.date_invite_last_sent %}{{crush.date_invite_last_sent|datetime_since}} ago{% endif %} <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">&nbsp;&nbsp;send more invites</a></span></li>
+		<li>app invite(s) sent {% if crush.date_invite_last_sent %}{{crush.date_invite_last_sent|datetime_since}} ago&nbsp;&nbsp;{% endif %} <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">send more invites</a></span></li>
 	{% elif crush.get_display_status == 2 %}
 		{% if crush.date_target_signed_up %}
 			<li>signed up {{crush.date_target_signed_up|datetime_since }} ago</li>
@@ -90,22 +90,9 @@
 
 <!-- end: conditional button: send invite -->           
        
-
-<!-- start: secondary data -->
-        <br>
-        <i>Secondary Data:</i>&nbsp; date added: {{crush.date_added}}&nbsp;|&nbsp; timesince: {{ crush.date_added|datetime_since }} &nbsp;|&nbsp;
-        <a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view facebook page</a>
-        &nbsp;|&nbsp;<BR>
-                
-		
-		<!-- Delete Functionality -->
-			
-			<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-				{{crush.target_person.last_name}}" class="delete_crush" href="#" >remove as crush</a><BR>	
-
-		<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} {{crush.target_person.last_name}}" class="admin_delete" href="#" >temporary admin: remove as crush</a>	
-		<!-- end: secondary data -->
-
-   
-	</div> <!-- close off crush_block div -->
+<span class="view_facebook_widget"><a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view<span class="view_facebook_icon"></span></a></span>      
+ 
+<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+				{{crush.target_person.last_name}}" class="delete_crush" href="#" ></a> 
+ 
 	

@@ -261,6 +261,14 @@ def app_invite_form(request, crush_username):
                     friend_email_fail_array.append(email)
                     continue
 
+            # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
+            if crush_relationship.target_status == 0:
+                if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0:
+                    crush_relationship.target_status=1;
+                    crush_relationship.date_invite_last_sent = datetime.datetime.now()
+                    crush_relationship.save(update_fields=['target_status','date_invite_last_sent']);
+                    
+
             if request.is_ajax():
                 print "success and returning rendered template"
                 return render(request,'app_invite_success.html',{'crush_email_success_array':crush_email_success_array,

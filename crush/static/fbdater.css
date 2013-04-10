@@ -898,6 +898,16 @@ ul.attraction_status_bar li.past_status_animated{
 	padding:4px 0 12px 0;
 }
 
+.status_details li a {
+	font-size:11px;
+	font-weight:bold;
+}
+.status_details li a:hover {
+	text-decoration:underline;
+}
+
+
+
 /* special case: push up the bullets for the crush block with a button below */
 .crush_status_0 .status_detail_box,
 .crush_status_4 .status_detail_box  {
@@ -955,6 +965,49 @@ ul.attraction_status_bar li.past_status_animated{
 	color:#909090;
 	
 }
+
+.delete_crush{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:19px;
+	background-position:-9px -74px;
+	height:19px;
+	top:-8px;
+	right:-9px;
+}
+
+.view_facebook_widget{
+	position:absolute;
+	left:500px;
+	bottom:5px;
+	width:50px;
+}
+.view_facebook_widget a{
+	display:inline-block;
+	font-size:9px;
+	font-style:italic;
+	color:#B8B8B8;
+}
+
+.view_facebook_widget a:hover{
+	color:#A0A0A0 ;
+}
+.view_facebook_icon{
+	display:inline-block;
+	background-image:url(images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:25px;
+	vertical-align:-1px;
+	background-position:-40px -63px;
+	height:25px;
+	margin-left:3px;
+}
+
+
 /* ===========================   Admirer Lineup ========================= */
 
 #bx-pager a img  {

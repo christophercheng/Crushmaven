@@ -218,7 +218,7 @@ INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times
 MINIMUM_LINEUP_MEMBERS=2 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=0 # default is = 12 hours
-MINIMUM_DELETION_DAYS_SINCE_ADD=7
+MINIMUM_DELETION_DAYS_SINCE_ADD=0
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
 MAXIMUM_CRUSH_INVITE_EMAILS=5
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=25
@@ -231,7 +231,7 @@ PLATONIC_RATINGS = {
                     1:'very unattractive',
                      }
 
-DELETION_ERROR = {0:'To prevent fraudulent behavior, attractions may not be removed within ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days from the time they were added.',
+DELETION_ERROR = {0:'To prevent gaming of the system, attractions may not be removed during the first ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days.',
                    1:'Your attraction has already started your lineup.  To prevent system gaming, attractions may only be removed once a response is received and viewed.',
                    2:'Your attraction has already responded to you.  To prevent system gaming, attractions may only be removed once their response is viewed.',
                    3: 'To prevent system gaming, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days have passed since the since the response was originally received.',
