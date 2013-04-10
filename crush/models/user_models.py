@@ -278,7 +278,7 @@ class FacebookUser(AbstractUser):
     
     def get_facebook_pic(self,size):
         
-        src =  'http://graph.facebook.com/' + self.username + '/picture?width=' + size + '&height=' + size
+        src =  'http://graph.facebook.com/' + self.username + '/picture?width=' + str(size) + '&height=' + str(size)
         print src
         return src
     
