@@ -74,7 +74,6 @@
 
 
     var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
-    alert(username);
     if (username==fsOptions.lang.nonFriendSearchText | username=="")
     	return false;
 	$("#fs-user-list").append('<div id="fs-loading"></div>');
@@ -295,7 +294,7 @@
 	                        '<div id="fs-input-wrap">' +
 	                          '<input type="text" id="fs-input-text" title="'+fsOptions.lang.searchText+'" />' +
 	                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
-	                        '</div>' +
+	                        '</div><span id="fs-search-results"></span>' +
 	                      '</div>' +
 	                      
 	                      
@@ -693,8 +692,11 @@
       btn.hide();
     }
 
-    var selected_height = $('#fs-selected-user-list').css('height').slice(0,-2);
-    $('#fs-user-list').css('height', (fsOptions.userListHeight - selected_height).toString() + 'px');
+    var selected_height = $('#fs-selected-user-list').height();
+    var results_height=0;
+    if ($('#fs-search-results').length)
+    	results_height = $('#fs-search-results').height();
+    $('#fs-user-list').css('height', (fsOptions.userListHeight - selected_height-results_height).toString() + 'px');
 
     _enableContinueButton();
     //_showFriendCount();
@@ -756,7 +758,29 @@
       result_text = fsOptions.lang.summaryBoxNoResult.replace("{0}", '"'+t.val()+'"');
     }
 
+    if (search_text_base===''){
+    	$('#fs-search-results').html('')
+    	$('#fs-search-results').css('display','none');
+    	$('#fs-filter-box').css('padding-bottom','10px');
+    }
+    else{
+    	$('#fs-search-results').html(result_text);
+    	$('#fs-search-results').css('display','block');
+    	$('#fs-filter-box').css('padding-bottom','5px');
+    }
+    // set height of nfs-input-box to same height as fs filter box
+    var filter_box_height = $('#fs-filter-box').css('height');
+    $('#nfs-input-box').css('height',filter_box_height);
+    // adjust height of fs-user-list
+    var search_results_height=0;
+    if (search_text_base!='')
+    	search_results_height = $('#fs-search-results').height();
 
+    var selected_box_height = $('#fs-selected-user-list').height();
+    var new_height=(fsOptions.userListHeight - search_results_height-selected_box_height).toString() + 'px';
+    $('#fs-user-list').css('height',new_height);
+    
+    /*
     if ( !fs_dialog.has('#fs-summary-box').length ) {
       $('#fs-filter-box').after('<div id="fs-summary-box"><span id="fs-result-text">'+result_text+'</span></div>');
       // shorten the height of fs-user-list
@@ -788,6 +812,7 @@
 
       }
     }
+   */
 
   },
 

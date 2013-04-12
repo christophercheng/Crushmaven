@@ -88,6 +88,13 @@
   padding: 10px
 }
 
+#fs-search-results{
+	display:none;
+	padding-top:5px;
+	padding-left:9px;
+
+}
+
 /* @group Search Bar */
 
 #fs-input-wrap {
