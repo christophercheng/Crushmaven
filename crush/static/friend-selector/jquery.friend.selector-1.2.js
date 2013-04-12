@@ -271,13 +271,13 @@
 		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span>' +
 		'<a id="fs-back-button"  href="javascript://">Back</a>' +
 		 '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+ fsOptions.lang.buttonCancel +'</span></a>' +
-		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled=""><span>Confirm</span></button>' +
 		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>'	+ 
-    	'<a href="javascript:{}" id="fs-tab" class="fs-button">friends</a>' +
-    	'<a href="javascript:{}" id="nfs-tab" class="fs-button fs-inactive-tab">others</a>' +
+    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
+    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>' +
     	'</h2>';
     wrap.append(
      title_bar,
@@ -308,7 +308,7 @@
 
 	                        '<span id=\'nfs-help-link\'><a href="#" class="popup_link"> what is this?</a>' +
 		                       '<div id="nfs-help" class="popup">' +
-		                      		'<span id="nfs-help-pointer"></span>' +
+		                      		//'<span id="nfs-help-pointer"></span>' +
 		                      		"<h3>What is a unique Facebook user id?</h3>" +
 		                      		'In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar near the top of the browser.  ' +
 		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.  Copy and paste it up above.' +
@@ -561,9 +561,28 @@
     }).blur();
     
     $('#nfs-help-link a').click(function(){
-	   $('#nfs-help').toggle();
+
+	   if ($('#nfs-help').css('display')=='none'){
+		   $('#nfs-help').css('left','-0px');
+		   $('#nfs-help').css('top','0px');
+		   $('#nfs-help').show('1000');
+		   $('#nfs-help').animate({	left:-365,top: 75},500);		   
+	   }
+	   else{
+		   $('#nfs-help').animate({	left:0,top: 0},500);	
+		   $('#nfs-help').hide('1000');
+	   }	   
     });
-    	
+   $('#nfs-help .delete_button').click(function(e){
+	   $('#nfs-help').animate({	left:0,top: 0},500);	
+	   $('#nfs-help').hide('1000');
+	   e.stopPropagation();
+   });
+   
+   $('#nfs-help').click(function(e){ 	
+	   
+	   e.stopPropagation();
+   });
     
     $('#nfs-input-box input').focus(function(){
 

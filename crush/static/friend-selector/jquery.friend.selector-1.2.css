@@ -49,16 +49,26 @@
 	border:none;
 	background:#F2F2F2;
 	color:#505050;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 13px;
+        font-weight: 700;
 }
 #nfs-tab{
 	left:240px;
 }
 
+
 .fs-inactive-tab{
 	background:#C0C0C0 !important;
-	color:#606060!important;
+	color:#303030!important;
 	font-weight:normal !important;
 	border: 1px solid #B0B0B0 !important;
+	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: -moz-linear-gradient(top, #E0E0E0 0%, #D0D0D0 50%, #D0D0D0   50%, #B0B0B0 100%) !important;
+	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);	
+		
+}
 }
 
 .fs-inactive-tab:hover{
@@ -138,11 +148,14 @@
 #nfs-help{
   display:block;
 	position:absolute;
-	background:	#C2E0FF;
-	border: 1px solid #99CCFF;
+	background:	#f2f2f2;
+	border: 1px solid #CCD6EB;
+	box-shadow: 2px 1px 6px rgba(0,0,0,.5);
 	border-radius:8px;
-	left: -365px;
-	top: 75px;
+	left: 0px;
+	top: 0px;
+	#left: -365px;
+	#top: 75px;
 	width:420px;
 	padding:10px;
 	z-index:10000000000;
@@ -167,8 +180,8 @@
 	width:19px;
 	background-position:-9px -74px;
 	height:19px;
-	top:-8px;
-	right:-9px;
+	top:2px;
+	right:1px;
 }
 #nfs-help .delete_button:hover {
 	cursor:pointer;
@@ -180,8 +193,8 @@
 	left:345px;
 	top:-60px;
 	border-left: 27px solid transparent;
-	border-right: 4px solid transparent;
-	border-bottom: 60px solid #C2E0FF;
+	border-right: 10px solid transparent;
+	border-bottom: 60px solid #f2f2f2;
 }
 
 #fs-input-text{
@@ -391,6 +404,9 @@ li.checked .fs-anchor {
   .fs-button {
     border-width: 1px;
     border-style: solid;
+
+		/*border:1px solid #0033FF;*/
+		border-radius: 5px;
     
     font-size: 13px;
     font-weight: 700;
@@ -404,11 +420,17 @@ li.checked .fs-anchor {
     padding: 0;
     margin: 0
   }
+  
+ .fs-button[disabled]{
+ 	opacity:.4; 
+ 	cursor:inherit !important;
+ }
+  
   .fs-button:focus {
     outline: none
   }
   .fs-button span {
-    border-top: 1px solid #8a9cc2;
+    #border-top: 1px solid #8a9cc2;
     
     font-size: 13px;
     font-weight: 700;
@@ -431,7 +453,7 @@ li.checked .fs-anchor {
     border-color: #29447e
   }
   #fs-submit-button:active span, #fs-select-button:active span{
-    border-top: 1px solid #4f6aa3
+    #border-top: 1px solid #4f6aa3
   }
 
   #fs-cancel-button {
@@ -443,13 +465,13 @@ li.checked .fs-anchor {
     margin-right: 10px
   }
   #fs-cancel-button span {
-    border-top: 1px solid #fff
+    #border-top: 1px solid #fff
   }
   #fs-cancel-button:active {
     background: #ddd
   }
   #fs-cancel-button:active span {
-    border-top: 1px solid #ddd
+   # border-top: 1px solid #ddd
   }
   
   #fs-terms-checkbox {
