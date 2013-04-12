@@ -8,7 +8,7 @@
  */
 ;(function(window, document, $, undefined) {
   'use strict';
-
+  
   $.fn.fSelector = function ( options ) {
 	    this.unbind("click.fs");
 	    this.bind("click.fs", function(){
@@ -72,9 +72,13 @@
         return false;
       }
 
+
+    var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
+    alert(username);
+    if (username==fsOptions.lang.nonFriendSearchText | username=="")
+    	return false;
 	$("#fs-user-list").append('<div id="fs-loading"></div>');
 	$("#fs-select-view #site-overlay").css('visibility','visible');
-    var username=$("#nfs-input-text").val();// get the text from the nfs-input-text box
     // see if user exists
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
@@ -156,7 +160,9 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title').html("<span>Confirm your selections step 2 of 2</span>");
+      $('#fs-dialog-title span').html("Add Attractions - Confirm Selections");
+      $('#nfs-tab').hide();
+      $('#fs-tab').hide();
       $('#fs-continue-button').hide();
       $('#fs-submit-button').show();
       $('#fs-terms-checkbox').show();
@@ -181,7 +187,9 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title').html("<span>" + fsOptions.lang.title + "</span>");
+      $('#fs-dialog-title span').html(fsOptions.lang.title);
+      $('#nfs-tab').show();
+      $('#fs-tab').show();
       $('#fs-continue-button').show();
       $('#fs-submit-button').hide();
       $('#fs-terms-checkbox').hide();
@@ -258,19 +266,30 @@
       wrap = $('<div id="fs-dialog-box-wrap"></div>')
     );
 
-    wrap.append('<div class="fs-dialog-box-bg" id="fs-dialog-box-bg-n"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-ne"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-e"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-se"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-s"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-sw"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-w"></div><div class="fs-dialog-box-bg" id="fs-dialog-box-bg-nw"></div>');
+    
+    var button_bar =  '<div id="fs-dialog-buttons">' +
+    
+		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span>' +
+		'<a id="fs-back-button"  href="javascript://">Back</a>' +
+		 '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+ fsOptions.lang.buttonCancel +'</span></a>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
+  	'</div>';
+    
+    var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>'	+ 
+    	'<a href="javascript:{}" id="fs-tab" class="fs-button">friends</a>' +
+    	'<a href="javascript:{}" id="nfs-tab" class="fs-button fs-inactive-tab">others</a>' +
+    	'</h2>';
     wrap.append(
-      content = $('<div id="fs-dialog-box-content"></div>')
+     title_bar,
+     content = $('<div id="fs-dialog-box-content"></div>'),
+     button_bar
     );
 
     var container = '<div id="fs-dialog" class="fs-color-'+fsOptions.color+'">' +
-                      '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span></h2>' +
                       
+                      '<div id="fs-select-view">' +
                       
-                      '<div id="fs-select-view"><div id="site-overlay"></div>' +
-                      
-	                      '<a href="javascript:{}" id="fs-tab" class="fs-button"><span>Friend</span></a>' +
-		                  '<a href="javascript:{}" id="nfs-tab" class="fs-button"><span>Non-Friend</span></a>' +
 	                      
 	                      '<div id="fs-filter-box">' +
 	                        '<div id="fs-input-wrap">' +
@@ -281,28 +300,31 @@
 	                      
 	                      
 	                      '<div id="nfs-input-box">' +
-	                      	'Enter Crush\'s Facebook Username:' +
-	                        '<div id="anfs-input-wrap">' +
-	                          '<span>https://facebook.com/</span>' +
-	                          '<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
-	                          '<a href="javascript:{}" id="fs-reset">Reset</a>' +
-	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +
+	                      	'<span>https://facebook.com/</span>' +
+	                      	'<span id="nfs-input-wrap">' +
+	                          	'<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
+	                          	//'<a href="javascript:{}" id="fs-reset">Reset</a>' +
+	                        '</span>' +
+	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +	
+
+	                        '<span id=\'nfs-help-link\'><a href="#" class="popup_link"> what is this?</a>' +
+		                       '<div id="nfs-help" class="popup">' +
+		                      		'<span id="nfs-help-pointer"></span>' +
+		                      		"<h3>What is a unique Facebook user id?</h3>" +
+		                      		'In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar near the top of the browser.  ' +
+		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.  Copy and paste it up above.' +
+		                      		'<img src=\'/static/add_attraction_help.png\'>' +
+		                      		'In the above example, the unique Facebook user id is \'JessicaAlba\'' +
+		                      		'<span class="delete_button"></span>' +
+		                      '</div></span>' +
+	                        
 	                        '</div>' +
-	                      '</div>' +
 	                      
 	                      '<div id="fs-selected-user-list">' +
 	                      	'<ul></ul>' +
 	                      '</div>' +    
 	                      
 	                      '<div id="fs-user-list">' +
-	                        '<div id="fs-nonuser-help">' +
-	                        '<h3>Where is the facebook user id?</h3>' +
-	                        '1) Navigate to your crush\'s facebook page (on facebook.com)<br>' +
-	                        '2) Locate the navigation / address bar at the top of your browser<br>' + 
-	                        '3) Extract the text following \'www.facebook.com/\'.<br>' +
-
-	                        'In the above example, the Facebook user id is \'JessicaAlba\' (highlighted in red).' +
-	                      '</div>' +
 	                        '<ul></ul>' +
 	                      '</div>' +
      
@@ -314,16 +336,7 @@
 	                      	'<div id="fs-confirm-user-list">' +
 	                    	'</div>' +
 	                  '</div>' + // close off fs-confirm view
-		                      
-	                  '<div id="fs-dialog-buttons">' +
-	                  
-	                  		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the <a href="/terms" target="_blank">terms & conditions</a></span>' +
-	                  		'<a id="fs-back-button"  href="javascript://">Back</a>' +
-	                  
-	                      '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
-	                      '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
-	                      '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+fsOptions.lang.buttonCancel+'</span></a>' +
-	                  '</div>' +
+    
      
 	                '</div>'; // close off fs-dialog
 
@@ -331,7 +344,7 @@
 
     content.html(container);
     $('#nfs-input-box').hide();
-    $('#fs-nonuser-help').hide();
+    $('#fs-nonfriend-help').hide();
     $('#fs-terms-checkbox').hide();
     $('#fs-terms-checkbox').next().hide();
     $('#fs-back-button').hide();
@@ -526,12 +539,16 @@
         _selectUsername();
       });
     
-    $('#fs-dialog').on("click","#nfs-tab", function(e){
+    $('#fs-dialog-title').on("click","#nfs-tab", function(e){
         _showNfsInputBox($(this));
+        $('#fs-tab').addClass('fs-inactive-tab');
+        $('#nfs-tab').removeClass('fs-inactive-tab');
       });
     
-    $('#fs-dialog').on("click","#fs-tab", function(e){
+    $('#fs-dialog-title').on("click","#fs-tab", function(e){
         _showFsInputBox($(this));
+        $('#nfs-tab').addClass('fs-inactive-tab');
+        $('#fs-tab').removeClass('fs-inactive-tab');
       });
     
     $('#fs-filter-box input').focus(function(){
@@ -544,13 +561,21 @@
       }
     }).blur();
     
+    $('#nfs-help-link a').click(function(){
+	   $('#nfs-help').toggle();
+    });
+    	
+    
     $('#nfs-input-box input').focus(function(){
+
         if ($(this).val() === $(this)[0].title){
           $(this).val('');
         }
       }).blur(function(){
+
         if ($(this).val() === ''){
           $(this).val($(this)[0].title);
+          $
         }
       }).blur();
 
@@ -608,7 +633,7 @@
 	    $('#nfs-input-box').hide();
 	    if ($('#fs-dialog').has('#fs-summary-box').length  ) 
 	    	$('#fs-summary-box').show();
-	    $('#fs-nonuser-help').hide();
+	    $('#fs-nonfriend-help').hide();
 	    $('#fs-user-list ul').show();
 	    
 	  },
@@ -621,7 +646,7 @@
 	  }
 	   
 	    $('#fs-user-list ul').hide();
-	    $('#fs-nonuser-help').show();
+	    $('#fs-nonfriend-help').show();
 
 	  },
 // called when a click on li is done
@@ -667,6 +692,10 @@
       btn.addClass('selected');
       btn.hide();
     }
+
+    var selected_height = $('#fs-selected-user-list').css('height').slice(0,-2);
+    $('#fs-user-list').css('height', (fsOptions.userListHeight - selected_height).toString() + 'px');
+
     _enableContinueButton();
     //_showFriendCount();
   },
@@ -730,6 +759,11 @@
 
     if ( !fs_dialog.has('#fs-summary-box').length ) {
       $('#fs-filter-box').after('<div id="fs-summary-box"><span id="fs-result-text">'+result_text+'</span></div>');
+      // shorten the height of fs-user-list
+      var list_height = $('#fs-user-list').css('height').slice(0,-2);
+      var summary_box_height = $('#fs-summary-box').css('height').slice(0,-2);
+      var new_height=(list_height-summary_box_height).toString() + 'px';
+      $('#fs-user-list').css('height',new_height);
     }
     else if ( !fs_dialog.has('#fs-result-text').length ) {
       $('#fs-summary-box').prepend('<span id="fs-result-text">'+result_text+'</span>');
@@ -742,6 +776,10 @@
 
       if ( fs_dialog.has('#fs-summary-box').length ){
      //   if ( selected_friend_count === 1 ){
+          var list_height = $('#fs-user-list').css('height').slice(0,-2);
+          var summary_box_height = $('#fs-summary-box').css('height').slice(0,-2);
+          var new_height=(parseInt(list_height) + parseInt(summary_box_height)).toString() + 'px';
+          $('#fs-user-list').css('height',new_height);
           $('#fs-summary-box').remove();
      //   }
      //   else{
@@ -789,7 +827,8 @@
 
       overlay.css({'height': docHeight});
     }
-
+    // set height of user list to whatever was passed in
+    $('#fs-user-list').css('height',fsOptions.userListHeight.toString() + 'px');
   },
 
   _shuffleData = function( array_data ) {
@@ -917,6 +956,7 @@
     maleGender: true,
     minimum_samegender_friends:4,
     minimum_crushgender_friends:4,
+    userListHeight:295,
     max: null,
     excludeIds: "",
     getStoredFriends: [],
@@ -936,10 +976,10 @@
       buttonDeselectAll: "Deselect All",
       buttonShowSelected: "Show Selected",
       buttonShowAll: "Show All",
-      summaryBoxResult: "{1} best results for {0}",
+      summaryBoxResult: "{1} filtered results for {0}",
       summaryBoxNoResult: "No results for {0}",
       searchText: "Enter a friend's name",
-      nonFriendSearchText: "username",
+      nonFriendSearchText: "Enter a unique facebook user id",
       fbConnectError: "You must be logged in to Facebook in order to use this feature.",
       ajaxError: "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p.",
       selectedCountResult: "You have choosen {0} people.",

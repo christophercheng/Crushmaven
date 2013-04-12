@@ -41,7 +41,7 @@ def ajax_friends_with_admirers_content(request,remove_username=None):
         ajax_response +="<img src='" + inactive_crush_friend.get_facebook_pic(40) + "'>"
         ajax_response += "<ul>"
         ajax_response += "<li class='friend_name'>" + inactive_crush_friend.first_name + "&nbsp;" + inactive_crush_friend.last_name + "</li>"
-        ajax_response += "<li class='friend_admirer_count'>" + str(num_admirers) + " secret admirer"
+        ajax_response += "<li class='friend_admirer_count'>" + str(num_admirers) + " admirer"
         if num_admirers > 1:
             ajax_response += "s"
         elapsed_days = (datetime.datetime.now() - all_admirers[num_admirers-1].date_added).days

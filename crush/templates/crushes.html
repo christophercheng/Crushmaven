@@ -277,7 +277,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	else
 		duration = 2000*(attr_width/505);//Math.floor((Math.random()*1500)+1000);
 	 
-	$(this).delay(500).animate(animate_property,duration,ease_function,function(){
+	$(this).delay(1000).animate(animate_property,duration,ease_function,function(){
 		var status_bar = $(this).parent().parent().find('.attraction_status_bar');
 		status_bar.children('li.active_status').addClass('active_status_animated');
 		status_bar.children('li.past_status').addClass('past_status_animated');

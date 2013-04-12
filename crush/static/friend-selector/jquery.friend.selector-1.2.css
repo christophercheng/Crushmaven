@@ -12,32 +12,71 @@
   font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
   font-size: 11px;
   line-height: normal !important;
-  
-  width: 555px
+  width: 494px;
+  height:346px;
 }
 #fs-dialog input:focus {
   outline: none
 }
 
-
 /* @group Title */
 
 #fs-dialog-title {
-  background: #6d84b4;  
-  border: 1px solid #3b5998;
-  border-bottom: none;
-  
+  background: rgb(0,0,70);
   color: #fff;
   font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
   font-size: 14px;
   font-weight: 700;
-  
+  border-radius: 8px 8px 0 0;
   margin: 0;
-  padding: 0
+  padding: 0;
+  position:relative;
 }
 #fs-dialog-title span {
   display: block;
-  padding: 5px 10px
+  padding: 10px 10px
+}
+
+#fs-tab,#nfs-tab{
+	position:absolute;
+	bottom:0px;
+	left:150px;
+	height:25px;
+	width:90px;
+	text-align:center;
+	padding-top:5px;
+	border-radius: 5px 5px 0 0;
+	border:none;
+	background:#F2F2F2;
+	color:#505050;
+}
+#nfs-tab{
+	left:240px;
+}
+
+.fs-inactive-tab{
+	background:#C0C0C0 !important;
+	color:#606060!important;
+	font-weight:normal !important;
+	border: 1px solid #B0B0B0 !important;
+}
+
+.fs-inactive-tab:hover{
+	background:#E0E0E0 !important;
+	border-left: 1px solid #C0C0C0 !important;
+	border-bottom: 1px solid #C0C0C0  !important;
+	color:#303030 !important;
+}
+
+#nfs-tab.fs-inactive-tab{
+	height:23px;
+	padding-top:4px;
+	border-radius:0px 5px 0 0;
+}
+#fs-tab.fs-inactive-tab{
+	height:24px;
+	padding-top:4px;
+	border-radius:5px 0px 0 0;
 }
 
 /* @end of Title */
@@ -54,34 +93,105 @@
 #fs-input-wrap {
   background: #fff;
   border: 1px solid #bdc7d8;
-  
   position: relative
 }
 
 #nfs-input-wrap {
-  background: red;//#fff;
+	display:inline-block;
+  background: #fff;
   border: 1px solid #bdc7d8;
-  //position: relative;
-  margin: 3px 50px 3px 130px;//chc
+  position: relative;
+  margin-left:2px;
+  position:relative;
 }
 
-#fs-input-text{
+#nfs-input-text{
+	display:inline-block;
   background: #fff;
-  border: 0;
-  
+  border: 1px;
   color: #333;
   font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
   font-size: 11px;
   padding: 3px;
   margin: 3px;
-  width: 95% //chc originally 95%
+  width: 210px; //chc originally 95%
+}
+
+#nfs-help-link{
+	position:absolute;
+	right:20px;
+	top:17px;
+
+	}
+#nfs-help-link a{
+	font-size:11px;	
+	font-weight:bold;
+}
+
+#nfs-help{
+  display:block;
+	position:absolute;
+	background:	#C2E0FF;
+	border: 1px solid #99CCFF;
+	border-radius:8px;
+	left: -365px;
+	top: 75px;
+	width:420px;
+	padding:10px;
+	z-index:10000000000;
+}
+#nfs-help h3{
+	margin-bottom:5px;
+}
+#nfs-help img {
+	display:inline-block;
+	height:85px;
+	width:100%;
+	border:1px solid gray;
+	margin-bottom:5px;
+	margin-top:5px;
+}
+
+#nfs-help .delete_button {
+	position:absolute;
+	background-image:url(../images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:19px;
+	background-position:-9px -74px;
+	height:19px;
+	top:-8px;
+	right:-9px;
+}
+#nfs-help .delete_button:hover {
+	cursor:pointer;
+}
+#nfs-help-pointer{
+	width: 0; 
+	height: 0; 
+	position:absolute;
+	left:345px;
+	top:-60px;
+	border-left: 27px solid transparent;
+	border-right: 4px solid transparent;
+	border-bottom: 60px solid #C2E0FF;
+}
+
+#fs-input-text{
+	display:inline-block;
+  background: #fff;
+  border: 0;
+  color: #333;
+  font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
+  font-size: 11px;
+  padding: 3px;
+  margin: 3px;
+  width: 95%; //chc originally 95%
 }
 
 #fs-reset {
   background: url(friend-selector-erase.png) no-repeat 0 0 #adbdd6;
-  
   text-indent: -9999px;
-  
   height: 15px;
   width: 15px;
   position: absolute;
@@ -102,9 +212,7 @@
 
 #fs-summary-box {
   border-bottom: 1px solid #ccc;
-  
-  //padding: 10px 5px;
-  padding: 10px 10px 10px;
+  padding: 6px 10px 6px;
   overflow: hidden
 }
 
@@ -112,7 +220,7 @@
   
 #fs-filters {
   float: left;
-  padding: 6px 0 0;
+  padding: 4px 0 0;
 }  
 #fs-summary-box a {
   color: #3B5998;
@@ -145,37 +253,38 @@
 /* @group User List */
 
  #fs-selected-user-list {
-  border-bottom: 2px solid #ccc;  
+ 	border-bottom: 1px solid #ccc;  
   overflow: auto;
   position: relative;
-
+	padding-bottom:1px;
 }
 
 #fs-user-list {
   border-bottom: 1px solid #ccc;
-  
-  height: 353px;
+  #height: 295px; /* this is passed in as a parameter */
   overflow: auto;
   position: relative;
 }
 
 #fs-user-list ul, #fs-selected-user-list ul {
   list-style: none;
-  
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
+
 #fs-user-list li,#fs-selected-user-list li {
   float: left;
-  padding: 5px 0 0 5px;
-  width: 173px;
+  padding: 1px 0 0 1px;
+  width: 159px;
   overflow: hidden;
 }
 
+#fs-user-list ul{
+  padding-top:3px;
+}
+
 #fs-confirm-user-list {
-  border-bottom: 1px solid #ccc;
-  height: 470px;
   overflow: auto;
   overflow-x:hidden;
   position: relative
@@ -185,11 +294,9 @@
   border-color: #fff;
   border-style: solid;
   border-width: 1px 0;
-  
   color: #333;
   text-decoration: none;
   cursor: pointer;
-  
   display: block;
   padding: 2px;
   overflow: hidden
@@ -262,7 +369,7 @@ li.checked .fs-anchor {
   /* @group Submit and Cancel Buttons */
   
   #fs-dialog-buttons {
-    background: #f2f2f2;  
+    #background: #f2f2f2;  
   	padding: 8px 10px;
   	position: relative;
   	overflow: hidden;
@@ -305,6 +412,7 @@ li.checked .fs-anchor {
     padding: 3px 6px 4px;
     position: relative
   }
+  
   #fs-submit-button, #fs-select-button,#fs-continue-button {
     background-color: #5b74a8;
     border-color: #29447e #29447e #1a356e;
@@ -318,14 +426,14 @@ li.checked .fs-anchor {
   #fs-submit-button:active span, #fs-select-button:active span{
     border-top: 1px solid #4f6aa3
   }
-  
+
   #fs-cancel-button {
     background: #eae9e9;
     border-color: #999;
     
     color:#333;
     
-    margin-left: 4px
+    margin-right: 10px
   }
   #fs-cancel-button span {
     border-top: 1px solid #fff
@@ -349,232 +457,6 @@ li.checked .fs-anchor {
 /* @end Filters and Buttons */
 
 
-/* @group Color Dark */
-
-.fs-color-dark #fs-dialog-title {
-  background-color: #41505b;
-  border-color: #212a30
-}
-.fs-color-dark #fs-input-wrap {
-  border-color: #212a30
-}
-.fs-color-dark .fs-anchor:hover {
-  background-color: #ededed;
-  border-color: #ededed
-}
-.fs-color-dark li.checked .fs-anchor {
-  background-color: #ddd;
-  border-color: #ccc
-}
-.fs-color-dark #fs-submit-button {
-  background-color: #41505b;
-  border-color: #212a30 #212a30 #112a30
-}
-.fs-color-dark #fs-submit-button span {
-  border-top: 1px solid #777
-}
-
-.fs-color-dark #fs-reset {
-  background-color: #ccc
-}
-.fs-color-dark #fs-reset:hover {
-  background-color: #41505b
-}
-.fs-color-dark #fs-reset:active {
-  background-color: #212a30
-}
-
-/* @end of Color Dark */
-
-
-/* @group Color Light Blue */
-
-.fs-color-light-blue #fs-dialog-title {
-  background-color: #add7e9;
-  border-color: #95c1d3
-}
-.fs-color-light-blue #fs-input-wrap {
-  border-color: #add7e9
-}
-.fs-color-light-blue .fs-anchor:hover {
-  background-color: #e9f4f8;
-  border-color: #e9f4f8
-}
-.fs-color-light-blue li.checked .fs-anchor {
-  background-color: #d4e9f2;
-  border-color: #add7e9
-}
-.fs-color-light-blue #fs-submit-button {
-  background-color: #add7e9;
-  border-color: #95c1d3 #95c1d3 #85c1d3
-}
-.fs-color-light-blue #fs-submit-button span {
-  border-top: 1px solid #ddd
-}
-
-.fs-color-light-blue #fs-reset {
-  background-color: #add7e9
-}
-.fs-color-light-blue #fs-reset:hover {
-  background-color: #add7e9
-}
-.fs-color-light-blue #fs-reset:active {
-  background-color: #95c1d3
-}
-
-/* @end of Color Light Blue */
-
-
-/* @group Color Blue */
-
-.fs-color-blue #fs-dialog-title {
-  background-color: #139bd3;
-  border-color: #1d8099
-}
-.fs-color-blue #fs-input-wrap {
-  border-color: #1d8099
-}
-.fs-color-blue .fs-anchor:hover {
-  background-color: #caebf9;
-  border-color: #caebf9
-}
-.fs-color-blue li.checked .fs-anchor {
-  background-color: #9ddbf5;
-  border-color: #139bd3
-}
-.fs-color-blue #fs-submit-button {
-  background-color: #139bd3;
-  border-color: #1d8099 #1d8099 #0d8099
-}
-.fs-color-blue #fs-submit-button span {
-  border-top: 1px solid #2db0d1
-}
-
-.fs-color-blue #fs-reset {
-  background-color: #139bd3
-}
-.fs-color-blue #fs-reset:hover {
-  background-color: #139bd3
-}
-.fs-color-blue #fs-reset:active {
-  background-color: #1d8099
-}
-
-/* @end of Color Blue */
-
-
-/* @group Color Green */
-
-.fs-color-green #fs-dialog-title {
-  background-color: #2fc20f;
-  border-color: #2b9a10
-}
-.fs-color-green #fs-input-wrap {
-  border-color: #2b9a10
-}
-.fs-color-green .fs-anchor:hover {
-  background-color: #a7f596;
-  border-color: #a7f596
-}
-.fs-color-green li.checked .fs-anchor {
-  background-color: #74f159;
-  border-color: #2fc20f
-}
-.fs-color-green #fs-submit-button {
-  background-color: #2fc20f;
-  border-color: #2b9a10 #2b9a10 #1b9a10
-}
-.fs-color-green #fs-submit-button span {
-  border-top: 1px solid #3dd918;
-}
-
-.fs-color-green #fs-reset {
-  background-color: #2fc20f
-}
-.fs-color-green #fs-reset:hover {
-  background-color: #2fc20f
-}
-.fs-color-green #fs-reset:active {
-  background-color: #2b9a10
-}
-
-/* @end of Color Green */
-
-
-/* @group Color Red */
-
-.fs-color-red #fs-dialog-title {
-  background-color: #d71919;
-  border-color: #bb0909
-}
-.fs-color-red #fs-input-wrap {
-  border-color: #bb0909
-}
-.fs-color-red .fs-anchor:hover {
-  background-color: #fcb2b2;
-  border-color: #fcb2b2
-}
-.fs-color-red li.checked .fs-anchor {
-  background-color: #fa7676;
-  border-color: #f44141
-}
-.fs-color-red #fs-submit-button {
-  background-color: #f31c1c;
-  border-color: #bb0909 #bb0909 #ab0909
-}
-.fs-color-red #fs-submit-button span {
-  border-top: 1px solid #f54747
-}
-
-.fs-color-red #fs-reset {
-  background-color: #e90b0b
-}
-.fs-color-red #fs-reset:hover {
-  background-color: #e90b0b
-}
-.fs-color-red #fs-reset:active {
-  background-color: #bb0909
-}
-
-/* @end of Color Red */
-
-
-/* @group Color Pink */
-
-.fs-color-pink #fs-dialog-title {
-  background-color: #fb8ced;
-  border-color: #e073ab
-}
-.fs-color-pink #fs-input-wrap {
-  border-color: #fb8ced
-}
-.fs-color-pink .fs-anchor:hover {
-  background-color: #fdd7f8;
-  border-color: #fdd7f8
-}
-.fs-color-pink li.checked .fs-anchor {
-  background-color: #faacf0;
-  border-color: #f882e9
-}
-.fs-color-pink #fs-submit-button {
-  background-color: #fb8ced;
-  border-color: #e073ab #e073ab #d073ab
-}
-.fs-color-pink #fs-submit-button span {
-  border-top: 1px solid #fcb2f2
-}
-
-.fs-color-pink #fs-reset {
-  background-color: #fb8ced
-}
-.fs-color-pink #fs-reset:hover {
-  background-color: #fb8ced
-}
-.fs-color-pink #fs-reset:active {
-  background-color: #e073ab
-}
-
-/* @end of Color Pink */
 
 
 /* @group Modal Box and Overlay */
@@ -594,79 +476,10 @@ li.checked .fs-anchor {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1101
-}
-
-.fs-dialog-box-bg {
-  position: absolute;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: 10px;
-  height: 10px;
-  z-index: 1001
-}
-
-#fs-dialog-box-bg-n {
-  background-image: url(friend-selector-x.png);
-
-  width: 100%;
-  top: -10px;
-  left: 0
-}
-
-#fs-dialog-box-bg-ne {
-  background-image: url(friend-selector-corners.png);
-  background-position: -10px 0;
-  
-  top: -10px;
-  right: -10px
-}
-
-#fs-dialog-box-bg-e {
-  background-image: url(friend-selector-y.png);
-
-  height: 100%;
-  top: 0;
-  right: -10px
-}
-
-#fs-dialog-box-bg-se {
-  background-image: url(friend-selector-corners.png);
-  background-position: -10px -10px;
-  
-  bottom: -10px;
-  right: -10px
-}
-
-#fs-dialog-box-bg-s {
-  background-image: url(friend-selector-x.png);
-
-  width: 100%;
-  bottom: -10px;
-  left: 0
-}
-
-#fs-dialog-box-bg-sw {
-  background-image: url(friend-selector-corners.png);
-  background-position: 0 -10px;
-  
-  bottom: -10px;
-  left: -10px
-}
-
-#fs-dialog-box-bg-w {
-  top: 0;
-  left: -10px;
-  height: 100%;
-  background-image:url(friend-selector-y.png);
-}
-
-#fs-dialog-box-bg-nw {
-  top: -10px;
-  left: -10px;
-  background-image:url(friend-selector-corners.png);
-  background-position: 0 0;
+  z-index: 1101;
+  background-color:rgb(0,0,70);
+  border-radius:8px;
+  padding:5px;
 }
 
 #fs-dialog-box-content {
@@ -678,7 +491,6 @@ li.checked .fs-anchor {
   border: 0px solid #fff;
   background: #fff;
 }
-
 /* @end of Modal Box and Overlay */
 
 #fs-loading {

@@ -70,20 +70,20 @@ jQuery(document).ready(function($) {
     maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
     minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
     minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
-    max:18,
+    max:12,
 	  excludeIds: "{% for crush_rel in request.user.crush_crushrelationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
     closeOverlayClick: true,
-    overlayOpacity: "0.8",
+    overlayOpacity: "0.5",
     overlayColor: '#000',
     closeOnSubmit: true,
     showSelectedCount: true,
     color: "default",
     showRandom:false,
     lang: {
-      title: "Select Your Crushes step 1 of 2",
+      title: "Add Attractions",
       buttonSubmit: "Select",
       buttonCancel: "Cancel",
-      summaryBoxResult: "{1} best results for {0}",
+      summaryBoxResult: "{1} results for {0}",
       summaryBoxNoResult: "No results for {0}",
       searchText: "Enter a friend's name",
       fbConnectError: "You must be logged in to Facebook in order to use this feature.",
@@ -209,7 +209,7 @@ $('.title_bar_option a').bind('click',function(){
 $('body').bind('click',function(){
 	$('.popup').hide();
 });
-$(".popup_link").click(function(e){
+$('body').on('click',".popup_link",function(e){
   e.stopPropagation();
 });
 
