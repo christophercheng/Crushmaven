@@ -159,13 +159,12 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title span').html("Add Attractions - Confirm Selections");
+      $('#fs-dialog-title span').html("Add Attractions - Confirmation");
       $('#nfs-tab').hide();
       $('#fs-tab').hide();
       $('#fs-continue-button').hide();
       $('#fs-submit-button').show();
-      $('#fs-terms-checkbox').show();
-      $('#fs-terms-checkbox').next().show();
+      $('#fs-terms').show();
       $('#fs-back-button').show();
       $('#fs-select-view').hide();
       $('#fs-confirm-view').show();
@@ -191,8 +190,7 @@
       $('#fs-tab').show();
       $('#fs-continue-button').show();
       $('#fs-submit-button').hide();
-      $('#fs-terms-checkbox').hide();
-      $('#fs-terms-checkbox').next().hide();
+      $('#fs-terms').hide();
       $('#fs-back-button').hide();
       $('#fs-select-view').show();
       $('#fs-confirm-view').hide();
@@ -267,18 +265,17 @@
 
     
     var button_bar =  '<div id="fs-dialog-buttons">' +
-    
-		'<input id="fs-terms-checkbox" type="checkbox" checked="checked"/><span>I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span>' +
-		'<a id="fs-back-button"  href="javascript://">Back</a>' +
+		'<div id="fs-terms"><span id="fs-terms-checkbox-container"><input id="fs-terms-checkbox" type="checkbox" checked="checked"/></span><span id="fs-terms-checkbox-text">I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span></div>'  +
 		 '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+ fsOptions.lang.buttonCancel +'</span></a>' +
-		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled=""><span>Confirm</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Select</span></a>' +
+			'<a id="fs-back-button" class="fs-button" href="javascript://"><span>&#60; Back</span></a>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Add</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>'	+ 
     	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
     	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>' +
-    	'</h2>';
+    	'</h2><span class="close_dialog"></span>';
     wrap.append(
      title_bar,
      content = $('<div id="fs-dialog-box-content"></div>'),
@@ -304,14 +301,14 @@
 	                          	'<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
 	                          	//'<a href="javascript:{}" id="fs-reset">Reset</a>' +
 	                        '</span>' +
-	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button"><span>Select</span></a>' +	
+	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button" disabled><span>Select</span></a>' +	
 
 	                        '<span id=\'nfs-help-link\'><a href="#" class="popup_link"> what is this?</a>' +
 		                       '<div id="nfs-help" class="popup">' +
 		                      		//'<span id="nfs-help-pointer"></span>' +
 		                      		"<h3>What is a unique Facebook user id?</h3>" +
-		                      		'In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar near the top of the browser.  ' +
-		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.  Copy and paste it up above.' +
+		                      		'<p>In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar at the top of the browser.  ' +
+		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.  Copy and paste it up above.</p>' +
 		                      		'<img src=\'/static/add_attraction_help.png\'>' +
 		                      		'In the above example, the unique Facebook user id is \'JessicaAlba\'' +
 		                      		'<span class="delete_button"></span>' +
@@ -344,8 +341,7 @@
     content.html(container);
     $('#nfs-input-box').hide();
     $('#fs-nonfriend-help').hide();
-    $('#fs-terms-checkbox').hide();
-    $('#fs-terms-checkbox').next().hide();
+    $('#fs-terms').hide();
     $('#fs-back-button').hide();
     $('#fs-submit-button').hide();
     $('#fs-confirm-view').hide();
@@ -476,43 +472,43 @@
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
 	  if (friend0_elements.length > 0) {
-		  var new_html = '<h2>Selected Friends (' + friend0_elements.length + ')</h2><ul>';
+		  var new_html = '<h2>Selected Friends: <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
 	
 		  $.each(friend0_elements, function(){
 	    		var duplicate = $(this).clone();
 	    		duplicate.find('input').remove();
-	    		new_html += duplicate.html();
+	    		new_html += '<li>' + duplicate.html() + '</li>';
 	    	});
 		  new_html+='</ul>';
 		  container.append(new_html);
 	  }
 	  
   	// build friend-of-friend list
-	  if (friend1_elements.length > 0) {
-		  var new_html = '<h2>Selected Friends-of-Friends (' + friend1_elements.length + ')</h2><ul>';
+
+		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends: <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend1_elements, function(){
 	    		var duplicate = $(this).clone();
 	    		duplicate.find('input').remove();
-	    		new_html += duplicate.html();
+	    		new_html += '<li>' + duplicate.html() + '</li>';;
 	    	});
 		  new_html+='</ul>';
 		  container.append(new_html);
-	  }
+
 	  
   	
   	// build non-friend list
-	  if (friend2_elements.length > 0) {
-		  var new_html = '<h2>Selected Non-Friend Users (' + friend2_elements.length + ')</h2><ul>';
+
+		  var new_html = '<h2  id="nf_selected_header">Non-Friend Users: <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend2_elements, function(){
 	    		var duplicate = $(this).clone();
 	    		duplicate.find('input').remove();
-	    		new_html += duplicate.html();
+	    		new_html += '<li>' + duplicate.html() + '</li>';
 	    	});
 		  new_html+='</ul>';
 		  container.append(new_html);
-	  }
+
 
   },
 
@@ -521,6 +517,9 @@
     wrap.delegate('#fs-cancel-button', 'click.fs', function(){
       _close();
     });
+    wrap.delegate('.close_dialog', 'click.fs', function(){
+        _close();
+      });
     
     wrap.delegate('#fs-submit-button', 'click.fs', function(){
       _submit();
@@ -566,7 +565,7 @@
 		   $('#nfs-help').css('left','-0px');
 		   $('#nfs-help').css('top','0px');
 		   $('#nfs-help').show('1000');
-		   $('#nfs-help').animate({	left:-365,top: 75},500);		   
+		   $('#nfs-help').animate({	left:-365,top: 80},500);		   
 	   }
 	   else{
 		   $('#nfs-help').animate({	left:0,top: 0},500);	
@@ -579,6 +578,7 @@
 	   e.stopPropagation();
    });
    
+
    $('#nfs-help').click(function(e){ 	
 	   
 	   e.stopPropagation();
@@ -593,7 +593,6 @@
 
         if ($(this).val() === ''){
           $(this).val($(this)[0].title);
-          $
         }
       }).blur();
 
@@ -602,8 +601,12 @@
       _find($(this));
     });
 
-    $('#nfs-input-box').keypress(function(event) {
-    	  if (event.keyCode == '13') {
+    $('#nfs-input-text').keyup(function(event) {
+    	if ($(this).val()!="")
+    		$('#fs-select-button').removeAttr('disabled');
+    	else
+    		$('#fs-select-button').attr('disabled','true');
+    	 if (event.keyCode == '13') {
     	    $('#fs-select-button').click();
     	    event.preventDefault();
     	  }

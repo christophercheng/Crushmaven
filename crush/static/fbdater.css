@@ -26,6 +26,13 @@ body {
  	overflow-y: scroll;
  	/*#force vertical scrollbar on all pages so that main container doesn't jump between pages with and without content
 	*/
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 a {
@@ -39,10 +46,10 @@ a.button {
 	display:inline;
 	background-color: #3366FF;
 	background:#3366FF;
-	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
-	background-image: -moz-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #333399 100%);
-	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
-	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);	
+	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #333399 100%);
+	background-image: -moz-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #194396 100%);
+	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #333399 100%);
+	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #333399 100%);	
 	/*border:1px solid #0033FF;*/
 	border-radius: 8px;
 	text-decoration: none;
@@ -55,10 +62,11 @@ a.button {
 	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
 }
 a.button:hover {
-	background-image: -moz-linear-gradient(top, #333399 0%, #003399 50%, #0033FF 50%, #3366FF 100%);
-	background-image: -webkit-linear-gradient(top, #333399 0%, #003399 50%, #0033FF 50%, #3366FF 100%);
-	background-image: -o-linear-gradient(top, #333399 0%, #003399 50%, #0033FF 50%, #3366FF 100%);
-	background-image: linear-gradient(top, #333399 0%, #003399 50%, #0033FF 50%, #3366FF 100%);
+	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: -moz-linear-gradient(top,#3366FF 0%, #2B50E6 50%, #1947A3 50%, #333399 100%);
+	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
+	background-image: -o-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
+	background-image: linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);	
 }
 
 /* ===========================   Site Layout ========================= */
@@ -89,6 +97,15 @@ a.button:hover {
   padding-left:15px;
   width: 100%;
   z-index: 10000;
+  
+  	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  
 }
 
 .header_container{
@@ -433,7 +450,7 @@ a.logo #to {
 	background-color:#E6E6F5;
 }
 
-.left_sidebar_container #add_icon{
+.left_sidebar_container .bt-fs-dialog .add_icon{
 	position:absolute;
 	display:block;
 	background-image:url(images/site_sprite.png);	
