@@ -472,7 +472,7 @@
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
 	  if (friend0_elements.length > 0) {
-		  var new_html = '<h2>Selected Friends: <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
+		  var new_html = '<h2>Selected Friends <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
 	
 		  $.each(friend0_elements, function(){
 	    		var duplicate = $(this).clone();
@@ -485,7 +485,7 @@
 	  
   	// build friend-of-friend list
 
-		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends: <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
+		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend1_elements, function(){
 	    		var duplicate = $(this).clone();
@@ -499,7 +499,7 @@
   	
   	// build non-friend list
 
-		  var new_html = '<h2  id="nf_selected_header">Non-Friend Users: <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+		  var new_html = '<h2  id="nf_selected_header">Non-Friend Users <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend2_elements, function(){
 	    		var duplicate = $(this).clone();

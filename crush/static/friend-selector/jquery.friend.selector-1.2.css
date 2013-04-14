@@ -376,6 +376,7 @@
 		padding:2px 10px;
 		background-color:#D1D9EA;
 		#position:relative;
+		border-radius: 5px 5px 0 0;
 }
 #fs-confirm-user-list h2 span.nf_selected_header_count {
 	float:right;
@@ -650,7 +651,7 @@ li.checked .fs-anchor {
   left: 0;
   z-index: 1101;
   background-color:rgb(0,0,70);
-  border-radius:8px;
+  border-radius:13px;
   padding:5px;
 }
 

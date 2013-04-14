@@ -26,7 +26,7 @@ class MultiEmailField(forms.Field):
         for email in value:
             print "processing email: " + str(email)
             if not email_re.match(email):
-                raise ValidationError(('%s is not a valid email address.') % email)
+                raise ValidationError(('%s is not a valid email address') % email)
 
 class AppInviteForm(forms.Form):
 
@@ -40,7 +40,7 @@ class AppInviteForm(forms.Form):
     def clean(self):
         print "clean called"
         if (self.data['crush_emails']=="") and (self.data['mutual_friend_emails']==""):
-            raise forms.ValidationError("Yo, you must enter at least one valid email address.")
+            raise forms.ValidationError("You must enter at least one valid email address")
         return super(AppInviteForm,self).clean()
 
         

@@ -27,22 +27,22 @@ $(document).ready(function()
  		APP INVITE MODAL
  	
  * -------------------------------------------- */
-	var options = {resizable:false, modal: true, autoOpen: false,title:"Send Application Invites"};
-	 $("#app_invite_modal").dialog({resizable:false, modal: true, autoOpen: false});
+
+	window.app_invite_modal=null;
 	$(".app_invite_link,.inactive_crushed_friends").on("click", ".app_invite", function(e) {
-		app_div_element = $("#app_invite_modal");
-		app_div_element.html('<div id="site-loading"></div>');
-		app_div_element.dialog(options).dialog("open");
+		// only initialize jquery modal dialog once per page load
+		if (!window.app_invite_modal)
+			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false});
+		window.app_invite_modal.html('<div id="site-loading"></div>');
+		window.app_invite_modal.dialog('open');
 		var crush_username=$(this).attr('crush_username');	
 		var load_url="/app_invite_form/" + crush_username + "/";
-		app_div_element.load(load_url,function(responseText,textStatus,XHR){
+		window.app_invite_modal.load(load_url,function(responseText,textStatus,XHR){
 			if (textStatus!="success"){
 				if (!access_token_error(responseText))
 					$(this).html("{{ajax_error}}");
 			}
 		});	
-		e.preventDefault();
-	   return false;
 	});
 
 	/* ----------------------------------------------------------------------

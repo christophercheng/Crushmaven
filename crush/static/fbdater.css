@@ -62,6 +62,7 @@ a.button {
 	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
 }
 a.button:hover {
+	background-color:#0033FF;
 	background-image: -webkit-linear-gradient(top,#3366FF 0%, #0033FF 50%, #003399 50%, #000033 100%);
 	background-image: -moz-linear-gradient(top,#3366FF 0%, #2B50E6 50%, #1947A3 50%, #333399 100%);
 	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
@@ -1245,4 +1246,292 @@ ul.attraction_status_bar li.past_status_animated{
 	opacity:0.25;
 	-moz-opacity:0.25;
 	filter:alpha(opacity=25);
+}
+
+
+/* ===========================   App Invite DIalog ========================= */
+
+#app_invite_form{
+	font-size:12px;
+}
+
+.app_invite_dialog{
+	width:550px!important;
+}
+
+
+#email_input_labels{
+	#height:200px;
+}
+
+#email_input_section{
+	#width:550px;
+	position:relative;
+	display:inline-block;
+
+}
+.email_input_error_section {
+	display:inline-block;
+	margin-top:3px;
+	margin-bottom:4px;
+	list-style:none;
+}
+.email_input_error_section .errorlist{
+	display:inline-block;
+	background:red;
+	color:white;
+	margin-bottom:2px;
+	float:left;
+	padding:2px 5px 2px 5px;
+	border-radius:2px;
+	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+	}
+#mf_input_error_section .errorlist{
+	margin-bottom:5px;
+}
+
+	#email_input_labels .email_input_error_section .errorlist{
+	background:white;
+	color:white;
+	box-shadow:none;
+	height:1em;
+	}
+#email_inputs .fieldWrapper input{
+	width:400px;
+	margin-bottom:0px!important;
+}
+.sub_label{
+	font-size:10px;
+	color:#909090;
+}
+.mutualFriendListWrapper{
+	font-style:italic;
+	#border:1px solid red;
+	margin-top:-10px;
+}
+.email_separator{
+	float:right;
+	font-style:italic;
+}
+#email_preview_section{
+	height:200px;
+	width:550px;
+	display:block;
+	border-top:2px solid rgb(0,0,70);
+	padding-top:10px;
+	#border:1px solid red;
+	border-top:2px solid rgb(0,0,70);
+}
+.email_dialog_left_sidebar{
+	float:left;
+	width: 115px;
+	#border:1px solid red;
+	height:100%;
+	top:0px;
+	display:inline-block;
+	text-align:right;
+	padding-right:10px;
+	position:relative;
+}
+
+.email_dialog_right_sidebar{
+	display:inline-block;
+	float:left;
+	#margin-left: 125px;
+	#border:1px solid blue;
+	width:400px;
+	height:100%;
+	top:0px;
+	padding-right:10px;
+	position:relative;
+}
+
+#email_preview_panel{
+	font-size:12px;
+}
+.email_preview_tab{
+	background:#fff;
+	position:absolute;
+	display:inline-block;
+	width:145px;
+	height:25px;
+	line-height:25px;
+	top:0px;
+	border-radius: 5px 5px 0 0;
+	text-align:center;
+	vertical-align:middle;
+	z-index:1001;
+	font-weight:bold;
+	border: 1px solid gray;
+	border-bottom: 0px;
+}
+.inactive_email_preview_tab{
+	border:none;
+	cursor:pointer;
+	background:none;
+	font-weight:normal;	
+	font-size:11px;
+	color:#505050;
+	height:22px;
+	line-height:22px;
+	top:2px;
+	background:#E8E8E8;
+	border:1px solid #D8D8D8;
+	border-bottom:none;
+}
+.inactive_email_preview_tab:hover{
+		background:#E8E8E8;
+		border:1px solid #D8D8D8;
+		border-bottom:1px solid gray;
+		height:25px;
+		top:0px;
+	}
+
+#attraction_email_preview_tab{
+	left:0px;
+}
+#mf_email_preview_tab{
+	left:146px;
+}
+
+.email_preview_content{
+	position:absolute;
+	top:24px;
+	left:0px;
+	width:400px;
+	height:150px;
+	border:1px solid gray;
+	z-index:1000;
+	padding:15px;
+overflow-y:scroll;
+	color:#404040;
+}
+#mf_email_preview_content{
+	display:none;
+}
+.email_address_holder{
+	font-style:italic;
+}
+.email_content_header_labels{
+	display:inline-block;
+	width:60px;
+	color:#404040;
+	line-height:18px;
+	font-style:italic;
+}
+.email_content_header_content{
+	display:inline-block;
+	line-height:18px;
+	width:285px;
+}
+.email_content_body{
+	display:inline-block;
+	margin-top:5px;
+	line-height:12px!important;
+}
+.anonymous_email_callout{
+	font-weight:bold;
+	position:relative;
+}
+.sent_from_us{
+	background:	#2E8AE6;
+	font-weight:bold;
+	position:absolute;
+	display:inline-block;
+	line-height:20px;
+	height:20px;
+	vertical-align:middle;
+	text-align:center;
+	width:105px;
+	left:120px;
+	top:-7px;
+	color:white;
+	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+	z-index:200000;
+}
+
+.subject_text{
+	line-height:12px !important;
+}
+
+.app_invite_purpose{
+	display:inline-block;
+	background:#2E8AE6; 
+	color:white;
+	height:34px;
+	line-height:12px;
+	width:150px;
+	font-size:10px;
+	padding:5px 10px 5px 10px;
+	border-radius:5px;
+	margin-top:6px;
+	margin-left:125px;
+}
+
+/* ===========================   Generic Jquery UI Dialog ========================= */
+
+
+.ui-dialog{
+	background:rgb(0,0,70) !important;
+	border-radius: 12px!important;
+	color:#505050!important;
+	#padding:0 15px 0!important;
+
+}
+
+.ui-dialog-titlebar {
+	background:none !important;
+	color:white !important;
+	border:none !important;
+}
+
+
+.ui-icon{
+	display:inline-block!important;
+	position:absolute!important;
+	background-image:url(images/site_sprite.png)!important;	
+	background-repeat:no-repeat!important;
+	background-size:auto!important;
+	width:30px!important;
+	vertical-align:-1px!important;
+	background-position:-61px -63px!important;
+	height:30px!important;
+	top:-12px!important;
+	right:-5px!important;
+	cursor:pointer!important;
+	z-index:1000000 !important;
+}
+
+
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
+	background:rgb(0,0,70)!important;
+	background-image:url(images/site_sprite.png)!important;	
+	background-position:-60px -64px!important;
+}
+.ui-state-focus .ui-icon {
+	border:1px dotted white!important;
+
+}
+
+.ui-dialog-content{
+	background:#FFF!important;
+	margin:0px 3px!important;
+	padding:10px 0 0 0 !important;
+	overflow-x:hidden!important;
+	overflow-y:hidden!important;
+}
+.modal_dialog_footer{
+	#background:gray;
+	background:rgb(0,0,70);
+	width:100%;
+	height:45px;
+	line-height:45px;
+}
+.modal_dialog_footer .button_bar{
+	float:right;
+	margin-right:10px;
+	vertical-align:middle;
+}
+.modal_dialog_footer .button_bar input{
+	cursor:pointer;	
 }

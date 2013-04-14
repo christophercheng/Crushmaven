@@ -1,4 +1,4 @@
-<div id="app_invite_form_wrapper">
+
 <!-- Javascript to help the form validate via ajax without reloading entire page -->
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -12,48 +12,127 @@ $(document).ready(function()
 	form.submit(function(e) {
 
 		$("#sendbutton").attr('disabled','disabled');
+		$("#sendbutton").attr('value','sending...');
 		$("#sendwrapper").prepend('<span>Sending message, please wait... </span>');
 		$("#ajaxwrapper").load(
 			form.attr('action') + ' #ajaxwrapper',
 			form.serializeArray(),
 			function(responseText, responseStatus,XHR) {
 				$("#sendbutton").removeAttr('disabled')
+				$("#sendbutton").attr('value','Send');
 			}
 			); // close off ajax load function
 		e.preventDefault();
 		}); // close off submit function
+	
+		// handle email preview tabs;
+		$('#email_preview_panel').on('click','.inactive_email_preview_tab',function(){
+			$('.email_preview_content').toggle();
+			if ($(this).attr('id')=="mf_email_preview_tab"){
+				$('#attraction_email_preview_tab').addClass("inactive_email_preview_tab");
+				$(this).removeClass("inactive_email_preview_tab");
+			}
+			else{
+				$('#mf_email_preview_tab').addClass("inactive_email_preview_tab");
+				$(this).removeClass("inactive_email_preview_tab");			
+			}
+			});
 		
 }); // close off document ready function
 </script>
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form' crush_username %}" method="post">
-	<div id="ajaxwrapper">
-		{% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="fieldWrapper">
-        {{ form.crush_emails.errors }}
-        <label for="id_crush_emails">Crush Emails:</label>
-        {{ form.crush_emails }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.mutual_friend_emails.errors }}
-        <label for="id_mutual_friend_emails">Mutual Friend Emails:</label>
-        {{ form.mutual_friend_emails }}
-    </div>
-    {% if form.friendlist_string %}
-    <div class = "mutualFriendListWrapper">
-		 		Mutual friends: {{form.friendlist_string}}
-    </div>
-    	<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
-		{% elif request.POST.mutual_friends != "" %} <!-- grab mutual friend list from post data  -->
-				Mutual friends: {{request.POST.mutual_friends}}
-				<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
-		{% endif %}
 		
+		<div id="ajaxwrapper">
+		{% csrf_token %}
+		<div class="email_input_error_section">
+		    {{ form.non_field_errors }}
+	    </div>
+    <div id="email_input_section">
+	    <div id="email_input_labels" class="email_dialog_left_sidebar">
+	    	<label for="id_crush_emails">Attraction:</label> <div class="email_input_error_section">
+			    {{ form.non_field_errors }}
+			    {{ form.crush_emails.errors }}
+	    	</div><BR><BR>
+	    	<label for="id_mutual_friend_emails">Mutual Friends:<BR><span class="sub_label">(or other known contacts)</span></label>
+	    </div><!-- close off email_input labels -->
+	    <div id="email_inputs" class="email_dialog_right_sidebar">
+	    	  <div class="fieldWrapper">
+		        
+		        {{ form.crush_emails }}
+		    </div>
+		    <div class="email_input_error_section">
+			    {{ form.non_field_errors }}
+			    {{ form.crush_emails.errors }}
+	    	</div>
+		    <span class="email_separator sub_label">separate multiple emails with commas</span>
+		    <div class="fieldWrapper">
+		        
+		        {{ form.mutual_friend_emails }}
+		    </div>
+		    <div class="email_input_error_section" id="mf_input_error_section">
+		    {{ form.non_field_errors }}
+		    {{ form.mutual_friend_emails.errors }}
+	    </div>
+		    <div class = "mutualFriendListWrapper sub_label">
+		    {% if form.friendlist_string %}
 	
+				 		{{form.friendlist_string}}
+		    
+		    	<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
+				{% elif request.POST.mutual_friends != "" %} <!-- grab mutual friend list from post data  -->
+						{{request.POST.mutual_friends}}
+						<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
+				{% endif %}
+				</div> <!--  close off mutual_friend listing -->  	  
+		    
+		    </div><!-- close off email_inputs -->
+	    		
 
-		<p id="sendwrapper"><input id="sendbutton" type="submit" value="Send"/></p>
-		</div> 
+		</div> <!-- close off email_input_section -->
+		
+		<div id="email_preview_section">
+			<div id="email_preview_label" class="email_dialog_left_sidebar">Email Preview:</div>
+			<div id="email_preview_panel" class="email_dialog_right_sidebar">
+				<span id="attraction_email_preview_tab" class="email_preview_tab ">to: Attraction</span>
+				<span id="mf_email_preview_tab" class="email_preview_tab inactive_email_preview_tab">to: Mutual Friend(s)</span>
+				<div id="attraction_email_preview_content" class="email_preview_content">
+					<div class="email_content_header_labels">
+						From:<BR>
+						To:<BR>
+						Subject:
+					</div>
+					<div class="email_content_header_content">
+						<span class="anonymous_email_callout"><span class="sent_from_us">sent from us!</span>AttractedTo.com</span><BR>
+						<span class="email_address_holder">&lt;attraction's email address&gt;</span><BR>
+						<span class="subject_text">Your Facebook friend is attracted to you.</span>
+					</div>
+					<span class="email_content_body">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a dapibus felis. Maecenas arcu lacus, consequat sed interdum et, tempor vitae nisi. Mauris consectetur eleifend vestibulum. Praesent sed elit eros, ut imperdiet libero. Suspendisse tincidunt accumsan dapibus. Nam laoreet imperdiet dui, non convallis metus ullamcorper vitae. Vestibulum interdum pulvinar neque, vitae posuere risus tempor ut. Sed eget urna in odio vehicula ultrices iaculis at lectus. Curabitur commodo, erat ullamcorper congue ornare, elit nunc egestas lectus, eu suscipit massa libero fringilla orci. Integer malesuada semper mi vel viverra. 
+					</span>
+				</div>	<!-- close off attraction_email_preview_content -->
+				<div id="mf_email_preview_content" class="email_preview_content">
+					<div class="email_content_header_labels">
+						From:<BR>
+						To:<BR>
+						Subject:<BR><BR>
+					</div>
+					<div class="email_content_header_content">
+						<span class="anonymous_email_callout"><span class="sent_from_us">sent from us!</span>AttractedTo.com</span><BR>
+						<span class="email_address_holder">&lt;mutual friends' email addresses&gt;</span><BR>
+						<span class="subject_text">Your Facebook friend has an admirer and needs your help.</span>
+					</div><span class="email_content_body">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a dapibus felis. Maecenas arcu lacus, consequat sed interdum et, tempor vitae nisi. Mauris consectetur eleifend vestibulum. Praesent sed elit eros, ut imperdiet libero. Suspendisse tincidunt accumsan dapibus. Nam laoreet imperdiet dui, non convallis metus ullamcorper vitae. Vestibulum interdum pulvinar neque, vitae posuere risus tempor ut. Sed eget urna in odio vehicula ultrices iaculis at lectus. Curabitur commodo, erat ullamcorper congue ornare, elit nunc egestas lectus, eu suscipit massa libero fringilla orci. Integer malesuada semper mi vel viverra. 
+					</span>
+				</div>	<!-- close off mf_email_preview_content -->
+			</div><!-- close off email_preview_panel -->
+		</div>	<!-- close off email_preview_section -->
+
+		<div class="modal_dialog_footer">
+			<span class="app_invite_purpose">We use invite emails for any other purpose.</span>
+			<div class="button_bar"><input id="sendbutton" class="modal_dialog_button" type="submit" value="Send"/>
+			</div><!-- close off button_bar -->
+		</div><!-- close off modal_dialog_footer -->
+	</div><!-- close off ajaxwrapper -->
 	</form>
 	
-</div>
