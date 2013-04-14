@@ -25,8 +25,10 @@ $(document).ready(function()
 		e.preventDefault();
 		}); // close off submit function
 	
+		$('.sent_from_us').delay(2000).animate({opacity:1},1000);
 		// handle email preview tabs;
-		$('#email_preview_panel').on('click','.inactive_email_preview_tab',function(){
+		$('#email_preview_section').on('click','.inactive_email_preview_tab',function(){
+					$('.sent_from_us').css('opacity',0);
 			$('.email_preview_content').toggle();
 			if ($(this).attr('id')=="mf_email_preview_tab"){
 				$('#attraction_email_preview_tab').addClass("inactive_email_preview_tab");
@@ -36,6 +38,7 @@ $(document).ready(function()
 				$('#mf_email_preview_tab').addClass("inactive_email_preview_tab");
 				$(this).removeClass("inactive_email_preview_tab");			
 			}
+				$('.sent_from_us').animate({opacity:1},1000);
 			});
 		
 }); // close off document ready function
@@ -45,16 +48,15 @@ $(document).ready(function()
 		
 		<div id="ajaxwrapper">
 		{% csrf_token %}
-		<div class="email_input_error_section">
+		<div class="email_input_error_section generic_email_errors" >
 		    {{ form.non_field_errors }}
 	    </div>
     <div id="email_input_section">
 	    <div id="email_input_labels" class="email_dialog_left_sidebar">
 	    	<label for="id_crush_emails">Attraction:</label> <div class="email_input_error_section">
-			    {{ form.non_field_errors }}
 			    {{ form.crush_emails.errors }}
-	    	</div><BR><BR>
-	    	<label for="id_mutual_friend_emails">Mutual Friends:<BR><span class="sub_label">(or other known contacts)</span></label>
+	    	</div><BR><BR><BR>
+	    	<label for="id_mutual_friend_emails">Mutual Friends:<BR><span class="sub_label">& anyone that knows your attraction</span></label>
 	    </div><!-- close off email_input labels -->
 	    <div id="email_inputs" class="email_dialog_right_sidebar">
 	    	  <div class="fieldWrapper">
@@ -62,7 +64,6 @@ $(document).ready(function()
 		        {{ form.crush_emails }}
 		    </div>
 		    <div class="email_input_error_section">
-			    {{ form.non_field_errors }}
 			    {{ form.crush_emails.errors }}
 	    	</div>
 		    <span class="email_separator sub_label">separate multiple emails with commas</span>
@@ -71,17 +72,16 @@ $(document).ready(function()
 		        {{ form.mutual_friend_emails }}
 		    </div>
 		    <div class="email_input_error_section" id="mf_input_error_section">
-		    {{ form.non_field_errors }}
 		    {{ form.mutual_friend_emails.errors }}
 	    </div>
 		    <div class = "mutualFriendListWrapper sub_label">
 		    {% if form.friendlist_string %}
 	
-				 		{{form.friendlist_string}}
+				 		Mutual friends: {{form.friendlist_string}}
 		    
 		    	<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
 				{% elif request.POST.mutual_friends != "" %} <!-- grab mutual friend list from post data  -->
-						{{request.POST.mutual_friends}}
+						Mutual friends: {{request.POST.mutual_friends}}
 						<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
 				{% endif %}
 				</div> <!--  close off mutual_friend listing -->  	  
@@ -92,10 +92,8 @@ $(document).ready(function()
 		</div> <!-- close off email_input_section -->
 		
 		<div id="email_preview_section">
-			<div id="email_preview_label" class="email_dialog_left_sidebar">Email Preview:</div>
-			<div id="email_preview_panel" class="email_dialog_right_sidebar">
-				<span id="attraction_email_preview_tab" class="email_preview_tab ">to: Attraction</span>
-				<span id="mf_email_preview_tab" class="email_preview_tab inactive_email_preview_tab">to: Mutual Friend(s)</span>
+				<span id="attraction_email_preview_tab" class="email_preview_tab ">Email Preview (Attraction)</span>
+				<span id="mf_email_preview_tab" class="email_preview_tab inactive_email_preview_tab">Email Preview (Mutual Friend)</span>
 				<div id="attraction_email_preview_content" class="email_preview_content">
 					<div class="email_content_header_labels">
 						From:<BR>
@@ -103,7 +101,7 @@ $(document).ready(function()
 						Subject:
 					</div>
 					<div class="email_content_header_content">
-						<span class="anonymous_email_callout"><span class="sent_from_us">sent from us!</span>AttractedTo.com</span><BR>
+						<span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>AttractedTo.com</span><BR>
 						<span class="email_address_holder">&lt;attraction's email address&gt;</span><BR>
 						<span class="subject_text">Your Facebook friend is attracted to you.</span>
 					</div>
@@ -118,18 +116,17 @@ $(document).ready(function()
 						Subject:<BR><BR>
 					</div>
 					<div class="email_content_header_content">
-						<span class="anonymous_email_callout"><span class="sent_from_us">sent from us!</span>AttractedTo.com</span><BR>
+						<span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>AttractedTo.com</span><BR>
 						<span class="email_address_holder">&lt;mutual friends' email addresses&gt;</span><BR>
 						<span class="subject_text">Your Facebook friend has an admirer and needs your help.</span>
 					</div><span class="email_content_body">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur a dapibus felis. Maecenas arcu lacus, consequat sed interdum et, tempor vitae nisi. Mauris consectetur eleifend vestibulum. Praesent sed elit eros, ut imperdiet libero. Suspendisse tincidunt accumsan dapibus. Nam laoreet imperdiet dui, non convallis metus ullamcorper vitae. Vestibulum interdum pulvinar neque, vitae posuere risus tempor ut. Sed eget urna in odio vehicula ultrices iaculis at lectus. Curabitur commodo, erat ullamcorper congue ornare, elit nunc egestas lectus, eu suscipit massa libero fringilla orci. Integer malesuada semper mi vel viverra. 
 					</span>
 				</div>	<!-- close off mf_email_preview_content -->
-			</div><!-- close off email_preview_panel -->
 		</div>	<!-- close off email_preview_section -->
 
 		<div class="modal_dialog_footer">
-			<span class="app_invite_purpose">We use invite emails for any other purpose.</span>
+			<span class="app_invite_purpose">We use invite emails for this purpose only.</span>
 			<div class="button_bar"><input id="sendbutton" class="modal_dialog_button" type="submit" value="Send"/>
 			</div><!-- close off button_bar -->
 		</div><!-- close off modal_dialog_footer -->

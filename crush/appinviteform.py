@@ -6,11 +6,12 @@ Created on Dec 24, 2012
 import re
 from django import forms
 from django.core.validators import email_re
-from django.forms import ValidationError
+from django.forms import ValidationError,TextInput
 
 EMAIL_SEPARATOR=re.compile(r'[,; ]+')
 
 class MultiEmailField(forms.Field):
+    widget=forms.TextInput(attrs={'placeholder':'Enter one or more email addresses'})
     def to_python(self,value):
         #'normalize data to a list of strings'
         if not value:
@@ -28,6 +29,7 @@ class MultiEmailField(forms.Field):
             if not email_re.match(email):
                 raise ValidationError(('%s is not a valid email address') % email)
 
+
 class AppInviteForm(forms.Form):
 
     def __init__(self,*args,**kwargs):
@@ -40,7 +42,7 @@ class AppInviteForm(forms.Form):
     def clean(self):
         print "clean called"
         if (self.data['crush_emails']=="") and (self.data['mutual_friend_emails']==""):
-            raise forms.ValidationError("You must enter at least one valid email address")
+            raise forms.ValidationError("Enter at least one valid email address")
         return super(AppInviteForm,self).clean()
 
         
