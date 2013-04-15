@@ -25,7 +25,7 @@ $(document).ready(function()
 		e.preventDefault();
 		}); // close off submit function
 	
-		$('.sent_from_us').delay(2000).animate({opacity:1},1000);
+		$('.sent_from_us').delay(2000).animate({opacity:1,left:"-=300"},1000);
 		// handle email preview tabs;
 		$('#email_preview_section').on('click','.inactive_email_preview_tab',function(){
 					$('.sent_from_us').css('opacity',0);
@@ -48,46 +48,36 @@ $(document).ready(function()
 		
 		<div id="ajaxwrapper">
 		{% csrf_token %}
-		<div class="email_input_error_section generic_email_errors" >
-		    {{ form.non_field_errors }}
-	    </div>
     <div id="email_input_section">
-	    <div id="email_input_labels" class="email_dialog_left_sidebar">
-	    	<label for="id_crush_emails">Attraction:</label> <div class="email_input_error_section">
-			    {{ form.crush_emails.errors }}
-	    	</div><BR><BR><BR>
-	    	<label for="id_mutual_friend_emails">Mutual Friends:<BR><span class="sub_label">& anyone that knows your attraction</span></label>
-	    </div><!-- close off email_input labels -->
-	    <div id="email_inputs" class="email_dialog_right_sidebar">
-	    	  <div class="fieldWrapper">
-		        
-		        {{ form.crush_emails }}
-		    </div>
-		    <div class="email_input_error_section">
-			    {{ form.crush_emails.errors }}
+    	<div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
+	    <div class="email_field_input">
+	    	<label for="id_crush_emails">Attraction:</label> 
+	    	<div class="fieldWrapper">
+	    		{{ form.crush_emails }}
+	    		<div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
 	    	</div>
-		    <span class="email_separator sub_label">separate multiple emails with commas</span>
-		    <div class="fieldWrapper">
-		        
-		        {{ form.mutual_friend_emails }}
-		    </div>
-		    <div class="email_input_error_section" id="mf_input_error_section">
-		    {{ form.mutual_friend_emails.errors }}
-	    </div>
-		    <div class = "mutualFriendListWrapper sub_label">
-		    {% if form.friendlist_string %}
-	
-				 		Mutual friends: {{form.friendlist_string}}
-		    
-		    	<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
-				{% elif request.POST.mutual_friends != "" %} <!-- grab mutual friend list from post data  -->
-						Mutual friends: {{request.POST.mutual_friends}}
-						<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
-				{% endif %}
-				</div> <!--  close off mutual_friend listing -->  	  
-		    
-		    </div><!-- close off email_inputs -->
-	    		
+
+	    </div><!-- close attraction_email_input -->
+
+		  <span class="email_separator sub_label">separate multiple emails with commas</span>
+
+	    <div class="email_field_input">
+	    	<label for="id_mutual_friend_emails">Mutual Friends:<BR><span class="sub_label">& anyone else that knows your attraction</span></label>
+	  		<div class="fieldWrapper">
+	  			{{ form.mutual_friend_emails }}
+	  			<div class="email_input_error_section"  id="mf_input_error_section">{{ form.mutual_friend_emails.errors }}</div>
+
+			    <div class = "mutualFriendListWrapper sub_label">
+			    	{% if form.friendlist_string %}
+					 		<strong>Mutual friends:</strong> {{form.friendlist_string}}
+			    		<input type="hidden" name="mutual_friends" value="{{form.friendlist_string}}">
+						{% elif request.POST.mutual_friends %} <!-- grab mutual friend list from post data  -->
+							<strong>Mutual friends:</strong> request.POST.mutual_friends
+							<input type="hidden" name="mutual_friends" value="{{request.POST.mutual_friends}}">
+						{% endif %}
+					</div> <!--  close off mutual_friend listing -->  		  		
+	    	</div> <!--  close off email_field_input -->
+	    </div><!-- close off mf_email_input -->
 
 		</div> <!-- close off email_input_section -->
 		
