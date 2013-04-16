@@ -97,6 +97,11 @@ jQuery(document).ready(function($) {
     onError: function(){
     	window.alert_user("{{ajax_error}}");
     },
+    onStart: function(){
+    	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});
+    	 window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
+    	 //$('body').css('overflow-y','hidden !important');
+    },
     });
 
   function add_friends_to_db(response)
@@ -111,7 +116,7 @@ jQuery(document).ready(function($) {
   		document.location.href='/attractions/'; // reload page
   	});
   };
-  $("#fs-dialog-box-wrap").draggable();
+
 }); // close of jQuery(document).ready
 </script>
 

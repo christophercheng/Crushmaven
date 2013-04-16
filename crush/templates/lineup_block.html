@@ -2,21 +2,19 @@
 {% if relationship.lineup_initialization_status == 1 %}
 	{% for member in relationship.lineupmember_set.all %}
 		{% if forloop.counter0 < 1 or member.decision != None %}
-			<img src="http://graph.facebook.com/{{member.username}}/picture" height=40 width=40>
+			<span class="admirer_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
 		{% else %}
-			<img src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" height =40 width = 40>
+			<img class="admirer_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
 		{% endif %}
 	{% endfor %}
-	<BR>
 	{% if relationship.is_lineup_paid == True %}
 		{% if relationship.date_lineup_finished != None %}
-			Line-up completed {{relationship.date_lineup_finished}}<BR>
-	       <a href="#" class="view_lineup" display_id="{{relationship.admirer_display_id}}"><BR>View Completed Lineup</a>
+	       <a href="#" class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}"><BR>View Completed Lineup</a>
 		{% else %}
-			<a href="#" class="view_lineup" display_id="{{relationship.admirer_display_id}}">Finish Lineup</a>
+			<a href="#" class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}">Finish Lineup</a>
 		{% endif %}
 	{% else %}	
-		<a href="#"  class="view_lineup" display_id="{{relationship.admirer_display_id}}">View Lineup</a>
+		<a href="#"  class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}">View Lineup</a>
 	{% endif %}
 
 {% endif %}

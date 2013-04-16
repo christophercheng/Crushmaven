@@ -1036,7 +1036,7 @@
     maxFriendsCount: null,
     showRandom: false,
     facebookInvite: false,
-    onStart: function(response){   $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});return null; },
+    onStart: function(response){  return null; },
     onClose: function(response){ return null; },
     onSubmit: function(response){ return null; },
     onError: function(response){ return null; },

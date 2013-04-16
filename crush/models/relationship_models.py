@@ -322,8 +322,10 @@ class CrushRelationship(BasicRelationship):
             return target_status
         if self.date_target_responded==None or self.date_target_responded > datetime.now():
             return 2
-        else:
+        elif self.is_results_paid:
             return target_status
+        else:
+            return 'responded'
         
     def can_message(self):
     

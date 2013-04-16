@@ -68,6 +68,11 @@ $(document).ready(function()
 	if (show_lineup_number)
         $('.view_lineup[display_id="{{show_lineup}}"]').trigger('click'); 
 
+	//handle help icon show and hide
+	$('.admirer_block_instructions').delay(500).show(1000);
+	$('.admirer_block_instructions .help_icon').click(function(){
+		$(this).parent().hide(500);
+	});
 }); // close off $(document).ready
 </script>
 
@@ -107,25 +112,56 @@ $(document).ready(function()
 {% if admirer_relationships %}
 
 {% for admirer_rel in admirer_relationships %}
+		{% if admirer_rel.admirer_display_id == 1 and admirer_rel.is_lineup_paid == False %}
+		<p class="admirer_block_instructions">
+				To protect your admirer's identity (in case you are not mutually attracted), we have created a lineup of potential attractors 
+				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction.  
+				<span class="second_instruction_section">In turn, we provide each of your selections with a similar lineup experience - and the option to select you. You are notified if there is a mutual attraction or not.</span>
+		<span class="help_icon" title="close help"></span>
+		</p>		<!-- close off admirer_block line for instructional content -->
+		{% endif %}
+
 	<div class="admirer_block" display_id="{{admirer_rel.admirer_display_id}} ">
-		Secret Admirer #{{admirer_rel.admirer_display_id}} 
-		({% if admirer_rel.friendship_type == 0 %} friend of yours {% elif admirer_rel.friendship_type == 1 %}friend-of-a-friend{% endif %})
-		<BR>(added {{admirer_rel.date_added|datetime_since}} ago) <BR> 
-	
-		<div class="lineup_block" display_id="{{admirer_rel.admirer_display_id}}">
+		<div class="admirer_block_line admirer_block_first_line">
+			<img class="admirer_cloaked_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+			<div class="admirer_title">
+				Secret Admirer #{{admirer_rel.admirer_display_id}}	
+				{% if admirer_rel.friendship_type == 0 %} 
+					<span class="admirer_connection_info">(a friend of yours)</span> 
+				{% elif admirer_rel.friendship_type == 1 %}
+					<span class="admirer_connection_info">(you share a mutual facebook friend)</span>
+				{% else %}
+					<span class="admirer_connection_info">(you have no facebook friends in common)</span>
+				{% endif %}
+			</div><!-- close off secret admirer title -->
+		</div><!-- close off admirer_block line -->
+
+		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.admirer_display_id}}">
 			{% if admirer_rel.lineup_initialization_status == 1 %}
-				{% with admirer_rel as relationship %}
-				 	{% include "lineup_block.html" %}
-				{% endwith %}
-			{% else %}
-			     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.admirer_display_id}}"></div>		
-			{% endif %}
-		</div><!--  close off initialize_lineup div -->
-	</div> <!-- close off .admirer_block div -->
+					{% with admirer_rel as relationship %}
+					 	{% include "lineup_block.html" %}
+					{% endwith %}
+				{% else %}
+				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.admirer_display_id}}"></div>		
+				{% endif %}
+		</div><!-- close off admirer_block line -->
+		<div class="admirer_block_line admirer_block_footer">
+		
+		{% if relationship.date_lineup_finished != None %}
+			lineup completed {{relationship.date_lineup_finished}}
+		{% else %}
+			added {{admirer_rel.date_added|datetime_since}} ago
+		{% endif %}
+		</div><!-- close off admirer_block line -->
+	</div><!--  close off admirer block -->
 {% endfor %}
 
 {% else %}
-	THERE ARE NO {% if admirer_type = 0 %} CURRENT {% else %} PAST {% endif %} SECRET ADMIRERS!
+	{% if admirer_type = 0 %}
+		<span id="no_content">You do not have any current admirers.</span>
+	{% else %}
+		<span id="no_content">You do not have any admirers with completed lineups.</span>
+	{% endif %}
 {% endif %}
 
 {% endblock %}
