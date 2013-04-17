@@ -34,7 +34,7 @@ $(document).ready(function()
 		// only initialize jquery modal dialog once per page load
 
 		if (!window.app_invite_modal)
-			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+35 center",of:'.left_sidebar_container .bt-fs-dialog'}});
+			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
 		window.app_invite_modal.html('<div id="site-loading"></div>');
 		window.app_invite_modal.dialog('open');
 		var crush_username=$(this).attr('crush_username');	

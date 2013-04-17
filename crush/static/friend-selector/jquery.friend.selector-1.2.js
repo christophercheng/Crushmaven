@@ -668,6 +668,7 @@
 	   
 	    $('#fs-user-list ul').hide();
 	    $('#fs-nonfriend-help').show();
+	    $('#nfs-help-link').trigger('click');
 
 	  },
 // called when a click on li is done

@@ -9,20 +9,23 @@
  -->
 <div id="lineup_container">
 <div id="lineup-header">
-One of these line-up members is your secret admirer!  Add any as a crush, and we'll let you know if the feeling is mutual.  All added crushes are
-kept anonymous. They receive a lineup - with you in it!
+One of these line-up members is your admirer!  Add any as an attraction, and we will notify you if we determine the feeling is mutual.  Your identity is protected from your attractions.  They receive a similar lineup - with you in it!
 </div>
- <div id="bx-pager">
- 
-{% for member in member_set %}
 
-	{% if member.decision != None or forloop.counter0 == 0 %}
-		<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{member.username}}/picture?type=large" width="50px" height="50px" /></a>
-	{% else %}
-			<img lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg" width="50px" height="50px" />
-	{% endif %}
-{% endfor %}
-</div>  <!--  close off bx-pager div -->
+<div id="bx-pager-container">
+	<div id="bx-pager">
+		{% for member in member_set %}
+		
+			{% if member.decision != None or forloop.counter0 == 0 %}
+				<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{member.username}}/picture?width=50&height=50" /></a>
+			{% else %}
+					<img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg"/>
+			{% endif %}
+		{% endfor %}
+		<span id="lineup_member_board"></span><span id="lineup_member_pointer"></span>
+	</div>  <!--  close off bx-pager div -->
+</div>
+
 <!-- Just a shell for the slideshow container -->
 
 <ul class="bxslider" style="display:none">
@@ -30,22 +33,24 @@ kept anonymous. They receive a lineup - with you in it!
 {% for member in member_set %}
 	{% if member.decision != None %}
 		
-	<li id="preload" lineup_position = {{member.position}} style="height:230px">
-	
-	 <div id="name">{{member.user.first_name}} {{member.user.last_name}}</div>
-   <div id="mugshot" style="width:80px;height:80px"><img src="{{member.user.get_facebook_picture}}" height="80" width="10"/></div>
-   <div id="position_info"><span>member {{forloop.counter}} out of {{member_set.count}}<span></div>
-   <div id="facebook_link"><a href="http://www.facebook.com/{{member.username}}" target="_blank">view facebook profile</a></div>
-   <div id="decision" username="{{member.username}}">
-		{% if member.decision == 0 %}
-
-       <div id="choice" class="crush">You added {{member.user.first_name}} {{member.user.last_name}} as a crush!</div>
-		{% else %}
-       <div id="choice">You added {{member.user.first_name}} {{member.user.last_name}} as a platonic friend.</div>
-    {% endif %}
-    </div> <!--   close off decision tag -->
+	<li class="preload" lineup_position = {{member.position}} ">
+		<div class="slide_container">
+		 <span class="lineup_name">{{member.user.first_name}} {{member.user.last_name}}
+		 		<!--  <span class="lineup_position_info">({{forloop.counter}} of {{member_set.count}})</span>-->
+		 		
+		 </span>
+	   <span class="lineup_mugshot"><img src="http://graph.facebook.com/{{member.username}}/picture?width=125&height=125" /></span>
+	   <span class="lineup_facebook_link"><a href="http://www.facebook.com/{{member.username}}" target="_blank">view facebook profile<span class="view_facebook_icon"></span></a></span>
+	   <span class="lineup_decision" username="{{member.username}}">
+			{% if member.decision == 0 %}
+	       <span class="choice crush">Added as Attraction<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
+			{% else %}
+	       <span class="choice platonic">Not Interested<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
+	    {% endif %}
+	    </span> <!--   close off decision tag -->
+   	</div><!-- close off slide container -->
 	{% else %}	
-	<li id="lineup" lineup_position="{{member.position}}" style="height:230px">
+	<li class="lineup" lineup_position="{{member.position}}">
 	{% endif %}
 </li>
 
@@ -53,10 +58,13 @@ kept anonymous. They receive a lineup - with you in it!
 </ul>
 </div>  <!--  close off lineup_container -->
 
-<div id="lineup-footer">
-<div id="footer-msg"></div>
-<button id="finish-btn" type="button" disabled>Finish</button>
-</div>
+<div class="modal_dialog_footer lineup-footer">
+			<span id="footer-msg"></span>
+			<div class="button_bar">
+				<button id="finish-btn" type="button" disabled>Finish</button>
+			</div><!-- close off button_bar -->
+		</div><!-- close off modal_dialog_footer -->
+		
 
 <script type="text/javascript">
 $(document).ready(function() // handling for the slider
@@ -77,19 +85,21 @@ $(document).ready(function() // handling for the slider
   *		enable finish button and add footer summary message
 	*  ---------------------------------------------------------------------- */
 	var process_completed_lineup = function(){
-		footer_element=$('#lineup_modal #lineup-footer');
-		footer_element.children('#finish-btn').removeAttr('disabled');
+		footer_element=$('.modal_dialog_footer');
+		footer_element.find('#finish-btn').removeAttr('disabled');
+		footer_element.find('#finish-btn').show();
 	  footer_msg_element = footer_element.children('#footer-msg');
 	  footer_msg_element_html='<b>Your Crush Lineup evaluation is complete!</b>'
-	 	crush_li_elements = $('.bxslider li#preload').has('#decision .crush');
+	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
-	 		footer_msg_element_html += '<BR> <b>Added to crush list (' + total_crushes + '):</b>';
+	 		footer_msg_element_html += '<span id="added_attractions_info">Added as attractions (' + total_crushes + '):';
 		  crush_li_elements.each(function(index,item){
-				footer_msg_element_html += ' ' +$(item).children('#name').html();
+				footer_msg_element_html += ' ' +$(item).parent().children('.lineup_name').html();
 				if (index < (total_crushes - 1))
 					footer_msg_element_html += ',';	
-		  });
+		  })
+		  footer_msg_element_html += '</span>';
 		}
 		footer_msg_element.html(footer_msg_element_html);
 	};
@@ -99,9 +109,9 @@ $(document).ready(function() // handling for the slider
   *		called everytime a slide load is completed
 	*  ---------------------------------------------------------------------- */
 		var updateFooterMsg = function(){
-		footer_msg_element=$('#lineup_modal #lineup-footer #footer-msg');
+		footer_msg_element=$('.modal_dialog_footer #footer-msg');
 		// number of evaluated members
-		var decided_li_elements = $('.bxslider li#preload #decision #choice');	
+		var decided_li_elements = $('.bxslider li.preload .lineup_decision .choice');	
 	 	var total_decisions=decided_li_elements.length;
 		// total members
 		var total_members="{{member_set.count}}";
@@ -119,10 +129,12 @@ $(document).ready(function() // handling for the slider
 			infiniteLoop: false,
 			hideControlOnEnd: false,
 			speed:800,
-			adaptiveHeight:true,
+			//adaptiveHeight:false,
 			startSlide: 0,
-			slideSelector:'li#preload',
-			onLastSlideNext: window.handleLastSlideNext
+			slideSelector:'li.preload',
+			onLastSlideNext: window.handleLastSlideNext,
+			onSlideBefore:window.handleLineupMemberPointer,
+			onSliderLoad:window.handleLineupMemberPointer
 			});
 		$('#lineup_container').find('.bxslider').show();
 		setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
@@ -146,7 +158,7 @@ $(document).ready(function() // handling for the slider
 				return false;
 			}
 			// load the next thumbnail as well
-			var next_username =$(this).find('#decision').attr("username");
+			var next_username =$(this).find('.lineup_decision').attr("username");
 			var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
 			var img_element = $('#bx-pager img[lineup_position=' + next_position + ']')
 
@@ -154,7 +166,7 @@ $(document).ready(function() // handling for the slider
 			img_element.wrap('<a data-slide-index="' + next_position + '" href="">');
 			callback(next_position);
 				// add the fake next button if we're not at the last slide
-			}).attr("id", "preload"); // close off ajax load of next slide
+			}).attr("class", "preload"); // close off ajax load of next slide
 	}; // close off of helper function: load_next_slide
 	
 	/* ----------------------------------------------------------------------
@@ -186,8 +198,10 @@ $(document).ready(function() // handling for the slider
 			dialog_platonic_html += '<input type="radio" name="rating" value="3">{{rating3}}</input><BR>';
 			dialog_platonic_html += '<input type="radio" name="rating" value="2">{{rating2}}</input><BR>';
 	  	dialog_platonic_html += '<input type="radio" name="rating" value="1">{{rating1}}</input><BR>';
+ 
   
-  $('#lineup_container li').on('click','a.decision',function(e) {
+  $('#lineup_container ').on('click','a.decision',function(e) {
+ 
 		e.preventDefault();
 		var this_element = $(this);
   	var decision_div = this_element.parent(); 
@@ -226,8 +240,7 @@ $(document).ready(function() // handling for the slider
 							window.alert_user("{{ajax_error}}");
 							return false;
 						};
-
-						goto_next_slide(decision_div.parent().attr('lineup_position'));
+						goto_next_slide(decision_div.parents('li').attr('lineup_position'));
 						}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
 					if (crush_decision==true) 
@@ -264,7 +277,7 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */
 	window.handleLastSlideNext = function(activeSlideElement,activeIndex){
 		// if active slide is last slide (which is 1) and no decision has been made yet, then launch credit check
-		if (activeIndex == 0 && activeSlideElement.has('#choice').length && !window.is_lineup_paid){
+		if (activeIndex == 0 && activeSlideElement.has('.choice').length && !window.is_lineup_paid){
 			window.launch_credit_check();
 		}
 		else {
@@ -274,14 +287,29 @@ $(document).ready(function() // handling for the slider
 			}
 		}
 	};
+	/* ----------------------------------------------------------------------
+	*		FUNCTION - HANDLE LINEUP MEMBER POINTER
+  *		move it when slide is about to move
+	*  ---------------------------------------------------------------------- */
+
+	window.handleLineupMemberPointer = function(activeSlideElement,activeIndex){
+		var data_slide_index = $(activeSlideElement).attr('lineup_position');
+		if (!data_slide_index)
+			data_slide_index=0;
+		var x_position= $('#bx-pager a[data-slide-index="'+data_slide_index+'"]').position().left;
+		display = (parseInt(data_slide_index) + 1).toString() + ' of 10';
+		$('#lineup_member_board').html(display);
+		$('#lineup_member_board').animate({left:(x_position+1)},800);
+		$('#lineup_member_pointer').animate({left:(x_position+11)},800);
+		};
 	
 	/** PROCEDURAL CODE
 	* Preload any slides that already have a decision
 	*/
 
-	var last_loaded_slide = $('.bxslider li#preload').length - 1;
+	var last_loaded_slide = $('.bxslider li.preload').length - 1;
 	//var last_loaded_slide=-1;
-	//$('.bxslider li#preload').each(function(index){
+	//$('.bxslider li.preload').each(function(index){
 	//		$(this).load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + index + '/');	
 	//		last_loaded_slide = index;
 	//});
@@ -333,7 +361,7 @@ $(document).ready(function() // handling for the slider
 
 	var handle_lineup_dialog_close = function(){
 		var current_href=document.location.href;
-		var decided_li_elements = $('.bxslider li#preload #decision #choice');	
+		var decided_li_elements = $('.bxslider li.preload .lineup_decision .choice');	
 	 	var total_decisions=decided_li_elements.length;
 		
 		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:

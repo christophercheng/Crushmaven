@@ -320,7 +320,7 @@ def ajax_find_fb_user(request):
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
         try:
             me.crush_targets.get(username=fb_profile['id'])
-            response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as a crush.'
+            response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as an attraction.'
         except FacebookUser.DoesNotExist:
             
             try:

@@ -288,6 +288,7 @@
 				}
 			// if not "vertical" mode, calculate the max height of the children
 			}else{
+
 				height = Math.max.apply(Math, children.map(function(){
 					return $(this).outerHeight(false);
 				}).get());
@@ -1028,6 +1029,7 @@
 			// // check for direction control update
 			if(slider.settings.controls) updateDirectionControls();
 			// if slider is set to mode: "fade"
+	
 			if(slider.settings.mode == 'fade'){
 				// if adaptiveHeight is true and next height is different from current height, animate to the new height
 				if(slider.settings.adaptiveHeight && slider.viewport.height() != getViewportHeight()){
@@ -1156,8 +1158,9 @@
 		// first get the original window dimens (thanks alot IE)
 		var windowWidth = $(window).width();
 		var windowHeight = $(window).height();
+		
 		$(window).resize(function(){
-			
+		
 			// get the new window dimens (again, thank you IE)
 			var windowWidthNew = $(window).width();
 			var windowHeightNew = $(window).height();
