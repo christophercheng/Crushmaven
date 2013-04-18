@@ -69,7 +69,8 @@ $(document).ready(function()
         $('.view_lineup[display_id="{{show_lineup}}"]').trigger('click'); 
 
 	//handle help icon show and hide
-	$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
+//	$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
+		$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).show()});
 	$('.admirer_block_instructions .help_icon').click(function(){
 		$(this).parent().hide(500);
 	});

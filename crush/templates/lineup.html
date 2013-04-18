@@ -129,6 +129,7 @@ $(document).ready(function() // handling for the slider
 			infiniteLoop: false,
 			hideControlOnEnd: false,
 			speed:800,
+			touchEnabled:false,
 			//adaptiveHeight:false,
 			startSlide: 0,
 			slideSelector:'li.preload',
@@ -185,12 +186,12 @@ $(document).ready(function() // handling for the slider
   *		handle click to 'add member' as crush or platonic friend
 	*  ---------------------------------------------------------------------- */
 	var attraction_dialog = $("#dialog_attraction_add");
-	attraction_dialog.dialog({modal: true, autoOpen: false});
+	attraction_dialog.dialog({modal: true, autoOpen: false,resizable:false});
   attraction_dialog.on('click', function(e){e.stopPropagation();});
 	var dialog_attraction_html = '<input type="checkbox" checked>By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>';
   
   var platonic_dialog = $("#dialog_platonic_add");
-	platonic_dialog.dialog({modal: true, autoOpen: false});
+	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false});
   platonic_dialog.on('click', function(e){e.stopPropagation();});
   var dialog_platonic_html = '<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>';
 			dialog_platonic_html += '<input type="radio" name="rating" value="5"checked>{{rating5}}</input><BR>';
@@ -219,7 +220,7 @@ $(document).ready(function() // handling for the slider
 	  	crush_decision=false;
 	  }
 
-	  decision_dialog.dialog('option', 'buttons', {
+	  decision_dialog.dialog({buttons: {
 				"Cancel": function() {	
 					$(this).dialog("close");
 				}, // end of cancel handler
@@ -248,7 +249,13 @@ $(document).ready(function() // handling for the slider
 					else 
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");
 				}   // end of add handler
-			}); // end of .dialog handler
+			},
+			open:function() {
+				var closest_ui_dialog = $(this).closest(".ui-dialog");
+				// style each button except first button (assuming first button is cancel)
+				$(closest_ui_dialog).find('.ui-button').each(function(counter){if (counter>0)$(this).addClass("site_dialog_button")});
+    	}
+    }); // end of .dialog handler
     
     decision_dialog.dialog("open");
 
