@@ -1438,7 +1438,6 @@ ul.bxslider{
 	color:rgb(51,51,153);
 }
 
-
 .lineup_decision span.platonic{
 	position:absolute;
 	top:-10px;
@@ -1453,7 +1452,6 @@ ul.bxslider{
 	font-size:14px;
 	width:160px;
 }
-
 
 .lineup_decision span span.date_lineup_member_added{
 	display:block;
@@ -1484,6 +1482,165 @@ ul.bxslider{
 	width:90%;
 	bottom:0px;
 }
+
+#dialog_platonic_add, #dialog_attraction_add {
+	#display:inline-block;
+	width:390px!important;
+	text-align:center;
+	position:relative;
+}
+#dialog_platonic_add{
+	width:400px!important;
+}
+
+.first_attractor_text{
+	background: 	#EAF3FC;
+	#color:white;
+	border-radius:0 10px 10px 10px;
+	padding:10px;
+	margin-top:-5px;
+	margin-bottom:-5px;
+	position:relative;
+}
+
+.first_attractor_text .help_icon{
+	position:absolute;
+	top:-6px;
+	left:-6px;
+	background-color:transparent;
+	}
+.attractor_text{
+	font-size:12px;
+	text-align:left;
+	display:inline-block;
+}
+
+.second_attractor_text{
+	font-size:12px;
+}
+
+#dialog_attraction_add .dialog_content_wrapper .attractor_name_block{
+	margin-left:auto;
+	margin-right:auto;
+	display:inline-block;
+	position:relative;
+}
+
+.attractor_name_block .decision_icon{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:20px;
+	vertical-align:-1px;
+	background-position:-120px -70px;
+	height:20px;
+	bottom:13px;
+	left:45px;
+	cursor:pointer;
+	opacity:1;
+}
+
+.attractor_image img {
+	margin-top:20px;
+	margin-bottom:15px;
+	display:inline-block;
+	width:60px;
+	height:60px;
+	border:1px solid blue;
+	border-radius:3px;
+}
+
+#dialog_attraction_add .dialog_content_wrapper .attractor_name_block .attractor_full_name {
+	margin-left:15px;
+	display:inline-block;
+	vertical-align:top;
+	margin-top:40px;
+}
+
+#dialog_platonic_add .dialog_content_wrapper .attractor_name_block{
+	display:inline-block;
+	position:relative;
+	float:left;
+	width:115px;
+	height:105px;
+	overflow:hidden;
+	margin-top:20px;
+	padding-right:5px;
+}
+
+#dialog_platonic_add .dialog_content_wrapper .attractor_name_block .decision_icon{
+	background-position:-170px -70px;
+	bottom:40px;
+	left:70px;
+}
+
+#dialog_platonic_add .dialog_content_wrapper .attractor_name_block .attractor_image img {
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:10px;
+	margin-top:0px;
+}
+
+#dialog_platonic_add .dialog_content_wrapper .attractor_name_block .attractor_full_name {
+	display:block;
+	#border:1px solid green;
+	width:100%;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+#platonic_rating_group{
+	font-size:11px;
+	display:block;
+	top:0px;
+	margin-left:115px;
+	margin-top:15px;
+	border-left:1px solid rgb(0,0,70);
+	padding-left:10px;
+}
+#platonic_rating_group .platonic_rating {
+	display:block;
+	text-align:left;
+	position:relative;
+	margin-bottom:5px;
+
+}
+
+#platonic_rating_group .platonic_rating .rating_description{
+	display:inline-block;
+	position:absolute;
+	top:1px;
+	left:25px;
+	}
+
+#dialog_attraction_add{
+	position:static;	/* this is so we can stick t&c checkbox in button pane */
+}
+
+#attractor_agreement {
+	display:inline-block;
+	font-size:11px;
+	position:absolute;
+	color:#f2f2f2;
+	left:10px;
+	bottom:8px;
+	letter-spacing:-1px;
+	height:25px;
+}
+
+#attractor_agreement input,#attractor_agreement #attractor_agreement_text  {	
+		vertical-align:middle;	
+}
+
+#attractor_agreement a {
+	font-size:11px;
+	color:#f2f2f2;
+	text-decoration:underline;
+	margin-left:2px;
+	vertical-align:middle;	
+}
 	
 #finish-btn{
 	background:#cccccc;
@@ -1497,6 +1654,7 @@ ul.bxslider{
 	#box-shadow: 0 0 0 1px rgba(100, 100, 100, 0.4) inset, 0 1px 3px gray;
 	display:none;
 }
+
 	/*
 #lineup_modal #lineup-footer #footer-msg {
 	float:left;
@@ -1908,9 +2066,11 @@ ul.bxslider{
 	background:none !important;
 	color:white !important;
 	border:none !important;
-	height:40px;
+	height:40px!important;
 }
-
+.ui-dialog-titlebar .ui-dialog-title {
+	margin-top:5px;
+	}
 
 .ui-icon{
 	display:inline-block!important;
@@ -1940,6 +2100,10 @@ ul.bxslider{
 
 }
 
+.dialog_content_wrapper{
+	padding:15px;
+}
+
 .modal_dialog_footer{
 	#background:gray;
 	background:rgb(0,0,70);
@@ -1954,10 +2118,13 @@ ul.bxslider{
 	background:rgb(0,0,70);
 	margin:0!important;
 	padding:0!important;
+	height:45px;
 }
 
 .ui-dialog .ui-dialog-buttonpane button {
-	margin: 10px 10px 10px 0;
+	#margin: 0 10px 0 0;
+	margin-right:10px;
+	vertical-align:middle;
 }
 .ui-button .ui-button-text {
 	padding:5px 10px!important;

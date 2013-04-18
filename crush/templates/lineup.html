@@ -185,54 +185,90 @@ $(document).ready(function() // handling for the slider
 	*		FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
   *		handle click to 'add member' as crush or platonic friend
 	*  ---------------------------------------------------------------------- */
+	window.added_lineup_attraction=null;// set whenever attraction is added - used to know when at least one attraction added
 	var attraction_dialog = $("#dialog_attraction_add");
-	attraction_dialog.dialog({modal: true, autoOpen: false,resizable:false});
-  attraction_dialog.on('click', function(e){e.stopPropagation();});
-	var dialog_attraction_html = '<input type="checkbox" checked>By clicking submit, you agree to all <a href="/help_terms" target="_blank">terms & conditions</a></input>';
-  
+	attraction_dialog.dialog({modal: true, autoOpen: false,width:400,resizable:false,dialogClass:'decision_confirmation_dialog'});		
+
+	var dialog_attraction_html ='';
+	dialog_attraction_html += '<div class="dialog_content_wrapper">';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we will try to get <span class="attractor_pronoun_object"></span> signed up - if not already - so <span class="attractor_pronoun_subject"></span> can take a similar lineup. You will be notified when she responds.<span class="help_icon"></span></p>';
+		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
+		dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
+		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
+	dialog_attraction_html += '</div>';
   var platonic_dialog = $("#dialog_platonic_add");
-	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false});
-  platonic_dialog.on('click', function(e){e.stopPropagation();});
-  var dialog_platonic_html = '<span id="platonic_add_text">Please tell us how you would rate their attractiveness to a friend of yours?</span><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="5"checked>{{rating5}}</input><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="4">{{rating4}}</input><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="3">{{rating3}}</input><BR>';
-			dialog_platonic_html += '<input type="radio" name="rating" value="2">{{rating2}}</input><BR>';
-	  	dialog_platonic_html += '<input type="radio" name="rating" value="1">{{rating1}}</input><BR>';
- 
+	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog'});
+  var dialog_platonic_html = '<div class="dialog_content_wrapper">';
+ 		dialog_platonic_html += '<span class="attractor_text">Although you are not attracted to <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
+		dialog_platonic_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
+		dialog_platonic_html += '<div id="platonic_rating_group">';
+			dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"checked><span class="rating_description">{{rating5}}</span></span>';
+			dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="4"><span class="rating_description">{{rating4}}</span></span>';
+			dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="3"><span class="rating_description">{{rating3}}</span></span>';
+			dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="2"><span class="rating_description">{{rating2}}</span></span>';
+	  	dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="1"><span class="rating_description">{{rating1}}</span></span>';
+	  dialog_platonic_html += '</div>';
+ 	dialog_platonic_html += '</div>';
   
+  	// this allows the inputs to be clickable on the next confirmation dialog opening
+  attraction_dialog.on('click', function(e){e.stopPropagation();});
+  platonic_dialog.on('click', function(e){e.stopPropagation();});
   $('#lineup_container ').on('click','a.decision',function(e) {
- 
 		e.preventDefault();
 		var this_element = $(this);
   	var decision_div = this_element.parent(); 
 	  var url,decision_dialog,crush_decision;
+	  var username=this_element.attr('username');
+	  var full_name=this_element.attr('name');
+	  var first_name = full_name.substr(0,full_name.indexOf(' '));
+	  if (first_name=="")
+	  	first_name=full_name;
+	  var gender_pronoun_object = "them";
+	  var gender_pronoun_subject = "they";
+	  var gender_attribute = this_element.attr('member_gender');
+	  if (gender_attribute == 'M'){
+	  	gender_pronoun_subject = "he";
+	  	gender_pronoun_object = "him";
+	  }
+	  else if (gender_attribute == 'F'){
+	  	gender_pronoun_subject = "she";
+	  	gender_pronoun_object = "her";
+	  }
 	  if (this_element.attr('add_type')=="crush") {
-	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  this_element.attr('username') + "/"; 
+	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
 	  	decision_dialog.html(dialog_attraction_html);
+	  	if (window.added_lineup_attraction){
+	  			decision_dialog.find('.attractor_text').remove();
+	  		}
 	  	crush_decision=true;
 	  }
 	  else {
-	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + this_element.attr('username') + "/"; 
+	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + username + "/"; 
 	  	decision_dialog = platonic_dialog;
 	  	decision_dialog.html(dialog_platonic_html);
 	  	crush_decision=false;
 	  }
-
+	  // substitute in the actual attractor names into the dialog
+	  decision_dialog.find('.attractor_first_name').html(first_name);
+		decision_dialog.find('.attractor_full_name').html(full_name);
+		decision_dialog.find('.attractor_pronoun_object').html(gender_pronoun_object);
+		decision_dialog.find('.attractor_pronoun_subject').html(gender_pronoun_subject);		
+	  decision_dialog.find('.attractor_image').html('<img src="http://graph.facebook.com/' + username + '/picture?width=60&height=60" />');
 	  decision_dialog.dialog({buttons: {
 				"Cancel": function() {	
 					$(this).dialog("close");
 				}, // end of cancel handler
-				"Submit": function() {
+				"Confirm": function() {
 					if (crush_decision==true){
-					 	if (decision_dialog.children('input:checked').length == 0){
+						var closest_ui_dialog = $(this).closest(".ui-dialog");
+					 	if (closest_ui_dialog.find('.attractor_agreement_checkbox').attr('checked') != 'checked'){
 							window.alert_user("You must agree to the terms and conditions before continuing.");
 							return;
 						}
 					}
 					else {
-						url += decision_dialog.children('input:radio[name="rating"]:checked').val();
+						url += decision_dialog.find('input:radio[name="rating"]:checked').val();
 					}	
 					decision_div.prev().show();decision_div.hide();
 					decision_div.load(url, function(responseText,textStatus,XHR){
@@ -241,6 +277,8 @@ $(document).ready(function() // handling for the slider
 							window.alert_user("{{ajax_error}}");
 							return false;
 						};
+						if (crush_decision==true)
+							window.added_lineup_attraction=true;
 						goto_next_slide(decision_div.parents('li').attr('lineup_position'));
 						}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
@@ -250,10 +288,10 @@ $(document).ready(function() // handling for the slider
 						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");
 				}   // end of add handler
 			},
-			open:function() {
+			open:function(event,ui) {
 				var closest_ui_dialog = $(this).closest(".ui-dialog");
-				// style each button except first button (assuming first button is cancel)
-				$(closest_ui_dialog).find('.ui-button').each(function(counter){if (counter>0)$(this).addClass("site_dialog_button")});
+				// style each button except cancel button (assuming cancel button is called 'Cancel')
+				closest_ui_dialog.find('.ui-button').each(function(counter,element){if ($(element).find('span').html()!='Cancel')$(element).addClass("site_dialog_button")});
     	}
     }); // end of .dialog handler
     
