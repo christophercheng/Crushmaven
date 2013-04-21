@@ -135,10 +135,12 @@ $(document).ready(function() // handling for the slider
 			slideSelector:'li.preload',
 			onLastSlideNext: window.handleLastSlideNext,
 			onSlideBefore:window.handleLineupMemberPointer,
-			onSliderLoad:window.handleLineupMemberPointer
 			});
 		$('#lineup_container').find('.bxslider').show();
-		setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
+		if (last_loaded_slide>0)
+			setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
+		else
+			handleLineupMemberPointer();
 		updateFooterMsg();
 	};	
 		
@@ -191,9 +193,9 @@ $(document).ready(function() // handling for the slider
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
-		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we will try to get <span class="attractor_pronoun_object"></span> signed up - if not already - so <span class="attractor_pronoun_subject"></span> can take a similar lineup. You will be notified when she responds.<span class="help_icon"></span></p>';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we will try to get <span class="attractor_pronoun_object"></span> signed up - if not already - so <span class="attractor_pronoun_subject"></span> can take a similar lineup. You will be notified when she responds.<span class="ahelp_icon"></span></p>';
 		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
-		dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
+		//dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
 	dialog_attraction_html += '</div>';
   var platonic_dialog = $("#dialog_platonic_add");
@@ -234,6 +236,7 @@ $(document).ready(function() // handling for the slider
 	  	gender_pronoun_subject = "she";
 	  	gender_pronoun_object = "her";
 	  }
+	  	  	
 	  if (this_element.attr('add_type')=="crush") {
 	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
@@ -249,6 +252,7 @@ $(document).ready(function() // handling for the slider
 	  	decision_dialog.html(dialog_platonic_html);
 	  	crush_decision=false;
 	  }
+
 	  // substitute in the actual attractor names into the dialog
 	  decision_dialog.find('.attractor_first_name').html(first_name);
 		decision_dialog.find('.attractor_full_name').html(full_name);
@@ -327,7 +331,7 @@ $(document).ready(function() // handling for the slider
 		}
 		else {
 			if ((parseInt(activeIndex) + 1) < {{member_set.count}}){ 
-				var member_name = activeSlideElement.children('#name').html();
+				var member_name = activeSlideElement.find('.lineup_name').html();
 				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
 			}
 		}
@@ -344,8 +348,8 @@ $(document).ready(function() // handling for the slider
 		var x_position= $('#bx-pager a[data-slide-index="'+data_slide_index+'"]').position().left;
 		display = (parseInt(data_slide_index) + 1).toString() + ' of 10';
 		$('#lineup_member_board').html(display);
-		$('#lineup_member_board').animate({left:(x_position+1)},800);
-		$('#lineup_member_pointer').animate({left:(x_position+11)},800);
+		$('#lineup_member_board').animate({left:(x_position+1)},800,'easeOutSine');
+		$('#lineup_member_pointer').animate({left:(x_position+11)},800,'easeOutCubic');
 		};
 	
 	/** PROCEDURAL CODE

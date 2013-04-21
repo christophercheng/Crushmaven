@@ -5,55 +5,50 @@ $('#content-holder').hide();
 };
 </script>
 
-<div id="credit_check_content">
-<div id="site-loading"></div>
-<div id="content-holder">
-Feature: {{ feature_name }}<br>
-Feature Cost: {{ feature_cost }}
-{% if feature_cost == 1 %}
-credit
-{% else %}
-credits
-{% endif %}
-<BR>Credit Available: {{ credit_available }} 
-{% if request.user.site_credits == 1 %}
-credit
-{% else %}
-credits
-{% endif %}
-<BR><BR>
-<i><b>You have insufficient credit to purchase this item</b></i><BR>
+<div id="credit_check_container">
+	<div id="feature_description">
+		{{ feature_name }}
+	</div>
+	<div id="site-loading"></div>
+	<div id="purchase_description_container">
+		<span class="split_column_line"><span class="split_column_line1">Credit Available:</span><span class="split_column_line2">{{ credit_available }}&nbsp;{% if credit_available == 1 %}credit
+				{% else %}credits{% endif %}</span></span>
+		<span class="split_column_line"><span class="split_column_line1">Feature Cost:</span><span class="split_column_line2 ">- {{ feature_cost }} credit</span></span>
+		<span class="split_column_line feature_cost_separator"><span class="split_column_line1"></span><span class="split_column_line2 feature_cost_separator_line"></span></span>
+		<span class="split_column_line "><span class="split_column_line1">Remaining After Purchase:</span><span class="split_column_line2 insufficient_credit_message">You have insufficient credit</span></span>
+	</div><!--  close off purchase_description_container -->
 
-<h3>Add More Credits:</h3>
 
-<form method="post" action='{{ paypal_url }}'>{% csrf_token %}
+<form method="post" action='{{ paypal_url }}' >{% csrf_token %}
 
-<input type = "radio" name="amount" value="5" onClick="document.getElementById('item_name_field').value='5 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=5';document.getElementById('notify_url').value='{{paypal_notify_url}}5/'">5 credits - $5 USD
-</br>
-<input type = "radio" name="amount" value="9" checked onClick="document.getElementById('item_name_field').value='10 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=10';document.getElementById('notify_url').value='{{paypal_notify_url}}10/'">10 credits - $9 USD <small>(10% bonus)</small>
-</br>
-<input type = "radio" name="amount" value="17" onClick="document.getElementById('item_name_field').value='20 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=20';document.getElementById('notify_url').value='{{paypal_notify_url}}20/'">20 credits - $17 USD <small>(15% bonus)</small>
-</br>
-<input type = "radio" name="amount" value="32" onClick="document.getElementById('item_name_field').value='40 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=40';document.getElementById('notify_url').value='{{paypal_notify_url}}40/'">40 credits - $32 USD <small>(20% bonus)</small>
-</br>
-<input type = "radio" name="amount" value="72" onClick="document.getElementById('item_name_field').value='100 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=100';document.getElementById('notify_url').value='{{paypal_notify_url}}100/'">100 credits - $72 USD <small>(27% bonus)</small>
-</br><br>
-
-  <input type="hidden" name="cmd" value="_xclick">
-  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
-  <input type="hidden" name="business" value="{{ paypal_email }}">
-  <input type="hidden" id="item_name_field" name="item_name" value="10 Credits">
-  <input type="hidden" name="currency_code" value="USD">
-  <input type="hidden" name="return" id="return" value="{{paypal_success_url}}&credit_amount=10">
-  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
-  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
-  
-
-<input type='button' onclick="$('#credit_check_modal').dialog('close');" value=Cancel>
-<input type="image" src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" name="submit" onclick="morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" >
-
+	<div id="credit_purchase_selection">
+		<h3 id="purchase_title">Purchase More Credit:</h3>
+		<span class="purchase_option"><input type = "radio" name="amount" value="5" onClick="document.getElementById('item_name_field').value='5 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=5';document.getElementById('notify_url').value='{{paypal_notify_url}}5/'"><span class="credit_option_amount">5 credits</span> for $5 USD</span>
+		<span class="purchase_option"><input type = "radio" name="amount" value="9" checked onClick="document.getElementById('item_name_field').value='10 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=10';document.getElementById('notify_url').value='{{paypal_notify_url}}10/'"><span class="credit_option_amount">10 credits</span> for $9 USD <span class="percentage_bonus">(10% bonus)</span></span>
+		<span class="purchase_option"><input type = "radio" name="amount" value="17" onClick="document.getElementById('item_name_field').value='20 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=20';document.getElementById('notify_url').value='{{paypal_notify_url}}20/'"><span class="credit_option_amount">20 credits</span> for $17 USD <span class="percentage_bonus">(15% bonus)</span></span>
+		<span class="purchase_option"><input type = "radio" name="amount" value="32" onClick="document.getElementById('item_name_field').value='40 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=40';document.getElementById('notify_url').value='{{paypal_notify_url}}40/'"><span class="credit_option_amount">40 credits</span> for $32 USD <span class="percentage_bonus">(20% bonus)</span></span>
+		<span class="purchase_option"><input type = "radio" name="amount" value="75" onClick="document.getElementById('item_name_field').value='100 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=100';document.getElementById('notify_url').value='{{paypal_notify_url}}100/'"><span class="credit_option_amount">100 credits</span> for $75 USD <span class="percentage_bonus">(25% bonus)</span></span>
+		<img src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" id="paypal_image">
+		  <input type="hidden" name="cmd" value="_xclick">
+		  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
+		  <input type="hidden" name="business" value="{{ paypal_email }}">
+		  <input type="hidden" id="item_name_field" name="item_name" value="10 Credits">
+		  <input type="hidden" name="currency_code" value="USD">
+		  <input type="hidden" name="return" id="return" value="{{paypal_success_url}}&credit_amount=10">
+		  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
+		  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
+	</div><!-- close off credit_purchase_selection -->
+	<div class="ui-dialog-buttonpane">
+		<span id="purchase_button_description">You will be directed to PayPal</span>
+		<div class="ui-dialog-buttonset">
+		<button type='button' onclick="$('#credit_check_modal').dialog('close');" class="ui-button" ><span class="ui-button-text">Cancel</span></button> 
+		<button class="ui-button site_dialog_button" onclick="morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" ><span class="ui-button-text">Make Payment</span></button> 
+		
+		</div>
+	</div><!-- close off button_bar -->
 </form>
-</div>
-</div>
+
+</div> <!-- close off credit_check_container -->
+
 
 

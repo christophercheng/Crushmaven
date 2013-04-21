@@ -21,7 +21,7 @@
 
 		<script src="{{ STATIC_URL }}credit_check_dialog.js"></script>
 
-		<link type="text/css" href="{{ STATIC_URL }}fbdater.css" rel="stylesheet"  />
+		<link type="text/css" href="{{ STATIC_URL }}fbdater.css?t={% now "U" %}" rel="stylesheet"  />
     </head>
 <body>
 <!-- INITIALIZE FB JS INTEGRATION -->
@@ -129,7 +129,7 @@ $.ajaxSetup({timeout: '45000'});
 <!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
 <script>
 jQuery(document).ready(function($) {
-  $("#alert_modal").dialog({resizable:false, modal: true, autoOpen: false,zIndex:999999});
+  $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,zIndex:999999});
  
   window.alert_user=function(message){
     $("#alert_modal").html(message);

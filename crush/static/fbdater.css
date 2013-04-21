@@ -592,7 +592,7 @@ a.button {
 }
 
 #credit_check_content #site-loading {
-
+	
 	display:none;
 }
 
@@ -1493,15 +1493,6 @@ ul.bxslider{
 	width:400px!important;
 }
 
-.first_attractor_text{
-	background: 	#EAF3FC;
-	#color:white;
-	border-radius:0 10px 10px 10px;
-	padding:10px;
-	margin-top:-5px;
-	margin-bottom:-5px;
-	position:relative;
-}
 
 .first_attractor_text .help_icon{
 	position:absolute;
@@ -1518,6 +1509,19 @@ ul.bxslider{
 .second_attractor_text{
 	font-size:12px;
 }
+.first_attractor_text{
+	#background: 	#EAF3FC;
+	#background:#2E8AE6;
+	#color:white;
+	#border-radius:0 10px 10px 10px;
+	width:100%;
+	padding:10px 0;
+	margin-bottom:-5px;
+	margin-top:-15px;
+	position:relative;
+	border-bottom:1px solid rgb(0,0,70)
+}
+
 
 #dialog_attraction_add .dialog_content_wrapper .attractor_name_block{
 	margin-left:auto;
@@ -1542,13 +1546,18 @@ ul.bxslider{
 	opacity:1;
 }
 
-.attractor_image img {
+.attractor_image{
+	display:inline-block;
 	margin-top:20px;
-	margin-bottom:15px;
+	margin-bottom:15px;	
+}
+
+.attractor_image img {
+
 	display:inline-block;
 	width:60px;
 	height:60px;
-	border:1px solid blue;
+	border:1px solid 	border-color:rgb(0,0,70);;
 	border-radius:3px;
 }
 
@@ -1576,7 +1585,7 @@ ul.bxslider{
 	left:70px;
 }
 
-#dialog_platonic_add .dialog_content_wrapper .attractor_name_block .attractor_image img {
+#dialog_platonic_add .dialog_content_wrapper .attractor_name_block .attractor_image {
 	margin-left:auto;
 	margin-right:auto;
 	margin-bottom:10px;
@@ -1668,10 +1677,123 @@ ul.bxslider{
 }
 */
 
+/* ===========================  Credit Sufficient Dialog ========================= */
+
+#credit_check_container #site-loading {
+	display:none;
+}
+
+#credit_check_container {
+	display:block;
+	width:100%;
+	font-size:12px;
+	overflow:hidden;
+	position:relative;
+}
+
+#credit_check_container #feature_description{
+	display:inline-block;
+	background:rgb(102,102,255);
+	width:100%;
+	padding:7px 10px;
+	color:white;
+	font-weight:bold;
+	font-size:12px;
+}
+#credit_check_container #purchase_description_container{
+	display:inline-block;
+	padding:15px 0 5px 0;
+}
+
+#credit_check_container #purchase_description_container .split_column_line{
+	display:block;
+	width:100%;
+	margin-bottom:10px;
+}
+
+#credit_check_container #purchase_description_container .split_column_line .split_column_line1 {
+	display:inline-block;
+	width:190px;
+	margin-right:10px;
+	text-align:right;
+	font-weight:bold;
+}
+
+#credit_check_container #purchase_description_container .split_column_line .split_column_line2 {
+	display:inline-block;
+	font-weight:normal;
+	text-align:left;
+	}
+
+#credit_check_container #purchase_description_container .split_column_line .feature_cost_separator_line{
+	border-bottom:1px solid #555555;
+	width:100px!important;
+	height:2px;
+	vertical-align:top;
+}
+#credit_check_container #purchase_description_container .feature_cost_separator{
+	margin-bottom:-5px!important;
+}
+
+.insufficient_credit_message{
+	color:red;
+	font-weight:bold;
+}
+#purchase_title{
+	display:block;
+	font-weight:bold;
+	font-size:12px;
+	margin-bottom:5px;
+	background:rgb(102,102,255);
+	padding:3px 0px 3px 5px;
+	color:white;
+	opacity:.8;
+}
+#credit_purchase_selection{
+	display:inline-block;
+	border-top:2px solid rgb(0,0,70);
+	width:100%;
+	padding: 10px 15px 5px 12px;
+	display:relative;
+	font-size:12px;
+}
+
+#credit_check_container #paypal_image{
+	position:absolute;
+	bottom: 100px;
+	right:40px;
+}
+#credit_purchase_selection .purchase_option {
+	display:block;
+	margin-bottom:5px;
+}
+
+#credit_check_container  .credit_option_amount {
+	#font-weight:bold;
+}
+
+.percentage_bonus {
+	font-weight:normal;
+	font-size:10px;
+	font-style:italic;
+}
+
+#purchase_button_description{
+	position:absolute;
+	left:15px;
+	color:#DADADA;
+	font-style:italic;
+	font-size:11px;	
+	letter-spacing:-1px;
+}
+
+/* ===========================  Messaging ========================= */
+
+
 /* style the overlay of all jquery modals */
 .ui-widget-overlay{
-	background:black;
-	opacity:0.8;
+	background:gray;
+	opacity:0.6;
 }
 
 .MercuryRepliedIndicator.repliedLast{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
@@ -2028,13 +2150,13 @@ ul.bxslider{
 	display:inline-block;
 	background:#2E8AE6; 
 	color:white;
-	height:34px;
+	height:30px;
 	line-height:12px;
 	width:165px;
 	font-size:10px;
-	padding:5px 10px 5px 10px;
+	padding:3px 10px;
 	border-radius:5px;
-	margin-top:6px;
+	margin-top:5px;
 	margin-left:150px;
 }
 
@@ -2056,6 +2178,7 @@ ul.bxslider{
 	padding:0 !important;
 	overflow-x:hidden!important;
 	overflow-y:hidden!important;
+	min-height:auto!important;
 }
 
 .ui-widget-content{
@@ -2100,35 +2223,26 @@ ul.bxslider{
 
 }
 
+/* used when the buttons of dialog are jquery buttons */
 .dialog_content_wrapper{
 	padding:15px;
 }
 
-.modal_dialog_footer{
-	#background:gray;
-	background:rgb(0,0,70);
-	width:100%;
-	height:45px;
-	line-height:45px;
-	display:inline-block;
-	color:white;
-}
-
 .ui-dialog .ui-dialog-buttonpane {
-	background:rgb(0,0,70);
+	background:rgb(0,0,70)!important;
 	margin:0!important;
 	padding:0!important;
-	height:45px;
+	height:45px!important;
+	line-height:45px!important;
+	overflow: hidden!important;
 }
 
 .ui-dialog .ui-dialog-buttonpane button {
-	#margin: 0 10px 0 0;
-	margin-right:10px;
 	vertical-align:middle;
 }
-.ui-button .ui-button-text {
-	padding:5px 10px!important;
-	line-height:16px;
+.ui-button .ui-button-text{
+	padding:4px 10px!important;
+	line-height:14px;
 	font-size:14px;
 }
 
@@ -2141,16 +2255,16 @@ ul.bxslider{
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	color:#F2f2f2;
 	border: 1px solid #194396;
-	padding-left:12px;
-	padding-right:12px;
+	padding:1px 4px;
 	text-align:center;
-	border-radius:5px;
+	border-radius:4px;
 	font-family:arial;
 	font-weight:normal;
 	font-size:14px;
 	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
+	vertical-align:middle;
 }
-.ui-dialog .ui-dialog-buttonpane button.site_dialog_button:hover {
+.ui-dialog .ui-dialog-buttonpane  button.site_dialog_button:hover {
 	color:#fff;
 	background-color:#0033FF;
 	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
@@ -2159,11 +2273,46 @@ ul.bxslider{
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 }
 
+
+.modal_dialog_footer{
+	background:rgb(0,0,70);
+	width:100%;
+	height:40px;
+	line-height:40px;
+	display:block;
+	color:white;
+}
+
 .modal_dialog_footer .button_bar{
 	float:right;
 	margin-right:10px;
 	vertical-align:middle;
+	line-height:40px;
+	display:inline-block;
 }
 .modal_dialog_footer .button_bar input, .modal_dialog_footer .button_bar button{
 	cursor:pointer;	
+}
+
+/* ===========================   Alert Dialog ========================= */
+
+#alert_modal{
+	diplay:inline-block;
+	padding:20px 10px!important;
+	text-align:center;
+	font-size:13px;
+}
+
+.alert_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+	diplay:inline-block!important;
+	text-align:center!important;
+	width:100%;
+	}
+
+.alert_modal_dialog .ui-dialog-buttonpane .ui-button{
+	padding-left:6px;
+	padding-right:6px;
+	height:25px!important;
+	margin-left:auto!important;
+		margin-right:auto!important;
 }

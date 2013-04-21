@@ -9,7 +9,7 @@
 // INITIALIZE CREDIT CHECK MODAL 
 $(document).ready(function() // handling for the slider
 { 
-	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
+	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false,width:400,position:{my:"left center",at:"right+110 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
 });
 
 function purchase_feature(data){

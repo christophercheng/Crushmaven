@@ -248,19 +248,19 @@ LINEUP_STATUS_CHOICES = {
 
 FEATURES = {
     '1': {
-        'NAME': 'Continue Viewing Secret Admirer Lineup', 
+        'NAME': 'View the rest of your lineup for 1 credit', 
         'COST': 1,      
     },
     '2': {
-        'NAME':'View Crush Response',
+        'NAME':'View your attraction\'s response for 1 credit',
         'COST': 1,
     },
     '3': {
-        'NAME':"View Crush's Rating of You",
+        'NAME':"View your attraction's rating of you for 1 credit",
         'COST': 1,
     },
     '4': {
-        'NAME':"Converse with this attraction for the next 2 weeks",
+        'NAME':"Converse with this attraction for the next 2 weeks for 2 credits",
         'COST': 2,
     },
 }
