@@ -86,7 +86,7 @@ $(document).ready(function()
    	{% endif %}
   };
   
-  $("#response_modal").on('click', '#send_message', function(e){
+  $("#response_modal").on('click', '#response_send_message', function(e){
   	e.preventDefault();
 	   var crush_id = $(this).attr('crush_id');
 	   //$(this).parent().dialog("close"); 	 
@@ -94,7 +94,7 @@ $(document).ready(function()
 	   purchase_conversation("{{csrf_token}}",crush_id);
   });
   
-  $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,close:function(event,ui){redirect_after_response_viewed();}});
+  $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){redirect_after_response_viewed();}});
   
   window.display_response_modal = function(crush_id) {
 
@@ -115,12 +115,12 @@ $(document).ready(function()
    };
    
    
-   $("#view_rating a").click(function(){
+   $("#response_view_rating a").click(function(){
    		unique_id=$(this).attr('unique_id');
 	   	purchase_rating(unique_id);
    });
    
-   $("#response_modal").on('click','#view_rating a',function(){
+   $("#response_modal").on('click','#response_view_rating a',function(){
 		unique_id=$(this).attr('unique_id');
 		purchase_rating(unique_id);
    });
@@ -140,13 +140,8 @@ $(document).ready(function()
  	window.rating_purchased = function(unique_id){
 			var rating,html;
 			$.get('/ajax_get_platonic_rating/' + unique_id, function(rating){
-					rating_element = $('#view_rating');
-					if (rating_element.parent().attr("id") == "response_modal"){
-						rating_element.html(rating);
-					}
-					else {
-						rating_element.html("* rated your attractiveness:  " + rating );
-					}
+					rating_element = $('#response_view_rating');
+					rating_element.html(rating);
 				}).fail(function(){
 					window.alert_user("{{ajax_error}}");
 					return;

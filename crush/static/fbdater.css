@@ -803,6 +803,12 @@ border:1px solid #003399;/*#CC0000;*/
 	font-weight:bold;
 }
 
+.updated.mutual_attraction{
+	background:rgb(102,102,255);
+	padding-left:10px;
+	padding-right:10px;
+}
+
 ul.attraction_status_bar{
 	list-style:none;
 	/*#border:1px solid gray;*/
@@ -1737,7 +1743,7 @@ ul.bxslider{
 
 .insufficient_credit_message{
 	color:red;
-	font-weight:bold;
+	font-weight:bold!important;
 }
 #purchase_title{
 	display:block;
@@ -1785,6 +1791,74 @@ ul.bxslider{
 	font-style:italic;
 	font-size:11px;	
 	letter-spacing:-1px;
+}
+
+/* ===========================  Response Dialog  ========================= */
+
+#response_no_match {
+	background:gray!important;
+}
+
+#response_container{
+	padding:10px 10px 15px 10px;
+	width:100%;
+	text-align:center;
+}
+
+#response_container .response_message {
+	display:block;
+}
+
+#response_container .attractor_image{
+	display:inline-block;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	#width:100px;
+	position:relative;
+	margin-top:15px!important;
+	margin-bottom:15px!important;
+}
+
+#response_container .decision_icon{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:20px;
+	vertical-align:-1px;
+
+	height:20px;
+	bottom:-5px;
+	right:-10px;
+	opacity:1;
+}
+
+#response_container #decision_icon_yes{
+		background-position:-120px -70px;
+}
+
+#response_container #decision_icon_no{
+	background-position:-170px -70px;
+}
+
+#response_container a#response_send_message,#response_container #response_view_rating a {
+	display:block;
+	color:#3366FF!important;
+	font-weight:bold;
+	font-style:italic;
+}
+
+#response_container a#response_send_message:hover,#response_container #response_view_rating a:hover {
+	text-decoration:underline;
+	}
+	
+#response_container #response_view_rating {
+	display:inline-block;
+	margin-top:10px;
+	font-weight:bold;
+	font-style:italic;
 }
 
 /* ===========================  Messaging ========================= */
@@ -2273,7 +2347,15 @@ ul.bxslider{
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 }
 
-
+.dialog_subtitle {
+	display:inline-block;
+	background:rgb(102,102,255);
+	width:100%;
+	padding:7px 10px;
+	color:white;
+	font-weight:bold;
+	font-size:12px;
+}	
 .modal_dialog_footer{
 	background:rgb(0,0,70);
 	width:100%;

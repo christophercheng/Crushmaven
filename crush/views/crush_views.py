@@ -155,24 +155,31 @@ def ajax_load_response_dialog_content(request,crush_id):
         # show messaging on what to do next
         # provide link for any next step action items
     if relationship.target_status == 4:
-        ajax_response += "Congratulations! " 
-        ajax_response += crush.get_name() + " is mutually attracted to you.<BR><BR>"
+        ajax_response += "<div class='dialog_subtitle'>Congratulations!</div>" 
+        ajax_response += "<div id='response_container'>"
+        ajax_response += "<span class='response_message'>" + crush.get_name() + " expressed a mutual attraction to you.</span>"
+        ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="response_decision_yes"></span></span>';
         # check for any previously hidden messages from the target_person
         if request.user.received_messages.filter(sender=relationship.target_person).count() == 0:           
-            ajax_response +=  "<a href='#' id='send_message' crush_id='" + crush_id + "'>Send " + crush.first_name + " a message</a>"
+            ajax_response +=  "<a href='#'  crush_id='" + crush_id + "' id='response_send_message'>Send " + crush.first_name + " a Message</a>"
         else:
-            ajax_response +=  crush.first_name + " sent you a message as well. <a href='#' id='send_message' crush_id='" + crush_id + "'>View message</a>"
+            ajax_response += "<span class='response_message'>" + crush.first_name + " sent you a message as well:</span>"
+            ajax_response +=  "<a href='#' id='response_send_message' crush_id='" + crush_id + "'>View Message</a>"
+        ajax_response += "</div>"
     else:
-        ajax_response += "We're Sorry, " + crush.get_name() + " is not mutually attracted to you.<BR><BR>"
+        ajax_response += "<div class='dialog_subtitle' id='response_no_match'>No Mutual Attraction</div>" 
+        ajax_response += "<div id='response_container'>"
+        ajax_response += "<span class='response_message'>We're sorry, " + crush.get_name() + " did not express a mutual attraction to you." + "</span>"
+        ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="decision_icon_no"></span></span>';
         if relationship.target_platonic_rating != None:
-            ajax_response += "They did however rate your level of attractiveness:<BR><BR>"
-            
+            ajax_response += "<span class='response_message'>They did however assess your level of attractiveness:</span>"
+            ajax_response += "<span id='response_view_rating'>"
             if relationship.is_platonic_rating_paid:
-                rating = str(relationship.target_platonic_rating)
-                ajax_response += rating + " out of 5<BR>(" + settings.PLATONIC_RATINGS[rating] + ") "
+                rating = relationship.target_platonic_rating
+                ajax_response += str(rating) + " out of 5 (" + settings.PLATONIC_RATINGS[rating] + ")"
             else:
-                ajax_response += "<div id='view_rating'><a href='#' unique_id='" + crush_id + "'>View Rating</a></div>"
-    
+                ajax_response += "<a href='#' unique_id='" + crush_id + "'>View Feedback</a>"
+        ajax_response += "</span></div>"   
     return HttpResponse(ajax_response)
 
 @login_required
@@ -191,7 +198,7 @@ def ajax_get_platonic_rating(request,crush_id):
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound(settings.AJAX_ERROR)
     if crush_relationship.is_platonic_rating_paid:
-        return HttpResponse(str(platonic_rating) + " (" + crush_relationship.get_target_platonic_rating_display() + ")")
+        return HttpResponse(str(platonic_rating) + " out of 5 (" + crush_relationship.get_target_platonic_rating_display() + ")")
     else:
         return HttpResponseForbidden("Error: You have not paid to see your attraction rating.");
 

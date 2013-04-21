@@ -256,11 +256,11 @@ FEATURES = {
         'COST': 1,
     },
     '3': {
-        'NAME':"View your attraction's rating of you for 1 credit",
+        'NAME':"View your attraction's assessment of you for 1 credit",
         'COST': 1,
     },
     '4': {
-        'NAME':"Converse with this attraction for the next 2 weeks for 2 credits",
+        'NAME':"Converse with this attraction over the next 2 weeks for 2 credits",
         'COST': 2,
     },
 }
