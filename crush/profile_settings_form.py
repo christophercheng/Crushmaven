@@ -27,5 +27,13 @@ class ProfileSettingsForm(ModelForm):
                 self._errors['age_pref_min'] = [("Minimum age preference must be less than or equal to maximum age preference.")]
 #                raise forms.ValidationError(non_field_errors)
         return data
+    
+    def __init__(self,*args,**kwargs):
+        super(ProfileSettingsForm,self).__init__(*args,**kwargs)
+        self.fields['gender_pref'].label=" Gender Preference"
+        self.fields['is_single'].label=" Are You Single"
+        self.fields['birthday_year'].label=" Birthday Year"
+        self.fields['age_pref_min'].label=" Age Preference Minimum"
+        self.fields['age_pref_min'].label=" Age Preference Maximum"
 
         

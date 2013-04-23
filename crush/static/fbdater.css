@@ -2399,9 +2399,9 @@ ul.bxslider{
 		margin-right:auto!important;
 }
 
-/* ===========================   Notification Settings ========================= */
+/* ===========================  Settings Pages ========================= */
 
-#settings_container {
+.settings_container {
 	display:inline-block;
 	width:100%;
 	padding:20px;
@@ -2410,48 +2410,48 @@ ul.bxslider{
 	box-shadow: 1px 2px 2px rgba(153,153,153,.5);
 }
 
-#settings_container #settings_labels {
+.settings_container #settings_labels {
 	display:inline-block;
 	float:left;
 	#border:1px solid blue;
 }
 
-#settings_container #settings_labels span {
+.settings_container #settings_labels span {
 	display:block;
 	font-weight:bold;
 	text-align:right;
 }
 
-#settings_container #settings_labels span#settings_label_email {
+.settings_container #settings_labels span#settings_label_email {
 	margin-top:160px;
 }
 
-#settings_form {
+.settings_form {
 	display:block;
-	margin-left:160px;
 	#border:1px solid red;
 }
+.notifications_settings_form{
+		margin-left:160px;
+}
 
-#settings_form p {
+.settings_form p {
 	margin-bottom:25px;
 	font-size:14px;
 	display:inline-block;
 	width:100%;
 }
 
-#settings_form p input#id_email{
+.settings_form p input#id_email{
 	width:280px;	
 }
 
-#settings_form p input {
+.notifications_settings_form p input {
 	float:left;
 	display:inline-block;
 }
 
-#settings_form #settings_buttonset {
-	#display:block;
-	#background:red;
-	#float:left;
+.profile_settings_form #settings_buttonset {
+	margin-left:205px;
 }
 
 #settings_changes_saved{
@@ -2461,7 +2461,7 @@ ul.bxslider{
 	background:orange;
 	margin-left:10px;
 }
-#settings_container .errorlist li{
+.settings_container .errorlist li{
 	list-style:none;
 	background:red;
 	display:inline-block;
@@ -2469,4 +2469,69 @@ ul.bxslider{
 	margin-bottom:2px;
 	color: white;
 	font-size:12px;
+}
+
+.settings_container .profile_settings_form .errorlist li{
+	margin-left:210px;
+	}
+
+.profile_settings_form p label {
+	display:inline-block;
+	width:190px;
+	text-align:right;
+	margin-right:15px;
+	font-weight:bold;
+}
+
+.credits_settings_container #settings_labels {
+	position:relative;
+}
+
+.credits_settings_container #settings_labels span {
+	margin-bottom:35px;
+}
+
+
+.credits_settings_container #settings_labels img#paypal_image{
+	position:absolute;
+	bottom:-40px;
+	margin-left:40px;
+}
+
+.credits_settings_form{
+		margin-left:170px;
+}
+
+.credits_settings_form p#credit_settings_form_credits_available {
+	font-weight:bold;
+	margin-left:5px;
+	display:inline-block;
+	background:gray;
+	width:100%;
+	padding:7px 10px;
+	color:white;
+	font-weight:bold;
+	font-size:12px;
+	margin-top:-7px;
+	margin-bottom:25px;
+	width:270px;
+}
+
+.credits_settings_form p{
+	margin-bottom:10px;
+}
+
+.credits_settings_form .discount_tag{
+	font-size:11px;
+	color:#505050;
+	margin-left:5px;
+	font-style:italic;
+}
+
+.credits_settings_form #settings_buttonset {
+	margin-top:10px;
+}
+.credits_settings_form #settings_buttonset p {
+	margin-top:7px;
+	font-size:11px;
 }

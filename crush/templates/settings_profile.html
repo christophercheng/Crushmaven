@@ -17,14 +17,17 @@
 <ul class="title_bar">
 	<li class="title_bar_title">Profile Settings</li>
 </ul>
-{% if updated %}
-Changes Saved
-{% endif %}
-<form action="/settings_profile/" method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
+<div class="settings_container">
+<form class="settings_form profile_settings_form" action="/settings_profile/" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<div id="settings_buttonset">
 		<input name="cancel" type="submit" value="Cancel">
 		<input type="submit" value="Update"/>
-	</form>
-
+				{% if updated %}
+			<span id="settings_changes_saved">changes saved</span>
+		{% endif %}
+	</div>
+</form>
+</div><!-- close off settings container -->
 {% endblock %}

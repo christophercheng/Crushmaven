@@ -18,12 +18,12 @@
 	<li class="title_bar_title">Notification Settings</li>
 </ul>
 
-<div id="settings_container">
+<div class="settings_container">
 	<div id="settings_labels">
 		<span id="settings_label_notifications">Email Notifications:</span>
 		<span id="settings_label_email">Email Address:</span>
 	</div>
-	<form id="settings_form" action="/settings_notifications/" method="post">
+	<form class="settings_form notifications_settings_form" action="/settings_notifications/" method="post">
 		{% csrf_token %}
 		{{ form.as_p }}
 		<div id="settings_buttonset">
