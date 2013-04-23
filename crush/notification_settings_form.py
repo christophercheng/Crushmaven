@@ -23,10 +23,10 @@ class NotificationSettingsForm(ModelForm):
         super(NotificationSettingsForm,self).__init__(*args,**kwargs)
         self.label_suffix=""
         self.fields['email'].label= ""
-        self.fields['bNotify_crush_signed_up'].label=" Attraction signed up"
-        self.fields['bNotify_crush_signup_reminder'].label=" Attraction still not signed up (reminder)"
-        self.fields['bNotify_crush_responded'].label=" Attraction response received"
-        self.fields['bNotify_new_admirer'].label=" New admirer"
+        self.fields['bNotify_crush_signed_up'].label=" attraction signed up"
+        self.fields['bNotify_crush_signup_reminder'].label=" attraction still not signed up (reminder)"
+        self.fields['bNotify_crush_responded'].label=" attraction response received"
+        self.fields['bNotify_new_admirer'].label=" new admirer"
     
 
         

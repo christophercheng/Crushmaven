@@ -2448,6 +2448,11 @@ ul.bxslider{
 .notifications_settings_form p input {
 	float:left;
 	display:inline-block;
+	margin-right:10px;
+}
+
+.notifications_settings_form p label {
+	font-size:13px;
 }
 
 .profile_settings_form #settings_buttonset {
@@ -2480,7 +2485,9 @@ ul.bxslider{
 	width:190px;
 	text-align:right;
 	margin-right:15px;
-	font-weight:bold;
+	#font-weight:bold;
+	font-size:13px;
+	
 }
 
 .credits_settings_container #settings_labels {
@@ -2518,8 +2525,13 @@ ul.bxslider{
 }
 
 .credits_settings_form p{
-	margin-bottom:10px;
+	margin-bottom:8px;
+	font-size:13px;
 }
+
+.credits_settings_form p input{
+	margin-right:5px;
+	}
 
 .credits_settings_form .discount_tag{
 	font-size:11px;
@@ -2529,7 +2541,8 @@ ul.bxslider{
 }
 
 .credits_settings_form #settings_buttonset {
-	margin-top:10px;
+	margin-top:20px;
+	margin-bottom:-10px;
 }
 .credits_settings_form #settings_buttonset p {
 	margin-top:7px;
