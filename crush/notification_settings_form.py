@@ -11,12 +11,22 @@ class NotificationSettingsForm(ModelForm):
 
     class Meta:
         model = FacebookUser
-        fields = ['email',  'bNotify_crush_signed_up',
+        fields = [ 'bNotify_crush_signed_up',
                   'bNotify_crush_signup_reminder',
                   'bNotify_crush_responded',
-                  'bNotify_new_admirer']
+                  'bNotify_new_admirer',
+                  'email']
     
     email = EmailField()
+
+    def __init__(self,*args,**kwargs):
+        super(NotificationSettingsForm,self).__init__(*args,**kwargs)
+        self.label_suffix=""
+        self.fields['email'].label= ""
+        self.fields['bNotify_crush_signed_up'].label=" Attraction signed up"
+        self.fields['bNotify_crush_signup_reminder'].label=" Attraction still not signed up (reminder)"
+        self.fields['bNotify_crush_responded'].label=" Attraction response received"
+        self.fields['bNotify_new_admirer'].label=" New admirer"
     
 
         

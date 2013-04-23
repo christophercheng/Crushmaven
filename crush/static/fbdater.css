@@ -2398,3 +2398,75 @@ ul.bxslider{
 	margin-left:auto!important;
 		margin-right:auto!important;
 }
+
+/* ===========================   Notification Settings ========================= */
+
+#settings_container {
+	display:inline-block;
+	width:100%;
+	padding:20px;
+	border:1px solid rgb(153,153,153);
+	font-size:14px;
+	box-shadow: 1px 2px 2px rgba(153,153,153,.5);
+}
+
+#settings_container #settings_labels {
+	display:inline-block;
+	float:left;
+	#border:1px solid blue;
+}
+
+#settings_container #settings_labels span {
+	display:block;
+	font-weight:bold;
+	text-align:right;
+}
+
+#settings_container #settings_labels span#settings_label_email {
+	margin-top:160px;
+}
+
+#settings_form {
+	display:block;
+	margin-left:160px;
+	#border:1px solid red;
+}
+
+#settings_form p {
+	margin-bottom:25px;
+	font-size:14px;
+	display:inline-block;
+	width:100%;
+}
+
+#settings_form p input#id_email{
+	width:280px;	
+}
+
+#settings_form p input {
+	float:left;
+	display:inline-block;
+}
+
+#settings_form #settings_buttonset {
+	#display:block;
+	#background:red;
+	#float:left;
+}
+
+#settings_changes_saved{
+	display:inline-block;
+	padding:3px 10px;
+	color:white;
+	background:orange;
+	margin-left:10px;
+}
+#settings_container .errorlist li{
+	list-style:none;
+	background:red;
+	display:inline-block;
+	padding: 0px 5px;
+	margin-bottom:2px;
+	color: white;
+	font-size:12px;
+}
