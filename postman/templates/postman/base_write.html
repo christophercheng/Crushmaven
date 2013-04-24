@@ -13,7 +13,7 @@
 {% block content %}
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-	$('#id_recipients').prop('placeholder','Search names of mutual attractions');
+	$('#id_recipients').prop('placeholder',"Enter mutual attraction's name");
 
 
 var send_button = $('#send_button');
@@ -71,14 +71,20 @@ window.submit_message_form=function(){
 }); // close of jQuery(document).ready
 
 </script>
+
+<span class="title_line"></span>
+<ul class="title_bar">
+	<li class="title_bar_title">{% block pm_write_title %}{% endblock %}</li>
+</ul>
+
 <div id="postman">
-<h1>{% block pm_write_title %}{% endblock %}</h1>
+
 <form id ="pm_form" action="" method="post">{% csrf_token %}
-<table>
 {% block pm_write_recipient %}{% endblock %}
-{{ form.as_table }}
-</table>
-<button type="button" id="send_button" disabled >{% trans "Send" %}</button>
+{{ form.as_p }}
+	<div id="message_buttonset">
+		<button type="button" id="send_button" disabled >{% trans "Send" %}</button>
+	</div>
 </form>
 </div>
 {% endblock %}

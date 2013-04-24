@@ -1877,18 +1877,90 @@ ul.bxslider{
 
 /*color: #8096C1;display:inline-block;line-height:16px;font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;font-size: 8px;margin:2px;*/
 
+/* ===========================  Compose New Message ========================= */
 
-#conversation_row{
-	border-bottom: #ECEFF5 1px solid;
 
-	cursor:pointer;
-	padding-bottom:10px;
-	padding-top:10px;
-	height:50px;
-
+#postman {
+	position:relative;
 }
 
-#conversation_row:hover{
+#postman #pm_form p {
+	display:inline-block;
+	margin-bottom: 25px;
+	width:100%;
+}
+
+#postman #pm_form p label {
+	float:left;
+	font-weight:bold;
+	font-size:13px;
+	width:125px;
+	text-align:right;
+	margin-right:15px;
+}
+
+#postman #id_body{
+	display:inline-block;
+	width:405px;
+}
+#postman form #message_buttonset{	
+	margin-left:140px;
+}
+
+#postman #id_recipients{
+	display:inline-block;
+	width:405px;
+}
+
+#postman #delete_conversation, #postman #compose_new_message {
+	position:absolute;
+	right:15px;
+	top:-8px;
+	font-size:14px;
+}
+#postman #delete_conversation {
+	top:20px;
+}
+#postman #delete_conversation:hover, #postman #compose_new_message:hover {
+	text-decoration:underline;
+}
+/* ===========================  Message Inbox ========================= */	
+
+#postman #action_links{
+	position:absolute;
+	right: 15px;
+	top:20px;
+	font-size:10px;
+	color:#505050;
+}
+#postman #action_links label {
+	font-style:italic;
+}
+#postman #action_links a{
+	font-size:10px;
+	font-style:normal;
+}
+
+#postman .pm_message_header {
+	padding: 3px 10px 3px 10px;
+	background:#D6D6EB;
+	width:100%;
+	font-weight:bold;
+	font-size:13px;
+}
+#postman #pm_messages_read {
+	margin-top:25px;
+}
+
+.conversation_row{
+	border-bottom: #ECEFF5 1px solid;
+	cursor:pointer;
+	padding:10px;
+	width:100%;
+	display:inline-block;
+}
+
+.conversation_row:hover{
 	background-color:#ECEFF5;
 	border-top:10px solid #ECEFF5;
 	border-bottom:11px solid #ECEFF5;
@@ -1896,99 +1968,120 @@ ul.bxslider{
 	padding-bottom:0px;
 }
 
-#conversation_row #first_column{
-	margin-left:5px;
+.conversation_row .first_column{
 	float:left;
+	height:50px;
 	}
-#conversation_row #second_column{
+	
+.conversation_row .first_column img{
+	width:50px;
+	height:50px;
+}
+	
+.conversation_row .second_column{
 	float:left;
-	width:460px;
 	margin-left:15px;
+	width:465px;
+	font-size:13px;
+	padding-top:5px;
 	}
-#conversation_row #second_column.received{
-	width:410px;
+
+.conversation_row .second_column .attraction_name{
+	width: 325px; 
+	display:inline-block;
+	float:left;
 }
 
-#conversation_row #second_column #attraction_name{
-	float:left;
+.conversation_row .second_column .attraction_name .message_prefix {
+	font-style:italic;
+	font-size:11px;
+	margin-right:3px;
+}
+.conversation_row .second_column .attraction_name .message_from_prefix {
+	background:#D6D6EB;
+	#font-weight:bold;
+}
+.conversation_row .second_column .attraction_name .message_to_prefix {
+	display:inline-block;
+	#text-decoration:underline;
+	font-weight:bold;
 	}
-#conversation_row #second_column #last_sent{
+.conversation_row .second_column .attraction_name .message_thread_count{
+	font-size:11px;	
+}
+
+.conversation_row .second_column .last_activity_date{
 	float:right;
 }
 
-#conversation_row #conversation_body{
+.conversation_row .conversation_body{
+	display:block;
 	float:left;
-	margin-top:3px;
+	margin-top:5px;
 	font-size:12px;
 	font-color:gray;
 	font-weight:normal;
+	width:465px;
 	}
-
-#postman {
-
-}
-
-#postman #page_title{
-	float:left;
-}
-#postman #action_links{
-	float:right;
-
-}
-
-#postman #id_recipients.ui-autocomplete-input{
-	float:left;
-	margin-left: 20px;
-	width:356px;
-}
-#postman #id_body{
-	float:left;
-	margin-left: 20px;
-	width:350px;
-}
-#postman form button[type="submit"]{
 	
-	float:left;
-	margin-left:152px;
+.conversation_row .second_column .conversation_body .message_read_more {
+	#text-decoration:underline;
+	color:#3366FF;
 }
 
-#postman #title_row {
-	position:relative;
-	width:100%;
-	height:60px;
-}
-#postman #title_row #title {
-	position:absolute;
-	width:400px;
-	float:left;
-
-}
-#postman #title_row #buttons {
-	position:relative;
-	float:right;
-	padding-right:30px;
-	padding-top:20px;
-}
+/* ===========================  Message Conversation ========================= */	
 
 #postman .pm_message {
-	border-bottom: gray 1px solid;
-	cursor:pointer;
-	padding-bottom:10px;
-	padding-top:10px;
+	border-bottom: 1px solid #E9E9E9;
+	#cursor:pointer;
+	padding-top:8px;
+	padding-bottom:8px;
 	display:inline-block;
+	#border:1px solid red;
 }
+
+#postman .pm_message img {
+	height:40px;
+	width:40px;	
+}
+
 #postman .pm_message #first_column {
 	margin-left:5px;
 	float:left;
+	#border:1px solid blue;
 	
 }
 #postman .pm_message #second_column {
 		float:left;
 	width:460px;
 	margin-left:15px;
-	
+	font-size:13px;
+	color:	#737373;
+	#border:1px solid blue;
+}
+#postman .pm_message #second_column #date{
+	color:#303030;
+	font-size:11px;
+	#font-style:italic;
+	margin-bottom:5px;
 }
 
+#postman .pm_message #second_column .pm_body{
+	font-size:13px;	
+}
+
+#postman .pm_message #second_column #pm_reply_label{
+	display:block;
+	font-weight:bold;
+	margin-bottom:5px;
+}
+
+.postman_reply_message {
+	border-bottom:none!important;
+}
+.postman_reply_message #second_column #pm_reply_buttonset{
+	margin-top:20px;
+}
 /* ===========================   Friend Selector Dialog ========================= */
 
 #fs-dialog #fs-selected-user-list a, #fs-dialog #fs-user-list a, #fs-dialog #fs-confirm-user-list a{

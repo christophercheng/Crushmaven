@@ -162,7 +162,8 @@ def reply(request, attraction_id, form_class=FullReplyForm, formatters=(format_s
         else:
             messages.warning(request, _("Message rejected for at least one recipient."), fail_silently=True)
         print "successfully sent message via reply form " 
-        return redirect('/messages/converse/' + attraction_id)
+        return redirect('/messages/inbox')
+        #return redirect('/messages/converse/' + attraction_id)
 def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm), autocomplete_channels=None,
         template_name='postman/write.html', success_url=None,
         user_filter=None, exchange_filter=None, max=None, auto_moderators=[]):

@@ -66,6 +66,8 @@ class BaseWriteForm(forms.ModelForm):
 
             if channel and hasattr(self.fields['recipients'], 'set_arg'):
                 self.fields['recipients'].set_arg(channel)
+        if 'body' in self.fields:
+            self.fields['body'].label= "Message"
 
     error_messages = {
         'filtered': _("Writing to some users is not possible: {users}."),
@@ -167,7 +169,6 @@ class WriteForm(BaseWriteForm):
 
     class Meta(BaseWriteForm.Meta):
         fields = ('recipients', 'body')
-
 
 class AnonymousWriteForm(BaseWriteForm):
     """The form for an anonymous user, to compose a message."""

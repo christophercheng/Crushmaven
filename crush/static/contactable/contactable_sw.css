@@ -39,7 +39,7 @@
 	right:8px;
 }	
 
-#contactable #contactForm input, textarea {
+#contactable #contactForm input, #contactable #contactForm textarea {
 	background:#FFFFFF none repeat scroll 0 0;
 	outline-style:none;
 	outline-width:medium;
