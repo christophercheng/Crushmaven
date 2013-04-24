@@ -156,6 +156,7 @@ a.button:hover {
 	margin-right:15px;
 	width:550px;
 	#background-color:white;
+	position:relative;
 }
 
 .right_sidebar {
@@ -600,26 +601,20 @@ a.button {
 /* ===========================   Title Bar ========================= */
 .title_line{
 	display:block;
-	border-bottom: 1px solid #D0D0D0;
+	border-bottom: 1px solid rgb(0,0,70);
 	width:100%;
-	height:15px;
+	position:absolute;
+	top:25px;
+	left:0px;
 }
 
 ul.title_bar {
 	list-style:none;
-	/*
-	#float:left;
-	#position:absolute;
-	#top:64px;
-	width:545px;
-		*/
-	margin-top:-16px;
+	#margin-top:25px;
 	margin-bottom:25px;
 }
 ul.title_bar > li {
 	display:inline-block;
-	/*#border: 1px solid gray;*/
-	background-color:white;
 	vertical-align:middle;
 	line-height:23px;
 }
@@ -629,17 +624,77 @@ ul.title_bar li.title_bar_title{
 	color:#333366;
 	font-weight:bold;
 	padding-right:10px;
+	width:220px;
 }
 
+ul.title_bar li.conversation_title{
+	width:100%;
+}
+ul.title_bar li.conversation_title .conversation_title_name{
+	font-weight:normal;
+	font-size:16px;
+	}
+
+ul.title_bar li.title_bar_page_links  {
+	font-size:11px;
+	color:rgb(0,0,70);
+	vertical-align:top;
+	margin-top:-2px;
+}
+
+ul.title_bar li .title_bar_page_link {
+	position:relative;
+}
+
+ul.title_bar li .title_bar_page_first_link {
+	margin-right:20px;
+}
+
+ul.title_bar li .title_bar_page_link #page_link_pointer{
+	position:absolute;
+	left:25px;
+	bottom:-9px;
+	width:0px;
+	height:0px;
+	text-align:center;
+	border-left:12px solid transparent;
+	border-right:12px solid transparent;
+	border-bottom:5px solid rgb(0,0,70);
+}
+
+ul.title_bar li .title_bar_page_link .responded_pointer{
+	left:13px!important;
+}
+
+ul.title_bar li .title_bar_page_link .lineup_incomplete_pointer{
+	left:30px!important;
+}
+
+ul.title_bar li.title_bar_page_links a {
+	color:#A0A0A0;
+	font-size:11px;
+}
+
+ul.title_bar li.title_bar_page_links .crush_count{
+	font-size:10px;
+}
+
+ul.title_bar li.title_bar_page_links a:hover {
+	text-decoration:underline;	
+}
 
 ul.title_bar li.title_bar_option {
 	float:right;
-	padding-left:10px;
-	padding-top:3px;
+	padding-left:5px;
+	padding-right:3px;
 	font-size:11px;
 	font-style:italic;
 	color:#A0A0A0;
 	position:relative;
+	margin-top:12px;
+	background:white;
+	margin-right:8px;
+	
 }
 ul.title_bar li.title_bar_option a{
 	font-style:normal;
@@ -745,6 +800,10 @@ ul.nav_bar li#nav_bar_options{
 }
 
 /* ===========================   Attraction Block ========================= */
+
+#dialog{
+	display:none;
+}
 
 #title_new_responses{
 	display:block;
@@ -1912,14 +1971,17 @@ ul.bxslider{
 	width:405px;
 }
 
-#postman #delete_conversation, #postman #compose_new_message {
+ #postman #compose_new_message {
 	position:absolute;
-	right:15px;
-	top:-8px;
-	font-size:14px;
+	left:115px;
+	top:6px;
+	font-size:13px;
 }
 #postman #delete_conversation {
-	top:20px;
+	position:absolute;
+	right:8px;
+	top:7px;
+	font-size:13px;
 }
 #postman #delete_conversation:hover, #postman #compose_new_message:hover {
 	text-decoration:underline;
@@ -1928,8 +1990,8 @@ ul.bxslider{
 
 #postman #action_links{
 	position:absolute;
-	right: 15px;
-	top:20px;
+	right: 8px;
+	top:25px;
 	font-size:10px;
 	color:#505050;
 }
@@ -1940,7 +2002,9 @@ ul.bxslider{
 	font-size:10px;
 	font-style:normal;
 }
-
+#postman #action_links a:hover{
+	text-decoration:underline;
+}
 #postman .pm_message_header {
 	padding: 3px 10px 3px 10px;
 	background:#D6D6EB;

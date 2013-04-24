@@ -20,7 +20,7 @@ in the INSTALLED_APPS setting.
 {% if invalid_page %}
 <p>{% trans "Sorry, this page number is invalid." %}</p>
 {% else %}
-<a id="compose_new_message" href="{% url 'postman_write' %}">create message</a>
+<a id="compose_new_message" href="{% url 'postman_write' %}">(create message)</a>
 {% if pm_messages %}
 <div id=action_links>
 {% block pm_sender_header %}<label>sort by:</label> 
