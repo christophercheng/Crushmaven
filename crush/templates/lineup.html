@@ -46,6 +46,7 @@ One of these line-up members is your admirer!  Add any as an attraction, and we 
 	       <span class="choice crush">Added as Attraction<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
 			{% else %}
 	       <span class="choice platonic">Not Interested<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
+	    	<a href="#" class="platonic_reconsider" add_type="crush" username="{{member.username}}" name="{{member.user.first_name}} {{member.user.last_name}}" member_gender= "{{member.user.gender}}" lineup_position="{{member.position}}">change your mind?</a>
 	    {% endif %}
 	    </span> <!--   close off decision tag -->
    	</div><!-- close off slide container -->
@@ -215,7 +216,7 @@ $(document).ready(function() // handling for the slider
   	// this allows the inputs to be clickable on the next confirmation dialog opening
   attraction_dialog.on('click', function(e){e.stopPropagation();});
   platonic_dialog.on('click', function(e){e.stopPropagation();});
-  $('#lineup_container ').on('click','a.decision',function(e) {
+  $('#lineup_container ').on('click','a.decision,a.platonic_reconsider',function(e) {
 		e.preventDefault();
 		var this_element = $(this);
   	var decision_div = this_element.parent(); 
@@ -283,7 +284,8 @@ $(document).ready(function() // handling for the slider
 						};
 						if (crush_decision==true)
 							window.added_lineup_attraction=true;
-						goto_next_slide(decision_div.parents('li').attr('lineup_position'));
+						if (this_element.attr('class') != 'platonic_reconsider')
+							goto_next_slide(decision_div.parents('li').attr('lineup_position'));
 						}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
 					if (crush_decision==true) 

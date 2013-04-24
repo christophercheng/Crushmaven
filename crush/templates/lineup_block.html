@@ -9,7 +9,7 @@
 	{% endfor %}
 	{% if relationship.is_lineup_paid == True %}
 		{% if relationship.date_lineup_finished != None %}
-	       <a href="#" class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}"><BR>View Completed Lineup</a>
+	       <a href="#" class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}">View Lineup</a>
 		{% else %}
 			<a href="#" class="view_lineup button content_button" display_id="{{relationship.admirer_display_id}}">Finish Lineup</a>
 		{% endif %}

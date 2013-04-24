@@ -681,13 +681,14 @@ ul.title_bar li.title_bar_page_links .crush_count{
 
 ul.title_bar li.title_bar_page_links a:hover {
 	text-decoration:underline;	
+	color:rgb(0,0,70);
 }
 
 ul.title_bar li.title_bar_option {
 	float:right;
 	padding-left:5px;
 	padding-right:3px;
-	font-size:11px;
+	font-size:10px;
 	font-style:italic;
 	color:#A0A0A0;
 	position:relative;
@@ -698,12 +699,15 @@ ul.title_bar li.title_bar_option {
 }
 ul.title_bar li.title_bar_option a{
 	font-style:normal;
-	margin-left: 3px;
-	font-size:11px;
-	color: #333366;
+	margin-left: 1px;
+	font-size:10px;
+	#color:#8585A3;
+	color:#A0A0A0;
 }
+
 ul.title_bar li.title_bar_option a:hover{
 	text-decoration:underline;
+	color:#606060;
 }
 .down_arrow{
 	font-size:9px;
@@ -1512,8 +1516,20 @@ ul.bxslider{
 	color:#666666!important;
 }
 
+.lineup_decision a.platonic_reconsider{
+	position:absolute;
+	top:46px;
+	color:#3366FF;
+	font-size:12px;
+	width:200px;
+}
+
+.lineup_decision a.platonic_reconsider:hover{
+	text-decoration:underline;	
+}
+
 .lineup_decision span.existing_choice{
-	top:-40px;
+	top:-10px;
 	font-size:14px;
 	width:160px;
 }

@@ -194,19 +194,19 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         ajax_response += "<span id='choice' class='crush existing_choice'>You already added " + lineup_member_user.first_name + " " + lineup_member_user.last_name + " as an attraction.</span>"
         lineup_member.decision = 0
         lineup_member.save(update_fields=['decision'])
-    elif lineup_member in me.just_friends_targets.all():
-        ajax_response = "<span id='choice class='platonic existing_choice'>You previously decided - Not Interested</span>"
-        lineup_member.decision= 1
-        lineup_member.save(update_fields=['decision'])
+    #elif lineup_member in me.just_friends_targets.all():
+    #    ajax_response = "<span id='choice class='platonic existing_choice'>You previously decided - Not Interested</span>"
+    #    lineup_member.decision= 1
+    #    lineup_member.save(update_fields=['decision'])
     else:    
         if lineup_member.decision == None:
             ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">Add as Attraction</a>' 
             ajax_response += '<br><a href="#" class="decision button lineup_decision_button" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
        
         elif lineup_member.decision == 0:
-            ajax_response += '<div class="crush choice" >"You added' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + ' as an attraction!</div>'
+            ajax_response += '<span class="crush choice" >Added as Attraction</span>'
         else:
-            ajax_response += '<div class="platonic choice">You are Not Interested in ' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</div>'   
+            ajax_response += '<span class="platonic choice">Not Interested</span>'   
     ajax_response += '</span>' # close off decision holder and decision tag
     ajax_response += '</div>' # close off slide_container
     #2) facebook button 
@@ -237,16 +237,20 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id,ratin
             # check to see if they haven't already been added as a crush
             if lineup_member.decision == 0:
                 ajax_response = "<span id=\"choice\" class='crush existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " as a an attraction.</span>"
-            else:
-                ajax_response = "<span id=\"choice\" class='platonic existing_choice'>You previously decided - Not Interested</span>"
-            return HttpResponse(ajax_response)
+                return HttpResponse(ajax_response)
+           # else:
+                # user changed their mind about platonic lineup member so exit out of here
+                # break;
+                #ajax_response = "<span id=\"choice\" class='platonic existing_choice'>You previously decided - Not Interested</span>"
+           
         if add_type=='crush':
             CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
-            ajax_response = '<span class="choice crush">Added as Attraction</span>'
+            ajax_response = '<span class="choice crush">Added as Attraction<span class="date_lineup_member_added">(' + datetime.datetime.now().strftime("%m/%d/%Y") + ')</span></span>'
             lineup_member.decision=0
         else:
             PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
-            ajax_response = '<span class="choice platonic">Not Interested</span>'
+            ajax_response = '<span class="choice platonic">Not Interested<span class="date_lineup_member_added">(' + str(datetime.datetime.now().strftime("%m/%d/%Y")) + ')</span></span>'
+            ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])
         if len(admirer_rel.lineupmember_set.filter(decision=None)) == 0:
