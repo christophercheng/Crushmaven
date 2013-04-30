@@ -241,7 +241,8 @@ a.logo{
 	padding-bottom:5px;
 	font-size:36px;
 	#font-style:italic;
-	color:#ff0033;
+	#color:#ff0033;
+	color:#6666ff;
 	font-family: Mistral,Arial,sans-serif;
 	display:inline-block;
 	vertical-align:middle;
@@ -250,6 +251,7 @@ a.logo{
 
 a.logo #to {
 	color:white;
+	font-size:32px;
 }
 
 #notification_menu {	
