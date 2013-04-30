@@ -59,9 +59,6 @@ class PlatonicRelationship(BasicRelationship):
         app_label = 'crush' 
         
     objects = PlatonicRelationshipManager()
-        
-    #source_person=models.ForeignKey(FacebookUser,related_name='crush_platonicrelationship_set_from_source')  
-    #target_person=models.ForeignKey(FacebookUser,related_name='crush_platonicrelationship_set_from_target')
  
     rating = models.IntegerField(default=None,max_length=1,blank=True,null=True) # how source rated the target's attraction
     #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
@@ -168,9 +165,6 @@ class CrushRelationship(BasicRelationship):
         app_label = 'crush' 
 
     objects = CrushRelationshipManager()
-            
-    #source_person=models.ForeignKey(FacebookUser,related_name='crush_crushrelationship_set_from_source')
-    #target_person=models.ForeignKey(FacebookUser,related_name='crush_crushrelationship_set_from_target')
     
     #dynamically tie in the target person's response as a lookup time optimization
     TARGET_STATUS_CHOICES = (
@@ -496,46 +490,50 @@ class CrushRelationship(BasicRelationship):
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
 
-    
-class ReferralRelationship(CrushRelationship):
+class Recommendation(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
+    # source person is the recommender
+    # target person is the recommendee
+    #objects = RecommendationpManager()
     
-    result_viewed = models.BooleanField(default=False)
+    RECOMENDEE_STATUS_CHOICES = (# recomendee is required to be invited
+                           (0,'Not Member'),
+                           (1,'Not Started Lineup'),
+                           (2,'Started Lineup'),
+                           (3,'Completed Lineup'),
+                           )
+    target_status = models.IntegerField(default=0, choices=RECOMENDEE_STATUS_CHOICES)
+
+    date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
+    
+
+    date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
+    
+    date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
+        # keeps track of when the crush signed up
+    date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
+    # keeps track of how many recommendations the source person has done for the target person
+    display_id = models.IntegerField(default=0, max_length=60)
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk): # this is a newly created crush relationship
-            # make sure: we're not adding a recommendation that has already been created (by any reommender)
-            if self.objects.filter(source_person=self.source_person,target_person=self.target_person).exists():
-                print "duplicate referral relationships detected. doing nothing more"
-                return False
-            # make sure: we're only adding people that are friends with recommender 
-
-            # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
-                # get total previous admirers (past and present) and add 1, hopefully this won't create a 
-            self.admirer_display_id=self.target_person.crush_referralrelationship_set_from_target.all().count() + 1
-        else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
+            # give the recommendation a display id.  this is the unique  identifier that is displayed to the crush)
+                # get total previous recommendations(past and present)made from source to target and add 1
+            self.display_id = self.source_person.crush_recommendation_set_from_source.get(target_person=self.target_person).count() + 1
+        else: # This is an recommendation, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)
-                original_relationship = ReferralRelationship.objects.get(pk=self.pk)
+                original_recommendation = Recommendation.objects.get(pk=self.pk)
                 # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
                 # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
-                if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
+                #if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
-                    self.notify_recommender_person()
+                #   self.notify_recommender_person()
         # Don't forget to commit the relationship's changes to database!
         # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
-        super.super(CrushRelationship,self).save(*args,**kwargs)
+        super.super(Recommendation,self).save(*args,**kwargs)
+  
 
-    def notify_recommender_person(self):
-        if self.target_status > 3:
-            pass
-
-class Recommendation(models.Model):
-    class Meta:
-        app_label='crush'
-    recommended_person = models.ForeignKey(ReferralRelationship,related_name="referralrelationship_set_from_recommended_person")
-    recommended_friends = models.ManyToManyField(ReferralRelationship,related_name="referralrelationship_set_from_recommended_friends")     
-    recommender_person=models.ForeignKey(FacebookUser,related_name="referralrelationship_set_from_recommender")       

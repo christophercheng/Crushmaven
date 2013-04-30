@@ -720,23 +720,14 @@ class LineupMemberManager(models.Manager):
             if g_init_dict[crush_id]['initialization_count']==0:
                 del g_init_dict[crush_id]
             
-            
-# details about each crush's secret admirer lineup (SAL)
-class LineupMember(models.Model):
-    
+class BasicLineupMember(models.Model):
     class Meta:
-        # this allows the models to be broken into separate model files
-        app_label = 'crush'
-        
-    objects = LineupMemberManager()   
-        
-    # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
-    relationship = models.ForeignKey('CrushRelationship')
+        abstract = True
+        app_label='crush'
+    
     user=models.ForeignKey('FacebookUser', null=True,blank=True,default=None)
     username = models.CharField(max_length=60) 
     position = models.IntegerField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
-    
-
     DECISION_CHOICES = ( # platonic levels represent crush's rating of member's attractiveness
                            (0,'Crush'),
                            (1,'Platonic 1'),
@@ -751,4 +742,27 @@ class LineupMember(models.Model):
         if self.user != None:
             return '(' + str(self.relationship) + ') ' + self.username + ': ' + self.user.first_name + ' ' + self.user.last_name 
         else:
-            return '(' + str(self.relationship) + ') ' + self.username
+            return '(' + str(self.relationship) + ') ' + self.username   
+            
+# details about each crush's secret admirer lineup (SAL)
+class LineupMember(BasicLineupMember):
+    
+    class Meta:
+        # this allows the models to be broken into separate model files
+        app_label = 'crush'
+        
+    objects = LineupMemberManager()   
+        
+    # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
+    relationship = models.ForeignKey('CrushRelationship',null=True,blank=True,default=None)
+
+# details about each crush's secret admirer lineup (SAL)
+class RecommendationLineupMember(BasicLineupMember):
+    
+    class Meta:
+        # this allows the models to be broken into separate model files
+        app_label = 'crush'
+
+    # if relationship is not a typical crush relationship , then it is a recommendation relationship
+    recommendation = models.ForeignKey('Recommendation',null=True,blank=True,default=None)
+    date_last_notified_by_recommender = models.DateTimeField(null=True,default=None,blank=True) ;
