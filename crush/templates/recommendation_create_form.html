@@ -9,7 +9,7 @@ $(document).ready(function()
 {
 	window.recommendation_target="";
 	window.recommendation_recommendee_array=[];
-	window.recommendation_recommendee_csl;
+	window.recommendation_recommendee_csl="";
 	
 	$(".recommendation_selector").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
@@ -18,7 +18,6 @@ $(document).ready(function()
     maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
     minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
     minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
-	  excludeIds: "{% for crush_rel in request.user.crush_crushrelationship_set_from_source.all %}{{crush_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",
     closeOverlayClick: false,
     overlayOpacity: "0.5",
     overlayColor: '#000',
@@ -60,6 +59,11 @@ $(document).ready(function()
   	$('button#select_recommendation_recommendees').attr('excludeIds',window.recommendation_target);
 		$('#select_recommendation_recommendees').removeAttr('disabled');
 		$('#target_username_input').attr('value',window.recommendation_target);
+		//clear out any existing recommendees
+		window.recommendation_recommendee_array=[];
+		window.recommendation_recommendee_csl="";
+		for (var x=0;x<10;x++)
+	  	$('#recommendee_pic_' + x.toString()).attr('src',"http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg");
   }
   
   // exclude anyone already added as a recommendee
@@ -79,7 +83,8 @@ $(document).ready(function()
   	for (var x=response.length;x<10;x++)
 	  	$('#recommendee_pic_' + x.toString()).attr('src',"http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg");
  	 $('button#select_recommendation_recommendees').attr('getStoredFriends',array_csl);
- 	 $('button#select_recommendation_target').attr('excludeIds',window.recomendation_recommendee_csl);
+ 	 // don't need to exlude recommendees from target selection list cause the recommendees list gets cleared out whenever a new target is chosen
+ 	 //$('button#select_recommendation_target').attr('excludeIds',window.recomendation_recommendee_csl);
  	 $('.recommendation_create_dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.site_dialog_button').removeAttr('disabled');
    $('#recommendee_username_csl_input').attr('value',window.recommendation_recommendee_csl);
   }
@@ -115,7 +120,7 @@ $(document).ready(function()
 				Step 1: <span class="dialog_header_sentence">Select a friend to set up</span>
 			</div>
 			<img class="recommendation_target_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
-			<button class="recommendation_button recommendation_selector" max_selections="1" recommendation_select="true" onSubmit="window.process_selected_target" id="select_recommendation_target" type="button">select</button>
+			<button class="recommendation_button recommendation_selector" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} recommendation_select="true" onSubmit="window.process_selected_target" id="select_recommendation_target" type="button">select</button>
 	  </div><!-- close recommendation_target_section -->
     <div id="recommendation_lineup_section">
 			<div class="dialog_header inactive_dialog_header">

@@ -190,6 +190,24 @@ def my_setups_completed(request,reveal_crush_id=None):
                                'reveal_crush_id':reveal_crush_id,
                                })   
 
+# returns a comma separated string of usernames who cannot be recommended to the given recommendation target (existing recommendees)
+@login_required    
+def ajax_get_recommendee_exclude_ids(request, recommendation_target):
+    # grab all recommendations of request.user where target_person = recommendation_target
+    relevant_recommendations=request.user.crush_recommendation_set_from_source.filter(target_person__username=recommendation_target)
+    previous_recommendee_id_csl=''
+    # grab all RecommendationLineupMembers of previous recommendations where 
+        # the target is recommendation_target
+        # the source is this request.user
+        # the recommendationLineupMember is not relevant
+    for recommendation in relevant_recommendations:
+        existing_recommendee_objects = recommendation.recommendationlineupmember_set.all();
+        for recommendee_object in existing_recommendee_objects:
+            if previous_recommendee_id_csl != '':
+                previous_recommendee_id_csl += ','
+            previous_recommendee_id_csl += recommendee_object.username
+    return previous_recommendee_id_csl
+
 @login_required    
 def recommendation_create_form(request):
     print "APP INVITE FORM!"
@@ -218,4 +236,14 @@ def recommendation_create_form(request):
         print "success and redirecting"                
         return redirect('/my_setups')
     else:
-        return render(request, 'recommendation_create_form.html')
+        # build list of exclude ids (anyone who is an undecided lineup member
+        exclude_ids=''
+        relevant_admirer_relationships = request.user.crush_crushrelationship_set_from_target.filter(date_lineup_finished=None)
+        for relationship in relevant_admirer_relationships:
+            # exclude lineup members in incompelte admirer relationships who weren't added as attraction (undecided or platonic)
+            exclude_lineup_member_objects = relationship.lineupmember_set.exclude(decision=0)
+            for lineup_member_object in exclude_lineup_member_objects:           
+                if exclude_ids!='':
+                    exclude_ids += ','
+                exclude_ids += lineup_member_object.username
+        return render(request, 'recommendation_create_form.html',{'exclude_ids':exclude_ids})

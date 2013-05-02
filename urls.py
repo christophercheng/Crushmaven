@@ -81,6 +81,7 @@ urlpatterns += patterns('crush.views.recommendation_views',
     (r'^friend_setups_completed/$','friend_setups_completed'),
     (r'^my_setups/$','my_setups'),
     (r'^my_setups_completed/$','my_setups_completed'),
+    (r'^ajax_get_recommendee_exclude_ids/?(P<recommendation_target>\w+)/$','ajax_get_recommendee_exclude_ids'),
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
