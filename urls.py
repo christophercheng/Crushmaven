@@ -71,6 +71,17 @@ urlpatterns += patterns('crush.views.crush_views',
     # called by new message form 
     (r'^ajax_user_can_message/(?P<crush_id>\w+)/$','ajax_user_can_message'),
 )
+
+# ----      RECOMMENDATION: DISPLAY AND HANDLING PAGES      ----    
+urlpatterns += patterns('crush.views.recommendation_views',
+                        
+    (r'^recommendation_create_form/$','recommendation_create_form'),
+    
+    (r'^friend_setups/$','friend_setups'),
+    (r'^friend_setups_completed/$','friend_setups_completed'),
+    (r'^my_setups/$','my_setups'),
+    (r'^my_setups_completed/$','my_setups_completed'),
+)
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.admirer_views',

@@ -23,9 +23,22 @@
 </ul>
 
 <!-- ============ MIDDLE BUTTON(S) ============= -->	
-
-<a href="#" class="bt-fs-dialog">Add Attraction</a>
-
+<ul id="center_header_menu">
+	<li class="submenu">
+		<a href="#" id="get_started_link">Get Started&nbsp;<i class="icon down-dir">&#x25BC;</i></a>
+		<ul id="get_started_menu" class="settings_menu">
+			<li>
+				<a href="#" class="bt-fs-dialog">Add an Attraction</a>
+			</li>
+			<li>
+				<a onclick="alert('clicked request a setup');">Request a Setup</a>	
+			</li>
+			<li>
+				<a id="set_up_friend_link">Set up a Friend</a>
+			</li>
+		</ul><!-- close off settings_menu div -->
+	</li>
+</ul>
 <!-- ============ RIGHT HEADER ITEMS ============= -->	
 <ul id="right_header_menu" class="drop_down_menu_link">
 	<li>
@@ -36,7 +49,7 @@
 	</li>
 	<li class="submenu">
 		<a  href="#">Settings<i class="icon down-dir">&#x25BC;</i></a>
-		<ul id="settings_menu" >
+		<ul class="settings_menu">
 			<li>
 				<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
 			</li>
@@ -45,6 +58,7 @@
 			</li>
 			<li>
 				<a href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
+			</li>
 			<li>
 				<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>
 			</li>

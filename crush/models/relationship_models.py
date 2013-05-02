@@ -496,7 +496,8 @@ class Recommendation(BasicRelationship):
         app_label = 'crush' 
     # source person is the recommender
     # target person is the recommendee
-    #objects = RecommendationpManager()
+    # recommended friends are instances of class RecommendationLineupMember which has a Foreign Key to this class
+    #objects = RecommendationManager()
     
     RECOMENDEE_STATUS_CHOICES = (# recomendee is required to be invited
                            (0,'Not Member'),
@@ -505,15 +506,14 @@ class Recommendation(BasicRelationship):
                            (3,'Completed Lineup'),
                            )
     target_status = models.IntegerField(default=0, choices=RECOMENDEE_STATUS_CHOICES)
+            # keeps track of when the crush signed up
+    date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
-    
 
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
     date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
-        # keeps track of when the crush signed up
-    date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of how many recommendations the source person has done for the target person
     display_id = models.IntegerField(default=0, max_length=60)
     @transaction.commit_on_success # rollback entire function if something fails
@@ -522,7 +522,7 @@ class Recommendation(BasicRelationship):
         if (not self.pk): # this is a newly created crush relationship
             # give the recommendation a display id.  this is the unique  identifier that is displayed to the crush)
                 # get total previous recommendations(past and present)made from source to target and add 1
-            self.display_id = self.source_person.crush_recommendation_set_from_source.get(target_person=self.target_person).count() + 1
+            self.display_id = self.source_person.crush_recommendation_set_from_source.all().count() + 1
         else: # This is an recommendation, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)
@@ -534,6 +534,6 @@ class Recommendation(BasicRelationship):
                 #   self.notify_recommender_person()
         # Don't forget to commit the relationship's changes to database!
         # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
-        super.super(Recommendation,self).save(*args,**kwargs)
+        super(Recommendation,self).save(*args,**kwargs)
   
 

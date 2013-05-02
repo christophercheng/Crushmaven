@@ -302,6 +302,12 @@ class FacebookUser(AbstractUser):
         else:
             return 'her'
     
+    def get_gender_pronoun_subject(self):
+        if self.gender==u'M':
+            return 'he'
+        else:
+            return 'she'
+    
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
         return self.first_name + ' ' + self.last_name + ' (' + self.username + ')'

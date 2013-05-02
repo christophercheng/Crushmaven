@@ -10,9 +10,27 @@
   'use strict';
   
   $.fn.fSelector = function ( options ) {
-	    this.unbind("click.fs");
+	  
+	  this.unbind("click.fs");
 	    this.bind("click.fs", function(){
-	      fsOptions = options;
+	    	var max_selections= $(this).attr('max_selections');
+	    	var getStoredFriends = $(this).attr('getStoredFriends');
+	    	var onSubmit = $(this).attr('onSubmit');
+	    	var excludeIds = $(this).attr('excludeIds');
+	    	var recommendation_select=$(this).attr('recommendation_select');
+	    	if (max_selections)// we are in friend recommendation mode most likely
+	    		options.max=parseInt(max_selections);
+	    	if (getStoredFriends)
+	    		options.getStoredFriends=getStoredFriends;
+	    	if (onSubmit)
+	    		options.onSubmit=onSubmit;
+	    	if (excludeIds)
+	    		options.excludeIds=excludeIds;
+	    	if (recommendation_select)
+	    		options.recommendation_select=true;
+	    	else
+	    		options.recommendation_select=false;
+	    	fsOptions = options;
 	      _start();
 	    });
 	    return this;
@@ -241,7 +259,10 @@
       });
     }
     else{
-      fsOptions.onSubmit(selected_friends);
+      if (typeof fsOptions.onSubmit == "string")
+    	  eval(fsOptions.onSubmit + '(selected_friends)');
+      else
+    	  fsOptions.onSubmit(selected_friends);
 
       if ( fsOptions.closeOnSubmit === true ) {
         _close();
@@ -272,9 +293,13 @@
 		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Add</span></a>' +
   	'</div>';
     
-    var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>'	+ 
-    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
-    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>' +
+    var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
+    if (!fsOptions.recommendation_select){
+	    title_bar = title_bar + 
+	    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
+	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>';
+	  }
+    title_bar = title_bar + 
     	'</h2><span class="close_dialog"></span>';
     wrap.append(
      title_bar,
@@ -456,12 +481,23 @@
           $('#fs-user-list ul').append(item);
 
       }
-
+      // pre-select elements
+      if (fsOptions.getStoredFriends.length){
+    	  var preselected_friends = fsOptions.getStoredFriends.split(',');
+    	  for (var x = 0; x < preselected_friends.length;x++){
+    		  // find element with username
+    		  var username=preselected_friends[x] + '0';
+    		  var target_element = $('#fs-user-list ul li a input.fs-friends[value="' + username + '"]');
+    		  _click(target_element.parents('li'));
+    	  }
+      }
+      
       $('#fs-loading').remove();
 
 
   },
   
+
   _buildConfirmView = function() {
 		
 	  var friend1_elements = $('#fs-selected-user-list li').filter('#friend-type1');
@@ -526,7 +562,10 @@
     });
     
     wrap.delegate('#fs-continue-button', 'click.fs', function(){
-        _continue();
+    	if (fsOptions.recommendation_select)
+    		_submit();
+    	else
+    		_continue();
       });
     
     wrap.delegate('#fs-back-button', 'click.fs', function(){
@@ -612,7 +651,6 @@
     	  }
     });
     
-
     wrap.delegate('#fs-reset', 'click.fs', function() {
       $('#fs-input-text').val('');
       _find($('#fs-filter-box input'));

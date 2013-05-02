@@ -14,13 +14,6 @@ body {
   font-size: 14px;  
   line-height: 16px;
   color: #333333;  
-  background-color:GhostWhite;
-  background-color:#000;
-  background-color:rgba(100,149,237,.1);
-	background: -moz-linear-gradient(top,white,GhostWhite);
-	background: -webkit-linear-gradient(top,GhostWhite,GhostWhite 50%, rgba(0,0,40,.1));
-	background: -0-linear-gradient(top,GhostWhite,GhostWhite 50%, rgba(0,0,40,.1));
-	background: linear-gradient(top,GhostWhite,GhostWhite 50%, rgba(0,0,40,.1));
 	height:1400px;
  	overflow-x: hidden;	
  	overflow-y: scroll;
@@ -105,15 +98,16 @@ a.button:hover {
 	background: -webkit-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
 	background: -0-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
 	background: linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
+	background:black;
 	color: white;
 	width:100%;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+  #box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
   position: fixed;
   top: 0;
   padding-top:0px;
   padding-left:15px;
   width: 100%;
-  z-index: 10000;
+  z-index: 900;
   
   	
 	-webkit-touch-callout: none;
@@ -130,7 +124,7 @@ a.button:hover {
 	margin-left: auto;
 	margin-right:auto;
 	#background-color:rgba(255,255,255,.5);
-	z-index: 10001;
+	z-index: 901;
 	position:relative;
 }
 
@@ -223,7 +217,7 @@ a.button:hover {
 }
 
 #site-overlay {
-z-index:10000000000;
+z-index:10000;
 position:absolute;
 top:0;
 bottom:0;
@@ -238,11 +232,11 @@ visibility:hidden;
 
 /* ===========================   Header Container ========================= */
 a.logo{
-	padding-bottom:5px;
-	font-size:36px;
+	#padding-bottom:5px;
+	font-size:32px;
 	#font-style:italic;
 	#color:#ff0033;
-	color:#6666ff;
+	color:white;
 	font-family: Mistral,Arial,sans-serif;
 	display:inline-block;
 	vertical-align:middle;
@@ -250,8 +244,8 @@ a.logo{
 }
 
 a.logo #to {
-	color:white;
-	font-size:32px;
+	color:#DC143C;
+	font-size:30px;
 }
 
 #notification_menu {	
@@ -311,82 +305,85 @@ a.logo #to {
 	height:14px;
 }
 
-.header_container a.bt-fs-dialog{
+#right_header_menu, #center_header_menu {
 	position:absolute;
-	display:inline-block;
-	left:400px;
 	top:0px;
-	padding:17px 2px 15px 40px;
-	width:142px;
-	height:45px;
-	font-family:arial;
-	font-weight:bold;
-	font-size:13px;
-	color:#E8E8E8;
-	background-image:url(images/site_sprite.png);	
-	background-repeat:no-repeat;
-	background-size:auto;
-	background-position:-150px 0px;
-}
-
-.header_container a.bt-fs-dialog:hover{
-	background-color:#333366;
-	color:#FFF;
-	}
-
-#right_header_menu {
-	position:absolute;
-	right:0px;
-	top:0px;
-	padding-top:13px;
+	padding-top:11px;
 	list-style:none;	
 	height:45px;
 }
+#center_header_menu{
+	padding-top:17px;
+}
 
-#right_header_menu li {
+#right_header_menu{
+	right:0px;
+}
+#center_header_menu {
+	left:420px;
+}
+
+#right_header_menu li,#center_header_menu li {
 	display:inline;
 	padding-left:15px;
 	padding-bottom:10px;
 }
-#right_header_menu a{
+#right_header_menu a,#center_header_menu a{
 	color:#E8E8E8;
 	font-size:13px;
 	font-family:arial;
 	font-weight:bold;
+	text-align:right;
 }
-#right_header_menu a:hover {
+.settings_menu a{
+	color:white;
+}
+#center_header_menu .submenu a#get_started_link{
+	color:#DC143C;
+}
+
+#right_header_menu a:hover, #center_header_menu a:hover {
 	color:white;
 }
 
-#right_header_menu li.pic{
-	margin-right:-15px;
-	vertical-align:-30%;
-}
-
-#right_header_menu li.submenu{
+.header_container li.submenu{
 	position:relative;
 }
 
-#settings_menu {
+.settings_menu {
 	position:absolute;
 	top:25px;
 	right:1px;
-	background-color:rgb(0,0,60);#rgb(0,0,70);
+	background-color:black;
 	display:none;
 	border-radius: 0 0 8px 8px;
 	height:160px;
+	white-space:nowrap;
+	overflow:hidden;
 }
 
+#get_started_menu{
+	height:120px;
+}
 
-#settings_menu li a{
-	color:white;
+.settings_menu li a{
+	color:white !important;
 	display:block;
 	padding:7px 20px;
 	margin-top:-10px;
 }
 
-#settings_menu a:hover {
+#get_started_menu li a {
+	padding:7px 40px 7px 20px;
+}
+
+.settings_menu a:hover {
 	background-color:#333366;
+}
+
+#right_header_menu li.pic{
+	margin-right:-15px;
+	vertical-align:-30%;
 }
 
 /* ===========================   Left Sidebar Container ========================= */
@@ -1945,6 +1942,7 @@ ul.bxslider{
 .ui-widget-overlay{
 	background:gray;
 	opacity:0.6;
+	z-index:1499!important;
 }
 
 .MercuryRepliedIndicator.repliedLast{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
@@ -2182,6 +2180,47 @@ ul.bxslider{
 	filter:alpha(opacity=25);
 }
 
+/* ===========================   Recommendation Create Dialog ========================= */
+
+#recommendation_form{
+	font-size:12px;
+	padding:10px;
+
+}
+
+.recommendation_create_dialog{
+	width:500px!important;
+	z-index:1500!important;
+}
+
+div.dialog_header {
+	background:gray;
+	color:white;
+	font-weight:bold;
+	margin-bottom:5px;
+}
+div.dialog_header span.dialog_header_sentence{
+	font-style:italic;
+}
+div.active_dialog_header {
+	background:#333366;
+}
+
+.recommendation_target_pic{
+	display:block;
+	width:60px;
+	height:60px;
+}
+.recommendation_recommendee_pic{
+	display:inline-block;
+	width:40px;
+	height:40px;
+	margin-right:1px;
+}
+
+.recommendation_button{
+	display:block;
+}
 
 /* ===========================   App Invite DIalog ========================= */
 
@@ -2413,7 +2452,7 @@ ul.bxslider{
 
 
 .ui-dialog{
-	background:rgb(0,0,70) !important;
+	background:black !important;
 	border-radius: 12px!important;
 	color:#505050!important;
 	box-shadow: 1px 2px 2px rgba(0,0,0,.5)!important;
@@ -2457,7 +2496,7 @@ ul.bxslider{
 	top:-12px!important;
 	right:-5px!important;
 	cursor:pointer!important;
-	z-index:1000000 !important;
+	z-index:10000 !important;
 }
 
 
@@ -2478,7 +2517,7 @@ ul.bxslider{
 }
 
 .ui-dialog .ui-dialog-buttonpane {
-	background:rgb(0,0,70)!important;
+	background:black!important;
 	margin:0!important;
 	padding:0!important;
 	height:45px!important;
@@ -2513,13 +2552,29 @@ ul.bxslider{
 	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
 	vertical-align:middle;
 }
+
+.ui-dialog .ui-dialog-buttonpane button.site_dialog_button[disabled=""] {
+	color:rgb(0,0,70);
+	text-shadow:none;
+	cursor:inherit;
+	}
+
 .ui-dialog .ui-dialog-buttonpane  button.site_dialog_button:hover {
-	color:#fff;
+	#color:#fff;
 	background-color:#0033FF;
 	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 100%);
+	
+}
+
+.ui-dialog .ui-dialog-buttonpane button.site_dialog_button[disabled=""]:hover{
+	background-color: #3366FF;
+	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
+	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
+	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
+	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 }
 
 .dialog_subtitle {
@@ -2532,7 +2587,7 @@ ul.bxslider{
 	font-size:12px;
 }	
 .modal_dialog_footer{
-	background:rgb(0,0,70);
+	background:black;
 	width:100%;
 	height:40px;
 	line-height:40px;
