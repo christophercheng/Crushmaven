@@ -6,45 +6,53 @@ Main Selections
 <ul id="main_nav" class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'attractions' %}">
-			<a href="{% url 'crush.views.crush_views.attractions' %}">Attractions{% if num_crushes_in_progress %}<span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>{% endif %}
+		<li class="{% navactive request 'attractions' %} attractions">
+			<a href="{% url 'crush.views.crush_views.attractions' %}">Attractions<span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>
 				<span class="nav_subtext">Determine if they feel the same</span>
 			</a>
 			<div class="arrow-right {% navactive request 'attractions' %}"></div>
 		</li>
 		<li class="{% navactive request 'admirers' %}">
-			<a href="{% url 'crush.views.admirer_views.admirers' %}">Admirers {% if num_admirers_in_progress %}<span class="menu_count">{{num_admirers_in_progress}}</span>{% endif %}
+			<a href="{% url 'crush.views.admirer_views.admirers' %}">Admirers <span class="menu_count">{{num_admirers_in_progress}}</span>
 				<span class="nav_subtext">See who is attracted to you</span>
 			</a>
 			<div class="arrow-right {% navactive request 'attractions' %}"></div>
 		</li>
-		<li class="{% navactive request 'messages' %}">
-			<a href="{% url 'postman_inbox' %}">Messages{% if num_new_messages %} <span class="menu_count">{{ num_new_messages }}</span>{% endif %}
+		<li class="{% navactive request 'messages' %} messages">
+			<a href="{% url 'postman_inbox' %}">Messages <span class="menu_count">{{ num_new_messages }}</span>
 				<span class="nav_subtext">Chat with mutual attractions</span>
 			</a>
 			<div class="arrow-right"></div>
 		</li>
 </ul>
 <div class="arrow-right"></div>
-<a href="javascript:{}" class="bt-fs-dialog button"><span class="add_icon"></span>Add Attraction</a>
-
-
-<div class="nav_header">
-Recommendations
+<div class="button_container">
+	<a href="javascript:{}" class="bt-fs-dialog button"><span class="add_icon"></span>Add Attraction</a>
+	<div class="button_outset"></div>
 </div>
 
-<ul id="recommendation_nav" class = "navbar">
+<div class="nav_header">
+Setups
+</div>
+
+<ul id="setup_nav" class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'from_friends' %}">
-			<a href="{% url 'crush.views.crush_views.attractions' %}">From Your Friends{% if num_crushes_in_progress %}<span id="num_crushes_in_progress" class="menu_count">{{num_crushes_in_progress}}</span>{% endif %}
+		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
+			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">From Your Friends<span id="num_crushes_in_progress" class="menu_count">{{num_crushes_in_progress}}</span>
 				<span class="nav_subtext">See who they picked for you</span>
 			</a>
 			<div class="arrow-right {% navactive request 'attractions' %}"></div>
 		</li>
-		<li class="{% navactive request 'for_friends' %}">
-			<a href="{% url 'crush.views.crush_views.attractions' %}">Made By You {% if num_admirers_in_progress %}<span class="menu_count">{{num_admirers_in_progress}}</span>{% endif %}
-				<span class="nav_subtext">Check their status and results</span>
+		<li class="{% navactive request 'setups_by_me' %}">
+			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">Made By You <span class="menu_count">{{num_admirers_in_progress}}</span>
+				<span class="nav_subtext">Check status and results</span>
+			</a>
+			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+		</li>		
+		<li class="{% navactive request 'setup_requests' %} setup_requests">
+			<a href="{% url 'crush.views.setup_views.setup_requests' %}">Requests <span class="menu_count">{{num_admirers_in_progress}}</span>
+				<span class="nav_subtext">Set up friends seeking your help</span>
 			</a>
 			<div class="arrow-right {% navactive request 'attractions' %}"></div>
 		</li>

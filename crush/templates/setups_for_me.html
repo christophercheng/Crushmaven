@@ -78,19 +78,20 @@ $(document).ready(function()
 </script>
 
 <!-- Display the title widget -->  
+<span class="title_line"></span>
 <ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers:</li>
+	<li class="title_bar_title">Admirers</li>
 	<li class="title_bar_option">
 		sort:
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 	<li class="title_bar_page_links">
 		{% if admirer_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>unfinished lineup<span class="crush_count">({{admirer_relationships.count}})</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">finished lineup<span class="crush_count">({{past_admirers_count}})</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>lineup incomplete <span class="crush_count">({{admirer_relationships.count}})</span></span>
+			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">lineup finished <span class="crush_count">({{past_admirers_count}})</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">unfinished lineup<span class="crush_count">({{progressing_admirers_count}})</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>finished lineup<span class="crush_count">({{admirer_relationships.count}})</span></span>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">lineup incomplete <span class="crush_count">({{progressing_admirers_count}})</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>lineup finished <span class="crush_count">({{admirer_relationships.count}})</span></span>
 		{% endif %}
 	</li>
 </ul>

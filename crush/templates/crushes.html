@@ -298,13 +298,8 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 {% endif %} 
 
 <!-- Display the crush type navigation widget -->  
-<span class="title_line"></span>
 <ul class="title_bar" id="title_bar_attractions">
-	<li class="title_bar_title">Attractions</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
+	<li class="title_bar_title">Attractions:</li>
 	<li class="title_bar_page_links">
 		{% if crush_type = 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="not_responded_pointer"></span>not responded <span class="crush_count">({{crushes_in_progress_count}})</span></span>
@@ -313,6 +308,10 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link " href="/attractions/">not responded <span class="crush_count">({{crushes_in_progress_count}})</span></a>
 			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="responded_pointer"></span>responded <span class="crush_count">({{crushes_completed_count}})</span></span>
 		{% endif %}
+	</li>
+		<li class="title_bar_option">
+		sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 </ul>
 <! -- End of crush type navigation widget -->  
@@ -363,7 +362,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 
 <span id="no_content">
 	{% if crush_type = 0 %}
-		You have no {% if responded_relationships %} ongoing {% endif %}attractions.<BR><BR> <a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
+		You have no {% if responded_relationships %} ongoing {% endif %}attractions.&nbsp;&nbsp;<a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
 		You have no responded attractions.
 	{% endif %}

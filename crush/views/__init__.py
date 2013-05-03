@@ -18,7 +18,7 @@ from crush_views import app_invite_form
 from crush_views import ajax_find_fb_user
 from crush_views import ajax_initialize_nonfriend_lineup
 
-from recommendation_views import recommendation_create_form
+from setup_views import setup_create_form
 
 from platonic_friend_views import ajax_reconsider
 from platonic_friend_views import just_friends

@@ -490,14 +490,14 @@ class CrushRelationship(BasicRelationship):
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
 
-class Recommendation(BasicRelationship):
+class SetupRelationship(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
     # source person is the recommender
     # target person is the recommendee
-    # recommended friends are instances of class RecommendationLineupMember which has a Foreign Key to this class
-    #objects = RecommendationManager()
+    # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
+    #objects = SetupRelationshipManager()
     
     RECOMENDEE_STATUS_CHOICES = (# recomendee is required to be invited
                            (0,'Not Member'),
@@ -514,19 +514,19 @@ class Recommendation(BasicRelationship):
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
     date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
-    # keeps track of how many recommendations the source person has done for the target person
+    # keeps track of how many setups the source person has done for the target person
     display_id = models.IntegerField(default=0, max_length=60)
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk): # this is a newly created crush relationship
-            # give the recommendation a display id.  this is the unique  identifier that is displayed to the crush)
-                # get total previous recommendations(past and present)made from source to target and add 1
-            self.display_id = self.source_person.crush_recommendation_set_from_source.all().count() + 1
-        else: # This is an recommendation, just perform updates and potentially send out notfications 
+            # give the setup a display id.  this is the unique  identifier that is displayed to the crush)
+                # get total previous setups(past and present)made from source to target and add 1
+            self.display_id = self.source_person.crush_setuprelationship_set_from_source.all().count() + 1
+        else: # This is an setup, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)
-                original_recommendation = Recommendation.objects.get(pk=self.pk)
+                original_setup = SetupRelationship.objects.get(pk=self.pk)
                 # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
                 # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
                 #if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
@@ -534,6 +534,6 @@ class Recommendation(BasicRelationship):
                 #   self.notify_recommender_person()
         # Don't forget to commit the relationship's changes to database!
         # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
-        super(Recommendation,self).save(*args,**kwargs)
+        super(SetupRelationship,self).save(*args,**kwargs)
   
 

@@ -60,5 +60,5 @@ def ajax_friends_with_admirers_content(request,remove_username=None):
         ajax_response +="<li class='friend_help_link'>send invite</li>"
         ajax_response+="</ul></a></li>"
     if ajax_response=="":
-        ajax_response='<li id="no_friends">no friends with admirers...</li>'
+        ajax_response='<li id="no_friends" class="no_friends">no friends with admirers...</li>'
     return HttpResponse(ajax_response)

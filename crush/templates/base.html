@@ -216,25 +216,27 @@ $('body').on('click',".popup_link",function(e){
   e.stopPropagation();
 });
 
+$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=3',left:'+=3'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=3',left:'-=3'},50);});
+$('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2'},50);});
  /* ---------------------------------------------
  	
- 		RECOMMENDATION CREATION MODAL
+ 		SETUP CREATION MODAL
  	
  * -------------------------------------------- */
 
-	window.recommendation_create_modal=null;
+	window.setup_create_modal=null;
 	$("#set_up_friend_link").click(function(e) {
 		e.preventDefault();
 		// only initialize jquery modal dialog once per page load
 
-	//if (!window.recommendation_create_modal)
-			window.recommendation_create_modal = $("#recommendation_create_modal").dialog({
-				dialogClass:"recommendation_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}
+	//if (!window.setup_create_modal)
+			window.setup_create_modal = $("#setup_create_modal").dialog({
+				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}
 				});
-		window.recommendation_create_modal.html('<div id="site-loading"></div>');
-		window.recommendation_create_modal.dialog('open');
-		var load_url="/recommendation_create_form/";
-		window.recommendation_create_modal.load(load_url,function(responseText,textStatus,XHR){
+		window.setup_create_modal.html('<div id="site-loading"></div>');
+		window.setup_create_modal.dialog('open');
+		var load_url="/setup_create_form/";
+		window.setup_create_modal.load(load_url,function(responseText,textStatus,XHR){
 			if (textStatus!="success"){
 				if (!access_token_error(responseText))
 					$(this).html("{{ajax_error}}");
@@ -250,7 +252,7 @@ $('body').on('click',".popup_link",function(e){
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
-<div id="recommendation_create_modal" title="Set Up a Friend"></div>
+<div id="setup_create_modal" title="Set Up a Friend"></div>
 
 <div class="header">
 	<div class="header_container">{% include "navigation_top.html" %}</div>

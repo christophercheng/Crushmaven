@@ -15,7 +15,35 @@
 {% endif %}
 
 <ul class="attraction_status_bar">
-        <li class="status_bar_name">
+        <li class="status_bar_name"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        >
                 {{crush.target_person.first_name}} {{crush.target_person.last_name}}
         </li>
         <li class="status_responded attraction_status {% if crush.get_display_status > 3 %}active_status{% endif %}">
@@ -60,7 +88,7 @@
         {% elif crush.get_display_status == 4 %} 
                 <li> is <i>mutually attracted</i> to you! (as of {{crush.date_target_responded}})</li>
                 {% if crush.can_message %} 
-                        <li><a href="#" onclick='location.href="/messages/converse/{{crush.target_person.username}}"'>Send a Message</a></li>
+                        <li><a href="#" onclick='location.href="/messages/converse/{{crush.target_person.username}}"'>send a message</a></li>
                 {% endif %}
         {% else %}
                 <li>is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})</li>
@@ -77,16 +105,24 @@
    
  <!-- start: conditional button: send invite -->
 {% if crush.get_display_status == 0 %}
-        <span class="app_invite_link ">
-                <a class="app_invite button" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a>
-                <span class="hint_anonymous">(anonymously)</span>
+
+        <span class="app_invite_link button_container">
+                <a class="app_invite block_button button" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a>
+                <div class="button_outset"></div>
+                <span class="hint_anonymous">anonymously</span>
         </span>
 {% elif crush.get_display_status > 3 %} 
 
         {% if not crush.is_results_paid %}
-                <a href="#" class="check_credit button" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
+        			<div class="button_container">
+                <a href="#" class="check_credit block_button button" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
+        				<div class="button_outset"></div>
+        			</div>
         {% elif crush.get_display_status == 4 and not crush.can_message %}
-                        <a href="#" class="button" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a></li>
+              <div class="button_container">
+                <a href="#" class="button block_button" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a>
+                <div class="button_outset"></div>
+        			</div>
         {% endif %}
 {% endif %}
 

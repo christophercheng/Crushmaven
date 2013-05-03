@@ -17,8 +17,8 @@
 	    	var getStoredFriends = $(this).attr('getStoredFriends');
 	    	var onSubmit = $(this).attr('onSubmit');
 	    	var excludeIds = $(this).attr('excludeIds');
-	    	var recommendation_select=$(this).attr('recommendation_select');
-	    	if (max_selections)// we are in friend recommendation mode most likely
+	    	var setup_select=$(this).attr('setup_select');
+	    	if (max_selections)// we are in friend setup mode most likely
 	    		options.max=parseInt(max_selections);
 	    	if (getStoredFriends)
 	    		options.getStoredFriends=getStoredFriends;
@@ -26,10 +26,10 @@
 	    		options.onSubmit=onSubmit;
 	    	if (excludeIds)
 	    		options.excludeIds=excludeIds;
-	    	if (recommendation_select)
-	    		options.recommendation_select=true;
+	    	if (setup_select)
+	    		options.setup_select=true;
 	    	else
-	    		options.recommendation_select=false;
+	    		options.setup_select=false;
 	    	fsOptions = options;
 	      _start();
 	    });
@@ -294,7 +294,7 @@
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
-    if (!fsOptions.recommendation_select){
+    if (!fsOptions.setup_select){
 	    title_bar = title_bar + 
 	    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
 	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>';
@@ -562,7 +562,7 @@
     });
     
     wrap.delegate('#fs-continue-button', 'click.fs', function(){
-    	if (fsOptions.recommendation_select)
+    	if (fsOptions.setup_select)
     		_submit();
     	else
     		_continue();

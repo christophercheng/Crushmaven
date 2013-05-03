@@ -757,12 +757,12 @@ class LineupMember(BasicLineupMember):
     relationship = models.ForeignKey('CrushRelationship',null=True,blank=True,default=None)
 
 # details about each crush's secret admirer lineup (SAL)
-class RecommendationLineupMember(BasicLineupMember):
+class SetupLineupMember(BasicLineupMember):
     
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush'
 
-    # if relationship is not a typical crush relationship , then it is a recommendation relationship
-    recommendation = models.ForeignKey('Recommendation',null=True,blank=True,default=None)
+    # if relationship is not a typical crush relationship , then it is a setup relationship
+    relationship = models.ForeignKey('SetupRelationship',null=True,blank=True,default=None)
     date_last_notified_by_recommender = models.DateTimeField(null=True,default=None,blank=True) ;

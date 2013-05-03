@@ -25,7 +25,7 @@ $(document).ready(function()
 		e.preventDefault();
 		}); // close off submit function
 	
-		$('.sent_from_us').delay(2000).animate({opacity:1,left:"-=300"},1000);
+		$('.sent_from_us').delay(100).animate({opacity:1,left:"-=300"},1000);
 		// handle email preview tabs;
 		$('#email_preview_section').on('click','.inactive_email_preview_tab',function(){
 					$('.sent_from_us').css('opacity',0);

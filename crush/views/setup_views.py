@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,Recommendation,RecommendationLineupMember
+from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,SetupRelationship,SetupLineupMember
 import json
 import datetime
 from crush.appinviteform import AppInviteForm
@@ -69,7 +69,49 @@ def ajax_make_crush_target_platonic_friend(request,crush_username):
     
 # -- Crush List Page --
 @login_required
-def friend_setups(request,reveal_crush_id=None):
+def setups_for_me(request):
+    
+    me = request.user
+  
+    progressing_setups = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
+    setups_completed_count = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).count()
+
+    return render(request,'setups_for_me.html',
+                              {
+                               'setup_type': 0, # 0 is in progress, 1 is completed
+                               'setup_relationships':progressing_setups,
+                               'setups_in_progress_count': progressing_setups.count(),
+                               'setups_completed_count':setups_completed_count,
+                               })    
+
+# -- Crushes Completed Page --
+@login_required
+def completed_setups_for_me(request,reveal_crush_id=None):
+    me = request.user
+    crush_relationships = request.user.crush_crushrelationship_set_from_source 
+    if reveal_crush_id:
+        try:
+            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
+            if reveal_crush_relationship.is_results_paid == False:
+                reveal_crush_id = None #reset the value in this error case
+        except CrushRelationship.DoesNotExist:
+            reveal_crush_id = None
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
+    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
+    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
+    
+    return render(request,'crushes.html',
+                              {
+                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
+                               'responded_relationships':responded_relationships,
+                               'crush_relationships':crushes_completed_relationships,
+                               'crushes_in_progress_count': crushes_in_progress_count,
+                               'crushes_completed_count' : crushes_completed_relationships.count,
+                               'reveal_crush_id':reveal_crush_id,
+                               })   
+    
+@login_required
+def setups_by_me(request,reveal_crush_id=None):
     
     me = request.user
   
@@ -105,68 +147,7 @@ def friend_setups(request,reveal_crush_id=None):
 
 # -- Crushes Completed Page --
 @login_required
-def friend_setups_completed(request,reveal_crush_id=None):
-    me = request.user
-    crush_relationships = request.user.crush_crushrelationship_set_from_source 
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            if reveal_crush_relationship.is_results_paid == False:
-                reveal_crush_id = None #reset the value in this error case
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
-    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
-    
-    return render(request,'crushes.html',
-                              {
-                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crushes_completed_relationships,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count,
-                               'reveal_crush_id':reveal_crush_id,
-                               })   
-    
-@login_required
-def my_setups(request,reveal_crush_id=None):
-    
-    me = request.user
-  
-    crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
-
-    # if there is at least one friend attraction, then we need to check the user's facebook privacy setting.  if their app visibility is not set to "only me", then display warning dialog
-    if (len(crush_progressing_relationships.filter(friendship_type=0))>0):
-        check_fb_privacy=True
-    else:
-        check_fb_privacy=False
-    
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = CrushRelationship.objects.completed_crushes(me).get(target_person__username=reveal_crush_id)
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id=None
-            
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
-
-    return render(request,'crushes.html',
-                              {
-                               'crush_type': 0, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crush_progressing_relationships,
-                               'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'crushes_completed_count':crushes_completed_count,
-                               'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
-                               'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
-                               'check_fb_privacy_setting':check_fb_privacy,
-                               'reveal_crush_id':reveal_crush_id,
-                               })    
-
-# -- Crushes Completed Page --
-@login_required
-def my_setups_completed(request,reveal_crush_id=None):
+def completed_setups_by_me(request,reveal_crush_id=None):
     me = request.user
     crush_relationships = request.user.crush_crushrelationship_set_from_source 
     if reveal_crush_id:
@@ -190,18 +171,43 @@ def my_setups_completed(request,reveal_crush_id=None):
                                'reveal_crush_id':reveal_crush_id,
                                })   
 
-# returns a comma separated string of usernames who cannot be recommended to the given recommendation target (existing recommendees)
+@login_required
+def setup_requests(request,reveal_crush_id=None):
+    me = request.user
+    crush_relationships = request.user.crush_crushrelationship_set_from_source 
+    if reveal_crush_id:
+        try:
+            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
+            if reveal_crush_relationship.is_results_paid == False:
+                reveal_crush_id = None #reset the value in this error case
+        except CrushRelationship.DoesNotExist:
+            reveal_crush_id = None
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
+    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
+    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
+    
+    return render(request,'crushes.html',
+                              {
+                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
+                               'responded_relationships':responded_relationships,
+                               'crush_relationships':crushes_completed_relationships,
+                               'crushes_in_progress_count': crushes_in_progress_count,
+                               'crushes_completed_count' : crushes_completed_relationships.count,
+                               'reveal_crush_id':reveal_crush_id,
+                               })   
+
+# returns a comma separated string of usernames who cannot be recommended to the given setup target (existing recommendees)
 @login_required    
-def ajax_get_recommendee_exclude_ids(request, recommendation_target):
-    # grab all recommendations of request.user where target_person = recommendation_target
-    relevant_recommendations=request.user.crush_recommendation_set_from_source.filter(target_person__username=recommendation_target)
+def ajax_get_recommendee_exclude_ids(request, setup_target):
+    # grab all setups of request.user where target_person = setup_target
+    relevant_setups=request.user.crush_setuprelationship_set_from_source.filter(target_person__username=setup_target)
     previous_recommendee_id_csl=''
-    # grab all RecommendationLineupMembers of previous recommendations where 
-        # the target is recommendation_target
+    # grab all setupLineupMembers of previous setups where 
+        # the target is setup_target
         # the source is this request.user
-        # the recommendationLineupMember is not relevant
-    for recommendation in relevant_recommendations:
-        existing_recommendee_objects = recommendation.recommendationlineupmember_set.all();
+        # the setupLineupMember is not relevant
+    for setup in relevant_setups:
+        existing_recommendee_objects = setup.setuplineupmember_set.all();
         for recommendee_object in existing_recommendee_objects:
             if previous_recommendee_id_csl != '':
                 previous_recommendee_id_csl += ','
@@ -209,16 +215,16 @@ def ajax_get_recommendee_exclude_ids(request, recommendation_target):
     return previous_recommendee_id_csl
 
 @login_required    
-def recommendation_create_form(request):
+def setup_create_form(request):
     print "APP INVITE FORM!"
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
         print "METHOD IS POST"
-        recommendation_target_username = request.POST['target_username']
-        recommendation_target_user = FacebookUser.objects.find_or_create_user(recommendation_target_username, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)
-        if recommendation_target_user == None:
+        setup_target_username = request.POST['target_username']
+        setup_target_user = FacebookUser.objects.find_or_create_user(setup_target_username, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)
+        if setup_target_user == None:
             return
-        if recommendation_target_user.is_active==True:
+        if setup_target_user.is_active==True:
             target_status=1
         else:
             target_status=0
@@ -226,15 +232,15 @@ def recommendation_create_form(request):
         recommendee_username_array=recommendee_username_csl.split(',')
         if len(recommendee_username_array) == 0:
             return;
-        recommendation = Recommendation.objects.create(target_person=recommendation_target_user,source_person=request.user,updated_flag=True,friendship_type=0,target_status=target_status)
+        setup = SetupRelationship.objects.create(target_person=setup_target_user,source_person=request.user,updated_flag=True,friendship_type=0,target_status=target_status)
         for (counter,recommendee) in enumerate(recommendee_username_array):
-            RecommendationLineupMember.objects.create(recommendation=recommendation, username = recommendee, position=counter)
+            SetupLineupMember.objects.create(relationship=setup, username = recommendee, position=counter)
         #perform find_or_create_user on target_username
-        # create RecommendationLIneupMember (with just username of each recommendee - no need to actually create user yet)
+        # create setupLIneupMember (with just username of each recommendee - no need to actually create user yet)
             # send out the emails here
 
         print "success and redirecting"                
-        return redirect('/my_setups')
+        return redirect('/setups_by_me')
     else:
         # build list of exclude ids (anyone who is an undecided lineup member
         exclude_ids=''
@@ -246,4 +252,4 @@ def recommendation_create_form(request):
                 if exclude_ids!='':
                     exclude_ids += ','
                 exclude_ids += lineup_member_object.username
-        return render(request, 'recommendation_create_form.html',{'exclude_ids':exclude_ids})
+        return render(request, 'setup_create_form.html',{'exclude_ids':exclude_ids})

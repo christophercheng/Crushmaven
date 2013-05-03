@@ -72,16 +72,17 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_user_can_message/(?P<crush_id>\w+)/$','ajax_user_can_message'),
 )
 
-# ----      RECOMMENDATION: DISPLAY AND HANDLING PAGES      ----    
-urlpatterns += patterns('crush.views.recommendation_views',
+# ----      setup: DISPLAY AND HANDLING PAGES      ----    
+urlpatterns += patterns('crush.views.setup_views',
                         
-    (r'^recommendation_create_form/$','recommendation_create_form'),
+    (r'^setup_create_form/$','setup_create_form'),
     
-    (r'^friend_setups/$','friend_setups'),
-    (r'^friend_setups_completed/$','friend_setups_completed'),
-    (r'^my_setups/$','my_setups'),
-    (r'^my_setups_completed/$','my_setups_completed'),
-    (r'^ajax_get_recommendee_exclude_ids/?(P<recommendation_target>\w+)/$','ajax_get_recommendee_exclude_ids'),
+    (r'^setups_for_me/$','setups_for_me'),
+    (r'^completed_setups_for_me/$','completed_setups_for_me'),
+    (r'^setups_by_me/$','setups_by_me'),
+    (r'^completed_setups_by_me/$','completed_setups_by_me'),
+    (r'^setup_requests/$','setup_requests'),
+    (r'^ajax_get_recommendee_exclude_ids/?(P<setup_target>\w+)/$','ajax_get_recommendee_exclude_ids'),
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
