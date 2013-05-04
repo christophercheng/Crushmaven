@@ -216,8 +216,11 @@ $('body').on('click',".popup_link",function(e){
   e.stopPropagation();
 });
 
-$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=3',left:'+=3'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=3',left:'-=3'},50);});
-$('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2'},50);});
+//$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=3',left:'+=3'},100);},function(event){event.stopPropagation();$(this).animate({top:'-=3',left:'-=3'},50);});
+//$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2',height:'-=2',width:'-=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2',height:'+=2',width:'+=2'},50);});
+//$('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2'},50);});
+ 
+//$('.navbar li.inactive a').hover(function(){$(this).animate({borderTopWidth:'4px',borderLeftWidth:'3px'},100);},function(event){event.stopPropagation();$(this).animate({borderTopWidth:'0px',borderLeftWidth:'0px'},100);});
  /* ---------------------------------------------
  	
  		SETUP CREATION MODAL
@@ -225,7 +228,7 @@ $('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'
  * -------------------------------------------- */
 
 	window.setup_create_modal=null;
-	$("#set_up_friend_link").click(function(e) {
+	$("a.set_up_friend_link").click(function(e) {
 		e.preventDefault();
 		// only initialize jquery modal dialog once per page load
 

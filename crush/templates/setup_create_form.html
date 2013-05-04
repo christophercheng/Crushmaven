@@ -95,7 +95,7 @@ $(document).ready(function()
    $('#recommendee_username_csl_input').attr('value',window.setup_recommendee_csl);
   }
  
- $("#create_setup").click(function(){
+ $(".setup_create_dialog").on('click','#create_setup',function(){
    	FB.ui({method: 'send',
   				name: "{{request.user.first_name}} {{request.user.last_name}} has selected some  friends of {{request.user.get_gender_pronoun}} which {{request.user.get_gender_pronoun_subject }} think you may find attractive.",
   				to: window.setup_target,

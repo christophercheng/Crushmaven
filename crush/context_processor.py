@@ -18,6 +18,11 @@ def context_processor(request):
         left_menu_crush_count = progressing_crushes.count() + visible_responded_crushes.count()
         new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
            
+        num_progressing_setups_for_me = me.crush_setuprelationship_set_from_target.count()
+        num_progressing_setups_by_me = me.crush_setuprelationship_set_from_source.count()
+        num_setup_requests=0#request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
+           
+           
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),
             'num_new_admirers': progressing_admirer_relationships.filter(target_status__lt = 3).count(), # progressing admirers who haven't started lineup (3 status)
@@ -29,6 +34,10 @@ def context_processor(request):
             'ajax_error':settings.AJAX_ERROR,
             'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
+            
+            'num_setups_by_me_in_progress' : num_progressing_setups_by_me,
+            'num_setups_for_me_in_progress': num_progressing_setups_for_me, 
+            'num_setup_requests':num_setup_requests,
             }
     else: # whenever a user is logged in, just use an empty dictionary
         return {}

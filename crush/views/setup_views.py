@@ -111,65 +111,37 @@ def completed_setups_for_me(request,reveal_crush_id=None):
                                })   
     
 @login_required
-def setups_by_me(request,reveal_crush_id=None):
+def setups_by_me(request):
     
     me = request.user
   
-    crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_status','target_person__last_name')
+    progressing_setups = me.crush_setuprelationship_set_from_source.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
+    setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(date_lineup_finished=None).count()
 
-    # if there is at least one friend attraction, then we need to check the user's facebook privacy setting.  if their app visibility is not set to "only me", then display warning dialog
-    if (len(crush_progressing_relationships.filter(friendship_type=0))>0):
-        check_fb_privacy=True
-    else:
-        check_fb_privacy=False
-    
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = CrushRelationship.objects.completed_crushes(me).get(target_person__username=reveal_crush_id)
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id=None
-            
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
-
-    return render(request,'crushes.html',
+    return render(request,'setups_by_me.html',
                               {
-                               'crush_type': 0, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crush_progressing_relationships,
-                               'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'crushes_completed_count':crushes_completed_count,
-                               'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
-                               'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
-                               'check_fb_privacy_setting':check_fb_privacy,
-                               'reveal_crush_id':reveal_crush_id,
-                               })    
+                               'setup_type': 0, # 0 is in progress, 1 is completed
+                               'setup_relationships':progressing_setups,
+                               'setups_in_progress_count': progressing_setups.count(),
+                               'setups_completed_count':setups_completed_count,
+                               })     
 
 # -- Crushes Completed Page --
 @login_required
-def completed_setups_by_me(request,reveal_crush_id=None):
-    me = request.user
-    crush_relationships = request.user.crush_crushrelationship_set_from_source 
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            if reveal_crush_relationship.is_results_paid == False:
-                reveal_crush_id = None #reset the value in this error case
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
-    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
+def completed_setups_by_me(request):
     
-    return render(request,'crushes.html',
+    me = request.user
+  
+    completed_setups = me.crush_setuprelationship_set_from_source.exclude(date_lineup_finished=None).order_by('-updated_flag','date_added')
+    setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(date_lineup_finished=None).count()
+
+    return render(request,'setups_by_me.html',
                               {
-                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crushes_completed_relationships,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count,
-                               'reveal_crush_id':reveal_crush_id,
-                               })   
+                               'setup_type': 1, # 0 is in progress, 1 is completed
+                               'setup_relationships':completed_setups,
+                               'completed_setups_count': completed_setups.count(),
+                               'setups_incomplete_count':setups_incomplete_count,
+                               })     
 
 @login_required
 def setup_requests(request,reveal_crush_id=None):
@@ -225,9 +197,9 @@ def setup_create_form(request):
         if setup_target_user == None:
             return
         if setup_target_user.is_active==True:
-            target_status=1
+            target_status=2
         else:
-            target_status=0
+            target_status=1
         recommendee_username_csl = request.POST['recommendee_username_csl']
         recommendee_username_array=recommendee_username_csl.split(',')
         if len(recommendee_username_array) == 0:

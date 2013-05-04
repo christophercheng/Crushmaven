@@ -86,11 +86,11 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if admirer_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>unfinished lineup<span class="crush_count">({{admirer_relationships.count}})</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">finished lineup<span class="crush_count">({{past_admirers_count}})</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>unfinished lineup<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
+			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">finished lineup<span class="title_bar_count"> {{past_admirers_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">unfinished lineup<span class="crush_count">({{progressing_admirers_count}})</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>finished lineup<span class="crush_count">({{admirer_relationships.count}})</span></span>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">unfinished lineup<span class="title_bar_count"> {{progressing_admirers_count}}</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>finished lineup<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
 		{% endif %}
 	</li>
 </ul>

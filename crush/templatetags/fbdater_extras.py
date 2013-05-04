@@ -7,6 +7,7 @@ Created on Nov 1, 2012
 from datetime import datetime, timedelta
 from django import template
 from django.utils.timesince import timesince
+from django.conf import settings
 
 register = template.Library()
 
@@ -19,7 +20,17 @@ def navactive(request, url):
         return "active"
     return ""
 
-
+@register.filter
+def target_status_text(value):
+    TARGET_STATUS_CHOICES = (
+                           (0,'not signed up'),
+                           (1,'not signed up'),
+                           (2,'not started lineup'),
+                           (3,'started lineup'),
+                           (4,'responded'),
+                           (5,'responded'),
+                           )
+    return TARGET_STATUS_CHOICES[int(value)][1]
 
 # don't return any value if less than 2 minutes have not passed
 @register.filter

@@ -1,32 +1,35 @@
 {% load base_extras %}
 <div class="nav_header">
-Main Selections
+Relationships
 </div>
 
 <ul id="main_nav" class = "navbar">
 
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'attractions' %} attractions">
-			<a href="{% url 'crush.views.crush_views.attractions' %}">Attractions<span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>
+			<div class="arrow-left"></div>
+			<a href="{% url 'crush.views.crush_views.attractions' %}"><span class="menu_title">Attractions</span></span><span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>
 				<span class="nav_subtext">Determine if they feel the same</span>
 			</a>
-			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+			<div class="arrow-right"></div>
 		</li>
-		<li class="{% navactive request 'admirers' %}">
-			<a href="{% url 'crush.views.admirer_views.admirers' %}">Admirers <span class="menu_count">{{num_admirers_in_progress}}</span>
+		<li class="{% navactive request 'admirers'%}">
+			<div class="arrow-left"></div>
+			<a href="{% url 'crush.views.admirer_views.admirers' %}"><span class="menu_title">Admirers</span> <span class="menu_count">{{num_admirers_in_progress}}</span>
 				<span class="nav_subtext">See who is attracted to you</span>
 			</a>
-			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+			<div class="arrow-right"></div>
 		</li>
 		<li class="{% navactive request 'messages' %} messages">
-			<a href="{% url 'postman_inbox' %}">Messages <span class="menu_count">{{ num_new_messages }}</span>
+			<div class="arrow-left"></div>
+			<a href="{% url 'postman_inbox' %}"><span class="menu_title">Messages</span> <span class="menu_count">{{ num_new_messages }}</span>
 				<span class="nav_subtext">Chat with mutual attractions</span>
 			</a>
 			<div class="arrow-right"></div>
 		</li>
 </ul>
 <div class="arrow-right"></div>
-<div class="button_container">
+<div class="button_container" id="add_attraction">
 	<a href="javascript:{}" class="bt-fs-dialog button"><span class="add_icon"></span>Add Attraction</a>
 	<div class="button_outset"></div>
 </div>
@@ -39,21 +42,28 @@ Setups
 
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
-			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">From Your Friends<span id="num_crushes_in_progress" class="menu_count">{{num_crushes_in_progress}}</span>
+			<div class="arrow-left"></div>
+			<a href="{% url 'crush.views.setup_views.setups_for_me' %}"><span class="menu_title">From Your Friends</span><span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
 				<span class="nav_subtext">See who they picked for you</span>
 			</a>
-			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+			<div class="arrow-right"></div>
 		</li>
 		<li class="{% navactive request 'setups_by_me' %}">
-			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">Made By You <span class="menu_count">{{num_admirers_in_progress}}</span>
+			<div class="arrow-left"></div>
+			<a href="{% url 'crush.views.setup_views.setups_by_me' %}"><span class="menu_title">Made By You</span> <span class="menu_count">{{num_setups_by_me_in_progress}}</span>
 				<span class="nav_subtext">Check status and results</span>
 			</a>
-			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+			<div class="arrow-right"></div>
 		</li>		
 		<li class="{% navactive request 'setup_requests' %} setup_requests">
-			<a href="{% url 'crush.views.setup_views.setup_requests' %}">Requests <span class="menu_count">{{num_admirers_in_progress}}</span>
+			<div class="arrow-left"></div>
+			<a href="{% url 'crush.views.setup_views.setup_requests' %}"><span class="menu_title">Requests</span> <span class="menu_count">{{num_setup_requests}}</span>
 				<span class="nav_subtext">Set up friends seeking your help</span>
 			</a>
-			<div class="arrow-right {% navactive request 'attractions' %}"></div>
+			<div class="arrow-right"></div>
 		</li>
 </ul>
+<div class="button_container" id="create_setup">
+	<a href="javascript:{}" class="create_setup button set_up_friend_link"><span class="add_icon"></span>Setup Friend</a>
+	<div class="button_outset"></div>
+</div>
