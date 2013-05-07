@@ -78,10 +78,10 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if setup_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="unfinished_setups_by_me_pointer"></span>unfinished <span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="unfinished_setups_by_me_pointer"></span>started <span class="title_bar_count">{{setup_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_by_me/">finished <span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_by_me/">unfinished <span class="title_bar_count">{{setups_incomplete_count}}</span></a>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_by_me/">started <span class="title_bar_count">{{setups_incomplete_count}}</span></a>
 			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="finished_setups_by_me_pointer"></span>finished <span class="title_bar_count">{{setup_relationships.count}}</span></span>
 		{% endif %}
 	</li>
@@ -101,7 +101,7 @@ $(document).ready(function()
 		{% endif %}
 
 
-	<div class="admirer_block" display_id="{{setup_rel.display_id}} ">
+	<div class="setup_by_me_block" display_id="{{setup_rel.display_id}} ">
 		<div class="setup_block_title">
 			<span class="setup_block_for">For:</span>
 			<img class="setup_block_target_pic" src="http://graph.facebook.com/{{setup_rel.target_person.username}}/picture?width=40&height=40">
@@ -110,8 +110,37 @@ $(document).ready(function()
 			{% if setup_rel.target_status == 1 %} 
 				<a href="#" onClick="window.send_fb_invite('{{setup_rel.target_person.username}}','{{request.user.get_name}}')">resend invite</a>
 			{% endif %}
+			
 		</div><!-- close off setup_block_title -->
-
+		<div class="setup_target_response_label"><span class="setup_label_text">{{setup_rel.target_person.first_name}}'s responses ({{ setup_rel | setup_target_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span></div>
+		
+		<div class = "setup_response_section">
+		{% for lineup_member in setup_rel.setuplineupmember_set.all %}
+			<div class="setup_lineup_member_block">
+					<span class="setup_lineup_decision {% if lineup_member.decision == None %}setup_lineup_decision_none{% elif lineup_member.decision == 1 %}setup_lineup_decision_true{% else %}setup_lineup_decision_false{% endif %}"></span>
+					<img class="setup_lineup_member_block_pic" src="http://graph.facebook.com/{{lineup_member.username}}/picture?width=40&height=40">
+					{% if lineup_member.decision == 1 %} 
+						{% if lineup_member.user.is_active == False %}
+							<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">send invite</a>
+						{% elif lineup_member.lineup_member_attraction == 1 %}
+							<span class="setup_lineup_decision setup_lineup_decision_true"></span>
+						{% elif lineup_member.lineup_member_attraction == 0 %}
+							<span class="setup_lineup_decision setup_lineup_decision_false"></span>
+						{% elif lineup_member.lineup_member_notified == False %}
+							<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">notify them</a>						
+						{% else %}
+							<span class="setup_lineup_decision setup_lineup_decision_none"></span>
+						{% endif %}
+					{% else %}
+						<span class="setup_lineup_decision setup_lineup_decision_none"></span>
+					{% endif %}
+			</div><!-- close off setup_lineup_member_block -->
+		{% endfor %}
+		</div> <!-- close off setup_response_section -->
+		<div class="setup_recommendees_response_label"><span class="setup_label_text">Recommendee
+		 responses ({{setup_rel | setup_recommendees_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span></div>
+	<span class = "setup_added_date">added {{setup_rel.date_added | datetime_since}} ago</span>
+	</div><!--  close off setup block -->
 
 {% comment %}
 		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.admirer_display_id}}">
@@ -132,7 +161,6 @@ $(document).ready(function()
 		{% endif %}
 		</div><!-- close off admirer_block line -->
 		{% endcomment %}
-	</div><!--  close off setup block -->
 
 {% endfor %}
 

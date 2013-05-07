@@ -6,7 +6,11 @@
 
 <div id="lineup_container">
 <div id="lineup-header">
-One of these line-up members is your admirer!  Add any as an attraction, and we will notify you if we determine the feeling is mutual.  Your identity is protected from your attractions.  They receive a similar lineup - with you in it!
+	{% if is_admirer_type == 1 %}
+		One of these line-up members is your admirer!  Add any as an attraction, and we will notify you if we determine the feeling is mutual.  Your identity is protected from your attractions.  They receive a similar lineup - with you in it!
+	{% else %}
+		Your friend recommended these lineup members.  Add any as an attraction, and we will notify you if we determine the feeling is mutual. We conceal your identity from your attractions.  They receive a similar lineup - with you in it!
+	{% endif %}
 </div>
 
 <div id="bx-pager-container">
@@ -71,11 +75,7 @@ $(document).ready(function() // handling for the slider
 	/** PROCEDURAL CODE - CREATE IS_LINEUP_PAID GLOBAL
 	* create global bool variable for lineup's is_lineup_paid setting
 	*/
-	window.is_lineup_paid = '{{admirer_rel.is_lineup_paid}}';
-	if (window.is_lineup_paid == 'True')
-		window.is_lineup_paid=true;
-	else
-		window.is_lineup_paid=false;
+	window.is_lineup_paid = {% if admirer_rel.is_lineup_paid or is_admirer_type == False %}true{% else %}false{% endif %};
 		
 			
 	/* ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ $(document).ready(function() // handling for the slider
 		footer_element.find('#finish-btn').removeAttr('disabled');
 		footer_element.find('#finish-btn').show();
 	  footer_msg_element = footer_element.children('#footer-msg');
-	  footer_msg_element_html='<b>Your Crush Lineup evaluation is complete!</b>'
+	  footer_msg_element_html='<b>Your lineup evaluation is complete!</b>'
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
@@ -147,7 +147,7 @@ $(document).ready(function() // handling for the slider
   *		Ajax load the next slide into the DOM
 	*  ---------------------------------------------------------------------- */			
 	var load_next_slide = function(next_position, callback){
-		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + next_position + '/';
+		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/';
 		$('.bxslider li[lineup_position=' + next_position + ']').load(load_url, function(responseText, textStatus, xhr) {
 			if (textStatus!='success'){
 				if (xhr.status==405){
@@ -236,7 +236,7 @@ $(document).ready(function() // handling for the slider
 	  }
 	  	  	
 	  if (this_element.attr('add_type')=="crush") {
-	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.admirer_display_id}}/" +  username + "/"; 
+	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
 	  	decision_dialog.html(dialog_attraction_html);
 	  	if (window.added_lineup_attraction){
@@ -245,7 +245,7 @@ $(document).ready(function() // handling for the slider
 	  	crush_decision=true;
 	  }
 	  else {
-	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.admirer_display_id}}/" + username + "/"; 
+	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.display_id}}/" + username + "/"; 
 	  	decision_dialog = platonic_dialog;
 	  	decision_dialog.html(dialog_platonic_html);
 	  	crush_decision=false;
@@ -358,7 +358,7 @@ $(document).ready(function() // handling for the slider
 	var last_loaded_slide = $('.bxslider li.preload').length - 1;
 	//var last_loaded_slide=-1;
 	//$('.bxslider li.preload').each(function(index){
-	//		$(this).load('/ajax_get_lineup_slide/{{admirer_rel.admirer_display_id}}/' + index + '/');	
+	//		$(this).load('/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + index + '/');	
 	//		last_loaded_slide = index;
 	//});
 
@@ -368,7 +368,7 @@ $(document).ready(function() // handling for the slider
 	*/
 	var next_loaded_slide=last_loaded_slide+1;
 	if (next_loaded_slide < {{member_set.count}}) { // we haven't decided on last member yet
-		if (last_loaded_slide<0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
+		if (last_loaded_slide < 0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
 				load_next_slide(next_loaded_slide,launch_slider_at);
 		else // don't load slide after last, just open slider at last loaded position
 				launch_slider_at(last_loaded_slide);		
@@ -385,9 +385,9 @@ $(document).ready(function() // handling for the slider
  	window.launch_credit_check = function() {
 		data = {};
 		data['csrfmiddlewaretoken']="{{csrf_token}}";
-		data['success_path'] = '/admirers/{{admirer_rel.admirer_display_id}}/';
-		data['cancel_url'] = 'http://{{request.get_host}}/admirers/{{admirer_rel.admirer_display_id}}';
-		data['unique_id'] = '{{admirer_rel.admirer_display_id}}';
+		data['success_path'] = '/admirers/{{admirer_rel.display_id}}/';
+		data['cancel_url'] = 'http://{{request.get_host}}/admirers/{{admirer_rel.display_id}}';
+		data['unique_id'] = '{{admirer_rel.display_id}}';
 		data['feature_id'] = '1';
 		data['purchase_callback_name'] = 'window.lineup_purchased()';
 		data['ajax_error']='{{ajax_error}}';

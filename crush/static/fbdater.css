@@ -806,7 +806,7 @@ ul.title_bar li .title_bar_page_first_link {
 
 ul.title_bar li .title_bar_page_link #page_link_pointer{
 	position:absolute;
-	left:25px;
+	left:5px;
 	bottom:-13px;
 	width:0px;
 	height:0px;
@@ -1334,12 +1334,14 @@ top:2px;
 
 .admirer_block {
 	
-	background-color:#F6F6F6;
-	border-radius:8px;
+	#background-color:#F6F6F6;
+	background-color:#2A2A2A;
+	color:white;
+	border-radius:0px 10px 10px 10px;
 	border-color: LightSteelBlue;
 	margin-bottom:20px;
 	padding:15px 15px 5px 15px;
-	border:1px solid #003399;/*#CC0000;*/
+	#border:1px solid #003399;/*#CC0000;*/
 	#border:1px solid #CC0029;/*#CC0000;*/
 	#box-shadow: 1px 2px 2px rgba(0,0,0,.5);
 	width:555px;
@@ -1377,7 +1379,7 @@ top:2px;
 }
 
 .admirer_block_instructions .help_icon{
-	top:45px;
+	top:42px;
 	left:2px;
 	border: 1px solid #2E8AE6;
 	border-radius:10px; 
@@ -1416,9 +1418,7 @@ top:2px;
 .admirer_block a.button{
 		position:absolute;
 	float:right;
-	#margin-top:-25px;
-	#margin-right:60px;
-	top:0px;
+	top:30px;
 	right:70px;
 	height:28px;
 	width:130px;
@@ -1434,6 +1434,7 @@ top:2px;
 	width:46px;
 	height:46px;
 	border:1px solid #9999cc;
+	border:1px solid white;
 	display:inline-block;
 	position:relative;
 	margin-right:1px;
@@ -2434,6 +2435,42 @@ div.active_dialog_header {
 .setup_button{
 	display:block;
 }
+
+/* ===========================   Setups By Me Block Dialog ========================= */
+
+.setup_by_me_block {
+	border-radius:0px 10px 10px 10px;
+	background:#5F5F5F;
+	color:white;
+	padding:10px;
+	margin-bottom:15px;
+}
+
+.setup_lineup_member_block {
+	display:inline-block;
+	margin-right:8px;
+}
+
+.setup_lineup_member_block img {
+	display:block;
+}
+
+/* ===========================   Setups for Me Block Dialog ========================= */
+
+.setup_for_me_block {
+	border-radius:0px 10px 10px 10px;
+	background:#5F5F5F;
+	color:white;
+	padding:10px;
+	margin-bottom:15px;
+}
+
+.lineup_preview_label{
+	display:block;
+	font-size:11px;
+	font-style:italic;
+}
+
 
 /* ===========================   App Invite DIalog ========================= */
 

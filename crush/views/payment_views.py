@@ -28,7 +28,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
     if str(feature_id) == '1': # if feature is view lineup
         try:
             new_admirers=CrushRelationship.objects.all_admirers(me)
-            relationship = new_admirers.get(admirer_display_id=unique_id)
+            relationship = new_admirers.get(display_id=unique_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
         if relationship.handle_lineup_paid() == False:    
@@ -142,7 +142,7 @@ def paypal_pdt_purchase(request):
                 try:# handle special feature processing 
                     facebook_user = FacebookUser.objects.get(username=username)
                     #print "facebook user found with first name: " + facebook_user.first_name
-                    admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(admirer_display_id=unique_id)
+                    admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(display_id=unique_id)
                     admirer_rel.handle_lineup_paid()
                 except CrushRelationship.DoesNotExist:
                     pass # do nothing, i guess :)            
@@ -168,7 +168,7 @@ def paypal_pdt_purchase(request):
                 if feature_id == 1 and unique_id != '': # handling of lineup payment
                     try:
                         facebook_user = FacebookUser.objects.get(username=username)
-                        admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(admirer_display_id=unique_id)
+                        admirer_rel = CrushRelationship.objects.all_admirers(facebook_user).get(display_id=unique_id)
                         admirer_rel.handle_lineup_paid()
                     except CrushRelationship.DoesNotExist:
                         pass # do nothing, i guess :)

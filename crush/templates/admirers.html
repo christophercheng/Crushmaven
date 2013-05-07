@@ -45,11 +45,11 @@ $(document).ready(function()
     */
     $('.ajax_display_lineup_block').each(function(){
 
-        var admirer_display_id=$(this).attr("display_id");
+        var display_id=$(this).attr("display_id");
         var lineup_block_div = $(this).parent('.lineup_block');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
-        var ajax_url = '/ajax_display_lineup_block/' + admirer_display_id + '/'; 
-        var ajax_fail_url='/ajax_initialization_failed/' + admirer_display_id + '/';
+        var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
+        var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
         $.ajax(ajax_url, {
         
    				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
@@ -131,7 +131,7 @@ $(document).ready(function()
 {% if admirer_relationships %}
 
 {% for admirer_rel in admirer_relationships %}
-		{% if admirer_type == 0 and admirer_rel.admirer_display_id == 1 %}
+		{% if admirer_type == 0 and admirer_rel.display_id == 1 %}
 		<p class="admirer_block_instructions">
 				To protect your admirer's identity (in case you are not mutually attracted), we have created a lineup of potential attractors 
 				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction.  
@@ -140,11 +140,11 @@ $(document).ready(function()
 		</p>		<!-- close off admirer_block line for instructional content -->
 		{% endif %}
 
-	<div class="admirer_block" display_id="{{admirer_rel.admirer_display_id}} ">
+	<div class="admirer_block" display_id="{{admirer_rel.display_id}} ">
 		<div class="admirer_block_line admirer_block_first_line">
 			<img class="admirer_cloaked_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
 			<div class="admirer_title">
-				Secret Admirer #{{admirer_rel.admirer_display_id}}	
+				Secret Admirer #{{admirer_rel.display_id}}	
 				{% if admirer_rel.friendship_type == 0 %} 
 					<span class="admirer_connection_info">(a friend of yours)</span> 
 				{% elif admirer_rel.friendship_type == 1 %}
@@ -155,13 +155,13 @@ $(document).ready(function()
 			</div><!-- close off secret admirer title -->
 		</div><!-- close off admirer_block line -->
 
-		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.admirer_display_id}}">
+		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.display_id}}">
 			{% if admirer_rel.lineup_initialization_status == 1 %}
 					{% with admirer_rel as relationship %}
 					 	{% include "lineup_block.html" %}
 					{% endwith %}
 				{% else %}
-				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.admirer_display_id}}"></div>		
+				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
 				{% endif %}
 		</div><!-- close off admirer_block line -->
 		<div class="admirer_block_line admirer_block_footer">

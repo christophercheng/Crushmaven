@@ -110,3 +110,11 @@ def get_range( value ):
   """
   return range( value )
 
+# called by setups_by_me.html to display number of responses for target and all recommendees
+@register.filter
+def setup_target_responses_length (setup_relationship):
+    return len(setup_relationship.setuplineupmember_set.exclude(decision=None))
+    # called by setups_by_me.html to display number of responses for target and all recommendees
+@register.filter
+def setup_recommendees_responses_length (setup_relationship):
+    return len(setup_relationship.setuplineupmember_set.exclude(lineup_member_attraction=None))

@@ -25,10 +25,9 @@ $(document).ready(function()
     $('.admirer_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	
-		
 		$("#lineup_modal").html('<div id="site-loading"></div>');
 		$("#lineup_modal").dialog("open");
-		load_url="/ajax_show_lineup_slider/" + display_id + "/";
+		load_url="/ajax_show_lineup_slider/" + display_id + "/0"; // /0 tells function that this is not an admirer lineup - it is instead a recommendation lineup
     e.preventDefault();
     $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
 		if (textStatus!='success'){
@@ -45,11 +44,11 @@ $(document).ready(function()
     */
     $('.ajax_display_lineup_block').each(function(){
 
-        var admirer_display_id=$(this).attr("display_id");
+        var display_id=$(this).attr("display_id");
         var lineup_block_div = $(this).parent('.lineup_block');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
-        var ajax_url = '/ajax_display_lineup_block/' + admirer_display_id + '/'; 
-        var ajax_fail_url='/ajax_initialization_failed/' + admirer_display_id + '/';
+        var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
+        var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
         $.ajax(ajax_url, {
         
    				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
@@ -79,108 +78,74 @@ $(document).ready(function()
 
 <!-- Display the title widget -->  
 <span class="title_line"></span>
-<ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers</li>
+<ul class="title_bar" id="title_bar_setups_for_me">
+	<li class="title_bar_title">Setups: <i>From Friends</i></li>
 	<li class="title_bar_option">
 		sort:
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 	<li class="title_bar_page_links">
-		{% if admirer_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>lineup incomplete <span class="crush_count">({{admirer_relationships.count}})</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">lineup finished <span class="crush_count">({{past_admirers_count}})</span></a>
+		{% if setup_type = 0  %}
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="unfinished_setups_for_me_pointer"></span>new <span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_for_me/">finished <span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">lineup incomplete <span class="crush_count">({{progressing_admirers_count}})</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>lineup finished <span class="crush_count">({{admirer_relationships.count}})</span></span>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_for_me/">new <span class="title_bar_count">{{setups_incomplete_count}}</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="finished_setups_for_me_pointer"></span>finished <span class="title_bar_count">{{setup_relationships.count}}</span></span>
 		{% endif %}
 	</li>
 </ul>
-<! -- End of crush type navigation widget -->  
-   
-{% comment %}
-<span class="title_line"></span>
-<ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-	<li class="title_bar_option">
-		filter:
-		{% if admirer_type == 0 %}
-		<a href="#">lineup incomplete<span class="down_arrow">&#x25BC;</span></a>
-		<ul>
-			<li>
-				<a href="/admirers_past/">lineup completed ({{past_admirers_count}})</a>
-			</li>
-		</ul>
-		{% else %}
-		<a href="#">lineup completed ({{admirer_relationships.count}})<span class="down_arrow">&#x25BC;</span></a>
-		<ul>
-			<li>
-				<a href="/admirers/">lineup incomplete ({{progressing_admirers_count}})</a>
-			</li>
-		</ul>
-		{% endif %}
-	</li>
-</ul>
-  
-<!-- End of crush type navigation widget -->  
+<! -- End of title widget -->  
 
-{% endcomment %}
 
-{% if admirer_relationships %}
+{% if setup_relationships %}
 
-{% for admirer_rel in admirer_relationships %}
-		{% if admirer_type == 0 and admirer_rel.admirer_display_id == 1 %}
+{% for setup_rel in setup_relationships %}
+		{% if setup_type == 0 and setup_rel.display_id == 1 %}
 		<p class="admirer_block_instructions">
-				To protect your admirer's identity (in case you are not mutually attracted), we have created a lineup of potential attractors 
-				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction.  
-				<span class="second_instruction_section">In turn, we provide each of your selections with a similar lineup experience - and the option to select you. You are notified if there is a mutual attraction or not.</span>
+				This is how it works
+				<span class="second_instruction_section">This is your moral support instructions.  Now get to it, newb.</span>
 		<span class="help_icon" title="close help"></span>
 		</p>		<!-- close off admirer_block line for instructional content -->
 		{% endif %}
 
-	<div class="admirer_block" display_id="{{admirer_rel.admirer_display_id}} ">
+	
+	<div class="admirer_block" display_id="{{setup_rel.display_id}} ">
 		<div class="admirer_block_line admirer_block_first_line">
-			<img class="admirer_cloaked_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+			<img class="setup_block_target_pic" src="http://graph.facebook.com/{{setup_rel.source_person.username}}/picture?width=60&height=60">
 			<div class="admirer_title">
-				Secret Admirer #{{admirer_rel.admirer_display_id}}	
-				{% if admirer_rel.friendship_type == 0 %} 
-					<span class="admirer_connection_info">(a friend of yours)</span> 
-				{% elif admirer_rel.friendship_type == 1 %}
-					<span class="admirer_connection_info">(you share a mutual facebook friend)</span>
-				{% else %}
-					<span class="admirer_connection_info">(you have no facebook friends in common)</span>
-				{% endif %}
-			</div><!-- close off secret admirer title -->
+				<span class="setup_block_from">From:</span>
+				<span class="setup_block_source_name">{{setup_rel.source_person.get_name}}</span>
+				<span class="admirer_connection_info">{{setup_rel.setuplineupmember_set.all|length}} recommendation(s)</span> 
+			</div><!-- close off admirer title -->
 		</div><!-- close off admirer_block line -->
-
-		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.admirer_display_id}}">
-			{% if admirer_rel.lineup_initialization_status == 1 %}
-					{% with admirer_rel as relationship %}
-					 	{% include "lineup_block.html" %}
-					{% endwith %}
-				{% else %}
-				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.admirer_display_id}}"></div>		
-				{% endif %}
+		<div class="admirer_block_line lineup_block" display_id="{{setup_rel.display_id}}">
+			<span class="lineup_preview_label">Lineup Preview:</span>
+				{% for member in setup_rel.setuplineupmember_set.all %}
+					{% if forloop.counter0 < 1 or member.decision != None %}
+						<span class="admirer_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
+					{% else %}
+						<img class="admirer_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+					{% endif %}
+				{% endfor %}
+				<a href="#"  class="view_lineup button content_button" display_id="{{setup_rel.display_id}}">View Lineup</a>
 		</div><!-- close off admirer_block line -->
 		<div class="admirer_block_line admirer_block_footer">
 		
-		{% if relationship.date_lineup_finished != None %}
-			lineup completed {{relationship.date_lineup_finished}}
+		{% if setup_rel.date_lineup_finished != None %}
+			completed {{setup_rel.date_lineup_finished}}
 		{% else %}
-			added {{admirer_rel.date_added|datetime_since}} ago
+			added {{setup_rel.date_added|datetime_since}} ago
 		{% endif %}
 		</div><!-- close off admirer_block line -->
 	</div><!--  close off admirer block -->
+
 {% endfor %}
 
 {% else %}
-	{% if admirer_type = 0 %}
-		<span id="no_content">You have no current admirers.</span>
+	{% if setup_type = 0 %}
+		<span id="no_content">You have no setups from friends.&nbsp;&nbsp;<a href="javascript:{}" class="request_setup_link">Request one</a> to get started.</span>
 	{% else %}
-		<span id="no_content">You have no admirers with completed lineups.</span>
+		<span id="no_content">You have no <i>finished</i> setups from friends.&nbsp;&nbsp;<a href="javascript:{}" class="request_setup_link">Request one</a> to get started.</span>
 	{% endif %}
 {% endif %}
 

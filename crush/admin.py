@@ -23,7 +23,7 @@ class CrushRelationshipAdmin(admin.ModelAdmin):
     list_filter = ('target_status','friendship_type','date_added',) # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('source_person','target_person','target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_lineup_finished','admirer_display_id')
+    fields=('source_person','target_person','target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_lineup_finished','display_id')
     raw_id_fields=('source_person','target_person')
 class PlatonicRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','rating','date_added',) # what columns to display

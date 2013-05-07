@@ -2,7 +2,7 @@ from django.http import HttpResponse,HttpResponseNotAllowed,HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
+from crush.models import CrushRelationship,PlatonicRelationship,SetupRelationship,LineupMember,FacebookUser
 from crush.models.globals import g_init_dict
 import datetime
 import time,thread
@@ -54,7 +54,7 @@ def ajax_display_lineup_block(request, display_id):
     print "ajax initialize lineup with display id: " + str(int_display_id)
     ajax_response = ""
     try:    
-        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response)
@@ -78,7 +78,7 @@ def ajax_display_lineup_block(request, display_id):
         
     # refetch the relationship to get updated initialization status
     try:    
-        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response)
@@ -100,7 +100,7 @@ def ajax_display_lineup_block(request, display_id):
 def ajax_initialization_failed(request, display_id):
     int_display_id=int(display_id)
     try:    
-        relationship = CrushRelationship.objects.all_admirers(request.user).get(admirer_display_id=int_display_id)    
+        relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)    
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound("")
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status == 0:
@@ -112,15 +112,23 @@ def ajax_initialization_failed(request, display_id):
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
-def ajax_show_lineup_slider(request,admirer_id):
+def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
     me = request.user
-    try:
-        admirer_rel = CrushRelationship.objects.all_admirers(me).get(admirer_display_id=admirer_id)
-    except CrushRelationship.DoesNotExist:
-        return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
-
-    member_set = admirer_rel.lineupmember_set.all()
     
+    if is_admirer_type=='1':
+        try:
+            admirer_rel = CrushRelationship.objects.all_admirers(me).get(display_id=admirer_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
+        member_set = admirer_rel.lineupmember_set.all()
+        is_admirer_type=True
+    else:
+        try:
+            admirer_rel = me.crush_setuprelationship_set_from_target.get(display_id=admirer_id)
+        except SetupRelationship.DoesNotExist:
+            return HttpResponse("Error: Could not find the setup.")
+        member_set = admirer_rel.setuplineupmember_set.all()
+        is_admirer_type=False
     # need to cleanse the lineup members each time the lineup is run 
     # reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
         
@@ -134,34 +142,50 @@ def ajax_show_lineup_slider(request,admirer_id):
                                'rating3': settings.PLATONIC_RATINGS[3],
                                'rating4': settings.PLATONIC_RATINGS[4],
                                'rating5': settings.PLATONIC_RATINGS[5],
+                               'is_admirer_type':is_admirer_type
                                })
 
 # called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
 @login_required
 #@csrf_exempt
-def ajax_get_lineup_slide(request, display_id,lineup_position):
+def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1):
     print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
     print "please change!"
     ajax_response = ""
     me=request.user
     # obtain the admirer relationship
-    try:
-        admirer_rel=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=display_id)
-        # if lineup is not paid for, then don't show any content beyond slide 2
-        if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
-        #     print "lineup_position just before forbidden error: " + lineup_position
-            return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
-    except CrushRelationship.DoesNotExist:
-        print "Error: Could not find the admirer relationship."
-        return HttpResponseNotFound("Error: Could not find the admirer relationship.")
+    if is_admirer_type == '1':
+        is_admirer_type=True;
+        try:
+            admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
+            # if lineup is not paid for, then don't show any content beyond slide 2
+            if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
+            #     print "lineup_position just before forbidden error: " + lineup_position
+                return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
+        except CrushRelationship.DoesNotExist:
+            print "Error: Could not find the admirer relationship."
+            return HttpResponseNotFound("Error: Could not find the admirer relationship.")
+    else:
+        is_admirer_type=False;
+        try:
+            admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
+        except SetupRelationship.DoesNotExist:
+            print "Error: Could not find the admirer relationship."
+            return HttpResponseNotFound("Error: Could not find the setup.")
+        
+    if (is_admirer_type):
+        lineup_member_set = admirer_rel.lineupmember_set 
+    else:
+        lineup_member_set = admirer_rel.setuplineupmember_set
+    
     # obtain the actual user:
-    lineup_member = admirer_rel.lineupmember_set.get(position=lineup_position)
+    lineup_member = lineup_member_set.get(position=lineup_position)
     # find or create a new user for the lineup member
     lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
     if lineup_member.user==None:
         lineup_member.user=lineup_member_user
         lineup_member.save(update_fields=['user'])
-    lineup_count = len(admirer_rel.lineupmember_set.all())
+    lineup_count = len(lineup_member_set.all())
     display_position=int(lineup_position) + 1;
     
     # build the basic elements
@@ -216,22 +240,32 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     return HttpResponse(ajax_response)
 
 @login_required
-def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id,rating=3):
+def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_admirer_type=1):
     print "adding member to a list"
     me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
-        try:
-            admirer_rel=CrushRelationship.objects.all_admirers(me).get(admirer_display_id=admirer_display_id)
-        except CrushRelationship.DoesNotExist:
-            return HttpResponse("Server Error: Could not add given lineup user")
-        try:
-            lineup_member=admirer_rel.lineupmember_set.get(username=target_user.username)
-        except LineupMember.DoesNotExist:
-            print "could not find lineup member"
-            return HttpResponse("Server Error: Could not add given lineup user")
-
+        if is_admirer_type == '1':
+            try:
+                admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
+            except CrushRelationship.DoesNotExist:
+                return HttpResponse("Server Error: Could not add given lineup user")
+            try:
+                lineup_member=admirer_rel.lineupmember_set.get(username=target_user.username)
+            except LineupMember.DoesNotExist:
+                print "could not find lineup member"
+                return HttpResponse("Server Error: Could not add given lineup user")
+        else:
+            try:
+                admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
+            except SetupRelationship.DoesNotExist:
+                return HttpResponse("Server Error: Could not add given lineup user")
+            try:
+                lineup_member=admirer_rel.setuplineupmember_set.get(username=target_user.username)
+            except LineupMember.DoesNotExist:
+                print "could not find lineup member"
+                return HttpResponse("Server Error: Could not add given lineup user")
         if lineup_member.decision!=None:
             # something is wrong, this person was already decided upon, so just return an error message
             # check to see if they haven't already been added as a crush
@@ -253,7 +287,11 @@ def ajax_add_lineup_member(request,add_type,admirer_display_id,facebook_id,ratin
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])
-        if len(admirer_rel.lineupmember_set.filter(decision=None)) == 0:
+        if is_admirer_type=='1':
+            lineup_member_set = admirer_rel.lineupmember_set
+        else:
+            lineup_member_set = admirer_rel.setuplineupmember_set
+        if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             admirer_rel.save(update_fields=['date_lineup_finished'])
     except FacebookUser.DoesNotExist:

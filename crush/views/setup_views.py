@@ -82,33 +82,24 @@ def setups_for_me(request):
                                'setup_relationships':progressing_setups,
                                'setups_in_progress_count': progressing_setups.count(),
                                'setups_completed_count':setups_completed_count,
-                               })    
+                               })     
 
 # -- Crushes Completed Page --
 @login_required
-def completed_setups_for_me(request,reveal_crush_id=None):
-    me = request.user
-    crush_relationships = request.user.crush_crushrelationship_set_from_source 
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            if reveal_crush_relationship.is_results_paid == False:
-                reveal_crush_id = None #reset the value in this error case
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
-    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
+def completed_setups_for_me(request):
     
-    return render(request,'crushes.html',
+    me = request.user
+  
+    completed_setups = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).order_by('-updated_flag','date_added')
+    setups_incomplete_count = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count()
+
+    return render(request,'setups_for_me.html',
                               {
-                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crushes_completed_relationships,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count,
-                               'reveal_crush_id':reveal_crush_id,
-                               })   
+                               'setup_type': 1, # 0 is in progress, 1 is completed
+                               'setup_relationships':completed_setups,
+                               'completed_setups_count': completed_setups.count(),
+                               'setups_incomplete_count':setups_incomplete_count,
+                               })       
     
 @login_required
 def setups_by_me(request):

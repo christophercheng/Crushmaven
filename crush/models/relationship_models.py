@@ -205,7 +205,7 @@ class CrushRelationship(BasicRelationship):
     # keeps track of when the crush responded
     date_target_responded = models.DateTimeField(default=None,null=True,blank=True)    
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
-    admirer_display_id = models.IntegerField(default=0, max_length=60)
+    display_id = models.IntegerField(default=0, max_length=60) #previously known as display_id
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
@@ -274,7 +274,7 @@ class CrushRelationship(BasicRelationship):
                 # this check is performed when the lineup slide is pulled
             # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
                 # get total previous admirers (past and present) and add 1, hopefully this won't create a 
-            self.admirer_display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
+            self.display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
         else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)

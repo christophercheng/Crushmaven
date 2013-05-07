@@ -98,11 +98,19 @@ urlpatterns += patterns('crush.views.admirer_views',
     
     (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','ajax_show_lineup_slider'), 
     
+    (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/(?P<is_admirer_type>\d)/$','ajax_show_lineup_slider'), 
+    
     (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','ajax_get_lineup_slide'),
     
-    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
+    (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/(?P<is_admirer_type>\d)/$','ajax_get_lineup_slide'),
     
-    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<admirer_display_id>\d+)/(?P<facebook_id>\d+)/(?P<rating>\d)/$','ajax_add_lineup_member'),
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
+    
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<rating>\d)/$','ajax_add_lineup_member'),
+    
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<is_admirer_type>\d)/$','ajax_add_lineup_member'),
+    
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<rating>\d)/(?P<is_admirer_type>\d)/$','ajax_add_lineup_member'),
     
     (r'^ajax_update_num_crushes_in_progress/$','ajax_update_num_crushes_in_progress'),
     
