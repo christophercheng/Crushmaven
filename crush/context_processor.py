@@ -18,8 +18,8 @@ def context_processor(request):
         left_menu_crush_count = progressing_crushes.count() + visible_responded_crushes.count()
         new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
            
-        num_progressing_setups_for_me = me.crush_setuprelationship_set_from_target.count()
-        num_progressing_setups_by_me = me.crush_setuprelationship_set_from_source.count()
+        num_progressing_setups_for_me = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count()
+        num_progressing_setups_by_me = me.crush_setuprelationship_set_from_source.filter(date_lineup_finished=None).count()
         num_setup_requests=0#request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
            
            

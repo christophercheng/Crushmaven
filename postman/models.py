@@ -23,6 +23,8 @@ from postman.urls import OPTION_MESSAGES
 from postman.utils import email_visitor, notify_user
 
 from django.db.models import Q
+# use this only when dealing with install issues (hack)
+#from crush.models.user_models import get_user_model()
 
 # moderation constants
 STATUS_PENDING = settings.STATUS_PENDING

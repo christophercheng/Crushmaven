@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from crush.models import CrushRelationship
+from crush.models import CrushRelationship,SetupRelationship
 from django.core.mail import send_mail
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
@@ -39,9 +39,12 @@ def home(request):
         #        selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token,fb_profile=None,is_this_for_me=False)
         #        CrushRelationship.objects.create(target_person=request.user,source_person=selected_user,
         #                                                       friendship_type=0, updated_flag=True)
-        
-        if len(CrushRelationship.objects.progressing_admirers(request.user))>0 and len(CrushRelationship.objects.visible_responded_crushes(request.user)) == 0:
+        if len(CrushRelationship.objects.visible_responded_crushes(request.user)) > 0:
+            return HttpResponseRedirect('/attractions/') 
+        elif len(CrushRelationship.objects.progressing_admirers(request.user))>0:
             return HttpResponseRedirect('/admirers/')
+        elif len(request.user.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None))>0:
+            return HttpResponseRedirect('/setups_for_me/')
         else:
             return HttpResponseRedirect('/attractions/')
 

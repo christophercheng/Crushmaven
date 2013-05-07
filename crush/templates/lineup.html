@@ -147,7 +147,7 @@ $(document).ready(function() // handling for the slider
   *		Ajax load the next slide into the DOM
 	*  ---------------------------------------------------------------------- */			
 	var load_next_slide = function(next_position, callback){
-		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/';
+		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/{% if is_admirer_type == 0 %}0/{% endif %}';
 		$('.bxslider li[lineup_position=' + next_position + ']').load(load_url, function(responseText, textStatus, xhr) {
 			if (textStatus!='success'){
 				if (xhr.status==405){
@@ -236,7 +236,7 @@ $(document).ready(function() // handling for the slider
 	  }
 	  	  	
 	  if (this_element.attr('add_type')=="crush") {
-	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
+	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/{% if is_admirer_type == 0 %}3/0/{% endif %}"; 
 	  	decision_dialog = attraction_dialog;
 	  	decision_dialog.html(dialog_attraction_html);
 	  	if (window.added_lineup_attraction){
@@ -271,6 +271,9 @@ $(document).ready(function() // handling for the slider
 					}
 					else {
 						url += decision_dialog.find('input:radio[name="rating"]:checked').val();
+						{% if is_admirer_type == 0 %}
+							url += "/0/";
+						{% endif %}
 					}	
 					decision_div.prev().show();decision_div.hide();
 					decision_div.load(url, function(responseText,textStatus,XHR){
@@ -414,11 +417,19 @@ $(document).ready(function() // handling for the slider
 		
 		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
-				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
+				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1){	
 					document.location.href='/attractions/';
-				else
-					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
+					return;
+					}
 		}
+		if (current_href.indexOf("/setups_for_me/") != -1) {
+	// redirect user to crushes in progress if there is only one progressing lineup and it is done
+				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_setups_for_me.count }} == 1)	{
+					document.location.href='/attractions/';
+					return;
+				}
+		}
+		$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 	};
 	$('#lineup_modal').on('click','#finish-btn',function(e) {
 		handle_lineup_dialog_close();

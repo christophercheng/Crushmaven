@@ -3,7 +3,6 @@
 
 from lineup_models import LineupMember
 from lineup_models import SetupLineupMember
-
 #from relationship_models import BasicRelationship
 from relationship_models import PlatonicRelationship
 from relationship_models import CrushRelationship

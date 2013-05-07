@@ -22,7 +22,7 @@ $(document).ready(function()
     *
     */
     $("#lineup_modal").dialog({position:{my:"left center",at:"right+20 center-100",of:'.left_sidebar_container .bt-fs-dialog'},modal: true, resizable:false,autoOpen: false,width:575,close:function(event,ui){location.reload();}});
-    $('.admirer_block').on('click', '.view_lineup', function(e) {
+    $('.lineup_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	
 		
@@ -46,7 +46,7 @@ $(document).ready(function()
     $('.ajax_display_lineup_block').each(function(){
 
         var display_id=$(this).attr("display_id");
-        var lineup_block_div = $(this).parent('.lineup_block');
+        var lineup_block_div = $(this).parent('.lineup_previews');
         lineup_block_div.html('<div id="loading">initializing lineup...</div>');
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
@@ -69,9 +69,9 @@ $(document).ready(function()
         $('.view_lineup[display_id="{{show_lineup}}"]').trigger('click'); 
 
 	//handle help icon show and hide
-	$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-//		$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).show()});
-	$('.admirer_block_instructions .help_icon').click(function(){
+	$('.lineup_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
+//		$('.lineup_block_instructions').each(function(){window.scrollTo(0,0);$(this).show()});
+	$('.lineup_block_instructions .help_icon').click(function(){
 		$(this).parent().hide(500);
 	});
 }); // close off $(document).ready
@@ -86,85 +86,55 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if admirer_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>unfinished lineup<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="lineup_incomplete_pointer"></span>new<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">finished lineup<span class="title_bar_count"> {{past_admirers_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">unfinished lineup<span class="title_bar_count"> {{progressing_admirers_count}}</span></a>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">new<span class="title_bar_count"> {{progressing_admirers_count}}</span></a>
 			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="lineup_finished_pointer"></span>finished lineup<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
 		{% endif %}
 	</li>
 </ul>
 <! -- End of crush type navigation widget -->  
-   
-{% comment %}
-<span class="title_line"></span>
-<ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-	<li class="title_bar_option">
-		filter:
-		{% if admirer_type == 0 %}
-		<a href="#">lineup incomplete<span class="down_arrow">&#x25BC;</span></a>
-		<ul>
-			<li>
-				<a href="/admirers_past/">lineup completed ({{past_admirers_count}})</a>
-			</li>
-		</ul>
-		{% else %}
-		<a href="#">lineup completed ({{admirer_relationships.count}})<span class="down_arrow">&#x25BC;</span></a>
-		<ul>
-			<li>
-				<a href="/admirers/">lineup incomplete ({{progressing_admirers_count}})</a>
-			</li>
-		</ul>
-		{% endif %}
-	</li>
-</ul>
-  
-<!-- End of crush type navigation widget -->  
-
-{% endcomment %}
 
 {% if admirer_relationships %}
 
 {% for admirer_rel in admirer_relationships %}
 		{% if admirer_type == 0 and admirer_rel.display_id == 1 %}
-		<p class="admirer_block_instructions">
+		<p class="lineup_block_instructions">
 				To protect your admirer's identity (in case you are not mutually attracted), we have created a lineup of potential attractors 
 				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction.  
 				<span class="second_instruction_section">In turn, we provide each of your selections with a similar lineup experience - and the option to select you. You are notified if there is a mutual attraction or not.</span>
 		<span class="help_icon" title="close help"></span>
-		</p>		<!-- close off admirer_block line for instructional content -->
+		</p>		<!-- close off lineup_block line for instructional content -->
 		{% endif %}
 
-	<div class="admirer_block" display_id="{{admirer_rel.display_id}} ">
-		<div class="admirer_block_line admirer_block_first_line">
-			<img class="admirer_cloaked_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
-			<div class="admirer_title">
-				Secret Admirer #{{admirer_rel.display_id}}	
+	<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
+		<div class="lineup_block_line lineup_block_first_line">
+			<img class="from_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+			<div class="lineup_title">
+				<span class="lineup_block_from">From:</span>
+				<span class="lineup_block_source_name">Admirer #{{admirer_rel.display_id}}</span>
 				{% if admirer_rel.friendship_type == 0 %} 
-					<span class="admirer_connection_info">(a friend of yours)</span> 
+					<span class="lineup_subtitle">(a friend of yours)</span> 
 				{% elif admirer_rel.friendship_type == 1 %}
-					<span class="admirer_connection_info">(you share a mutual facebook friend)</span>
+					<span class="lineup_subtitle">(you share a mutual facebook friend)</span>
 				{% else %}
-					<span class="admirer_connection_info">(you have no facebook friends in common)</span>
+					<span class="lineup_subtitle">(you have no facebook friends in common)</span>
 				{% endif %}
-			</div><!-- close off secret admirer title -->
-		</div><!-- close off admirer_block line -->
+			</div><!-- close off lineup title -->
+		</div><!-- close off lineup_block line -->
 
-		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.display_id}}">
+		<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">
+			<span class="lineup_preview_label">Lineup Preview:</span>
 			{% if admirer_rel.lineup_initialization_status == 1 %}
 					{% with admirer_rel as relationship %}
 					 	{% include "lineup_block.html" %}
 					{% endwith %}
-				{% else %}
-				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
-				{% endif %}
+			{% else %}
+			     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
+			{% endif %}
 		</div><!-- close off admirer_block line -->
-		<div class="admirer_block_line admirer_block_footer">
+		<div class="lineup_block_line lineup_block_footer">
 		
 		{% if relationship.date_lineup_finished != None %}
 			lineup completed {{relationship.date_lineup_finished}}

@@ -115,8 +115,9 @@ def ajax_initialization_failed(request, display_id):
 def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
     me = request.user
     
-    if is_admirer_type=='1':
+    if is_admirer_type==1:
         try:
+            print "HEYEYEYEYE"
             admirer_rel = CrushRelationship.objects.all_admirers(me).get(display_id=admirer_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
@@ -154,7 +155,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     ajax_response = ""
     me=request.user
     # obtain the admirer relationship
-    if is_admirer_type == '1':
+    if is_admirer_type == 1:
         is_admirer_type=True;
         try:
             admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
@@ -170,7 +171,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         try:
             admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
         except SetupRelationship.DoesNotExist:
-            print "Error: Could not find the admirer relationship."
+            print "Error: Could not find the setup relationship."
             return HttpResponseNotFound("Error: Could not find the setup.")
         
     if (is_admirer_type):
@@ -215,13 +216,16 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():
-        ajax_response += "<span id='choice' class='crush existing_choice'>You already added " + lineup_member_user.first_name + " " + lineup_member_user.last_name + " as an attraction.</span>"
+        crush_relationship = me.crush_crushrelationship_set_from_source.get(target_person=lineup_member_user)
+        ajax_response = '<span class="choice crush">Added as Attraction<span class="date_lineup_member_added">(' + str(crush_relationship.date_added.strftime("%m/%d/%Y")) + ')</span></span>'
         lineup_member.decision = 0
         lineup_member.save(update_fields=['decision'])
-    #elif lineup_member in me.just_friends_targets.all():
-    #    ajax_response = "<span id='choice class='platonic existing_choice'>You previously decided - Not Interested</span>"
-    #    lineup_member.decision= 1
-    #    lineup_member.save(update_fields=['decision'])
+    elif lineup_member_user in me.just_friends_targets.all():
+        platonic_relationship = me.crush_platonicrelationship_set_from_source.get(target_person=lineup_member_user)
+        ajax_response = '<span class="choice platonic ">Not Interested<span class="date_lineup_member_added">(' + str(platonic_relationship.strftime("%m/%d/%Y")) + ')</span></span>'
+        ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
+        lineup_member.decision=1
+        lineup_member.save(update_fields=['decision'])
     else:    
         if lineup_member.decision == None:
             ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">Add as Attraction</a>' 
@@ -246,7 +250,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id)
-        if is_admirer_type == '1':
+        if is_admirer_type == 1:
             try:
                 admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
             except CrushRelationship.DoesNotExist:
@@ -287,7 +291,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])
-        if is_admirer_type=='1':
+        if is_admirer_type==1:
             lineup_member_set = admirer_rel.lineupmember_set
         else:
             lineup_member_set = admirer_rel.setuplineupmember_set

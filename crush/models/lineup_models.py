@@ -755,6 +755,7 @@ class LineupMember(BasicLineupMember):
         
     # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
     relationship = models.ForeignKey('CrushRelationship',null=True,blank=True,default=None)
+    
 
 # details about each crush's secret admirer lineup (SAL)
 class SetupLineupMember(BasicLineupMember):

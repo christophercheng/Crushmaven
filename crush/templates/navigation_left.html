@@ -13,9 +13,9 @@ Relationships
 			</a>
 			<div class="arrow-right"></div>
 		</li>
-		<li class="{% navactive request 'admirers'%}">
+		<li class="{% navactive request 'admirers'%} admirers">
 			<div class="arrow-left"></div>
-			<a href="{% url 'crush.views.admirer_views.admirers' %}"><span class="menu_title">Admirers</span> <span class="menu_count">{{num_admirers_in_progress}}</span>
+			<a href="{% url 'crush.views.admirer_views.admirers' %}"><span class="menu_title admirers_menu_title">Admirers</span> <span class="menu_count">{{num_admirers_in_progress}}</span>
 				<span class="nav_subtext">See who is attracted to you</span>
 			</a>
 			<div class="arrow-right"></div>
@@ -43,7 +43,7 @@ Setups
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
 			<div class="arrow-left"></div>
-			<a href="{% url 'crush.views.setup_views.setups_for_me' %}"><span class="menu_title">From Your Friends</span><span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
+			<a href="{% url 'crush.views.setup_views.setups_for_me' %}"><span class="menu_title setups_for_me_menu_title">From Your Friends</span><span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
 				<span class="nav_subtext">See who they picked for you</span>
 			</a>
 			<div class="arrow-right"></div>

@@ -22,7 +22,7 @@ $(document).ready(function()
     *
     */
     $("#lineup_modal").dialog({position:{my:"left center",at:"right+20 center-100",of:'.left_sidebar_container .bt-fs-dialog'},modal: true, resizable:false,autoOpen: false,width:575,close:function(event,ui){location.reload();}});
-    $('.admirer_block').on('click', '.view_lineup', function(e) {
+    $('.lineup_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	
 		$("#lineup_modal").html('<div id="site-loading"></div>');
@@ -68,9 +68,9 @@ $(document).ready(function()
         $('.view_lineup[display_id="{{show_lineup}}"]').trigger('click'); 
 
 	//handle help icon show and hide
-	$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-//		$('.admirer_block_instructions').each(function(){window.scrollTo(0,0);$(this).show()});
-	$('.admirer_block_instructions .help_icon').click(function(){
+	$('.lineup_block_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
+//		$('.lineup_block_instructions').each(function(){window.scrollTo(0,0);$(this).show()});
+	$('.lineup_block_instructions .help_icon').click(function(){
 		$(this).parent().hide(500);
 	});
 }); // close off $(document).ready
@@ -101,43 +101,43 @@ $(document).ready(function()
 
 {% for setup_rel in setup_relationships %}
 		{% if setup_type == 0 and setup_rel.display_id == 1 %}
-		<p class="admirer_block_instructions">
+		<p class="lineup_block_instructions">
 				This is how it works
 				<span class="second_instruction_section">This is your moral support instructions.  Now get to it, newb.</span>
 		<span class="help_icon" title="close help"></span>
-		</p>		<!-- close off admirer_block line for instructional content -->
+		</p>		<!-- close off lineup_block line for instructional content -->
 		{% endif %}
 
 	
-	<div class="admirer_block" display_id="{{setup_rel.display_id}} ">
-		<div class="admirer_block_line admirer_block_first_line">
-			<img class="setup_block_target_pic" src="http://graph.facebook.com/{{setup_rel.source_person.username}}/picture?width=60&height=60">
-			<div class="admirer_title">
-				<span class="setup_block_from">From:</span>
-				<span class="setup_block_source_name">{{setup_rel.source_person.get_name}}</span>
-				<span class="admirer_connection_info">{{setup_rel.setuplineupmember_set.all|length}} recommendation(s)</span> 
+	<div class="lineup_block setup_lineup_block" display_id="{{setup_rel.display_id}} ">
+		<div class="lineup_block_line lineup_block_first_line">
+			<img class="from_pic" src="http://graph.facebook.com/{{setup_rel.source_person.username}}/picture?width=60&height=60">
+			<div class="lineup_title">
+				<span class="lineup_block_from">From:</span>
+				<span class="lineup_block_source_name">{{setup_rel.source_person.get_name}}</span>
+				<span class="lineup_subtitle">{{setup_rel.setuplineupmember_set.all|length}} recommendation(s)</span> 
 			</div><!-- close off admirer title -->
 		</div><!-- close off admirer_block line -->
-		<div class="admirer_block_line lineup_block" display_id="{{setup_rel.display_id}}">
+		<div class="lineup_block_line" display_id="{{setup_rel.display_id}}">
 			<span class="lineup_preview_label">Lineup Preview:</span>
 				{% for member in setup_rel.setuplineupmember_set.all %}
 					{% if forloop.counter0 < 1 or member.decision != None %}
-						<span class="admirer_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
+						<span class="lineup_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
 					{% else %}
-						<img class="admirer_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+						<img class="lineup_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
 					{% endif %}
 				{% endfor %}
 				<a href="#"  class="view_lineup button content_button" display_id="{{setup_rel.display_id}}">View Lineup</a>
 		</div><!-- close off admirer_block line -->
-		<div class="admirer_block_line admirer_block_footer">
+		<div class="lineup_block_line lineup_block_footer">
 		
 		{% if setup_rel.date_lineup_finished != None %}
 			completed {{setup_rel.date_lineup_finished}}
 		{% else %}
 			added {{setup_rel.date_added|datetime_since}} ago
 		{% endif %}
-		</div><!-- close off admirer_block line -->
-	</div><!--  close off admirer block -->
+		</div><!-- close off lineup_block line -->
+	</div><!--  close off lineup block -->
 
 {% endfor %}
 

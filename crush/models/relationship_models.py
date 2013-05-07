@@ -9,6 +9,7 @@ import requests
 from email import utils
 import time
 from django.db import transaction
+import crush.models.lineup_models
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -93,6 +94,12 @@ class PlatonicRelationship(BasicRelationship):
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
+             # check to see if target person is a recommendee, if so, then find the setuplineupmember object and set its lineup_member_attraction property
+                # give me all setuplineup members where the relationship's source person is this user and the username is the target person
+            target_lineup_member_set = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.target_person,username=self.source_person.username)
+            for lineup_member in target_lineup_member_set:
+                lineup_member.lineup_member_attraction=False
+                lineup_member.save(update_fields=['lineup_member_attraction'])
         super(PlatonicRelationship, self).save(*args,**kwargs)
         return
         
@@ -142,7 +149,7 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
     def progressing_admirers(self,crush_user):
         #print "progressing admirers" 
         # progressing admirers are all relationships where the user is the target and date_lineup_finished is not set
-        admirer_relationships = crush_user.crush_crushrelationship_set_from_target.filter(date_lineup_finished=None)\
+        admirer_relationships = crush_user.crush_crushrelationship_set_from_target.filter(date_lineup_finished=None)
         # there is one exception: exclude any admirers who were previously added as the user's crush (and who responded)
             # (hint: relationship will have target_status set to 4 or 5 and the relationship's lineup will never be initialized)     
         admirer_relationships = admirer_relationships.exclude(target_status__gt = 3, lineup_initialization_status = None)
@@ -275,6 +282,12 @@ class CrushRelationship(BasicRelationship):
             # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
                 # get total previous admirers (past and present) and add 1, hopefully this won't create a 
             self.display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
+            #check if this person is a recommendee
+            target_lineup_member_set = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.target_person,username=self.source_person.username)
+            for lineup_member in target_lineup_member_set:
+                lineup_member.lineup_member_attraction=True
+                lineup_member.save(update_fields=['lineup_member_attraction'])
+            
         else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
                 # get the original relationship (which excludes the uncommitted changes)
@@ -499,15 +512,6 @@ class SetupRelationship(BasicRelationship):
     # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
     #objects = SetupRelationshipManager()
     
-    RECOMENDEE_STATUS_CHOICES = (# recomendee is required to be invited
-                           (0,'Not Member'),
-                           (1,'Not Started Lineup'),
-                           (2,'Started Lineup'),
-                           (3,'Completed Lineup'),
-                           )
-    target_status = models.IntegerField(default=0, choices=RECOMENDEE_STATUS_CHOICES)
-            # keeps track of when the crush signed up
-    date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
 
@@ -536,4 +540,4 @@ class SetupRelationship(BasicRelationship):
         # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
         super(SetupRelationship,self).save(*args,**kwargs)
   
-
+      

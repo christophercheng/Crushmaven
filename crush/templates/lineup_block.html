@@ -2,9 +2,9 @@
 {% if relationship.lineup_initialization_status == 1 %}
 	{% for member in relationship.lineupmember_set.all %}
 		{% if forloop.counter0 < 1 or member.decision != None %}
-			<span class="admirer_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
+			<span class="lineup_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% else %}admirer_not_picked{% endif %}"></span></span>
 		{% else %}
-			<img class="admirer_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
+			<img class="lineup_block_lineup_pic" src = "http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg">
 		{% endif %}
 	{% endfor %}
 	{% if relationship.is_lineup_paid == True %}
