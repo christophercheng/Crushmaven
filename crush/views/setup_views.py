@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,SetupRelationship,SetupLineupMember
 import json
@@ -55,8 +56,8 @@ def setups_by_me(request):
     me = request.user
   
   # not right
-    progressing_setups = me.crush_setuprelationship_set_from_source.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
-    setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(date_lineup_finished=None).count()
+    progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
+    setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
     return render(request,'setups_by_me.html',
                               {
@@ -73,8 +74,8 @@ def completed_setups_by_me(request):
     me = request.user
   
   # not right
-    completed_setups = me.crush_setuprelationship_set_from_source.exclude(date_lineup_finished=None).order_by('-updated_flag','date_added')
-    setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(date_lineup_finished=None).count()
+    completed_setups = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
+    setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
     return render(request,'setups_by_me.html',
                               {

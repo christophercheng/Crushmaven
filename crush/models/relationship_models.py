@@ -94,12 +94,7 @@ class PlatonicRelationship(BasicRelationship):
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
-             # check to see if target person is a recommendee, if so, then find the setuplineupmember object and set its lineup_member_attraction property
-                # give me all setuplineup members where the relationship's source person is this user and the username is the target person
-            target_lineup_member_set = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.target_person,username=self.source_person.username)
-            for lineup_member in target_lineup_member_set:
-                lineup_member.lineup_member_attraction=False
-                lineup_member.save(update_fields=['lineup_member_attraction'])
+
         super(PlatonicRelationship, self).save(*args,**kwargs)
         return
         
@@ -282,11 +277,6 @@ class CrushRelationship(BasicRelationship):
             # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
                 # get total previous admirers (past and present) and add 1, hopefully this won't create a 
             self.display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
-            #check if this person is a recommendee
-            target_lineup_member_set = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.target_person,username=self.source_person.username)
-            for lineup_member in target_lineup_member_set:
-                lineup_member.lineup_member_attraction=True
-                lineup_member.save(update_fields=['lineup_member_attraction'])
             
         else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
             if 'update_fields' in kwargs:
@@ -374,6 +364,23 @@ class CrushRelationship(BasicRelationship):
         # change the status of relationship's is_results_paid and save the object
         self.save(update_fields=['is_results_paid','updated_flag'])
         self.source_person.save(update_fields=['site_credits'])
+       
+        # now check to see if the attraction target was a recommendee for any setups
+        related_setup_lineup_members = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.source_person,username=self.target_person.username)
+        for lineup_member in related_setup_lineup_members:
+            if self.target_status==4:
+                lineup_member.lineup_member_attraction=True
+            else:
+                lineup_member.lineup_member_attraction=False
+            lineup_member.save(update_fields=['lineup_member_attraction'])
+            # check to see if the associated setup relationship is completed
+            lineup_member.relationship.updated_flag=True
+            if lineup_member.relationship.is_setup_complete():
+                lineup_member.relationship.date_setup_completed=datetime.now()  
+                lineup_member.relationship.save(update_fields=['date_setup_completed','updated_flag'])
+            else:
+                lineup_member.relationship.save(update_fields=['updated_flag'])
+        
         return True #must return True or else caller thinks payment failed
     
     def handle_rating_paid(self):
@@ -518,8 +525,20 @@ class SetupRelationship(BasicRelationship):
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
     date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
+    date_setup_completed = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of how many setups the source person has done for the target person
     display_id = models.IntegerField(default=0, max_length=60)
+   
+    def is_setup_complete(self,*args,**kwargs):
+        all_lineup_members = self.setuplineupmember_set.all()
+        # check to see that all lineup members have been decided upon, if at least one not decided then return False
+        if len(all_lineup_members.filter(decision=None)) > 0:
+            return False
+        # check to see if any lineup members with attraction decisions have an unset lineup_member_attraction
+        if len(all_lineup_members.filter(decision=0,lineup_member_attraction=None))>0:
+            return False
+        return True
+    
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"

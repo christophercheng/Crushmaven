@@ -1271,8 +1271,8 @@ top:2px;
 
 .crush_status_responded a.button{
 	float:right;
-	margin-top:-55px;
-	margin-right:40px;
+	margin-top:-65px;
+	margin-left:320px;
 	height:28px;
 	width:130px;
 	padding:7px 2px 0px 5px;
@@ -2488,8 +2488,13 @@ div.active_dialog_header {
 	color:white;
 	padding:10px;
 	margin-bottom:15px;
+	position:relative;
 }
 
+.setup_by_me_block .updated {
+	top:-5px;
+	left:-5px;
+}
 .setup_lineup_member_block {
 	display:inline-block;
 	margin-right:8px;
