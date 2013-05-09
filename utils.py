@@ -11,7 +11,10 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
         if not fql_query:
             url='https://graph.facebook.com/' + query_string
             if access_token!='':
-                url += "?access_token=" + access_token
+                if "?" not in url:
+                    url += "?access_token=" + access_token
+                else:
+                    url += "&access_token=" + access_token
             results= urllib2.urlopen(url,None,settings.URLLIB_TIMEOUT)
         else:
             # for some reason this guy didn't like urllib2
