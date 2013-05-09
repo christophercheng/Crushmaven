@@ -39,7 +39,7 @@ class BasicRelationship(models.Model):
         return "" # if I don't return "" then for some reason None is actually returned
         
     def __unicode__(self):
-        return 'Basic relationship for:' + str(self.target_person.facebook_username)
+        return 'Basic relationship for:' + str(self.target_person.username)
     
     def send_notification_email(self,email_address,subject,message,send_time=None):
         try:

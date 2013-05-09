@@ -84,7 +84,12 @@ def credit_checker(request):
     features_data=settings.FEATURES[feature_id]
     feature_cost = features_data['COST']
     feature_name = features_data['NAME']
-                        
+    if request.user.is_underage:
+        feature_cost = 0
+        if feature_name.find('for') != -1:
+            feature_name = feature_name.partition("for")
+            if feature_name[1]!="":
+                feature_name = feature_name[0] + " for free (for a limited time)"                    
     # obtain total credits
     credit_available = request.user.site_credits
     credit_remaining = credit_available - feature_cost

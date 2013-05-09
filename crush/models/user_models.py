@@ -111,15 +111,16 @@ class FacebookUserManager(UserManager):
                     return None # bad error handling, couldn't fetch data for this user
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
+            user = None
             try:
                 
                 fb_profile['is_active'] = is_this_for_me
                 if not is_this_for_me:
+                    user = FacebookUser.objects.create_user(username=fb_id)
                     # finally update the cached list of inactive_users
                     all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
                     all_inactive_user_list.append(user.username)
                     cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
-                    user = FacebookUser.objects.create_user(username=fb_id)
                 else:
                     user = FacebookUser.objects.create_user(username=fb_id,access_token=fb_access_token)
             except Exception as e:
@@ -157,9 +158,6 @@ class FacebookUser(AbstractUser):
         
     # ------- START OF REQUIRED FIELDS
     access_token = models.CharField(max_length=50)
-    
-    # this will be populated by the facebook username first, then the facebook id if username is non-existant
-    facebook_username = models.CharField(max_length=60) 
     
     GENDER_CHOICES = (
                       (u'M', u'male'),
