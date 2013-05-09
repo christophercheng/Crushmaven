@@ -562,6 +562,7 @@ a.logo #to {
 .navbar li.inactive a:active {
 		border-left:1px solid	#2E2E2E;
 		border-top:1px solid 	#2E2E2E;
+		padding-right:6px;
 }
 
 .left_sidebar_container .button_container {
@@ -717,6 +718,13 @@ a.logo #to {
 		font-weight:bold;
 		color:#474747; 
 }
+#friend_referral_bar li:hover ul li.friend_name {
+		color:white; 
+		transition-property:color;
+		transition-duration:300ms;
+}
+
+
 #friend_referral_bar li ul li.friend_admirer_count {
 		font-weight:normal;
 		color:#707070; 
@@ -729,6 +737,7 @@ a.logo #to {
 }
 #friend_referral_bar li a{
 	border:none;
+	color:red;
 }
 #friend_referral_bar li a:hover {
 	background-color:#474747;
