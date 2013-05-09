@@ -2484,24 +2484,176 @@ div.active_dialog_header {
 
 .setup_by_me_block {
 	border-radius:0px 10px 10px 10px;
-	background:#5F5F5F;
-	color:white;
+	background:#F7F7F7;
+	color:333333;
 	padding:10px;
-	margin-bottom:15px;
+	margin-bottom:25px;
 	position:relative;
+	#height:200px;
+	padding-bottom:35px;
+	border:1px solid #E0E0E0;
 }
 
-.setup_by_me_block .updated {
-	top:-5px;
-	left:-5px;
+
+
+.setup_by_me_block img.setup_block_target_pic {
+	display:inline-block;
+	border-radius:4px;
+	border:1px solid black;
+	height:30px;
+	width:30px;
+	margin-right:5px;
 }
+
+.setup_by_me_block .setup_block_title{
+	display:inline-block;
+	vertical-align:top;
+	padding-top:5px;
+	margin-bottom:25px;
+}
+
+
+.setup_block_for{
+	font-weight:bold;
+	font-size: 16px;
+}
+
+.setup_by_me_block .setup_block_title .setup_block_target_name {
+	font-size:16px;
+	font-weight:normal;
+}
+.setup_by_me_block .setup_block_title .setup_block_target_status {
+	font-size:12px;
+	font-style:italic;
+}
+.setup_by_me_block .setup_block_title .setup_block_target_status a {
+	font-style:normal;
+	font-size:12px;
+}
+.setup_by_me_block .updated {
+	left:-5px;
+	top:-9px;
+}
+
+
+.setup_by_me_block .setup_response_label{
+	border-top:1px solid #666666;
+	border-right:1px solid #666666;
+	border-left:1px solid #666666;
+	height:10px;
+	width:86%;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	position:relative
+}
+
+.setup_by_me_block  .setup_label_text {
+	display:inline-block;
+	background:#666666;
+	padding:1px 8px 1px 8px;
+	border-radius:10px;
+	font-size:11px;
+	color:white;
+}
+
+
+.setup_by_me_block .setup_response_innerlabel{
+	margin:0px;
+	width:100%;
+	border:none;
+	position:absolute;
+	top:-10px;
+}
+
+.setup_by_me_block .setup_target_response_label{
+	margin-bottom:8px;
+}
+
+.setup_by_me_block .setup_recommendee_response_label{
+	border-top:none;
+	border-bottom:1px solid #474775;
+	border-right:1px solid #474775;
+	border-left:1px solid #474775;
+	margin-top:10px;
+}
+
+.setup_by_me_block  .setup_recommendee_responses_label_text {
+	background:#5C5C85;
+}
+
+.setup_response_section{
+	display:inline-block;
+	width:100%;
+	text-align:center;
+	height:85px;
+}
+
 .setup_lineup_member_block {
 	display:inline-block;
-	margin-right:8px;
+	background:#E8E8EA;
+	font-size:9px;
+	width:45px;
+	height:100%;
+	line-height:12px;
+	border-radius:4px;
+	vertical-align:top;
+}
+.setup_recommendee_response,.setup_recommendee_target_response{
+	display:block;
+	height:20px;
+	position:relative;
+}
+.setup_recommendee_response a {
+	font-size:11px;
+	line-height:8px;
 }
 
 .setup_lineup_member_block img {
-	display:block;
+	display:inline-block;
+	border-radius:5px;
+	height:35px;
+	width:35px;
+}
+
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/site_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:20px;
+	height:20px;
+	opacity:1;
+	right:13px;
+	top:1px;
+	bottom:0px;
+}
+
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_recommendee_responded{
+	top:3px;
+}
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_yes {;
+	background-position:-122px -74px;
+}
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_waiting {;
+	background-position:-97px -120px;
+}
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_no {;
+	background-position:-69px -119px;
+}
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_null {;
+	background-position:-39px -120px;
+	opacity:.6;
+}
+
+.setup_added_date{
+	position:absolute;
+	bottom:5px;
+	right:5px;
+	color:#999999;
+	font-size:11px;
+	font-style:italic;
 }
 
 /* ===========================   Setups for Me Block Dialog ========================= */

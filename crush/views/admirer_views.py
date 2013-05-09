@@ -297,7 +297,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             lineup_member_set = admirer_rel.setuplineupmember_set
         if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
-            if is_admirer_type==0:
+            if is_admirer_type != 1:
                 admirer_rel.updated_flag=True
                 # if this is a setup lineup, then also check to see if the setup is complete 
                 if admirer_rel.is_setup_complete():
@@ -305,6 +305,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                     admirer_rel.save(update_fields=['date_lineup_finished','date_setup_completed','updated_flag'])
                 else:
                     admirer_rel.save(update_fields=['date_lineup_finished','updated_flag'])
+                admirer_rel.notify_source_person()
             else:
                 admirer_rel.save(update_fields=['date_lineup_finished'])
 

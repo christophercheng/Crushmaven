@@ -27,6 +27,8 @@ class NotificationSettingsForm(ModelForm):
         self.fields['bNotify_crush_signup_reminder'].label=" attraction still not signed up (reminder)"
         self.fields['bNotify_crush_responded'].label=" attraction response received"
         self.fields['bNotify_new_admirer'].label=" new admirer"
+        self.fields['bNotify_setup_lineup_completed'].label=" setup recommendees have been evaluated"
+        self.fields['bNotify_setup_recommendee_responded'].label=" setup recommendee response received"
     
 
         

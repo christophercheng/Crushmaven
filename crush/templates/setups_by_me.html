@@ -99,8 +99,9 @@ $(document).ready(function()
 		<span class="help_icon" title="close help"></span>
 		</p>		<!-- close off admirer_block line for instructional content -->
 		{% endif %}
+{% endfor %}
 
-
+{% for setup_rel in setup_relationships %}
 	<div class="setup_by_me_block" display_id="{{setup_rel.display_id}} ">
 	{% if setup_rel.updated_flag == True %}
      {% if setup_rel.date_added|datetime_since == '1 minute' %}
@@ -110,42 +111,49 @@ $(document).ready(function()
      {% endif %}
      {{ setup_rel.resetUpdatedFlag }}
 {% endif %}
-		<div class="setup_block_title">
-			<span class="setup_block_for">For:</span>
 			<img class="setup_block_target_pic" src="http://graph.facebook.com/{{setup_rel.target_person.username}}/picture?width=40&height=40">
-			<span class="setup_block_target_name">{{setup_rel.target_person.get_name}}</span>
-			{% if setup_rel.target_person.is_active == False %} 
-				<span class="setup_block_target_status">not signed up</span>
-				<a href="#" onClick="window.send_fb_invite('{{setup_rel.target_person.username}}','{{request.user.get_name}}')">resend invite</a>
-			{% endif %}
+			<div class="setup_block_title">
+				<span class="setup_block_for">For:</span>
+	
+				<span class="setup_block_target_name">{{setup_rel.target_person.get_name}}</span>
+				{% if setup_rel.target_person.is_active == False %} 
+					<span class="setup_block_target_status">&nbsp;not signed up: <a href="#" onClick="window.send_fb_invite('{{setup_rel.target_person.username}}','{{request.user.get_name}}')">resend invite</a></span>	
+				{% endif %}
 			
-		</div><!-- close off setup_block_title -->
-		<div class="setup_target_response_label"><span class="setup_label_text">{{setup_rel.target_person.first_name}}'s responses ({{ setup_rel | setup_target_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span></div>
-		
+			</div><!-- close off setup_block_title -->
+			<div class="setup_response_label setup_target_response_label">
+				<div class="setup_response_label setup_response_innerlabel">
+					<span class="setup_label_text setup_response_label_text">{{setup_rel.target_person.first_name}}'s responses ({{ setup_rel | setup_target_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span>
+				</div>
+			</div>
 		<div class = "setup_response_section">
 		{% for lineup_member in setup_rel.setuplineupmember_set.all %}
 			<div class="setup_lineup_member_block">
-					<span class="setup_lineup_decision {% if lineup_member.decision == None %}setup_lineup_decision_none{% elif lineup_member.decision == 0 %}setup_lineup_decision_true{% else %}setup_lineup_decision_false{% endif %}"></span>
+					<div class="setup_recommendee_target_response"{% if lineup_member.decision == None %}title="waiting for response from {{setup_rel.target_person.first_name}}"{% endif %}>
+						<span class="setup_responded {% if lineup_member.decision == None %}setup_responded_waiting{% elif lineup_member.decision == 0 %}setup_responded_yes{% else %}setup_responded_no{% endif %}"></span>
+					</div>
 					<img class="setup_lineup_member_block_pic" src="http://graph.facebook.com/{{lineup_member.username}}/picture?width=40&height=40">
-					{% if lineup_member.decision == 0 %} 
-						{% if lineup_member.user.is_active == False %}
-							<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">send invite</a>
-						{% elif lineup_member.lineup_member_attraction == 1 %}
-							<span class="setup_lineup_decision setup_lineup_decision_true"></span>
-						{% elif lineup_member.lineup_member_attraction == 0 %}
-							<span class="setup_lineup_decision setup_lineup_decision_false"></span>
-						{% elif lineup_member.lineup_member_notified == False %}
-							<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">notify them</a>						
+					<div class="setup_recommendee_response"{% if lineup_member.decision != 0 %} title="recommendee can only respond if {{setup_rel.target_person.first_name}} is attracted to them"{% endif %}>
+						{% if lineup_member.decision == 0 %} 
+							{% if lineup_member.user.is_active == False %}
+								<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">send invite</a>
+							{% elif lineup_member.lineup_member_attraction == 1 %}
+								<span class="setup_responded setup_recommendee_responded setup_responded_yes"></span>
+							{% elif lineup_member.lineup_member_attraction == 0 %}
+								<span class="setup_responded setup_recommendee_responded setup_responded_no"></span>
+							{% elif lineup_member.lineup_member_notified == False %}
+								<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">notify them</a>						
+							{% else %}
+								<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response{% if lineup_member.user != None %} from {{ lineup_member.user.first_name }}{% endif %}"></span>
+							{% endif %}
 						{% else %}
-							<span class="setup_lineup_decision setup_lineup_decision_none"></span>
+							<span class="setup_responded setup_recommendee_responded setup_responded_null"></span>
 						{% endif %}
-					{% else %}
-						<span class="setup_lineup_decision setup_lineup_decision_none"></span>
-					{% endif %}
+					</div><!--  close off setup_recommendee_response -->
 			</div><!-- close off setup_lineup_member_block -->
 		{% endfor %}
 		</div> <!-- close off setup_response_section -->
-		<div class="setup_recommendees_response_label"><span class="setup_label_text">Recommendee
+		<div class="setup_response_label setup_recommendee_response_label"><span class="setup_label_text setup_recommendee_responses_label_text">recommendee
 		 responses ({{setup_rel | setup_recommendees_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span></div>
 	<span class = "setup_added_date">added {{setup_rel.date_added | datetime_since}} ago</span>
 	</div><!--  close off setup block -->

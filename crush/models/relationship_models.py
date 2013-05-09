@@ -40,7 +40,20 @@ class BasicRelationship(models.Model):
         
     def __unicode__(self):
         return 'Basic relationship for:' + str(self.target_person.facebook_username)
-
+    
+    def send_notification_email(self,email_address,subject,message,send_time=None):
+        try:
+            data_dict={"from": "JustMabye.us <notifications@justmaybe.us>",\
+                           "to": email_address,"subject": subject,"text": message}
+            if send_time != None:
+                data_dict["o:deliverytime"]=str(send_time)        
+            #result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
+            #print "MailGun Response: " + str(result)
+            print "sending mail to " + email_address + " with subject: " + subject + " and message: " 
+        except Exception as e:
+            print "MAIL PROBLEM! " + str(e)
+            
+            
 class PlatonicRelationshipQuerySet(models.query.QuerySet):
     
     def all_friends(self, source_user):
@@ -330,8 +343,7 @@ class CrushRelationship(BasicRelationship):
             return False
         else:
             return True
-
-        
+    
     def get_target_platonic_rating_display(self):
         if self.target_platonic_rating!=None:
             return settings.PLATONIC_RATINGS[self.target_platonic_rating]
@@ -380,6 +392,7 @@ class CrushRelationship(BasicRelationship):
                 lineup_member.relationship.save(update_fields=['date_setup_completed','updated_flag'])
             else:
                 lineup_member.relationship.save(update_fields=['updated_flag'])
+            lineup_member.relationship.notify_source_person(lineup_member)
         
         return True #must return True or else caller thinks payment failed
     
@@ -435,22 +448,12 @@ class CrushRelationship(BasicRelationship):
         target_person_email=target_person.email
         if (not target_person_email):
                 return
-        try:
-            
-            if (target_person.bNotify_new_admirer== True):
-                subject= "You have a new secret admirer!"
-                message="You have a new secret admirer!\nLog in now to find out who it is: " 
-                print "attemping to send email to " + str([target_person_email])
-                result = requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",\
-                                     auth=("api", settings.MAILGUN_API_KEY),\
-                                     data={"from": "AttractedTo.com <notifications@attractedTo.com>",\
-                                           "to": target_person_email,\
-                                           "subject": subject,\
-                                           "text": message})
-                print "MailGun Response: " + str(result)
-                #send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[target_person_email])
-        except Exception as e:
-            print "MAIL PROBLEM! " + str(e)
+        if (target_person.bNotify_new_admirer== True):
+            subject= "You have a new secret admirer!"
+            message="You have a new secret admirer!\nLog in now to find out who it is: " 
+            print "attemping to send email to " + str([target_person_email])
+            self.send_notification_email(target_person_email,subject,message)
+
             
     def notify_source_person(self):
        
@@ -460,52 +463,40 @@ class CrushRelationship(BasicRelationship):
         source_person_email=source_person.email
         if (not source_person_email):
                 return
-
         target_person=self.target_person
         target_person_name = target_person.first_name + " " + target_person.last_name
         
-        try:
-            send_time=None
-            subject=""
-            if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
-                subject= target_person_name + " signed up!"
-                message=target_person_name + " signed up!"
-            # don't send crush lineup started notifications any longer
-            #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
-            #    subject= target_person_name + " started your secret admirer lineup!"
-            #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
-            elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
-                if self.is_results_paid == True: # target person changed their mind
-                    subject= target_person_name + " changed their mind."
-                    if target_status ==4:
-                        message=target_person_name + " changed " + target_person.get_gender_pronoun() + " mind.  They added you as an attraction!"
-                    else:
-                        message=target_person_name + " changed " + target_person.get_gender_pronoun() + "  mind.  They removed you from their attraction list."
+        send_time=None
+        subject=""
+        message=""
+        if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
+            subject= target_person_name + " signed up!"
+            message=target_person_name + " signed up!"
+        # don't send crush lineup started notifications any longer
+        #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
+        #    subject= target_person_name + " started your secret admirer lineup!"
+        #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
+        elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
+            if self.is_results_paid == True: # target person changed their mind
+                subject= target_person_name + " changed their mind."
+                if target_status ==4:
+                    message=target_person_name + " changed " + target_person.get_gender_pronoun() + " mind.  They added you as an attraction!"
                 else:
-                    if self.date_target_responded > datetime.now():
-                        send_time=self.date_target_responded
-                        send_time= send_time.timetuple()
-                        send_time=time.mktime(send_time)
-                        send_time = utils.formatdate(send_time)
-                    subject= target_person_name + " responded to your crush!" + str(send_time)
-                    message=target_person_name + " responded to your crush.  Continue to the app and find out what they think of you."
-            data_dict={"from": "AttractedTo.com <notifications@attractedTo.com>",\
-                           "to": source_person_email,"subject": subject,"text": message}
-            if send_time != None:
-                data_dict["o:deliverytime"]=str(send_time)        
-            print "sending email to " + str([source_person_email]) + " at time: " + str(send_time)
-            result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
-            print "MailGun Response: " + str(result)
-                #send_mail(subject=subject,message=message,from_email=from_email,recipient_list=[source_person_email])
-        except Exception as e:
-            print "MAIL PROBLEM! " + str(e)
-            
+                    message=target_person_name + " changed " + target_person.get_gender_pronoun() + "  mind.  They removed you from their attraction list."
+            else:
+                if self.date_target_responded > datetime.now():
+                    send_time=self.date_target_responded
+                    send_time= send_time.timetuple()
+                    send_time=time.mktime(send_time)
+                    send_time = utils.formatdate(send_time)
+                subject= target_person_name + " responded to your crush!" + str(send_time)
+                message=target_person_name + " responded to your crush.  Continue to the app and find out what they think of you."
+        self.send_notification_email(source_person_email, subject, message, send_time)
+        
     def notify_source_person_bad_invite_email(self,bad_email_address):      
         subject = "Attraction invite - delivery unsuccessful (" + self.target_person.get_name() + ")"
         message = "Your invite email (" + str(bad_email_address) + ") to " + self.target_person.get_name() + " was not able to be delivered.  Please verify your attraction's email address and try again."
-        data_dict={"from": "AttractedTo.com <notifications@attractedTo.com>",\
-                           "to": self.source_person.email,"subject": subject,"text": message}  
-        requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)  
+        self.send_notification_email(self.source_person.email, subject, message)
     
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
@@ -559,4 +550,24 @@ class SetupRelationship(BasicRelationship):
         # Don't forget to commit the relationship's changes to database! but skip the direct parent's save
         super(SetupRelationship,self).save(*args,**kwargs)
   
-      
+    # notify the creator of setup whenenver:
+        # lineup is completed by target
+        # an individual recommendee responds
+    def notify_source_person(self,setup_lineup_member=None):
+        source_person=self.source_person
+        source_person_email=source_person.email
+        if (not source_person_email):
+                return
+ 
+        if setup_lineup_member != None:
+            if source_person.bNotify_setup_recommendee_responded== True:
+                subject= setup_lineup_member.user.get_name() + " responded to your setup"
+                message= setup_lineup_member.user.get_name() + " decided that they were {% if setup_lineup_member.lineup_member_attraction == True %}mutually attracted{% elif setup_lineup_member.lineup_member_attraction == False %}not interested {% endif %} in " + self.target_person.get_name() + "\nLog in now to see the full details." 
+                self.send_notification_email(source_person_email, subject, message)
+        else:
+            if source_person.bNotify_setup_lineup_completed == True:
+                subject = self.target_person.get_name() + " evaluated all of your setup recommendations."
+                message = self.target_person.get_name() + " evaluated all of your setup recommendations. Log in now to see the full details." 
+                self.send_notification_email(source_person_email,subject,message)
+                    
+
