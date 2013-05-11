@@ -545,9 +545,6 @@ a.logo #to {
 		background-position:-65px -160px;	
 }
 
-
-
-
 .navbar a {
 	position:relative;
 	display:block;
@@ -1088,7 +1085,7 @@ ul.nav_bar li#nav_bar_options{
 #background-color:rgba(204,204,153,.1);
 #border:1px solid #D0D0D0  ;
 border-radius:10px;
-border-radius: 0px 10px 10px 0px;
+border-radius: 0px 10px 10px 10px;
 margin-bottom:40px;
 padding:10px 15px 10px 20px;
 z-index:10;
@@ -1098,9 +1095,8 @@ height:160px;
 #box-shadow: 1px 1px 4px #333366;/*#CC0000;*/
 #border:1px solid rgba(0,0,50,.5);/*#CC0000;*/
 border:1px solid #333366;
-	#border-bottom:3px solid #333366;
-	#border-right:3px solid #333366;
-border-left:8px solid #191919;
+border-bottom:3px solid #333366;
+border-right:3px solid #333366;
 }
 
 .crush_block:hover{
@@ -1330,18 +1326,16 @@ ul.attraction_status_bar li.past_status_animated{
 	transition-duration:200ms;
 	}
 .crush_status_0 .button_container a.button:active{
-left:2px;
-top:2px;
+left:1px;
+top:1px;
 	}
 
 .crush_status_0 .button_container .button_outset{
 	position:absolute;
-	left:2px;
-	top:2px;
+	left:1px;
+	top:1px;
 	width:125px;
 	height:28px;
-	#border-bottom:1px solid #003399;
-	#border-right:1px solid #003399;
 }
 
 
@@ -1359,6 +1353,46 @@ top:2px;
 	font-size:14px;
 	position:relative;
 }
+
+
+.crush_status_4 .button_container{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:-12px;
+	height:28px;
+	width:125px;
+	position:relative;
+	display:block;
+}
+.crush_status_4 .button_container a.button{
+	padding:7px 5px 2px 5px;
+	position:absolute;
+	left:0px;
+	top:0px;
+	height:28px;
+	font-family:arial;
+	font-size:13px;
+	width:125px;
+}
+.crush_status_4 .button_container a.button:hover{
+	background-color:#2952CC;
+	transition-property:background-color;
+	transition-duration:200ms;
+	}
+.crush_status_4 .button_container a.button:active{
+left:1px;
+top:1px;
+	}
+
+.crush_status_4 .button_container .button_outset{
+	position:absolute;
+	left:1px;
+	top:1px;
+	width:125px;
+	height:28px;
+}
+
+/*
 .crush_status_4 a.button{
 	float:right;
 	margin-top:-18px;
@@ -1373,6 +1407,7 @@ top:2px;
 	font-size:14px;
 	position:relative;
 }
+*/
 
 .hint_anonymous {
 	position:absolute;

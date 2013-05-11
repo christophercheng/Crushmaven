@@ -67,16 +67,17 @@ class FacebookUserManager(UserManager):
             elif len(fb_profile['interested_in']) > 1:
                 facebook_user.gender_pref=u'B'
             new_fields.append('gender_pref')
-        age_results =  graph_api_fetch(fb_profile['access_token'],facebook_user.username + "?fields=age_range",False, False)
-        age_range_max=""
-        is_underage=False
-        if age_results and "age_range" in age_results and "max" in age_results["age_range"]:
-            age_range_max = age_results["age_range"]["max"]
-            if age_range_max == 17:
-                is_underage = True
-        if facebook_user.is_underage != is_underage:
-            facebook_user.is_underage=is_underage
-            new_fields.append('is_underage')       
+        if 'access_token' in fb_profile:
+            age_results =  graph_api_fetch(fb_profile['access_token'],facebook_user.username + "?fields=age_range",False, False)
+            age_range_max=""
+            is_underage=False
+            if age_results and "age_range" in age_results and "max" in age_results["age_range"]:
+                age_range_max = age_results["age_range"]["max"]
+                if age_range_max == 17:
+                    is_underage = True
+            if facebook_user.is_underage != is_underage:
+                facebook_user.is_underage=is_underage
+                new_fields.append('is_underage')       
         facebook_user.save(update_fields=new_fields)
                      
     # find_or_create_user called in two cases:
@@ -113,7 +114,6 @@ class FacebookUserManager(UserManager):
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
             user = None
             try:
-                
                 fb_profile['is_active'] = is_this_for_me
                 if not is_this_for_me:
                     user = FacebookUser.objects.create_user(username=fb_id)
@@ -128,6 +128,7 @@ class FacebookUserManager(UserManager):
             except IntegrityError:
                 print fb_username + " unable to create a new user, probably cause it's already been created"
                 return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
+            print "pre_thread fb_profile: " + str(fb_profile)
             thread.start_new_thread(self.update_user,(user,fb_profile))     
         return user
     
