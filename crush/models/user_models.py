@@ -97,8 +97,9 @@ class FacebookUserManager(UserManager):
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
                     fb_profile['is_active']=True
                     # dont' run update_user as a thread the first time
-                    thread.start_new_thread(self.update_user,(user,fb_profile)) 
+                    #thread.start_new_thread(self.update_user,(user,fb_profile)) 
                     thread.start_new_thread(self.handle_activated_user,(user,fb_profile))
+                    self.update_user(user,fb_profile)
                     #self.activate_inactive_user(user, fb_profile)
                 else:
                     thread.start_new_thread(self.update_user,(user,fb_profile))
