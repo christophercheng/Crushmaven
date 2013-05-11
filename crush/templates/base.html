@@ -247,8 +247,24 @@ $('body').on('click',".popup_link",function(e){
 		});	
 	}); // close off .click(function(e){
 
+// work-around solution for left menu click problem 
+$('.left_sidebar_container .navbar .inactive a').mousedown(function()
+	{
+	$(this).css('border-left','1px solid #2E2E2E');
+	$(this).css('border-top','1px solid #2E2E2E');
+	$(this).css('padding-right','5px');
+	});
+
+$('.left_sidebar_container .navbar .inactive a').mouseup(function()
+	{
+	$(this).css('border','none');
+	$(this).css('padding-right','7px');
+	location.href=$(this).attr('href');
+	});
 
 }); // close of jQuery(document).ready
+
+
 </script>
 
 <div class="header">
