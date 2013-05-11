@@ -8,6 +8,7 @@ Relationships
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'attractions' %} attractions">
 			<a href="{% url 'crush.views.crush_views.attractions' %}">
+				<span class="menu_icon"></span>
 				<span class="menu_title">Attractions</span></span>
 				<span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>
 				<span class="nav_subtext">Determine if they feel the same</span>
@@ -15,6 +16,7 @@ Relationships
 		</li>
 		<li class="{% navactive request 'admirers'%} admirers">
 			<a href="{% url 'crush.views.admirer_views.admirers' %}">
+				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
 				<span class="menu_count">{{num_admirers_in_progress}}</span>
 				<span class="nav_subtext">See who is attracted to you</span>
@@ -22,6 +24,7 @@ Relationships
 		</li>
 		<li class="{% navactive request 'messages' %} messages">
 			<a href="{% url 'postman_inbox' %}">
+				<span class="menu_icon"></span>
 				<span class="menu_title">Messages</span>
 				<span class="menu_count">{{ num_new_messages }}</span>
 				<span class="nav_subtext">Chat with mutual attractions</span>
@@ -43,6 +46,7 @@ Setups
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
 			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
+				<span class="menu_icon"></span>				
 				<span class="menu_title setups_for_me_menu_title">From Friends</span>
 				<span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
 				<span class="nav_subtext">See who they picked for you</span>
@@ -50,6 +54,7 @@ Setups
 		</li>
 		<li class="{% navactive request 'setups_by_me' %} setups_by_me">
 			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">
+				<span class="menu_icon"></span>				
 				<span class="menu_title">By You</span> 
 				<span class="menu_count">{{num_setups_by_me_in_progress}}</span>
 				<span class="nav_subtext">Check status and results</span>
@@ -57,6 +62,7 @@ Setups
 		</li>		
 		<li class="{% navactive request 'setup_requests' %} setup_requests">
 			<a href="{% url 'crush.views.setup_views.setup_requests' %}">
+				<span class="menu_icon"></span>				
 				<span class="menu_title">Requests</span> 
 				<span class="menu_count">{{num_setup_requests}}</span>
 				<span class="nav_subtext">Set up friends seeking help</span>

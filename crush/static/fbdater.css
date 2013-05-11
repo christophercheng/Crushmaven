@@ -90,7 +90,6 @@ a.button {
 
 .header {
 	height: 45px;
-	background-color:rgb(0,0,51);
 	background: -moz-linear-gradient(top, rgb(0,0,90),rgb(0,0,51));
 	background: -webkit-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
 	background: -0-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
@@ -375,7 +374,31 @@ a.logo #to {
 }
 
 #get_started_menu li a {
-	padding:7px 40px 7px 20px;
+	padding:7px 36px 7px 15px;
+	position:relative;
+}
+
+#get_started_menu li a .get_started_menu_icon{
+		position:absolute;
+	display:block;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	height:20px;
+	width:20px;
+	top:3px;
+	right:10px;
+	background-position:-36px -4px;
+}
+
+#get_started_menu li a.add_attraction_link .get_started_menu_icon{
+	background-position:-65px -4px;
+}
+#get_started_menu li a.set_up_friend_link .get_started_menu_icon{
+	background-position:-67px -93px;
+}
+#get_started_menu li a.request_setup_link .get_started_menu_icon{
+	background-position:-65px -158px;
 }
 
 .settings_menu a:hover {
@@ -389,7 +412,6 @@ a.logo #to {
 }
 
 /* ===========================   Left Sidebar Container ========================= */
-
 
 .nav_header {
 	padding-left:6px;
@@ -424,7 +446,7 @@ a.logo #to {
 }
 
 .left_sidebar_container .navbar{
-	height:155px;
+	height:152px;
 }
 .left_sidebar_container .navbar li{
 	width:189px;
@@ -449,25 +471,85 @@ a.logo #to {
 	top:100px;	
 }
 .navbar .active.attractions{
-	top:-2px;
+	top:-3px;
 }
 .navbar .active.admirers{
-	top:48px;
+	top:47px;
 }
 .navbar .active.messages{
-	top:98px;
+	top:97px;
 }
 .navbar .active.setups_for_me{
-	top:-2px;	
+	top:-3px;	
 }
 .navbar .active.setups_by_me{
-	top:48px;	
+	top:47px;	
 }
 .navbar .active.setup_requests{
-	top:98px;	
+	top:97px;	
 }
 
+.navbar li a .menu_icon{
+	position:absolute;
+	display:block;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	height:20px;
+	width:20px;
+	top:8px;
+	left:5px;
+}
+
+.navbar li.active a .menu_icon{
+	top:10px;
+}
+
+.navbar li.inactive.attractions a .menu_icon{
+	background-position:-36px -4px;
+	
+}
+.navbar li.inactive.admirers a .menu_icon{
+		background-position:-36px -36px;
+}
+.navbar li.inactive.messages a .menu_icon{
+	background-position:-36px -61px;	
+}
+.navbar li.inactive.setups_for_me a .menu_icon{
+	background-position:-36px -94px;	
+}
+.navbar li.inactive.setups_by_me a .menu_icon{
+	background-position:-36px -127px;	
+}
+.navbar li.inactive.setup_requests a .menu_icon{
+	background-position:-35px -160px;	
+}
+
+
+.navbar li.active.attractions a .menu_icon,.navbar li.inactive.attractions:hover a .menu_icon{
+		background-position:-65px -4px;
+}
+.navbar li.active.admirers a .menu_icon,.navbar li.inactive.admirers:hover a .menu_icon{
+		background-position:-65px -36px;	
+}
+.navbar li.active.messages a .menu_icon,.navbar li.inactive.messages:hover a .menu_icon{
+	background-position:-65px -61px;
+}
+.navbar li.active.setups_for_me a .menu_icon,.navbar li.inactive.setups_for_me:hover a .menu_icon{
+		background-position:-65px -94px;	
+}
+.navbar li.active.setups_by_me a .menu_icon,.navbar li.inactive.setups_by_me:hover a .menu_icon{
+		background-position:-65px -127px;	
+}
+.navbar li.active.setup_requests a .menu_icon,.navbar li.inactive.setup_requests:hover a .menu_icon{
+		background-position:-65px -160px;	
+}
+
+
+
+
 .navbar a {
+	position:relative;
 	display:block;
 	font-size:15px;
 	font-weight:bold;
@@ -489,7 +571,7 @@ a.logo #to {
 	border-bottom:1px solid white;
 	left:-8px;
 	width:205px;
-	height:54px;
+	height:56px;
 	z-index:3;
 }
 
@@ -499,7 +581,7 @@ a.logo #to {
 	background-color:#292929;
 	color:#FFF;
 	font-style:italic;
-		padding:6px 10px 0px 31px;
+		padding:9px 10px 0px 31px;
   background-color: black;
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
   background-size: 5px 5px;
@@ -561,17 +643,17 @@ a.logo #to {
 	width:100%;
 }
 
-.left_sidebar_container .button_container .bt-fs-dialog .add_icon{
+.left_sidebar_container .button_container a .add_icon{
 	position:absolute;
 	display:block;
-	background-image:url(images/site_sprite.png);	
+	background-image:url(images/full_sprite.png);	
 	background-repeat:no-repeat;
 	background-size:auto;
-	background-position:-150px 0px;
-	height:40px;
-	width:40px;
-	top:-7px;
-	left:-2px;
+	background-position:-33px -245px;
+	height:30px;
+	width:30px;
+	top:2px;
+	left:8px;
 }
 
 .left_sidebar_container .button_container#add_attraction .button_outset{
@@ -635,18 +717,7 @@ a.logo #to {
 		left:22px;
 		top:15px;
 	}
-.left_sidebar_container .button_container#create_setup a .add_icon{
-	position:absolute;
-	display:block;
-	background-image:url(images/site_sprite.png);	
-	background-repeat:no-repeat;
-	background-size:auto;
-	background-position:-150px 0px;
-	height:40px;
-	width:40px;
-	top:-7px;
-	left:-2px;
-}
+
 
 
 /* ===========================   Right Sidebar ========================= */
@@ -857,7 +928,7 @@ ul.title_bar li.title_bar_page_links .title_bar_count{
 	font-size:9px!important;
 	#font-style:italic;
 	position:absolute;
-	right:-5px;
+	right:-7px;
 	top:-3px;
 	font-weight:normal;
 }

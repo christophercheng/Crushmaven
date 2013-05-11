@@ -21,7 +21,7 @@
 			submit : 'SEND',
 			recievedMsg : 'Thank you for your message.',
 			notRecievedMsg : 'Sorry, your message could not be sent.<BR><BR>Please try again.',
-			disclaimer: "Have a suggestion or comment? <BR>&nbsp;&nbspWe'd love to hear from you...",
+			disclaimer: "Have a suggestion or comment? <BR>&nbsp;&nbspLet us know!",
 			hideOnSubmit: false
 
 		};
@@ -36,13 +36,13 @@
 			//show / hide function
 			$(this_id_prefix+'div#contactable_inner').toggle(function() {
 				$(this_id_prefix+'#overlay').css({display: 'block'});
-				$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=320px"}, "slow");
-				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "slow"); 
+				$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=250px"}, "fast");
+				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "fast"); 
 
 			}, 
 			function() {
-				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "slow");
-				$(this).animate({"marginBottom": "-=320px"}, "slow").animate({"marginBottom": "+=5px"}, "fast"); 
+				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "fast");
+				$(this).animate({"marginBottom": "-=250px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
 				$(this_id_prefix+'#overlay').css({display: 'none'});
 			});
 			
