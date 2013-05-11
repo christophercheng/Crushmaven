@@ -912,10 +912,6 @@ ul.title_bar li .title_bar_page_link .responded_pointer{
 	left:13px!important;
 }
 
-ul.title_bar li .title_bar_page_link .lineup_incomplete_pointer{
-	left:30px!important;
-}
-
 ul.title_bar li.title_bar_page_links a {
 	color:#C6C6C6;
 	font-size:11px;
