@@ -302,11 +302,11 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	<li class="title_bar_title">Attractions:</li>
 	<li class="title_bar_page_links">
 		{% if crush_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="not_responded_pointer"></span>not responded <span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/attractions_completed/">responded <span class="title_bar_count">{{crushes_completed_count}}</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
+			<a class="title_bar_page_link inactive_title_bar_page_link" href="/attractions_completed/">responded<span class="title_bar_count">{{crushes_completed_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link " href="/attractions/">not responded <span class="title_bar_count">{{crushes_in_progress_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="responded_pointer"></span>responded <span class="title_bar_count">{{crushes_completed_count}}</span></span>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link " href="/attractions/">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link"><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>responded<span class="title_bar_count">{{crushes_completed_count}}</span></span>
 		{% endif %}
 	</li>
 		<li class="title_bar_option">

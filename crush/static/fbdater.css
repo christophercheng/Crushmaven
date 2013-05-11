@@ -14,7 +14,6 @@ body {
   font-size: 14px;  
   line-height: 16px;
   color: #333333;  
-	height:1400px;
  	overflow-x: hidden;	
  	overflow-y: scroll;
  	/*#force vertical scrollbar on all pages so that main container doesn't jump between pages with and without content
@@ -896,16 +895,24 @@ ul.title_bar li .title_bar_page_first_link {
 	margin-right:30px;
 }
 
-ul.title_bar li .title_bar_page_link #page_link_pointer{
+ul.title_bar li .title_bar_page_link .page_link_pointer_container{
 	position:absolute;
-	left:5px;
-	bottom:-13px;
+	display:inline-block;
+	width:100%;
+	top:16px;
+	left:0px;
+	text-align:center;
+}
+
+ul.title_bar li .title_bar_page_link .page_link_pointer{
+	display:inline-block;
 	width:0px;
 	height:0px;
 	text-align:center;
 	border-left:15px solid transparent;
 	border-right:15px solid transparent;
 	border-top:10px solid #474747;
+	vertical-align:top;
 }
 
 ul.title_bar li .title_bar_page_link .responded_pointer{

@@ -86,11 +86,11 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if setup_type = 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span id="page_link_pointer" class="unfinished_setups_for_me_pointer"></span>new <span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>new<span class="title_bar_count">{{setup_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_for_me/">finished <span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_for_me/">new <span class="title_bar_count">{{setups_incomplete_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span id="page_link_pointer" class="finished_setups_for_me_pointer"></span>finished <span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_for_me/">new<span class="title_bar_count">{{setups_incomplete_count}}</span></a>
+			<span class="title_bar_page_link active_title_bar_page_link"><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>finished<span class="title_bar_count">{{setup_relationships.count}}</span></span>
 		{% endif %}
 	</li>
 </ul>
