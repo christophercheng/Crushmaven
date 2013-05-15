@@ -104,14 +104,19 @@ jQuery(document).ready(function($) {
 	function launch_invite_interstitial(attraction_json,redirect_url) {
 			// only initialize jquery modal dialog once per page load
 			if (!window.invite_insterstitial_modal)
-				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_insterstitial_dialog",resizable:false, modal: true, close: function(){if (redirect_url!="") location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){if (redirect_url!="") location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+100 center-70",of:'.left_sidebar_container .bt-fs-dialog'}});
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
-			modal_html += '<div class="dialog_instructions">To get a response from your newly added attraction(s), we need your help to get them signed into the application.</div>';
-			modal_html += '<div class="dialog_main_content">';
+			modal_html += '<div class="modal_instructions">To get a response from your newly added attraction(s), we need your help getting them signed into the application.</div>';
+			modal_html += '<div class="modal_main_content">';
+			var counter = 0;
 			for (var username in attraction_json) {
-				modal_html += '<div class="attraction_invite_row">';
+				counter++;
+				if (counter == 1)
+					modal_html += '<div class="attraction_invite_row first_row">';
+				else
+					modal_html += '<div class="attraction_invite_row">';
 					// picture
 					modal_html +='<img src="http://graph.facebook.com/' + username + '/picture?width=30&height=30">';
 					// full name
@@ -133,13 +138,13 @@ jQuery(document).ready(function($) {
 	//	 		if at least one attraction invite not sent, then
 	//			replace button of newly invited attraction with 'invite(s) sent' 
 	window.update_invite_interstitial = function(attraction_username){
-	
 		if (!window.invite_interstitial_modal || !window.invite_interstitial_modal.dialog( "isOpen" ))
 			return false;
 		if (window.app_invite_modal)
 			window.app_invite_modal.dialog('close');
 		 // search for the associated button and update it's html
-		target_element = $('#invite_interstitial_modal .dialog_main_content .attraction_invite_row .attraction_invite_button[username=' + attraction_username + ']');
+		target_element = $('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button[username=' + attraction_username + ']');
+		console.log(target_element);
 		target_element.html('invite(s) sent&nbsp;<a class="app_invite" crush_username="' + attraction_username + '">send more</a>');
 		
 		// if no buttons exist, then auto close the dialog and redirect it 
@@ -381,7 +386,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
-<div id="invite_interstitial_modal" title = "Send Application Invites"</div>
+<div id="invite_interstitial_modal" title = "One Last Thing!"</div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set Up a Friend"></div>
 </body>

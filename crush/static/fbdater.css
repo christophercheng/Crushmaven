@@ -2787,7 +2787,72 @@ div.active_dialog_header {
 }
 
 
-/* ===========================   App Invite DIalog ========================= */
+/* ===========================   App Invite Interstitial Dialog ========================= */
+
+.modal_instructions{
+	width:100%;
+	background:#6699FF;
+	padding: 5px 10px 5px 10px;
+	color:white; 
+	font-size:11px;
+}
+
+.modal_main_content {
+	width:100%;
+	padding: 5px 15px 0px 15px;
+}
+
+.attraction_invite_row{
+	font-size:12px;
+	width:100%;
+	display:inline-block;
+	padding:4px 0px 4px 0px;
+	border-top: 1px solid gray;
+	line-height:40px;
+	vertical-align:middle
+}
+.invite_interstitial_dialog .modal_main_content .first_row{
+	border-top:none;	
+}
+
+.attraction_invite_row img {
+	width:35px;
+	height:35px;
+	vertical-align:middle;
+}
+.attraction_invite_row .attraction_invite_full_name{
+	vertical-align:middle;
+	margin-left:5px;
+	width:170px;
+	display:inline-block;
+}
+
+.invite_interstitial_dialog .attraction_invite_button{
+	display:inline-block;
+	float:right;
+	width:200px;
+	vertical-align:middle;
+	text-align:center;
+}
+
+.attraction_invite_row .attraction_invite_button button {
+	background:#003399;
+	color:white;
+	border:none;
+	border-radius:5px;
+	font-size:11px;
+	padding:3px 10px;
+	letter-spacing:-1px;
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.attraction_invite_row .attraction_invite_button a {
+	color:#0033ff;
+	font-size: 11px;
+	}
+
+/* ===========================   App Invite Dialog ========================= */
 
 #app_invite_form{
 	font-size:12px;
@@ -3033,6 +3098,12 @@ div.active_dialog_header {
 	overflow-y:hidden!important;
 	min-height:auto!important;
 }
+
+.invite_interstitial_dialog .ui-dialog-content {
+	margin:0px 5px 10px 5px!important;
+}
+
+
 
 .ui-widget-content{
 	border:none!important;

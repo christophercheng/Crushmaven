@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden,HttpResponseGone
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -7,7 +7,6 @@ import json
 import datetime
 from crush.appinviteform import AppInviteForm
 import time
-from  django.http import HttpResponseNotFound, HttpResponseForbidden
 from utils import graph_api_fetch
 from urllib2 import URLError, HTTPError
 # for initialization routine
@@ -354,17 +353,18 @@ def app_invite_form(request, crush_username):
                     crush_relationship.updated_flag = True
                     crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
                     
-            return HttpResponse("")
-            if request.is_ajax():
-                print "success and returning rendered template"
-                return render(request, 'app_invite_success.html', {'crush_email_success_array':crush_email_success_array,
-                                                                 'crush_email_fail_array':crush_email_fail_array,
-                                                                 'friend_email_success_array':friend_email_success_array,
-                                                                 'friend_email_fail_array':friend_email_fail_array,
-                                                                 })
-            else:
-                print "success and redirecting"                
-                return redirect('app_invite_success')
+            return HttpResponseGone("")
+
+#            if request.is_ajax():
+#                print "success and returning rendered template"
+#                return render(request, 'app_invite_success.html', {'crush_email_success_array':crush_email_success_array,
+###                                                                 'crush_email_fail_array':crush_email_fail_array,
+  #                                                               'friend_email_success_array':friend_email_success_array,
+   #                                                              'friend_email_fail_array':friend_email_fail_array,
+   #                                                              })
+   #         else:
+   #             print "success and redirecting"                
+   #             return redirect('app_invite_success')
     else:
         # determine if they haven't surpassed the total number of users to send out emails to:
         
