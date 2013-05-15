@@ -437,11 +437,13 @@ a.logo #to {
 }
 
 .navbar li {
-	position:absolute;
 	font:arial;
 	left:0px;
-	height:50px;
 	z-index:2;
+}
+.left_sidebar_container .navbar li {
+	position:absolute;
+		height:50px;
 }
 
 .left_sidebar_container .navbar{
@@ -732,12 +734,9 @@ a.logo #to {
 	
 #friend_referral_bar{
 	width:190px;
-	position:static;
+	position:relative!important;
 }
 
-#friend_referral_bar li {
-	position:relative;
-}
 
  #friend_referral_bar li#no_friends {
  	padding-top:15px;
@@ -752,6 +751,7 @@ a.logo #to {
  position:relative;
  height:51px;
  border-bottom:1px solid gray;
+ background:#fff;
 }
 
 #friend_referral_bar li.friend_with_admirer img {
@@ -911,7 +911,7 @@ ul.title_bar li .title_bar_page_link .page_link_pointer{
 	text-align:center;
 	border-left:15px solid transparent;
 	border-right:15px solid transparent;
-	border-top:10px solid #474747;
+	border-top:8px solid #474747;
 	vertical-align:top;
 }
 

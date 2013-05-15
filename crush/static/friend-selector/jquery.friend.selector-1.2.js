@@ -226,12 +226,18 @@
 		window.alert_user("You can proceed without agreeing to the Terms & Conditions.");
 		return false;
   }
-    var selected_friends = [];
-    $('input.fs-friends:checked').each(function(){
-      var id = $(this).val();
-      selected_friends.push(parseInt(id, 10));
+    //var selected_friends = [];
+    var selected_friends_json={};
+    $('li.checked a.fs-anchor').each(function(){
+    	
+    	var username=$(this).children('.fs-friends').val();
+    	var fullname=$(this).children('.fs-fullname').val();
+    	fullname=fullname.replace(/\+/g," ");
+    	selected_friends_json[username]=fullname;
+    	//selected_friends.push(parseInt(username,10));
     });
-
+   
+/*
     if ( fsOptions.facebookInvite === true ){
 
       var friends = '';
@@ -258,16 +264,17 @@
 
       });
     }
-    else{
+   */ 
+    //else{
       if (typeof fsOptions.onSubmit == "string")
-    	  eval(fsOptions.onSubmit + '(selected_friends)');
+    	  eval(fsOptions.onSubmit + '(selected_friends_json)');
       else
-    	  fsOptions.onSubmit(selected_friends);
+    	  fsOptions.onSubmit(selected_friends_json);
 
       if ( fsOptions.closeOnSubmit === true ) {
         _close();
       }
-    }
+    //}
 
   },
 

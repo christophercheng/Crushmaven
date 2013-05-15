@@ -63,6 +63,89 @@
 <!-- INITIALIZE ATTRACTION SELECTOR DIALOG -->   
 <script> 
 jQuery(document).ready(function($) {
+
+
+	 /* ---------------------------------------------
+	 	
+	 		APP INVITE MODAL
+	 	
+	 * -------------------------------------------- */
+
+		window.app_invite_modal=null;
+		$(".app_invite_link,.inactive_crushed_friends,#invite_interstitial_modal").on("click", ".app_invite", function(e) {
+			e.preventDefault();
+			// only initialize jquery modal dialog once per page load
+
+			if (!window.app_invite_modal)
+				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+			window.app_invite_modal.html('<div id="site-loading"></div>');
+			window.app_invite_modal.dialog('open');
+			var crush_username=$(this).attr('crush_username');	
+			var load_url="/app_invite_form/" + crush_username + "/";
+			window.app_invite_modal.load(load_url,function(responseText,textStatus,XHR){
+				if (textStatus!="success"){
+					if (!access_token_error(responseText))
+						$(this).html("{{ajax_error}}");
+				}
+			});	
+		});	
+	
+	//-------------  App Invite Interstitial ------------------
+	// launch interstitial
+	//
+	//		inputs:
+	//			json of attractions: attraction_username = attraction_full_name
+	//			redirect page (where to go after dialog closes) 
+	//		functionality:
+	//			dynamically build dialog html elements based off of the inputted array
+	
+	window.invite_interstitial_modal=null;
+	window.invite_interstitial_modal_redirect_url="";
+	function launch_invite_interstitial(attraction_json,redirect_url) {
+			// only initialize jquery modal dialog once per page load
+			if (!window.invite_insterstitial_modal)
+				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_insterstitial_dialog",resizable:false, modal: true, close: function(){if (redirect_url!="") location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+			else
+				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
+			var modal_html ="";
+			modal_html += '<div class="dialog_instructions">To get a response from your newly added attraction(s), we need your help to get them signed into the application.</div>';
+			modal_html += '<div class="dialog_main_content">';
+			for (var username in attraction_json) {
+				modal_html += '<div class="attraction_invite_row">';
+					// picture
+					modal_html +='<img src="http://graph.facebook.com/' + username + '/picture?width=30&height=30">';
+					// full name
+					modal_html +='<span class="attraction_invite_full_name">' + attraction_json[username] + '</span>';
+					// invite button (or invite sent text)
+					modal_html +='<div class="attraction_invite_button" username="' + username + '"><button class="app_invite" crush_username="' + username + '">send anonymous invite</button></div>';
+				modal_html += '</div>'; //close off attraction_invite_row div
+			}
+				
+			modal_html += '</div>';//close off dialog_main_content div
+			window.invite_interstitial_modal.html(modal_html);
+			window.invite_interstitial_modal.dialog('open');	
+	};
+	
+	
+	// input: attraction: username represents the attraction that was just invited  
+	// functionality: auto redirect to inputted redirect page if all attraction invites sent
+	//	 		if redirect page is same as current page, just close dialog
+	//	 		if at least one attraction invite not sent, then
+	//			replace button of newly invited attraction with 'invite(s) sent' 
+	window.update_invite_interstitial = function(attraction_username){
+	
+		if (!window.invite_interstitial_modal || !window.invite_interstitial_modal.dialog( "isOpen" ))
+			return false;
+		if (window.app_invite_modal)
+			window.app_invite_modal.dialog('close');
+		 // search for the associated button and update it's html
+		target_element = $('#invite_interstitial_modal .dialog_main_content .attraction_invite_row .attraction_invite_button[username=' + attraction_username + ']');
+		target_element.html('invite(s) sent&nbsp;<a class="app_invite" crush_username="' + attraction_username + '">send more</a>');
+		
+		// if no buttons exist, then auto close the dialog and redirect it 
+		if ($('.attraction_invite_button button').length == 0)
+			window.invite_interstitial_modal.dialog("close");
+	}	
 	
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
@@ -102,15 +185,19 @@ jQuery(document).ready(function($) {
     });
 
   function add_friends_to_db(response)
+  //response is a json object of username:fullname with username having extra character at end representing friendship type
   {	      
-		results = String(response).split(','); // response looks like a comma delimited list of facebook id's
 		var result_dictionary = {};
+		var attraction_invites_json={};
 		result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
-		for(i=0; i<results.length; i++) 
-			result_dictionary[i]=results[i];
+		for (attraction in response){
+			result_dictionary[attraction.slice(0,-1)]=attraction.slice(-1);
+			attraction_invites_json[attraction.slice(0,-1)]=response[attraction];
+		};
   	$.post('/ajax_add_crush_targets/',result_dictionary, function(){
   		// on success redirect to the crush page
-  		document.location.href='/attractions/'; // reload page
+  		launch_invite_interstitial(attraction_invites_json,'/attractions'); 
+  		//document.location.href='/attractions/'; // reload page
   	});
   };
 
@@ -269,6 +356,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 }); // close of jQuery(document).ready
 
 
+
 </script>
 
 <div class="header">
@@ -293,6 +381,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
+<div id="invite_interstitial_modal" title = "Send Application Invites"</div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set Up a Friend"></div>
 </body>

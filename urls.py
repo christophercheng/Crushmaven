@@ -52,6 +52,8 @@ urlpatterns += patterns('crush.views.crush_views',
     
     (r'^app_invite_form/(?P<crush_username>\w+)/$','app_invite_form'),
     
+    (r'^app_invite_form_v2/(?P<crush_username>\w+)/$','app_invite_form_v2'),
+        
     (r'^app_invite_success/$', TemplateView.as_view(template_name='app_invite_success.html')),
                         
     (r'^ajax_find_fb_user/$','ajax_find_fb_user'),
