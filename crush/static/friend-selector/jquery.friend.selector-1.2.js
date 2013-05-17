@@ -10,7 +10,6 @@
   'use strict';
   
   $.fn.fSelector = function ( options ) {
-	  
 	  this.unbind("click.fs");
 	    this.bind("click.fs", function(){
 	    	var max_selections= $(this).attr('max_selections');
@@ -48,6 +47,7 @@
   fbDocUri = 'http://developers.facebook.com/docs/reference/javascript/',
 
   _start = function() {
+
 	  if ( FB === undefined ){
 	      window.alert_user('Facebook integration is not defined. View ' + fbDocUri);
 	      return false;
@@ -80,7 +80,6 @@
 
     _dialogBox();
     fsOptions.onStart();
-
   },
 
   _selectUsername = function() {

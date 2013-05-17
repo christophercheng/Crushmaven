@@ -52,47 +52,61 @@ $(document).ready(function()
     });
     
   window.process_selected_target = function(response){
-		window.recommmendation_target= response[0].toString();
-  	window.setup_target = window.recommmendation_target.substring(0,window.recommmendation_target.length-1);
+	  var fullname="";
+	  for (attraction in response){
+		window.setup_target = attraction.slice(0,-1);
+		fullname=response[attraction]
+		break;
+	  };
   	$('.setup_target_pic').attr('src',"http://graph.facebook.com/" + window.setup_target + "/picture?width=60&height=60");
+  	$('.setup_target_pic').attr('title',fullname);
   	$('button#select_setup_target').attr('getStoredFriends',window.setup_target);
   	var amendedExcludeIds = "{{exclude_ids}}";
   	if (amendedExcludeIds != "")
   		amendedExcludeIds += ",";
   	amendedExcludeIds += window.setup_target;
   	$('button#select_setup_recommendees').attr('excludeIds',amendedExcludeIds);
-		$('#select_setup_recommendees').removeAttr('disabled');
-		$('#target_username_input').attr('value',window.setup_target);
-		//clear out any existing recommendees
-		window.setup_recommendee_array=[];
-		window.setup_recommendee_csl="";
-		for (var x=0;x<10;x++)
-	  	$('#recommendee_pic_' + x.toString()).attr('src',"http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg");
+	$('#select_setup_recommendees').removeAttr('disabled');
+	$('#target_username_input').attr('value',window.setup_target);
+	//clear out any existing recommendees
+	window.setup_recommendee_array=[];
+	window.setup_recommendee_csl="";
+	for (var x=0;x<10;x++){
+		$('#recommendee_pic_' + x.toString()).attr('src',"http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg");
+		$('#recommendee_pic_' + x.toString()).attr('title',"");
+		$('#recommendee_pic_' + x.toString()).show();
+	}
+	$('button#select_setup_recommendees').attr('getStoredFriends'," ");
+  	$('button#select_setup_target').html("change");
   }
   
   // exclude anyone already added as a recommendee
   window.process_selected_recommendees = function(response){
-		window.recommmendation_recommendee_array=[];
+	  
+		window.setup_recommendee_array=[];
 		window.setup_recommendee_csl="";
 		var array_csl="";
-		for (var x=0;x<response.length;x++){
-			var username = response[x].toString();
-	  	username = username.substring(0,username.length-1);
-	  	window.setup_recommendee_array.push(username);
-	  	$('#recommendee_pic_' + x.toString()).attr('src',"http://graph.facebook.com/" + username + "/picture?width=40&height=40");
-	  	$('#recommendee_pic_' + x.toString()).show();
-  		if (x != 0)
-  			window.setup_recommendee_csl += ',';
-  		window.setup_recommendee_csl += username;
-  	}
-  	for (var x=response.length;x<10;x++)
-	  	//$('#recommendee_pic_' + x.toString()).attr('src',"http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg");
- 	 		$('#recommendee_pic_' + x.toString()).hide();
+		var x=0;
+		var username;
+		for (attraction in response){
+			username = attraction.slice(0,-1);
+		  	window.setup_recommendee_array.push(username);
+		  	$('#recommendee_pic_' + x.toString()).attr('src',"http://graph.facebook.com/" + username + "/picture?width=40&height=40");
+		  	$('#recommendee_pic_' + x.toString()).attr('title',response[attraction]);
+		  	$('#recommendee_pic_' + x.toString()).show();
+	  		if (x != 0)
+	  			window.setup_recommendee_csl += ',';
+	  		window.setup_recommendee_csl += username;
+	  		x++;
+	  	}
+  	for (var hide_index=x;hide_index<10;hide_index++)
+ 	 	$('#recommendee_pic_' + hide_index.toString()).hide();
  	 $('button#select_setup_recommendees').attr('getStoredFriends',window.setup_recommendee_csl);
  	 // don't need to exlude recommendees from target selection list cause the recommendees list gets cleared out whenever a new target is chosen
  	 //$('button#select_setup_target').attr('excludeIds',window.recomendation_recommendee_csl);
  	 $('.setup_create_dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.site_dialog_button').removeAttr('disabled');
    $('#recommendee_username_csl_input').attr('value',window.setup_recommendee_csl);
+	$('button#select_setup_recommendees').html("change");
   }
  
  $(".setup_create_dialog").on('click','#create_setup',function(){
