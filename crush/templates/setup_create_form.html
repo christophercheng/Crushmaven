@@ -111,6 +111,7 @@ $(document).ready(function()
   }
  
  $(".setup_create_dialog").on('click','#create_setup',function(){
+ $("#site-overlay").css('visibility','visible');
    	FB.ui({method: 'send',
   				name: "{{request.user.first_name}} {{request.user.last_name}} has selected some  friends of {{request.user.get_gender_pronoun}} which {{request.user.get_gender_pronoun_subject }} think you may find attractive.",
   				to: window.setup_target,
@@ -124,6 +125,7 @@ $(document).ready(function()
   				}
   			else {
   				window.alert_user("We cannot create this set up unless you notify your friend");
+  				$("#site-overlay").css('visibility','hidden');
   				//$('#setup_form').submit();
   			}
   		} // close off function (response)   
