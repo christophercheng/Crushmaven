@@ -101,10 +101,11 @@ jQuery(document).ready(function($) {
 	
 	window.invite_interstitial_modal=null;
 	window.invite_interstitial_modal_redirect_url="";
-	function launch_invite_interstitial(attraction_json,redirect_url) {
+	window.launch_invite_interstitial = function(attraction_json,redirect_url) {
 			// only initialize jquery modal dialog once per page load
+			
 			if (!window.invite_insterstitial_modal)
-				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){if (redirect_url!="") location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+100 center-70",of:'.left_sidebar_container .bt-fs-dialog'}});
+				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+100 center-70",of:'.left_sidebar_container .bt-fs-dialog'}});
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
@@ -201,7 +202,7 @@ jQuery(document).ready(function($) {
 		};
   	$.post('/ajax_add_crush_targets/',result_dictionary, function(){
   		// on success redirect to the crush page
-  		launch_invite_interstitial(attraction_invites_json,'/attractions'); 
+  		window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
   		//document.location.href='/attractions/'; // reload page
   	});
   };
