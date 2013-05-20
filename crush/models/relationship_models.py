@@ -358,7 +358,8 @@ class CrushRelationship(BasicRelationship):
         if self.target_status < 3:
             self.updated_flag=True
             self.target_status = 3
-            self.save(update_fields=['is_lineup_paid','target_status','updated_flag'])
+            self.date_lineup_started=datetime.now()
+            self.save(update_fields=['is_lineup_paid','target_status','updated_flag','date_lineup_started'])
         else:
             self.save(update_fields=['is_lineup_paid'])
         self.target_person.site_credits=F('site_credits') - feature_cost    
