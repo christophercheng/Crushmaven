@@ -160,12 +160,12 @@
   padding: 3px;
   margin: 3px;
   width: 210px;
-  -webkit-touch-callout: all !important;
-	-webkit-user-select: all !important;
-	-khtml-user-select: all !important;
-	-moz-user-select:  all !important;
-	-ms-user-select: all !important;
-	user-select: all !important;
+  -webkit-touch-callout: inherit !important;
+	-webkit-user-select: text !important;
+	-khtml-user-select: text !important;
+	-moz-user-select:  text !important;
+	-ms-user-select: text !important;
+	user-select: text !important;
 
 }
 
@@ -315,12 +315,6 @@
   overflow: auto;
   position: relative;
 	padding-bottom:1px;
-	    -webkit-touch-callout: all !important;
-	-webkit-user-select: all !important;
-	-khtml-user-select: all !important;
-	-moz-user-select:  all !important;
-	-ms-user-select: all !important;
-	user-select: all !important;
 }
 
 #fs-user-list {
@@ -328,12 +322,6 @@
   #height: 295px; /* this is passed in as a parameter */
   overflow: auto;
   position: relative;
-    -webkit-touch-callout: all !important;
-	-webkit-user-select: all !important;
-	-khtml-user-select: all !important;
-	-moz-user-select:  all !important;
-	-ms-user-select: all !important;
-	user-select: all !important;
 }
 
 #fs-user-list ul, #fs-selected-user-list ul {
@@ -360,12 +348,6 @@
   overflow-x:hidden;
   position: relative;
   padding:10px 10px 0 10px;
-    -webkit-touch-callout: all !important;
-	-webkit-user-select: all !important;
-	-khtml-user-select: all !important;
-	-moz-user-select:  all !important;
-	-ms-user-select: all !important;
-	user-select: all !important;
 }
 
 #fs-confirm-user-list ul {
