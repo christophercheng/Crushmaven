@@ -332,10 +332,18 @@ $(document).ready(function() // handling for the slider
 			window.launch_credit_check();
 		}
 		else {
-			if ((parseInt(activeIndex) + 1) < {{member_set.count}}){ 
+			slide_decision = activeSlideElement.find('.lineup_decision .choice');
+			console.log(slide_decision);
+			if (slide_decision.length)
+				goto_next_slide(activeIndex);
+			else { 
 				var member_name = activeSlideElement.find('.lineup_name').html();
 				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
 			}
+//			if ((parseInt(activeIndex) + 1) < {{member_set.count}}){ 
+//				var member_name = activeSlideElement.find('.lineup_name').html();
+//				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
+//			}
 		}
 	};
 	/* ----------------------------------------------------------------------
