@@ -83,9 +83,6 @@ def ajax_display_lineup_block(request, display_id):
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
         return HttpResponse(ajax_response)
 
-    if relationship.lineup_initialization_status > 3: # for data fetching errors show a button that allows user to restart the initialization 
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + ' <button id="initialize_lineup_btn" display_id="' + display_id + '">Re-initialize</button>'
-        return HttpResponse(ajax_response)
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         return HttpResponse(ajax_response)
