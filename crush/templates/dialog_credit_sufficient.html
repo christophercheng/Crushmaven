@@ -21,7 +21,7 @@
 
 <script>
 $('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
-		// call ajax post function to deduct credit and change lineup_is_paid to true 
+		// call ajax post function to deduct credit and call related handler
 	 	$("#site-overlay").css('visibility','visible');
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2

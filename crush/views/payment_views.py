@@ -34,7 +34,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         if relationship.handle_lineup_paid() == False:    
             return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
         else:
-            return HttpResponse()
+            return HttpResponse("")
         
     elif str(feature_id)=='2':
         try:
@@ -44,7 +44,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         if relationship.handle_results_paid() == False:    
             return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
         else:
-            return HttpResponse()
+            return HttpResponse("")
 
     elif str(feature_id)=='3':
         try:
@@ -55,7 +55,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         if relationship.handle_rating_paid() == False:    
             return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
         else:
-            return HttpResponse()
+            return HttpResponse("")
         
     elif str(feature_id)=='4':
         try:
@@ -66,7 +66,7 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         if relationship.handle_messaging_paid() == False:    
             return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
         else:
-            return HttpResponse()
+            return HttpResponse("")
         
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
