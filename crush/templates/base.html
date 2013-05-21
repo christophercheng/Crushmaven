@@ -314,6 +314,21 @@ $('body').on('click',".popup_link",function(e){
 //$('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2'},50);});
  
 //$('.navbar li.inactive a').hover(function(){$(this).animate({borderTopWidth:'4px',borderLeftWidth:'3px'},100);},function(event){event.stopPropagation();$(this).animate({borderTopWidth:'0px',borderLeftWidth:'0px'},100);});
+
+ /* ---------------------------------------------
+ 	
+ 		REQUEST SETUP Handling
+ 	
+ * -------------------------------------------- */
+
+$('a.request_setup_link').click( function(e)
+	{
+			FB.ui({method: 'apprequests',
+  				message:'Will you help recommend some friends of yours who I might be a good match for?'}
+  );
+     
+	});//close off a.request_setup_link.click
+
  /* ---------------------------------------------
  	
  		SETUP CREATION MODAL
