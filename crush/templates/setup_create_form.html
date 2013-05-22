@@ -132,6 +132,11 @@ $(document).ready(function()
     );// close off fb.ui
  });
 
+{% if target_person_username != "" %}
+	var my_json={};
+	my_json["{{target_person_username}}0"]="";
+	window.process_selected_target(my_json);
+{% endif %}
 		
 }); // close off document ready function
 </script>

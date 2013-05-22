@@ -321,13 +321,66 @@ $('body').on('click',".popup_link",function(e){
  	
  * -------------------------------------------- */
 
-$('a.request_setup_link').click( function(e)
-	{
-			FB.ui({method: 'apprequests',
-  				message:'Will you help recommend some friends of yours who I might be a good match for?'}
-  );
-     
-	});//close off a.request_setup_link.click
+  $(".request_setup_link").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
+	  accessToken: "{{request.user.access_token}}",
+	  facebookID: "{{request.user.username}}",
+	  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+    maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+    minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
+    minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
+    max:12,
+	  excludeIds: "{% for request_rel in request.user.crush_setuprequestrelationship_set_from_source.all %}{{request_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",    
+    closeOverlayClick: false,
+    overlayOpacity: "0.5",
+    overlayColor: '#000',
+    closeOnSubmit: true,
+    showSelectedCount: true,
+    color: "default",
+    showRandom:false,
+    lang: {
+    	buttonContinue:"Select",
+      title: "Select Friends to Request a Setup from",
+      searchText: "Enter a friend's name",
+      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
+      selectedCountResult: "You have choosen {0} people.",
+      selectedLimitResult: "Limit is {0} people.",
+      ajaxError:"{{ajax_error}}",
+    },
+    onError: function(){
+    	window.alert_user("{{ajax_error}}");
+    },
+    onStart: function(){
+    	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});
+    	 window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
+    },
+    onSubmit: function(response){
+			var attraction_array = [];
+			for (attraction in response)
+				attraction_array.push(attraction.slice(0,-1));
+			send_fb_requests(attraction_array);
+    }, // close off onSubmit function handler
+   }); // close off .fSelector function handler
+
+	function send_fb_requests(attraction_array){
+	    var csrf_data={};
+    	csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
+		FB.ui({method: 'send',
+	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
+	  				to: attraction_array[0],
+	  				link:'http://www.justmaybe.us',
+	  				description:'JustMaybe.us is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
+			      },
+			      function(response){
+							if (response != null)
+								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data);
+							attraction_array.splice(0,1);
+							if (attraction_array.length)
+								send_fb_requests(attraction_array);  	
+							else // reload page so that the new requests can be processed by base.html javascript
+								window.location.href="/requests_by_me/";
+			  		} // close off function (response)   
+		   	 	);// close off fb.ui
+	};
 
  /* ---------------------------------------------
  	
@@ -346,7 +399,10 @@ $('a.request_setup_link').click( function(e)
 				});
 		window.setup_create_modal.html('<div id="site-loading"></div>');
 		window.setup_create_modal.dialog('open');
+		var target_person_username = $(this).attr('target_person_username');
 		var load_url="/setup_create_form/";
+		if (target_person_username)
+			load_url = load_url + target_person_username + '/';
 		window.setup_create_modal.load(load_url,function(responseText,textStatus,XHR){
 			if (textStatus!="success"){
 				if (!access_token_error(responseText))
@@ -402,7 +458,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="app_invite_modal" title="Send Application Invites"></div>
-<div id="invite_interstitial_modal" title = "One Last Thing!"</div>
+<div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set Up a Friend"></div>
 </body>

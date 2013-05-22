@@ -276,7 +276,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <ul class="title_bar" id="title_bar_attractions">
 	<li class="title_bar_title">Attractions:</li>
 	<li class="title_bar_page_links">
-		{% if crush_type = 0  %}
+		{% if crush_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/attractions_completed/">responded<span class="title_bar_count">{{crushes_completed_count}}</span></a>
 		{% else %}
@@ -303,7 +303,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	</li>
 	<li class="title_bar_option">
 		filter:
-		{% if crush_type = 0  %}
+		{% if crush_type == 0  %}
 		<a href="#" class="popup_link">not responded<span class="down_arrow">&#x25BC;</span></a>
 		<ul class="popup">
 			<li>
@@ -336,7 +336,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 {% comment }{% elif responded_relationships.count == 0 %}{% endcomment %}
 
 <span id="no_content">
-	{% if crush_type = 0 %}
+	{% if crush_type == 0 %}
 		You have no {% if responded_relationships %} ongoing {% endif %}attractions.&nbsp;&nbsp;<a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
 		You have no responded attractions.

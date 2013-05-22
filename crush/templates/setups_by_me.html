@@ -77,7 +77,7 @@ $(document).ready(function()
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 	<li class="title_bar_page_links">
-		{% if setup_type = 0  %}
+		{% if setup_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>started<span class="title_bar_count">{{setup_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_by_me/">finished <span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
@@ -181,7 +181,7 @@ $(document).ready(function()
 {% endfor %}
 
 {% else %}
-	{% if setup_type = 0 %}
+	{% if setup_type == 0 %}
 		<span id="no_content">You have no setups for friends.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Add one</a> to get started.</span>
 	{% else %}
 		<span id="no_content">You have no finished setups for friends.</span>

@@ -468,7 +468,7 @@ a.logo #to {
 .navbar .setups_by_me{
 	top:50px;	
 }
-.navbar .setup_requests{
+.navbar .setup_requests_for_me{
 	top:100px;	
 }
 .navbar .active.attractions{
@@ -486,7 +486,7 @@ a.logo #to {
 .navbar .active.setups_by_me{
 	top:47px;	
 }
-.navbar .active.setup_requests{
+.navbar .active.setup_requests_for_me{
 	top:97px;	
 }
 
@@ -522,7 +522,7 @@ a.logo #to {
 .navbar li.inactive.setups_by_me a .menu_icon{
 	background-position:-36px -127px;	
 }
-.navbar li.inactive.setup_requests a .menu_icon{
+.navbar li.inactive.setup_requests_for_me a .menu_icon{
 	background-position:-35px -160px;	
 }
 
@@ -542,7 +542,7 @@ a.logo #to {
 .navbar li.active.setups_by_me a .menu_icon,.navbar li.inactive.setups_by_me:hover a .menu_icon{
 		background-position:-65px -127px;	
 }
-.navbar li.active.setup_requests a .menu_icon,.navbar li.inactive.setup_requests:hover a .menu_icon{
+.navbar li.active.setup_requests_for_me a .menu_icon,.navbar li.inactive.setup_requests_for_me:hover a .menu_icon{
 		background-position:-65px -160px;	
 }
 
@@ -599,7 +599,7 @@ a.logo #to {
 	border-bottom:2px solid #DC143C;
 	}
 
-#.navbar li.setup_requests.active a, .navbar li.messages.active a{
+#.navbar li.setup_requests_for_me.active a, .navbar li.messages.active a{
 #	border-bottom:1px solid #2E2E2E;
 #}
 
@@ -665,6 +665,7 @@ a.logo #to {
 	left:22px;
 	z-index:1;
 	background:white;
+		display:none;
 }
 
 .left_sidebar_container a.bt-fs-dialog{
@@ -673,6 +674,8 @@ a.logo #to {
 	top:13px;
 	left:20px;
 	width:145px;
+	border-radius:4px;
+	background-color:#595983;
 }
 .left_sidebar_container a.bt-fs-dialog:hover{
 	background-color:#2447B2;
@@ -680,8 +683,8 @@ a.logo #to {
 	transition-duration:200ms;
 	}
 	.left_sidebar_container a.bt-fs-dialog:active{
-		left:22px;
-		top:15px;
+		left:21px;
+		top:14px;
 	}
 	
 .left_sidebar_container .button_container#create_setup .button_outset{
@@ -694,6 +697,7 @@ a.logo #to {
 	z-index:1;
 	background:white;
 	border-color:#3E3E5C;
+	display:none;
 }
 
 .left_sidebar_container .button_container#create_setup a{
@@ -702,18 +706,19 @@ a.logo #to {
 	top:13px;
 	left:20px;
 	width:145px;
-	background-color:#595983;
+	background-color:#3E3E5C;
 	height:34px;
+		border-radius:4px;
 }
 .left_sidebar_container .button_container#create_setup a:hover{
-	background-color:#3E3E5C;
+	background-color:#2447B2;
 	transition-property:background-color;
 	transition-duration:200ms;
 	}
 	
 	.left_sidebar_container .button_container#create_setup a:active{
-		left:22px;
-		top:15px;
+		left:21px;
+		top:14px;
 	}
 
 

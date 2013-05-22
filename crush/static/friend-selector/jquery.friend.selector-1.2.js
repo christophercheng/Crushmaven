@@ -12,20 +12,20 @@
   $.fn.fSelector = function ( options ) {
 	  this.unbind("click.fs");
 	    this.bind("click.fs", function(){
-	    	var max_selections= $(this).attr('max_selections');
-	    	var getStoredFriends = $(this).attr('getStoredFriends');
-	    	var onSubmit = $(this).attr('onSubmit');
-	    	var excludeIds = $(this).attr('excludeIds');
-	    	var setup_select=$(this).attr('setup_select');
-	    	if (max_selections)// we are in friend setup mode most likely
-	    		options.max=parseInt(max_selections);
-	    	if (getStoredFriends)
-	    		options.getStoredFriends=getStoredFriends;
-	    	if (onSubmit)
-	    		options.onSubmit=onSubmit;
-	    	if (excludeIds)
-	    		options.excludeIds=excludeIds;
-	    	if (setup_select)
+	    	var attr_max_selections= $(this).attr('max_selections');
+	    	var attr_getStoredFriends = $(this).attr('getStoredFriends');
+	    	var attr_onSubmit = $(this).attr('onSubmit');
+	    	var attr_excludeIds = $(this).attr('excludeIds');
+	    	var attr_setup_select=$(this).attr('setup_select');
+	    	if (attr_max_selections)// we are in friend setup mode most likely
+	    		options.max=parseInt(attr_max_selections);
+	    	if (attr_getStoredFriends)
+	    		options.getStoredFriends=attr_getStoredFriends;
+	    	if (attr_onSubmit)
+	    		options.onSubmit=attr_onSubmit;
+	    	if (attr_excludeIds)
+	    		options.excludeIds=attr_excludeIds;
+	    	if (attr_setup_select)
 	    		options.setup_select=true;
 	    	else
 	    		options.setup_select=false;
@@ -295,7 +295,7 @@
 		'<div id="fs-terms"><span id="fs-terms-checkbox-container"><input id="fs-terms-checkbox" type="checkbox" checked="checked"/></span><span id="fs-terms-checkbox-text">I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span></div>'  +
 		 '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class="fs-button" href="javascript://"><span>&#60; Back</span></a>' +
-		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>Confirm</span></button>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>' + fsOptions.lang.buttonContinue + '</span></button>' +
 		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Add</span></a>' +
   	'</div>';
     
@@ -1063,6 +1063,7 @@
     lang: {
       title: "Friend Selector",
       buttonSubmit: "Send",
+      buttonContinue: "Confirm",
       buttonCancel: "Cancel",
       buttonSelectAll: "Select All",
       buttonDeselectAll: "Deselect All",

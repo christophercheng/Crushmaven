@@ -85,7 +85,7 @@ $(document).ready(function()
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 	<li class="title_bar_page_links">
-		{% if admirer_type = 0  %}
+		{% if admirer_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>new<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">lineup finished<span class="title_bar_count"> {{past_admirers_count}}</span></a>
 		{% else %}
@@ -146,7 +146,7 @@ $(document).ready(function()
 {% endfor %}
 
 {% else %}
-	{% if admirer_type = 0 %}
+	{% if admirer_type == 0 %}
 		<span id="no_content">You have no current admirers.</span>
 	{% else %}
 		<span id="no_content">You have no admirers with completed lineups.</span>

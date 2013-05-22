@@ -2,15 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,FacebookUser,InviteEmail,SetupRelationship,SetupLineupMember
-import json
-import datetime
-from crush.appinviteform import AppInviteForm
-import time
-from  django.http import HttpResponseNotFound,HttpResponseForbidden
-from utils import graph_api_fetch
-from urllib2 import URLError,HTTPError
+#from django.conf import settings
+from crush.models import CrushRelationship,FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
+from  django.http import HttpResponseNotFound
 # for initialization routine
 #import thread
 #from crush.models.globals import g_init_dict
@@ -54,8 +48,6 @@ def completed_setups_for_me(request):
 def setups_by_me(request):
     
     me = request.user
-  
-  # not right
     progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
     setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
@@ -72,8 +64,6 @@ def setups_by_me(request):
 def completed_setups_by_me(request):
     
     me = request.user
-  
-  # not right
     completed_setups = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
     setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
@@ -86,29 +76,33 @@ def completed_setups_by_me(request):
                                })     
 
 @login_required
-def setup_requests(request,reveal_crush_id=None):
+def setup_requests_for_me(request):
     me = request.user
-    crush_relationships = request.user.crush_crushrelationship_set_from_source 
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            if reveal_crush_relationship.is_results_paid == False:
-                reveal_crush_id = None #reset the value in this error case
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
-    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
-    
-    return render(request,'crushes.html',
+  
+    requests_for_me = me.crush_setuprequestrelationship_set_from_target.filter().order_by('-updated_flag','date_added')
+    requests_by_me_count = me.crush_setuprequestrelationship_set_from_source.count()
+
+    return render(request,'setup_requests.html',
                               {
-                               'crush_type': 1, # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':crushes_completed_relationships,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count,
-                               'reveal_crush_id':reveal_crush_id,
-                               })   
+                               'request_type': 0, # 0 is in for me, 1 is by me
+                               'request_relationships':requests_for_me,
+                               'requests_by_me_count': requests_by_me_count,
+                               })  
+
+@login_required
+def setup_requests_by_me(request):
+    me = request.user
+  
+    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','date_added')
+    requests_for_me_count = me.crush_setuprequestrelationship_set_from_target.count()
+
+    return render(request,'setup_requests.html',
+                              {
+                               'request_type': 1, # 0 is in for me, 1 is by me                              
+                               'request_relationships':requests_by_me,
+                               'requests_for_me_count': requests_for_me_count,
+                               })  
+       
 
 # returns a comma separated string of usernames who cannot be recommended to the given setup target (existing recommendees)
 @login_required    
@@ -129,8 +123,7 @@ def ajax_get_recommendee_exclude_ids(request, setup_target):
     return previous_recommendee_id_csl
 
 @login_required    
-def setup_create_form(request):
-    print "APP INVITE FORM!"
+def setup_create_form(request,target_person_username=""):
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
         print "METHOD IS POST"
@@ -145,9 +138,12 @@ def setup_create_form(request):
         setup = SetupRelationship.objects.create(target_person=setup_target_user,source_person=request.user,updated_flag=True,friendship_type=0)
         for (counter,recommendee) in enumerate(recommendee_username_array):
             SetupLineupMember.objects.create(relationship=setup, username = recommendee, position=counter)
-        #perform find_or_create_user on target_username
-        # create setupLIneupMember (with just username of each recommendee - no need to actually create user yet)
-            # send out the emails here
+        #look for existing requests to create a setup for this target person, if it exists, then delete it
+        try:
+            outstanding_request = request.user.crush_setuprequestrelationship_set_from_target.get(source_person__username=setup_target_username)
+            outstanding_request.delete()
+        except SetupRequestRelationship.DoesNotExist:
+            pass
 
         print "success and redirecting"                
         return redirect('/setups_by_me')
@@ -162,4 +158,20 @@ def setup_create_form(request):
                 if exclude_ids!='':
                     exclude_ids += ','
                 exclude_ids += lineup_member_object.username
-        return render(request, 'setup_create_form.html',{'exclude_ids':exclude_ids})
+        return render(request, 'setup_create_form.html',{'exclude_ids':exclude_ids,'target_person_username':target_person_username})
+    
+@login_required    
+def ajax_create_setup_request(request,setup_request_target):
+    
+    # look for the target by username
+        # if doesn't already exist then create the user
+    setup_request_target_user = FacebookUser.objects.find_or_create_user(setup_request_target, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)
+    if setup_request_target_user == None:
+        return HttpResponseNotFound("Was not able to create a user for the requested friend.")
+
+
+    try:
+        request.user.crush_setuprequestrelationship_set_from_source.get(target_person__username=setup_request_target)
+    except SetupRequestRelationship.DoesNotExist:
+        SetupRequestRelationship.objects.create(target_person=setup_request_target_user,source_person=request.user,updated_flag=True)
+    return HttpResponse("")

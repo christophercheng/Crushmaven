@@ -570,5 +570,13 @@ class SetupRelationship(BasicRelationship):
                 subject = self.target_person.get_name() + " evaluated all of your setup recommendations."
                 message = self.target_person.get_name() + " evaluated all of your setup recommendations. Log in now to see the full details." 
                 self.send_notification_email(source_person_email,subject,message)
-                    
+
+
+# when
+class SetupRequestRelationship(BasicRelationship):
+    class Meta:
+        app_label = 'crush' 
+    # source person is the one requesting a setup
+    # target person is the person who will eventually create the setup
+
 
