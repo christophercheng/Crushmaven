@@ -20,7 +20,7 @@ def context_processor(request):
            
         num_progressing_setups_for_me = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count()
         num_progressing_setups_by_me = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
-        num_setup_requests=0#request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
+        num_setup_requests = me.crush_setuprequestrelationship_set_from_target.all().count()
            
            
         return {
@@ -34,7 +34,6 @@ def context_processor(request):
             'ajax_error':settings.AJAX_ERROR,
             'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
-            
             'num_setups_by_me_in_progress' : num_progressing_setups_by_me,
             'num_setups_for_me_in_progress': num_progressing_setups_for_me, 
             'num_setup_requests':num_setup_requests,
