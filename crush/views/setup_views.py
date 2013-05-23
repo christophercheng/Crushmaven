@@ -188,5 +188,7 @@ def ajax_update_setup_lineup_member_date_last_notified(request,member_username):
     for member in lineup_members:
         member.date_last_notified = datetime.datetime.now()
         member.save(update_fields=['date_last_notified'])
+    # remove the notified member from the friends with admirers side module
+    me.update_friends_with_admirers(member_username)
     return HttpResponse("")
 

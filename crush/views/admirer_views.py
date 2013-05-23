@@ -246,7 +246,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
     me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
-        target_user=FacebookUser.objects.get(username=facebook_id)
+        target_user=FacebookUser.objects.get(username=facebook_id) # user is created when lineup slide loaded (if user wasn't already active)
         if is_admirer_type == 1:
             try:
                 admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
@@ -282,7 +282,10 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             if is_admirer_type==1:
                 CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             else:  
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,is_from_setup=True)            
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,is_from_setup=True)    
+                # to prevent the target person from showing up in the friends_with_admirers module of the recommender, then add the recommender to the target person's friends_that_invited_me list
+                target_user.friends_that_invited_me.add(admirer_rel.source_person)
+                        
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction<span class="date_lineup_member_added">(' + datetime.datetime.now().strftime("%m/%d/%Y") + ')</span></span>'
             lineup_member.decision=0
         else:

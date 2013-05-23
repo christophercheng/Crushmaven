@@ -537,7 +537,7 @@ class SetupRelationship(BasicRelationship):
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
         if (not self.pk): # this is a newly created crush relationship
-            # give the setup a display id.  this is the unique  identifier that is displayed to the crush)
+            # give the setup a display id.  this is the unique  identifier
                 # get total previous setups(past and present)made from source to target and add 1
             self.display_id = self.source_person.crush_setuprelationship_set_from_source.all().count() + 1
         else: # This is an setup, just perform updates and potentially send out notfications 

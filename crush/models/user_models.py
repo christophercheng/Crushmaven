@@ -233,7 +233,7 @@ class FacebookUser(AbstractUser):
             print str(e)
             raise 
 
-        all_inactive_user_list = None#cache.get(settings.INACTIVE_USER_CACHE_KEY)         
+        all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
             print "updating cache with new all_inactive_user_list"
             all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
@@ -250,8 +250,12 @@ class FacebookUser(AbstractUser):
         for friend in fql_query_results:
             if friend['id'] in all_inactive_user_list:
                 friend_user = FacebookUser.objects.get(username=str(friend['id']))
+                # build a list of the user's setup lineup members, where the decision is crush and the members_attraction is unknown
+                
+                # frriend inactive user can't be a crush of the user, can't have already been invited by user, and can't have been a recommendee in one of the user's setups
                 if friend_user not in all_crushes and self not in friend_user.friends_that_invited_me.all(): 
                     self.friends_with_admirers.add(friend_user)
+                
 
         # mark the function complete flag so that future users/pages won't reprocess the user
         self.processed_activated_friends_admirers = datetime.datetime.now()
@@ -260,8 +264,11 @@ class FacebookUser(AbstractUser):
   
     # if user sends an fb invite to their inactive friend, them remove them from their list of inactive friends 
     # and add them to list of friend who invited them
-    def update_friends_with_admirers(self,remove_username=None):  
-        friend_user = self.friends_with_admirers.get(username=str(remove_username))
+    def update_friends_with_admirers(self,remove_username=None): 
+        try: 
+            friend_user = self.friends_with_admirers.get(username=str(remove_username))
+        except FacebookUser.DoesNotExist:
+            return
         friend_user.friends_that_invited_me.add(self)
         self.friends_with_admirers.remove(friend_user)
     
