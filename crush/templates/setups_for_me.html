@@ -21,7 +21,8 @@ $(document).ready(function()
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
-    $("#lineup_modal").dialog({position:{my:"left center",at:"right+20 center-100",of:'.left_sidebar_container .bt-fs-dialog'},modal: true, resizable:false,autoOpen: false,width:575,close:function(event,ui){location.reload();}});
+    $("#lineup_modal").dialog({position:{my:"left center",at:"right+20 center-100",of:'.left_sidebar_container .bt-fs-dialog'},modal: true, resizable:false,autoOpen: false,width:575,close:function(event,ui){window.handle_lineup_dialog_close();}});
+    
     $('.lineup_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	

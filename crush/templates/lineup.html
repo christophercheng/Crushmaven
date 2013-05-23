@@ -434,7 +434,6 @@ $(document).ready(function() // handling for the slider
 
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
 					redirect_url='/attractions/';
-				console.log(attraction_json);
 				if (num_new_attractions){
 					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 					window.launch_invite_interstitial(attraction_json,redirect_url);
@@ -445,6 +444,11 @@ $(document).ready(function() // handling for the slider
 				// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_setups_for_me.count }} == 1)	
 					redirect_url='/attractions/';
+				if (num_new_attractions){
+					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
+					window.launch_invite_interstitial(attraction_json,redirect_url);
+					return;
+			}
 		}
 		$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 		window.location.href=redirect_url;
