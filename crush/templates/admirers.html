@@ -114,7 +114,9 @@ $(document).ready(function()
 			<div class="lineup_title">
 				<span class="lineup_block_from">From:</span>
 				<span class="lineup_block_source_name">Admirer #{{admirer_rel.display_id}}</span>
-				{% if admirer_rel.friendship_type == 0 %} 
+				{% if admirer_rel.is_from_setup == True %}
+					<span class="lineup_subtitle">(a mutual friend recommended you to your admirer)</span> 
+				{% elif admirer_rel.friendship_type == 0 %} 
 					<span class="lineup_subtitle">(a friend of yours)</span> 
 				{% elif admirer_rel.friendship_type == 1 %}
 					<span class="lineup_subtitle">(you share a mutual facebook friend)</span>

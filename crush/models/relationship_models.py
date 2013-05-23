@@ -224,6 +224,9 @@ class CrushRelationship(BasicRelationship):
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
+    # if the attraction stemmed from a setup recommendation (admirer chose the target person from a set up lineup
+    is_from_setup = models.BooleanField(default=False)
+    
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
@@ -578,5 +581,4 @@ class SetupRequestRelationship(BasicRelationship):
         app_label = 'crush' 
     # source person is the one requesting a setup
     # target person is the person who will eventually create the setup
-
 

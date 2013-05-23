@@ -279,7 +279,10 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                 #ajax_response = "<span id=\"choice\" class='platonic existing_choice'>You previously decided - Not Interested</span>"
            
         if add_type=='crush':
-            CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+            if is_admirer_type==1:
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+            else:  
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,is_from_setup=True)            
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction<span class="date_lineup_member_added">(' + datetime.datetime.now().strftime("%m/%d/%Y") + ')</span></span>'
             lineup_member.decision=0
         else:
