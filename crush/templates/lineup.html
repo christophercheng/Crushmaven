@@ -18,7 +18,7 @@
 		{% for member in member_set %}
 		
 			{% if member.decision != None or forloop.counter0 == 0 %}
-				<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{member.username}}/picture?width=50&height=50" /></a>
+				<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{member.username}}/picture?width=50&height=50" /><span {% if member.decision == 0 %}class="decision_crush"{% elif member.decision > 0 %}class="decision_platonic"{% endif %}></span></a>
 			{% else %}
 					<img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="http://a3.twimg.com/profile_images/1649076583/facebook-profile-picture-no-pic-avatar_reasonably_small.jpg"/>
 			{% endif %}
@@ -176,9 +176,11 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */		
 	var resetAndAdvanceSlider = function(just_loaded_slide){
 		window.slider_control.reInitialize();						
-		setTimeout(function(){
-			window.slider_control.goToSlide(just_loaded_slide);
-		},1000);
+		window.slider_control.goToSlide(just_loaded_slide);
+		// use this commented about block if you want to add a delay after deciding on a lineup member and before advancing to next lineup member slide
+		//		setTimeout(function(){
+	  //		window.slider_control.goToSlide(just_loaded_slide);
+		//},1000);
 	}; // close off resetAndAdvanceSlider
 
 	/* ----------------------------------------------------------------------
@@ -216,6 +218,7 @@ $(document).ready(function() // handling for the slider
   $('#lineup_container ').on('click','a.decision,a.platonic_reconsider',function(e) {
 		e.preventDefault();
 		var this_element = $(this);
+		var slide_number = this_element.closest('li.preload').attr('lineup_position'); // this is used to find the associated thumbnail to modify if a decision is made
   	var decision_div = this_element.parent(); 
 	  var url,decision_dialog,crush_decision;
 	  var username=this_element.attr('username');
@@ -282,8 +285,16 @@ $(document).ready(function() // handling for the slider
 							window.alert_user("{{ajax_error}}");
 							return false;
 						};
-						if (crush_decision==true)
+
+						if (crush_decision==true){
 							window.added_lineup_attraction=true;
+							// show crush icon in the associated thumbnail
+							$('#bx-pager-container #bx-pager a[data-slide-index="' + slide_number + '"]').append('<span class="decision_crush"></span>');
+						}
+						else{
+							// show platonic icon in the associated thumbnail
+							$('#bx-pager-container #bx-pager a[data-slide-index="' + slide_number + '"]').append('<span class="decision_platonic"></span>');
+						}
 						if (this_element.attr('class') != 'platonic_reconsider')
 							goto_next_slide(decision_div.parents('li').attr('lineup_position'));
 						}); // close off parent.load (making the decision and showing the html results		
