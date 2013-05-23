@@ -295,6 +295,12 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             lineup_member_set = admirer_rel.lineupmember_set
         else:
             lineup_member_set = admirer_rel.setuplineupmember_set
+        # if lineup is from a setup and this is the first decision made, then set the relationship's date_lineup_started property
+        if is_admirer_type != 1 and len(lineup_member_set.exclude(decision=None)) ==  1:
+            admirer_rel.date_lineup_started = datetime.datetime.now()
+            admirer_rel.updated_flag=True
+            admirer_rel.save(update_fields=['date_lineup_started','updated_flag'])
+        
         if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             if is_admirer_type != 1:

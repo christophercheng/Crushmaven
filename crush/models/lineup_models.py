@@ -766,7 +766,6 @@ class SetupLineupMember(BasicLineupMember):
 
     # if relationship is not a typical crush relationship , then it is a setup relationship
     relationship = models.ForeignKey('SetupRelationship',null=True,blank=True,default=None)
-    date_last_notified_by_recommender = models.DateTimeField(null=True,default=None,blank=True);
+    date_last_notified = models.DateTimeField(null=True,default=None,blank=True);
     lineup_member_attraction = models.NullBooleanField(null=True,blank=True,default=None)
-    lineup_member_notified = models.BooleanField(default=False)
     

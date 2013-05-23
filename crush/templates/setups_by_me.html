@@ -54,16 +54,47 @@ $(document).ready(function()
 		$(this).parent().hide(500);
 	});
 	
-	window.send_fb_invite = function(recipient_id,recommender_name){
-  	FB.ui({method: 'send',
-  				name: recommender_name + " would like to help set you up with some of {{request.user.get_gender_pronoun}} friends she has selected for you.",
+	$('.send_setup_notification').click(function(){
+		var recommender_name = "{{request.user.get_name}}";
+		var recipient_id = $(this).attr('target_person_username');
+		var notification_link = $(this);
+		if ((typeof $(this).attr('target_is_recommendee')) !== 'undefined')
+			var bTargetIsRecommendee = true;
+		else
+			var bTargetIsRecommendee = false;
+		
+		if (bTargetIsRecommendee) {
+			FB.ui({method: 'send',
+  				name: recommender_name + " found someone you might be attracted to.",
   				to: recipient_id,
   				link:'http://www.justmaybe.us',
   				description:'JustMaybe.us is a new matchmaking service for people who already have someone (they know) in mind.'
-      }
-    );// close off fb.ui
-  }; // close off send_fb_message
-	
+      	},function(response){
+      		if (response != null){ 
+     				// if notification was sent to a recommendee then replace link with appropriate waiting icon
+     				notification_link.replaceWith('<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response"></span>');
+     		 		// update the setup lineup members' date_last_notified 
+     				$.get('/ajax_update_setup_lineup_member_date_last_notified/' + recipient_id + '/');
+      		} // close off if (resposne != null)
+     	 	} // close off function(Resposne) - fb.ui response handler
+    	);// close off fb.ui
+    } // close off if target is recommendee
+		else { // target person is not a recommendee - they are a client
+			FB.ui({method: 'send',
+  				name: recommender_name + " has chosen - just for you - some of {{request.user.get_gender_pronoun}} friends that you may find attractive.",
+  				to: recipient_id,
+  				link:'http://www.justmaybe.us',
+  				description:'JustMaybe.us is a new matchmaking service for people who already have someone (they know) in mind.'
+		      },function(response){
+		      	if (response != null){  		
+							// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 
+		     			notification_link.replaceWith('notification sent');     
+		     		  $.get('/ajax_update_date_notification_last_sent/' + recipient_id + '/');	
+		      	} // close off if (resposne != null)
+		      } // close off function(Resposne) - fb.ui response handler
+  		);// close off fb.ui
+		}	// close off else target is not recommendee
+	}); // close off .send_setup_notification hanlder
 	
 }); // close off $(document).ready
 </script>
@@ -116,8 +147,8 @@ $(document).ready(function()
 				<span class="setup_block_for">For:</span>
 	
 				<span class="setup_block_target_name">{{setup_rel.target_person.get_name}}</span>
-				{% if setup_rel.target_person.is_active == False %} 
-					<span class="setup_block_target_status">&nbsp;not signed up: <a href="#" onClick="window.send_fb_invite('{{setup_rel.target_person.username}}','{{request.user.get_name}}')">resend invite</a></span>	
+				{% if setup_rel.date_lineup_started == None and setup_rel.date_notification_last_sent|days_since > 6 %} 
+					<span class="setup_block_target_status"><a href="#" class="send_setup_notification" target_person_username="{{setup_rel.target_person.username}}">resend notification</a></span>	
 				{% endif %}
 			
 			</div><!-- close off setup_block_title -->
@@ -135,14 +166,14 @@ $(document).ready(function()
 					<img class="setup_lineup_member_block_pic" src="http://graph.facebook.com/{{lineup_member.username}}/picture?width=40&height=40">
 					<div class="setup_recommendee_response"{% if lineup_member.decision != 0 %} title="recommendee can only respond if {{setup_rel.target_person.first_name}} is attracted to them"{% endif %}>
 						{% if lineup_member.decision == 0 %} 
-							{% if lineup_member.user.is_active == False %}
-								<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">send invite</a>
-							{% elif lineup_member.lineup_member_attraction == 1 %}
+							{% if lineup_member.lineup_member_attraction == 1 %}
 								<span class="setup_responded setup_recommendee_responded setup_responded_yes"></span>
 							{% elif lineup_member.lineup_member_attraction == 0 %}
 								<span class="setup_responded setup_recommendee_responded setup_responded_no"></span>
-							{% elif lineup_member.lineup_member_notified == False %}
-								<a href="#" onClick="window.send_fb_invite('{{lineup_member.username}}','{{request.user.get_name}}')">notify them</a>						
+							{% elif lineup_member.date_last_notified == None %}
+								<a href="#" class="send_setup_notification" target_is_recommendee="true" target_person_username="{{lineup_member.username}}">notify friend</a>						
+							{% elif lineup_member.date_last_notified|days_since > 6 %}
+								<a href="#" class="send_setup_notification" target_is_recommendee="true" target_person_username="{{lineup_member.username}}">notify again</a>
 							{% else %}
 								<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response{% if lineup_member.user != None %} from {{ lineup_member.user.first_name }}{% endif %}"></span>
 							{% endif %}

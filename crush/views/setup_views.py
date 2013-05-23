@@ -3,8 +3,9 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 #from django.conf import settings
-from crush.models import CrushRelationship,FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
+from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
+import datetime
 # for initialization routine
 #import thread
 #from crush.models.globals import g_init_dict
@@ -148,17 +149,7 @@ def setup_create_form(request,target_person_username=""):
         print "success and redirecting"                
         return redirect('/setups_by_me')
     else:
-        # build list of exclude ids (anyone who is an undecided lineup member
-        exclude_ids=''
-        relevant_admirer_relationships = request.user.crush_crushrelationship_set_from_target.filter(date_lineup_finished=None)
-        for relationship in relevant_admirer_relationships:
-            # exclude lineup members in incompelte admirer relationships who weren't added as attraction (undecided or platonic)
-            exclude_lineup_member_objects = relationship.lineupmember_set.exclude(decision=0)
-            for lineup_member_object in exclude_lineup_member_objects:           
-                if exclude_ids!='':
-                    exclude_ids += ','
-                exclude_ids += lineup_member_object.username
-        return render(request, 'setup_create_form.html',{'exclude_ids':exclude_ids,'target_person_username':target_person_username})
+        return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})
     
 @login_required    
 def ajax_create_setup_request(request,setup_request_target):
@@ -175,3 +166,27 @@ def ajax_create_setup_request(request,setup_request_target):
     except SetupRequestRelationship.DoesNotExist:
         SetupRequestRelationship.objects.create(target_person=setup_request_target_user,source_person=request.user,updated_flag=True)
     return HttpResponse("")
+
+@login_required    
+def ajax_update_date_notification_last_sent(request,target_username):
+    me = request.user
+    setups = me.crush_setuprelationship_set_from_source.filter(target_person__username=target_username)  
+    if setups.count()==0:
+        return HttpResponseNotFound("Not able to find any setup relationship with target username: " + target_username)
+    for setup in setups:
+        setup.date_notification_last_sent=datetime.datetime.now()
+        setup.save(update_fields=['date_notification_last_sent']);
+    return HttpResponse("")
+
+@login_required    
+def ajax_update_setup_lineup_member_date_last_notified(request,member_username):
+    
+    me=request.user
+    lineup_members = SetupLineupMember.objects.filter(relationship__source_person=me,username=member_username)
+    if lineup_members.count() == 0:
+        return HttpResponseNotFound("Not able to find any lineup members with username: " + member_username)
+    for member in lineup_members:
+        member.date_last_notified = datetime.datetime.now()
+        member.save(update_fields=['date_last_notified'])
+    return HttpResponse("")
+

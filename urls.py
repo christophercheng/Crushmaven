@@ -78,15 +78,29 @@ urlpatterns += patterns('crush.views.crush_views',
 urlpatterns += patterns('crush.views.setup_views',
                         
     (r'^setup_create_form/$','setup_create_form'),
+
     (r'^setup_create_form/(?P<target_person_username>\w+)/$','setup_create_form'),    
+    
     (r'^setups_for_me/$','setups_for_me'),
+   
     (r'^completed_setups_for_me/$','completed_setups_for_me'),
+    
     (r'^setups_by_me/$','setups_by_me'),
+    
     (r'^completed_setups_by_me/$','completed_setups_by_me'),
+    
     (r'^setup_requests_for_me/$','setup_requests_for_me'),
+    
     (r'^setup_requests_by_me/$','setup_requests_by_me'),
+    
     (r'^ajax_get_recommendee_exclude_ids/(?P<setup_target>\w+)/$','ajax_get_recommendee_exclude_ids'),
-    (r'^ajax_create_setup_request/(?P<setup_request_target>\w+)/$','ajax_create_setup_request')
+    
+    (r'^ajax_create_setup_request/(?P<setup_request_target>\w+)/$','ajax_create_setup_request'),
+    
+    (r'^ajax_update_date_notification_last_sent/(?P<target_username>\w+)/$','ajax_update_date_notification_last_sent'),
+    
+    (r'^ajax_update_setup_lineup_member_date_last_notified/(?P<member_username>\w+)/$','ajax_update_setup_lineup_member_date_last_notified'),
+    
 )
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --

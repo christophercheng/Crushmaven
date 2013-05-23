@@ -514,8 +514,7 @@ class SetupRelationship(BasicRelationship):
     # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
     #objects = SetupRelationshipManager()
     
-
-    date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
+    date_notification_last_sent = models.DateTimeField(auto_now_add=True)  
 
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
