@@ -1539,6 +1539,12 @@ top:1px;
 	height:60px;
 	margin-bottom:10px;
 }
+
+.lineup_block .from_pic_div {
+	position:relative;
+	display:inline-block;
+	
+}
 .lineup_block .from_pic{
 	display:inline-block;
 	width:60px;
@@ -1546,6 +1552,22 @@ top:1px;
 	border:1px solid black;
 	border-radius:3px;
 }
+
+.lineup_block .from_pic_div .admirer_question{
+	position:absolute;
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-position:-156px -123px;
+	background-size:auto;
+	width:20px;
+	height:20px;
+	opacity:1;
+	right:20px;
+	bottom:37px;	
+}
+
 .lineup_block .lineup_title{
 	display:inline-block;
 	padding-left:10px;
