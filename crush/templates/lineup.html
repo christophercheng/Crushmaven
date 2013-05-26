@@ -163,7 +163,7 @@ $(document).ready(function() // handling for the slider
 			var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
 			var img_element = $('#bx-pager img[lineup_position=' + next_position + ']')
 
-			img_element.attr('src', new_src).attr('width','50').attr('height','50');	
+			img_element.attr('src', new_src).attr('width','50').attr('height','50').attr('title','');	
 			img_element.wrap('<a data-slide-index="' + next_position + '" href="">');
 			callback(next_position);
 				// add the fake next button if we're not at the last slide
