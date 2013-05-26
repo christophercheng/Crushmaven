@@ -339,8 +339,8 @@
 		                      		//'<span id="nfs-help-pointer"></span>' +
 		                      		"<h3>What is a unique Facebook user id?</h3>" +
 		                      		'<p>In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar at the top of the browser.  ' +
-		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.  Copy and paste it up above.</p>' +
-		                      		'<img src=\'/static/add_attraction_help.png\'>' +
+		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id. Copy and paste it up above.  <strong>Exclude the \'?\' or \'/\' characters and anything after them.</strong></p>' +
+		                      		'<img src=\'/static/images/friend_selector_help.png\'>' +
 		                      		'In the above example, the unique Facebook user id is \'JessicaAlba\'' +
 		                      		'<span class="delete_button"></span>' +
 		                      '</div></span>' +
@@ -610,7 +610,7 @@
 		   $('#nfs-help').css('left','-0px');
 		   $('#nfs-help').css('top','0px');
 		   $('#nfs-help').show('1000');
-		   $('#nfs-help').animate({	left:-365,top: 80},500);		   
+		   $('#nfs-help').animate({	left:-365,top: 50},500);		   
 	   }
 	   else{
 		   $('#nfs-help').animate({	left:0,top: 0},500);	
