@@ -156,7 +156,7 @@ def ajax_load_response_dialog_content(request, crush_id):
         ajax_response += "<div class='dialog_subtitle'>Congratulations!</div>" 
         ajax_response += "<div id='response_container'>"
         ajax_response += "<span class='response_message'>" + crush.get_name() + " expressed a mutual attraction to you.</span>"
-        ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="response_decision_yes"></span></span>';
+        ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="decision_icon_yes"></span></span>';
         # check for any previously hidden messages from the target_person
         if request.user.received_messages.filter(sender=relationship.target_person).count() == 0:           
             ajax_response += "<a href='#'  crush_id='" + crush_id + "' id='response_send_message'>Send " + crush.first_name + " a Message</a>"

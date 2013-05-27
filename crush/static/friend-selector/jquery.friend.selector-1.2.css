@@ -105,12 +105,12 @@
 .close_dialog{
 	display:inline-block;
 	position:absolute;
-	background-image:url(../images/site_sprite.png);	
+	background-image:url(../images/full_sprite.png);	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:30px;
 	vertical-align:-1px;
-	background-position:-61px -63px;
+	background-position:-179px -26px;
 	height:30px;
 	top:-4px;
 	right:2px;
@@ -211,11 +211,11 @@
 
 #nfs-help .delete_button {
 	position:absolute;
-	background-image:url(../images/site_sprite.png);	
+	background-image:url(../images/full_sprite.png);	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:30px;
-	background-position:0px -69px;
+	background-position:-182px -1px;
 	height:30px;
 	top:0px;
 	right:0px;
