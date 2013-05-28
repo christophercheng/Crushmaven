@@ -304,16 +304,19 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             admirer_rel.updated_flag=True
             admirer_rel.save(update_fields=['date_lineup_started','updated_flag'])
         
+        # handle processing when last lineup member decided upon
         if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             if is_admirer_type != 1:
                 admirer_rel.updated_flag=True
-                # if this is a setup lineup, then also check to see if the setup is complete 
+                # if this is a setup lineup, then also check to see if the setup is complete
+                # ?CHC0527 - how could the setup ever be complete if the lineup ws just completed? answer: if the lineup was all NO's!
                 if admirer_rel.is_setup_complete():
                     admirer_rel.date_setup_completed = datetime.datetime.now()
                     admirer_rel.save(update_fields=['date_lineup_finished','date_setup_completed','updated_flag'])
                 else:
                     admirer_rel.save(update_fields=['date_lineup_finished','updated_flag'])
+                # notify recommender that the client completed the lineup
                 admirer_rel.notify_source_person()
             else:
                 admirer_rel.save(update_fields=['date_lineup_finished'])

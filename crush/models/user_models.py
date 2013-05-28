@@ -211,7 +211,7 @@ class FacebookUser(AbstractUser):
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
     bNotify_setup_lineup_completed= models.BooleanField(default=True)
-    bNotify_setup_recommendee_responded= models.BooleanField(default=True)
+    bNotify_setup_response_received= models.BooleanField(default=True)
     
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.
