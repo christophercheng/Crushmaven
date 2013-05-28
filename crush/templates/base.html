@@ -204,7 +204,7 @@ jQuery(document).ready(function($) {
   		// on success redirect to the crush page
   		window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
   		//document.location.href='/attractions/'; // reload page
-  	});
+  	}).fail(function(error){window.alert_user(error.responseText);});
   };
 
 }); // close of jQuery(document).ready
@@ -415,8 +415,9 @@ $('body').on('click',".popup_link",function(e){
 $('.left_sidebar_container .navbar .inactive a').mousedown(function(event)
 	{
 	if (event.button == 0){
-		$(this).css('border-left','1px solid #2E2E2E');
-		$(this).css('border-top','1px solid #2E2E2E');
+		//$(this).css('border-left','1px solid #2E2E2E');
+		//$(this).css('border-top','1px solid #2E2E2E');
+		$(this).css('border','1px solid #2E2E2E');
 		$(this).css('padding-right','6px');
 	}
 	});

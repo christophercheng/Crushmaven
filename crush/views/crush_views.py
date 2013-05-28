@@ -18,6 +18,9 @@ from urllib2 import URLError, HTTPError
 def ajax_add_crush_targets(request):
     global g_init_dict
     post_data = request.POST
+    # ensure that user has not exceeded beta limits:
+    if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_ATTRACTIONS:
+        return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_ATTRACTIONS) + " attractions at a time.")
     # this is just for testing, remove later
     counter = 0
     for key in post_data:
@@ -48,9 +51,9 @@ def ajax_add_crush_targets(request):
             #    thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
     
     if counter > 0:
-        return HttpResponse()
+        return HttpResponse('')
     else:
-        return HttpResponseNotFound()
+        return HttpResponseNotFound("Sorry, we were not able to add any new attractions.  Please try again.")
     
 @login_required
 def ajax_admin_delete_crush_target(request, crush_username):

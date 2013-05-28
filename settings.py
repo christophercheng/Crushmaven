@@ -223,6 +223,7 @@ MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
 MAXIMUM_CRUSH_INVITE_EMAILS=5
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=25
 MINIMUM_INVITE_RESEND_DAYS=2
+MAXIMUM_ATTRACTIONS=50
 PLATONIC_RATINGS = {
                     5:'very attractive - just not for me',
                     4:'somewhat attractive - just not for me', 
