@@ -372,13 +372,22 @@ $('body').on('click',".popup_link",function(e){
 	  				description:'JustMaybe.us is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
 			      },
 			      function(response){
-							if (response != null)
-								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data);
-							attraction_array.splice(0,1);
-							if (attraction_array.length)
-								send_fb_requests(attraction_array);  	
-							else // reload page so that the new requests can be processed by base.html javascript
-								window.location.href="/requests_by_me/";
+							if (response != null){
+								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+									attraction_array.splice(0,1);
+									if (attraction_array.length)
+										send_fb_requests(attraction_array);  	
+									else // reload page so that the new requests can be processed by base.html javascript
+										window.location.href="/setup_requests_by_me/";
+								});
+							}
+							else {
+								attraction_array.splice(0,1);
+								if (attraction_array.length)
+									send_fb_requests(attraction_array);  	
+								else // reload page so that the new requests can be processed by base.html javascript
+									window.location.href="/setup_requests_by_me/";
+							}
 			  		} // close off function (response)   
 		   	 	);// close off fb.ui
 	};

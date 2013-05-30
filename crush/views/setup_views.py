@@ -153,7 +153,7 @@ def setup_create_form(request,target_person_username=""):
     
 @login_required    
 def ajax_create_setup_request(request,setup_request_target):
-    
+    print "AJAX CREATE SETUP REQUEST"
     # look for the target by username
         # if doesn't already exist then create the user
     setup_request_target_user = FacebookUser.objects.find_or_create_user(setup_request_target, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)

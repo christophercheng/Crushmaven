@@ -67,7 +67,7 @@ $(document).ready(function()
 
 {% else %}
 	{% if request_type == 0 %}
-		<span id="no_content">You have no requests for setups.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Create a setup</a> anyway.</span>
+		<span id="no_content">No one has requested a setup from you.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Create a setup</a> anyhow.</span>
 	{% else %}
 		<span id="no_content">You have no outstanding setup requests.&nbsp;&nbsp;<a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span>
 	{% endif %}
