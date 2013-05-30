@@ -44,7 +44,7 @@
                 <li>needs an email invitation from you to sign up and consider your relationship</li>
         {% elif crush.get_display_status == 1 %}
                 <li>not a member</li>
-                <li>app invite(s) sent {% if crush.date_invite_last_sent %}{{crush.date_invite_last_sent|datetime_since}} ago&nbsp;&nbsp;{% endif %} <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" href="#">send more invites</a></span></li>
+                <li>app invite(s) sent {% if crush.date_invite_last_sent %}{{crush.date_invite_last_sent|datetime_since}} ago&nbsp;&nbsp;{% endif %} <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">send more invites</a></span></li>
         {% elif crush.get_display_status == 2 %}
                 {% if crush.date_target_signed_up %}
                         <li>signed up {{crush.date_target_signed_up|datetime_since }} ago</li>
@@ -79,7 +79,7 @@
 {% if crush.get_display_status == 0 %}
 
         <span class="app_invite_link button_container">
-                <a class="app_invite block_button button" crush_username="{{crush.target_person.username}}" href="#">Send App Invite</a>
+                <a class="app_invite block_button button" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">Send App Invite</a>
                 <div class="button_outset"></div>
                 <span class="hint_anonymous">anonymously</span>
         </span>

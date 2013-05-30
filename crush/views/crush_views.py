@@ -6,9 +6,11 @@ from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, 
 import json
 import datetime
 from crush.appinviteform import AppInviteForm
+from crush.appinviteformv2 import AppInviteForm2
 import time
 from utils import graph_api_fetch
 from urllib2 import URLError, HTTPError
+
 # for initialization routine
 # import thread
 # from crush.models.globals import g_init_dict
@@ -20,7 +22,7 @@ def ajax_add_crush_targets(request):
     post_data = request.POST
     # ensure that user has not exceeded beta limits:
     if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_ATTRACTIONS:
-        return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_ATTRACTIONS) + " attractions at a time.")
+        return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_ATTRACTIONS) + " ongoing attractions at a time.")
     # this is just for testing, remove later
     counter = 0
     for key in post_data:
@@ -229,18 +231,18 @@ def attractions_completed(request, reveal_crush_id=None):
                                'reveal_crush_id':reveal_crush_id,
                                })   
 
-
 @login_required    
-def app_invite_form_v2(request, crush_username):
-    print "APP INVITE FORM!"
+def app_invite_form_v2(request, crush_username,crush_fullname):
+    print "APP INVITE FORM!" + crush_fullname
     # crush_name should be first name last name
     if request.method == 'POST':  # if the form has been submitted...
         print "METHOD IS POST"
-        form = AppInviteForm(request.POST)
+        mutual_friend_json=eval(request.POST['mutual_friend_json'])
+        form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json)
         if form.is_valid():
             # send out the emails here
             crush_email_list = form.cleaned_data['crush_emails']
-            friend_email_list = form.cleaned_data['mutual_friend_emails']
+            friend_email_list = form.get_mutual_friend_email_array()
             try:
                 crush_relationship = CrushRelationship.objects.get(source_person=request.user, target_person__username=crush_username)
             except CrushRelationship.DoesNotExist:
@@ -278,39 +280,28 @@ def app_invite_form_v2(request, crush_username):
                     crush_relationship.updated_flag = True
                     crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
                     
-
-            if request.is_ajax():
-                print "success and returning rendered template"
-                return render(request, 'app_invite_success.html', {'crush_email_success_array':crush_email_success_array,
-                                                                 'crush_email_fail_array':crush_email_fail_array,
-                                                                 'friend_email_success_array':friend_email_success_array,
-                                                                 'friend_email_fail_array':friend_email_fail_array,
-                                                                 })
-            else:
-                print "success and redirecting"                
-                return redirect('app_invite_success')
+            return HttpResponseGone("")
     else:
         # determine if they haven't surpassed the total number of users to send out emails to:
         
         # find mutual friends to pass to the app invite form
         fb_query_string = str(request.user.username + '/mutualfriends/' + crush_username)
         try:           
-            friend_profile = graph_api_fetch(request.user.access_token, fb_query_string)
+            mutual_friend_json = graph_api_fetch(request.user.access_token, fb_query_string)
         except:
             raise 
-        friendlist_string = ''
-        if friend_profile != None:
-            for friend in friend_profile:
-                friendlist_string += friend['name'] + ', '
-            friendlist_string = friendlist_string[:-2]  # strip out last comma 
-        print "friendlist_string: " + friendlist_string
-        form = AppInviteForm(friendlist_string=friendlist_string)
+        print "Length of mutual_friend json: "+ str(len(mutual_friend_json))
+        form = AppInviteForm2(mutual_friend_json=mutual_friend_json)
         print "instantiated form instance"
-    return render(request, 'app_invite_form.html', {'form':form, 'crush_username':crush_username})
+    crush_firstname=crush_fullname.split(' ',1)[0]
+    return render(request, 'app_invite_form_v2.html', {'form':form, 'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'mutual_friend_json':mutual_friend_json})
 
+    
 @login_required    
 def app_invite_form(request, crush_username):
+    return HttpResponse("HEY")
     print "APP INVITE FORM!"
+    
     # crush_name should be first name last name
     if request.method == 'POST':  # if the form has been submitted...
         print "METHOD IS POST"
