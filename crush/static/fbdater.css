@@ -870,7 +870,7 @@ ul.title_bar li .title_bar_page_link .page_link_pointer{
 	text-align:center;
 	border-left:15px solid transparent;
 	border-right:15px solid transparent;
-	border-top:8px solid #474747;
+	border-top:8px solid rgb(51,51,51);
 	vertical-align:top;
 }
 
@@ -2821,7 +2821,7 @@ div.active_dialog_header {
 
 .modal_instructions{
 	width:100%;
-	background:#6699FF;
+	background:#2E8AE6;
 	padding: 5px 10px 5px 10px;
 	color:white; 
 	font-size:11px;
@@ -2871,11 +2871,16 @@ div.active_dialog_header {
 	border:none;
 	border-radius:5px;
 	font-size:11px;
-	padding:3px 10px;
-	letter-spacing:-1px;
+	padding:5px 10px;
+	letter-spacing:0px;
 	font-weight:bold;
 	cursor:pointer;
 }
+.attraction_invite_row .attraction_invite_button button:hover {
+	background:#3366FF;
+	
+}
+
 
 .attraction_invite_row .attraction_invite_button a {
 	color:#0033ff;
@@ -2900,19 +2905,24 @@ div.active_dialog_header {
 	position:relative;
 	display:inline-block;
 	padding:10px 10px 10px 10px;
+
 }
 
 #attraction_email_input_section{
-	padding-top:5px;
-	padding-bottom:5px;
-	border-bottom:1px solid black;
-	margin-bottom:10px;
-	
+	padding-top:8px;
+	padding-bottom:7px;
+		border-bottom:1px solid #C0DCF8;
 }
 
 #attraction_email_input_section .crush_email_name {
-	font-weight:bold;
 	font-size:14px;
+	display:inline-block;
+	width:90px;
+	height:30px;
+	vertical-align:middle;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 
 .email_field_input{
@@ -2934,19 +2944,41 @@ div.active_dialog_header {
 	display:inline-block;
 	padding-left:10px;
 	padding-right:10px;
-	margin-bottom:10px;
-	font-size:11px;
+	padding-top:5px;
+	padding-bottom:8px;
+	border-radius:0 0 8px 8px;
+	margin-bottom:8px;
+	margin-left:15px;
+	margin-right:15px;
+	margin-top:1px;
+	font-size:10px;
 	line-height:14px;
+	background:#E7F2FC;
+	#background:#FFFFF0;
+	border:1px solid #C0DCF8;
+	border-top:0px;
+	color:#4D4D4D;
+
 }
 #mutual_friend_input_section_subtitle .strong_subtitle{
-	font-size:12px;
-	font-weight:bold;	
+	font-size:11px;
+	font-style:italic;	
 }
 
 #mutual_friend_input_section{
 	overflow-y:auto;
 	max-height: 160px; 
 	padding-bottom:10px;
+}
+#mutual_friend_input_section .mf_email_name {
+	display:inline-block;
+	width:115px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	vertical-align:middle;
+	height:30px;
+	color:#666666;
 }
 
 .mf_email_field_input label{
@@ -2984,11 +3016,12 @@ div.active_dialog_header {
 }
 
 .email_input_error_section {
-	display:inline-block;
+	display:block;
 	float:left;
-	margin-top:3px;
 	margin-bottom:4px;
+	padding-left:5px;
 	list-style:none;
+	width:100%;
 }
 
 .email_input_error_section .errorlist{

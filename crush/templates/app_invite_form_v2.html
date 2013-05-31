@@ -39,12 +39,13 @@ $(document).ready(function()
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username crush_fullname%}" method="post">       
 <div id="ajaxwrapper">
-   <div class="dialog_subtitle">Enter any email addresses of your attraction.  We will send them an anonymous app invitation.</div>
+   <div class="modal_instructions">Enter any email addresses of your attraction.  We'll send them an anonymous app invitation - <i>sent from our justmabye.us email address</i>.</div>
 
    {% csrf_token %}
 
-   <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
+
    <div class="email_field_input" id="attraction_email_input_section">
+      <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
       <label for="id_crush_emails"><span class="crush_email_name">{{crush_firstname}}</span><img src="http://graph.facebook.com/{{crush_username}}/picture?width=30&height=30"></label> 
       <div class="fieldWrapper">
          {{ form.crush_emails }}
@@ -52,9 +53,8 @@ $(document).ready(function()
       		<span class="email_separator sub_label">separate multiple emails with commas</span>
       </div>
    </div><!-- close attraction_email_input -->
-
 	
-		<span id="mutual_friend_input_section_subtitle"><span class="strong_subtitle">Or anonymously enlist the help of your {{mutual_friend_json|length}} mutual friend(s) :</span>  We'll let them know what's going on - without revealing your identity - and ask them to forward our invitation on to your attraction.</span>
+<span id="mutual_friend_input_section_subtitle"><span class="strong_subtitle">Or enlist the help of mutual friends ({{mutual_friend_json|length}}) :</span> We'll let them know what's up and ask them to forward our invitation on to your attraction - without revealing your identity!</span>
 <div id="mutual_friend_input_section">
 	   {% for field in form %}
 	   		{% if field.label != "crush_field" %}
