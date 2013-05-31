@@ -56,20 +56,6 @@ def ajax_add_crush_targets(request):
         return HttpResponse('')
     else:
         return HttpResponseNotFound("Sorry, we were not able to add any new attractions.  Please try again.")
-    
-@login_required
-def ajax_admin_delete_crush_target(request, crush_username):
-    # if (not request.user.is_superuser) or (not request.user.is_staff):
-        # if request.user.username=="1057460663" or request.user.username=="651900292" or request.user.username=="100004192844461":
-        #    pass
-        # else:
-        #    return HttpResponseForbidden()        try:
-        relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
-        
-        relationship.delete()
-        return HttpResponse()
-    except CrushRelationship.DoesNotExist:
-        return HttpResponseNotFound()
 
 @login_required
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):

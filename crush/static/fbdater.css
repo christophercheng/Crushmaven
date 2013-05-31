@@ -3232,7 +3232,7 @@ div.active_dialog_header {
 	display:inline-block!important;
 	position:absolute!important;
 	background-image:url(images/full_sprite.png)!important;	
-	background-repeat:no-repeat!important;
+	background-repeat:no-repeat;
 	background-size:auto!important;
 	width:30px!important;
 	vertical-align:-1px!important;
@@ -3252,8 +3252,14 @@ div.active_dialog_header {
 }
 
 .ui-state-focus .ui-icon, .ui-state-hover .ui-icon {
-	background-position:-179px -30px!important;
+	background-position:-179px -29px!important;
 }
+
+/* this is a hack to hide an extra close icon*/
+.delete_crush_dialog  .ui-resizable-handle.ui-icon{
+	display:none!important;
+}
+
 
 /* used when the buttons of dialog are jquery buttons */
 .dialog_content_wrapper{
