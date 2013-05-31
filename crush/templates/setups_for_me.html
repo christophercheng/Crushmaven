@@ -144,7 +144,7 @@ $(document).ready(function()
 
 {% else %}
 	{% if setup_type == 0 %}
-		<span id="no_content">You have no setups from friends.&nbsp;&nbsp;<a href="javascript:{}" class="request_setup_link">Request one</a> to get started.</span>
+		<span id="no_content">You have no setups from friends.&nbsp;&nbsp;<a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span>
 	{% else %}
 		<span id="no_content">You have no <i>finished</i> setups from friends.&nbsp;&nbsp;<a href="javascript:{}" class="request_setup_link">Request one</a> to get started.</span>
 	{% endif %}
