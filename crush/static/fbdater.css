@@ -711,6 +711,7 @@ a.logo #to {
  background:#fff;
 }
 
+
 #friend_referral_bar li.friend_with_admirer img {
  	position:absolute;
  	display:inline-block;
@@ -758,6 +759,8 @@ a.logo #to {
 #friend_referral_bar li a{
 	border:none;
 	color:red;
+	height:100%;
+	width:100%;
 }
 #friend_referral_bar li a:hover {
 	background-color:#474747;
@@ -2778,16 +2781,16 @@ div.active_dialog_header {
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_recommendee_responded{
 	top:3px;
 }
-.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_yes {;
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_yes {
 	background-position:-126px -176px;
 }
-.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_waiting {;
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_waiting {
 	background-position:-156px -5px;
 }
-.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_no {;
-	background-position:-188x -135px;
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_no {
+	background-position:-188px -135px;
 }
-.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_null {;
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_null {
 	background-position:-156px -50px;
 	opacity:.6;
 }
@@ -2825,7 +2828,7 @@ div.active_dialog_header {
 	background:#2E8AE6;
 	padding: 5px 10px 5px 10px;
 	color:white; 
-	font-size:11px;
+	font-size:12px;
 }
 
 .modal_main_content {

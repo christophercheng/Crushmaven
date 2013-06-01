@@ -158,13 +158,12 @@ $(document).ready(function()
  * -------------------------------------------- */
 
  
-  	window.remove_crush_dialog = null;
+  	window.remove_crush_dialog = $("#remove_crush_dialog").dialog({dialogClass: 'delete_crush_dialog',modal: true, autoOpen: false});
   	// call ajax function to see if deletion if possible, if not then raise alert
   	//   if possible to delete, then confirm action with user before making second ajax call to actually perform the delete
    
     $("a.delete_crush").click(function(e) {
-    	if (!window.remove_crush_dialog)
-   			 window.remove_crush_dialog = $("#remove_crush_dialog").dialog({dialogClass: 'delete_crush_dialog',modal: true, autoOpen: false});
+
   		var name=$(this).attr('name');	
       var username=$(this).attr('username');
     	$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
