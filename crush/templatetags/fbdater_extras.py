@@ -75,7 +75,6 @@ def is_in_future(value):
     else:
         return False
 
-
 """
 Usage:
 {% if text|contains:"http://" %}

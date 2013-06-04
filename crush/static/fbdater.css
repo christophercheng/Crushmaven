@@ -233,15 +233,13 @@ visibility:hidden;
 
 /* ===========================   Header Container ========================= */
 a.logo{
-	#padding-bottom:5px;
 	font-size:32px;
-	#font-style:italic;
-	#color:#ff0033;
 	color:white;
 	font-family: Mistral,Arial,sans-serif;
 	display:inline-block;
 	vertical-align:middle;
 	line-height:55px;
+	padding-left:5px;
 }
 
 a.logo #to {
@@ -496,12 +494,13 @@ a.logo #to {
 }
 .navbar li.inactive.setups_for_me a .menu_icon{
 	background-position:-35px -90px;	
+	background-position:-35px -123px;
 }
 .navbar li.inactive.setups_by_me a .menu_icon{
 	background-position:-35px -123px;	
 }
 .navbar li.inactive.setup_requests_for_me a .menu_icon{
-	background-position:-34px -156px;	
+	background-position:-34px -156px;		
 }
 
 
@@ -515,8 +514,8 @@ a.logo #to {
 	background-position:-64px -57px;
 }
 .navbar li.active.setups_for_me a .menu_icon,.navbar li.inactive.setups_for_me:hover a .menu_icon{
-		background-position:-64px -90px;	
-		
+		#background-position:-64px -90px;	
+		background-position:-64px -122px;	
 }
 .navbar li.active.setups_by_me a .menu_icon,.navbar li.inactive.setups_by_me:hover a .menu_icon{
 		background-position:-64px -122px;	
@@ -532,7 +531,7 @@ a.logo #to {
 	font-weight:bold;
 	text-decoration:none;
 	border-bottom:1px solid #c0c0c0;#rgb(51,51,51);
-	padding:6px 7px 0px 31px;
+	padding:6px 7px 0px 30px;
 	width:195px;
 }
 .navbar li.active a{
@@ -544,10 +543,39 @@ a.logo #to {
 	}
 
 .navbar .menu_count{
-	float:right;
-	font-size:10px;
-	margin-top:0px;
-	font-style:italic;
+	position:absolute;
+	right:7px;
+	top:10px;
+	display:inline-block;
+	font-size:9px!important;
+	line-height:9px;
+	text-align:right;
+	word-spacing:-1px;
+	font-style:normal!important;
+}
+
+.navbar .new_menu_count{
+	color:red;
+	font-style:italic!important;
+}
+
+.navbar .new_menu_response_count{
+	position:absolute;
+	right:30px;
+	top:14px;
+	display:inline-block;
+	font-size:9px!important;
+	line-height:9px;
+	text-align:right;
+	word-spacing:-1px;
+	font-style:normal!important;
+		color:red;
+	font-style:italic!important;
+}
+
+.navbar li.active .menu_count{
+	right:9px;
+	top:13px;
 }
 
 .navbar li.active{
@@ -561,7 +589,7 @@ a.logo #to {
 
 .navbar li.active a {
 	color:#FFF;
-	font-style:italic;
+	#font-style:italic;
 	padding:9px 10px 0px 31px;
   background-color: black;
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
