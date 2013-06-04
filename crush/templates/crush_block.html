@@ -14,47 +14,17 @@
      {{ crush.resetUpdatedFlag }}
 {% endif %}
 
-<ul class="attraction_status_bar">
-        <li class="status_bar_name">
-                {{crush.target_person.first_name}} {{crush.target_person.last_name}}
-        </li>
-        <li class="status_responded attraction_status {% if crush.get_display_status > 3 %}active_status{% endif %}">
-                responded
-        </li>
-        <li class="status_started_lineup attraction_status {% if crush.get_display_status == 3 %}active_status{% elif crush.get_display_status > 3 %}past_status{% endif %}">
-                started<p>lineup</p>
-        </li>
-        <li class="status_signed_up attraction_status {% if crush.get_display_status == 2 %}active_status{% elif crush.get_display_status > 2 %}past_status{% endif %}">
-                signed up
-        </li>
-        <li class="status_not_signed_up attraction_status {% if crush.get_display_status < 2 %}active_status{% else %}past_status{% endif %}">
-                not<p>signed up</p>
-        </li>
-</ul>
-                
-<span class="progress_bar_canal">
-        <span class="progress_bar" width="{% if crush.get_display_status < 2 %}271{% elif crush.get_display_status == 2 %}347{% elif crush.get_display_status == 3 %}413{% else %}505{% endif%}"></span>
-</span>
 
-<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank"><img src="{{crush.target_person.get_facebook_picture }}" class="profile_pic"></a>     
+
+<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank"><img src="http://graph.facebook.com/{{crush.target_person.username}}/picture?width=225" class="profile_pic"></a>     
 
 <div class="status_detail_box">
 <ul class="status_details">
         {% if crush.get_display_status == 0 %}
                 <li>needs an email invitation from you to sign up and consider your relationship</li>
-        {% elif crush.get_display_status == 1 %}
+        {% elif crush.get_display_status < 4 %}
                 <li>not a member</li>
                 <li>app invite(s) sent {% if crush.date_invite_last_sent %}{{crush.date_invite_last_sent|datetime_since}} ago&nbsp;&nbsp;{% endif %} <span class="app_invite_link"><a class="app_invite" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">send more invites</a></span></li>
-        {% elif crush.get_display_status == 2 %}
-                {% if crush.date_target_signed_up %}
-                        <li>signed up {{crush.date_target_signed_up|datetime_since }} ago</li>
-                {% else %}
-                        <li>is an existing member</li>
-                {% endif %}
-                <li>must start your crush line-up to assess your relationship</li>
-        {% elif crush.get_display_status == 3 %}
-                <li>started crush line-up {{crush.date_lineup_started|datetime_since }} ago</li>
-                <li>response expected soon</li>
         {% elif not crush.is_results_paid %}
                 <li>responded {% if crush.date_target_responded %}{{crush.date_target_responded|datetime_since}} ago{% endif %}</li>    
         {% elif crush.get_display_status == 4 %} 

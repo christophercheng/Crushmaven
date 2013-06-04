@@ -9,7 +9,7 @@ Singles:
 		<li class="{% navactive request 'attractions' %} attractions">
 			<a href="{% url 'crush.views.crush_views.attractions' %}">
 				<span class="menu_icon"></span>
-				<span class="menu_title">Crushes</span></span>
+				<span class="menu_title">Attractions</span></span>
 				<span class="menu_count{% if num_new_responses %} new_menu_count">{{ num_new_responses }} response{% if num_new_responses > 1 %}s{% endif %}{% else %}">{{ num_crushes_in_progress }}{% endif %}</span>
 				<span class="nav_subtext">Find out if they feel the same</span>
 			</a>

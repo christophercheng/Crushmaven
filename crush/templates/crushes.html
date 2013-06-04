@@ -275,40 +275,6 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 </ul>
 <! -- End of crush type navigation widget -->  
 
-{% comment %}
-
-<!-- Display the crush type navigation widget -->  
-<span class="title_line"></span>
-<ul class="title_bar" id="title_bar_attractions">
-	<li class="title_bar_title">Attractions</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-	<li class="title_bar_option">
-		filter:
-		{% if crush_type == 0  %}
-		<a href="#" class="popup_link">not responded<span class="down_arrow">&#x25BC;</span></a>
-		<ul class="popup">
-			<li>
-				<a href="/attractions_completed/">responded ({{crushes_completed_count}})</a>
-			</li>
-		</ul>
-		{% else %}
-		<a href="#" class="popup_link">responded ({{crushes_completed_count}})<span class="down_arrow">&#x25BC;</span></a>
-		<ul class="popup">
-			<li>
-				<a href="/attractions/">not responded</a>
-			</li>
-		</ul>
-		{% endif %}
-	</li>
-</ul>
-<! -- End of crush type navigation widget -->  
-
-{% endcomment %}
-
-
 {% if crush_relationships %}
 	{% for crush in crush_relationships %}
 		{% with crush as crush %}
@@ -317,7 +283,6 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	{% endfor %}
 
 {% else %}
-{% comment }{% elif responded_relationships.count == 0 %}{% endcomment %}
 
 <span id="no_content">
 
