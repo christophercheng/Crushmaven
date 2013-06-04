@@ -403,7 +403,7 @@ a.logo #to {
 	background-position:-64px -1px;
 }
 #get_started_menu li a.set_up_friend_link .get_started_menu_icon{
-	background-position:-66px -90px;
+			background-position:-66px -123px;	
 }
 #get_started_menu li a.request_setup_link .get_started_menu_icon{
 	background-position:-64px -155px;
@@ -493,8 +493,7 @@ a.logo #to {
 	background-position:-35px -57px;	
 }
 .navbar li.inactive.setups_for_me a .menu_icon{
-	background-position:-35px -90px;	
-	background-position:-35px -123px;
+	background-position:-35px -279px;
 }
 .navbar li.inactive.setups_by_me a .menu_icon{
 	background-position:-35px -123px;	
@@ -514,8 +513,7 @@ a.logo #to {
 	background-position:-64px -57px;
 }
 .navbar li.active.setups_for_me a .menu_icon,.navbar li.inactive.setups_for_me:hover a .menu_icon{
-		#background-position:-64px -90px;	
-		background-position:-64px -122px;	
+		background-position:-64px -279px;	
 }
 .navbar li.active.setups_by_me a .menu_icon,.navbar li.inactive.setups_by_me:hover a .menu_icon{
 		background-position:-64px -122px;	
@@ -715,7 +713,6 @@ a.logo #to {
 .left_sidebar_container #combo_singles_button a:active{
 		border:1px solid #232334;
 		cursor:pointer;
-		height:38px;
 }
 	
 .left_sidebar_container .button_container#create_setup a{
