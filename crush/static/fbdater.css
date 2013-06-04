@@ -647,40 +647,41 @@ a.logo #to {
 	height:20px;
 	width:20px;
 	top:11px;
-	left:74px;
+	left:72px;
 }
 
 .left_sidebar_container #combo_singles_button a{
 	display:inline-block;
 	background-color:#3E3E5C;;
 	font-size:11px;
-	vertical-align:middle;
 	border:0px;
 	color:white;
-	line-height:38px;
+	height:40px;
+	padding-top:3px;
 	font-weight:bold;
 	font-style:italic;
 	cursor:pointer;
+	text-align:center;
 
 }
 .left_sidebar_container #combo_singles_button a.bt-fs-dialog {
 	border-radius:0px 0px 0px 7px;
 	float:left;
 	#border-right:2px solid #595983;
-	width:85px;
-	padding-left:4px;
+	width:82px;
+	padding-right:2px;
 }
 .left_sidebar_container a.request_setup_link{
 	border-radius:0px 0px 7px 0px;	
 	float:left;
-	width:110px;
-	padding-left:12px;
+	width:113px;
+	padding-left:1px;
 	background-color:#32324A!important;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
 	background-color:#4A4A64!important;
-	transition-property:background-color;javascript:{}
+	transition-property:background-color;
 	transition-duration:200ms;
 }
 .left_sidebar_container #combo_singles_button a:active{
