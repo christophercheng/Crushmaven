@@ -1,6 +1,6 @@
 {% load base_extras %}
 <div class="nav_header">
-Relationships
+Singles:
 </div>
 
 <ul id="main_nav" class = "navbar">
@@ -9,7 +9,7 @@ Relationships
 		<li class="{% navactive request 'attractions' %} attractions">
 			<a href="{% url 'crush.views.crush_views.attractions' %}">
 				<span class="menu_icon"></span>
-				<span class="menu_title">Attractions</span></span>
+				<span class="menu_title">Crushes</span></span>
 				<span class="menu_count" id="num_crushes_in_progress">{{num_crushes_in_progress}}</span>
 				<span class="nav_subtext">Find out if they feel the same</span>
 			</a>
@@ -30,32 +30,33 @@ Relationships
 				<span class="nav_subtext">Chat with mutual attractions</span>
 			</a>
 		</li>
+		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
+			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
+				<span class="menu_icon"></span>				
+				<span class="menu_title setups_for_me_menu_title">Friend Setups</span>
+				<span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
+				<span class="nav_subtext">See who they picked for you</span>
+			</a>
+		</li>
 </ul>
+<div class="button_container" id="combo_singles_button">
+	<a href="javascript:{}" class="bt-fs-dialog ">Add a Crush</a>
 
-<div class="button_container" id="add_attraction">
-	<a href="javascript:{}" class="bt-fs-dialog button"><span class="add_icon"></span>Add Attraction</a>
-	<div class="button_outset"></div>
+	<a href="javascript:{}" class="request_setup_link" setup_select="true">Request a Setup</a>
+	<span class="small_add_icon"></span>
 </div>
 
 <div class="nav_header">
-Setups
+Matchmakers:
 </div>
 
 <ul id="setup_nav" class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
-			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
-				<span class="menu_icon"></span>				
-				<span class="menu_title setups_for_me_menu_title">From Friends</span>
-				<span  class="menu_count">{{num_setups_for_me_in_progress}}</span>
-				<span class="nav_subtext">See who they picked for you</span>
-			</a>
-		</li>
 		<li class="{% navactive request 'setups_by_me' %} setups_by_me">
 			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">
 				<span class="menu_icon"></span>				
-				<span class="menu_title">Made By You</span> 
+				<span class="menu_title">Your Setups</span> 
 				<span class="menu_count">{{num_setups_by_me_in_progress}}</span>
 				<span class="nav_subtext">Check status and results</span>
 			</a>
@@ -63,14 +64,13 @@ Setups
 		<li class="{% navactive request 'setup_requests' %} setup_requests_for_me">
 			<a href="{% url 'crush.views.setup_views.setup_requests_for_me' %}">
 				<span class="menu_icon"></span>				
-				<span class="menu_title">Requests</span> 
+				<span class="menu_title">Friends in Need</span> 
 				<span class="menu_count">{{num_setup_requests}}</span>
-				<span class="nav_subtext">Set up friends seeking your help</span>
+				<span class="nav_subtext">Help friends requesting a setup</span>
 			</a>
 		</li>
 </ul>
 
 <div class="button_container" id="create_setup">
-	<a href="javascript:{}" class="create_setup button set_up_friend_link"><span class="add_icon"></span>Setup Friend</a>
-	<div class="button_outset"></div>
+	<a href="javascript:{}" class="create_setup button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
 </div>
