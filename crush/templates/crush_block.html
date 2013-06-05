@@ -1,23 +1,82 @@
 {% load fbdater_extras %}
-        <div class="crush_block crush_status_{{crush.get_display_status}}" username="{{crush.target_person.username}}">
+
+<div class="crush_block crush_status_{{crush.get_display_status}}" username="{{crush.target_person.username}}">
         
-<!-- Display Upper-Left Flag: Mutual, NEW or UPDATED - iff relevant -->  
-{% if crush.is_results_paid and crush.get_display_status == 4 %}
-			<!-- Display MUTUAL ATTRACTION! if relevant -->                 
-		  <span class="updated mutual_attraction">mutual</span>
-{% elif crush.updated_flag == True %}
-     {% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
-             <span class="updated">new</span>
-     {% else %}
-             <span class="updated">updated</span>
-     {% endif %}
-     {{ crush.resetUpdatedFlag }}
-{% endif %}
+	<!-- Display Upper-Left Flag: Mutual, NEW or UPDATED - iff relevant -->  
+	{% if crush.is_results_paid and crush.get_display_status == 4 %}
+		<!-- Display MUTUAL ATTRACTION! if relevant -->                 
+		<span class="updated mutual_attraction">mutual attraction</span>
+	{% elif crush.updated_flag == True %}
+	     {% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
+	     	<span class="updated">new</span>
+	     {% endif %}
+	     {{ crush.resetUpdatedFlag }}
+	{% endif %}
+
+<div class="left_half_block">
+	<a class="profile_pic_link" href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">
+		<img src="http://graph.facebook.com/{{crush.target_person.username}}/picture?width=200&height=200" class="profile_pic">
+	</a>     
+</div>
+<div class="right_half_block">
+	<div class="crush_response_body">
+	{% if crush.get_display_status < 4 %}
+		
+		<div class="crush_block_name">{{crush.target_person.get_name}}</div>
+		{% if crush.date_invite_last_sent %}
+			<span class="app_invite_link app_invite_link_more"><a class="app_invite" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">send more invites</a></span>
+		{% else %}
+			<span class="app_invite_link"><a class="app_invite crush_block_button" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">send invite</a></span>
+	        <div class="hint_anonymous">anonymously</div>
+		{% endif %}
+		
+	{% else %} <!-- handling for status = 4 or 5 -->
+	
+		{% if not crush.is_results_paid %}
+		
+			<div class="crush_block_name">{{crush.target_person.get_name}}</div>
+			<a href="#" class="check_credit crush_block_button" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a>
+		
+		{% else %}<!-- responded & results paid -->
+			<div class="crush_response_icon"></div>
+			<div class="crush_block_name">{{crush.target_person.get_name}}</div>
+				{% if crush.get_display_status == 4 %}
+					<span>is mutually attracted to you! (as of {{crush.date_target_responded}}) </span>
+					{% if not crush.can_message %}
+						<a href="#" onclick="purchase_conversation('{{csrf_token}}','{{crush.target_person.username}}')">send a message</a>
+					{% else %}
+						<a href="#" onclick='location.href="/messages/converse/{{crush.target_person.username}}"'>send a message</a>
+					{% endif %}
+				{% else %}
+					<span>is <i>not mutually attracted</i> to you (as of {{crush.date_target_responded}})</span>
+					{% if crush.target_platonic_rating != None %}
+						{% if crush.is_platonic_rating_paid %}                  
+	                    	<span>assessed your attractiveness: {{crush.target_platonic_rating}} out of 5 </span>
+	                    	<span>({{crush.get_target_platonic_rating_display}})</span>
+	                    {% else %}
+	                    	<span>assessed your level of attractiveness:</span> 
+	                    	<a class="response_view_rating" href="#" unique_id="{{crush.target_person.username}}">View Feedback</a>
+	                    {% endif %} <!-- endif crush.is_platonic_rating_paid -->
+					{% endif %} <!-- endif crush.is_platonic_rating -->
+				{% endif %} <!-- endif crush mutual or not handling -->
+		{% endif %} <!-- endif crush responded and results paid
+	{% endif %} <!-- endif crush.get_display_status less than 4 -->
+	</div> <!-- close off div crush_response_body -->
+</div> <!-- close off div class=right_half_block -->
+
+<span class="view_facebook_widget"><a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view<span class="view_facebook_icon"></span></a></span>      
+
+<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
+                                {{crush.target_person.last_name}}" class="delete_crush" href="#" ></a> 
+</div> <!-- close off crush_block div -->
+ 
 
 
 
-<a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank"><img src="http://graph.facebook.com/{{crush.target_person.username}}/picture?width=225" class="profile_pic"></a>     
 
+
+
+{% comment %}
 <div class="status_detail_box">
 <ul class="status_details">
         {% if crush.get_display_status == 0 %}
@@ -70,11 +129,6 @@
 
 
 <!-- end: conditional button: send invite -->           
-       
-<span class="view_facebook_widget"><a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view<span class="view_facebook_icon"></span></a></span>      
- 
-<a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
-                                {{crush.target_person.last_name}}" class="delete_crush" href="#" ></a> 
-</div> <!-- close off crush_block div -->
- 
+{% endcomment %}     
+
         
