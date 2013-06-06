@@ -221,10 +221,11 @@ def attractions_completed(request, reveal_crush_id=None):
                                })   
 
 @login_required    
-def app_invite_form_v2(request, crush_username,crush_fullname):
-    print "APP INVITE FORM!" + crush_fullname
+def app_invite_form_v2(request, crush_username):
+    print "APP INVITE FORM!"
+    crush_fullname=request.POST['crush_fullname']
     # crush_name should be first name last name
-    if request.method == 'POST':  # if the form has been submitted...
+    if 'posted_form' in request.POST:  # if the form has been submitted...
         print "METHOD IS POST"
         mutual_friend_json=eval(request.POST['mutual_friend_json'])
         form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json)

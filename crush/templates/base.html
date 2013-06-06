@@ -82,8 +82,8 @@ jQuery(document).ready(function($) {
 			window.app_invite_modal.dialog('open');
 			var crush_username=$(this).attr('crush_username');	
 			var crush_fullname=$(this).attr('crush_fullname');
-			var load_url="/app_invite_form_v2/" + crush_username + "/" + encodeURIComponent(crush_fullname) + "/";
-			window.app_invite_modal.load(load_url,function(responseText,textStatus,XHR){
+			var load_url="/app_invite_form_v2/" + crush_username + "/";
+			window.app_invite_modal.load(load_url,{'crush_fullname':crush_fullname,'csrfmiddlewaretoken':'{{csrf_token}}' },function(responseText,textStatus,XHR){
 				if (textStatus!="success"){
 					if (!window.access_token_error(responseText))
 						$(this).html("{{ajax_error}}");

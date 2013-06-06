@@ -52,7 +52,7 @@ class AppInviteForm2(forms.Form):
         print "clean called"
         at_least_one_data=False
         for name,value in self.data.items():
-            if value!="" and name!="csrfmiddlewaretoken" and name!="mutual_friend_json":
+            if value!="" and name!="csrfmiddlewaretoken" and name!="mutual_friend_json" and name!="crush_fullname":
                 at_least_one_data=True
                 break
         if not at_least_one_data:
