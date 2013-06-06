@@ -112,6 +112,8 @@ jQuery(document).ready(function($) {
 			var modal_html ="";
 			modal_html += '<div class="modal_instructions">To get a response from your newly added attraction(s), please help us get them signed into the application.</div>';
 			modal_html += '<div class="modal_main_content">';
+			window.invite_interstitial_modal.dialog('open');	
+			
 			var counter = 0;
 			for (var username in attraction_json) {
 				counter++;
@@ -130,7 +132,7 @@ jQuery(document).ready(function($) {
 				
 			modal_html += '</div>';//close off dialog_main_content div
 			window.invite_interstitial_modal.html(modal_html);
-			window.invite_interstitial_modal.dialog('open');	
+			window.invite_interstitial_modal.dialog("option","position","center");
 	};
 	
 	
