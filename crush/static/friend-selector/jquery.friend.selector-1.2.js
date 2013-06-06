@@ -293,9 +293,9 @@
     
     var button_bar =  '<div id="fs-dialog-buttons">' +
 		'<div id="fs-terms"><span id="fs-terms-checkbox-container"><input id="fs-terms-checkbox" type="checkbox" checked="checked"/></span><span id="fs-terms-checkbox-text">I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span></div>'  +
-		 '<a href="javascript:{}" id="fs-cancel-button" class="fs-button"><span>'+ fsOptions.lang.buttonCancel +'</span></a>' +
+		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class="fs-button" href="javascript://"><span>&#60; Back</span></a>' +
-		 '<button href="javascript:{}" id="fs-continue-button" class="fs-button" disabled><span>' + fsOptions.lang.buttonContinue + '</span></button>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
 		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Add</span></a>' +
   	'</div>';
     

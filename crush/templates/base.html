@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
 			// only initialize jquery modal dialog once per page load
 			
 			if (!window.invite_insterstitial_modal)
-				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){location.href=redirect_url;},autoOpen: false,position:{my:"left center",at:"right+100 center-70",of:'.left_sidebar_container .bt-fs-dialog'}});
+				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){location.href=redirect_url;},autoOpen: false});
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
@@ -405,8 +405,7 @@ $('body').on('click',".popup_link",function(e){
 
 	//if (!window.setup_create_modal)
 			window.setup_create_modal = $("#setup_create_modal").dialog({
-				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}
-				});
+				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},width:500,height:298});
 		window.setup_create_modal.html('<div id="site-loading"></div>');
 		window.setup_create_modal.dialog('open');
 		var target_person_username = $(this).attr('target_person_username');
@@ -441,7 +440,20 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 		}
 	});
 
+function handle_window_resize(){
+	$('.ui-dialog-content:visible').each(function(){
+		var dialog = $(this).data("dialog");
+		dialog.option("position","center");
+		});
+};
+var timeoutPointer;
+$(window).resize(function(){
+	clearTimeout(timeoutPointer);
+	timeoutPointer = setTimeout(handle_window_resize,100);
+});
+
 }); // close of jQuery(document).ready
+
 
 
 

@@ -581,6 +581,7 @@ li.checked .fs-anchor {
 	width:80px;
 }
 
+/* use the css style of the site's cancel button
   #fs-cancel-button {
     background: #eae9e9;
     border-color: #999;
@@ -606,7 +607,7 @@ li.checked .fs-anchor {
   #fs-cancel-button:active span {
     border-top: 1px solid #ddd
   }
-  
+  */
   #fs-terms {
 		float:left;
 		color:#E0E0E0;

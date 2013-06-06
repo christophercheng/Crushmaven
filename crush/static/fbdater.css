@@ -3510,13 +3510,13 @@ div.active_dialog_header {
 .ui-dialog .ui-dialog-buttonpane button {
 	vertical-align:middle;
 }
-.ui-button .ui-button-text{
-	padding:4px 10px!important;
+.ui-button-text{
+	padding:4px 10px;
 	line-height:14px;
 	font-size:14px;
 }
 
-.ui-dialog .ui-dialog-buttonpane button.site_dialog_button {
+.site_dialog_button {
 	background-color: #3366FF;
 	background:#3366FF;
 	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
@@ -3524,7 +3524,7 @@ div.active_dialog_header {
 	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	color:#F2f2f2;
-	border: 1px solid #194396;
+	border: 0px solid #194396;
 	padding:1px 4px;
 	text-align:center;
 	border-radius:4px;
@@ -3533,31 +3533,43 @@ div.active_dialog_header {
 	font-size:14px;
 	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
 	vertical-align:middle;
+	margin:8px 6px 8px 0px!important;
 }
 
-.ui-dialog .ui-dialog-buttonpane button.site_dialog_button[disabled=""] {
+
+.site_dialog_cancel_button {
+	background:#434343!important;
+	border:0px!important;
+	color:white!important;
+}
+
+.site_dialog_button[disabled=""] {
 	color:rgb(0,0,70);
 	text-shadow:none;
 	cursor:inherit;
 	}
 
-.ui-dialog .ui-dialog-buttonpane  button.site_dialog_button:hover {
+.site_dialog_button:hover {
 	#color:#fff;
 	background-color:#0033FF;
 	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 100%);
-	
 }
 
-.ui-dialog .ui-dialog-buttonpane button.site_dialog_button[disabled=""]:hover{
+.site_dialog_button[disabled=""]:hover{
 	background-color: #3366FF;
 	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
 }
+.site_dialog_cancel_button:hover {
+	background:#585858!important;
+	color:white;
+}
+
 
 .dialog_subtitle {
 	display:inline-block;
