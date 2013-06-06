@@ -21,7 +21,20 @@
 	<div class="crush_response_body">
 	{% if crush.get_display_status < 4 %}
 		
-		<div class="crush_block_name">{{crush.target_person.get_name}}</div>
+		<div class="crush_block_name">
+			<div class="crush_block_name_center">
+				<a href="javascript:;" class="crush_name_link popup_link">{{crush.target_person.get_name}}<i class="icon down-dir">&#x25BC;</i></a>
+				<ul class="crush_name_submenu popup">
+					<li>
+						<a href="#" class="delete_crush" name="{{crush.target_person.get_name}}" username="{{crush.target_person.username}}">remove from attraction list</a>
+					</li>
+					<li class="crush_name_link_date_added">
+						added {{crush.date_added|datetime_since}} ago
+					</li>
+				</ul>
+			</div>
+			
+		</div>
 		{% if crush.date_invite_last_sent %}
 			<span class="app_invite_link app_invite_link_more"><a class="app_invite" crush_username="{{crush.target_person.username}}" crush_fullname="{{crush.target_person.get_name}}" href="#">send more invites</a></span>
 		{% else %}

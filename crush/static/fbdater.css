@@ -638,7 +638,7 @@ a.logo #to {
 	height:37px;
 	width:100%;
 	z-index:10;
-	margin-bottom:25px;
+	margin-bottom:30px;
 }
 
 .left_sidebar_container .button_container a .add_icon{
@@ -1153,10 +1153,70 @@ ul.nav_bar li#nav_bar_options{
 	margin-top:37px;
 }
 
-.crush_response_body .crush_block_name{
+.crush_response_body .crush_block_name {
 	font-size:17px;
 	margin-bottom:18px;
 	font-weight:bold;
+}
+.crush_response_body .crush_block_name a{
+		font-size:17px;
+		color:#333333;
+		line-height:16px;
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+	}
+	
+.down-dir{
+	display:inline-block;
+	font-size:10px;
+	vertical-align:middle;
+	margin-left:1px;
+}
+.crush_block_name .down-dir {
+	margin-bottom:2px;
+	margin-left:2px;
+	color:#828282;
+}
+.crush_block_name .crush_block_name_center{
+	display:inline-block;
+	position:relative;
+}
+
+.crush_block_name_center .crush_name_submenu{
+	display:none;
+	position:absolute;
+	font-size:11px;
+	font-weight:normal;
+	top:20px;
+	right:0px;
+	border:1px solid gray;
+	border-radius: 0px 0px 5px 5px;
+	list-style-type:none;
+	background:white;
+	padding-top:10px;
+	padding-bottom:10px;
+	height:70px;
+	width:170px;
+	text-align:center;
+}
+
+.crush_block_name_center .crush_name_submenu a{
+	padding:4px;
+	font-size:12px;
+	display:inline-block;
+	width:100%;
+}
+.crush_block_name_center .crush_name_submenu a:hover{
+	background: rgb(51,51,51);
+	color:white;
+	}
+
+.crush_name_link_date_added{
+	display:inline-block;
+	position:absolute;
+	color:gray;
+	bottom:5px;
+	right:5px;
+	font-style:italic;
 }
 
 .crush_response_body .crush_block_button{
@@ -1608,20 +1668,6 @@ top:1px;
 	font-weight:normal;
 	color:#00297A;
 	letter-spacing:1px;
-	
-}
-
-.delete_crush{
-	display:inline-block;
-	position:absolute;
-	background-image:url(images/full_sprite.png);	
-	background-repeat:no-repeat;
-	background-size:auto;
-	width:19px;
-	background-position:-189px -2px;
-	height:19px;
-	top:0px;
-	right:-1px;
 }
 
 .view_facebook_widget{
