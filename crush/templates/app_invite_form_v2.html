@@ -39,7 +39,7 @@ $(document).ready(function()
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username crush_fullname%}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">Enter any email addresses of your attraction.  We'll send them an anonymous app invitation - <i>sent from our justmabye.us email address</i>.</div>
+   <div class="modal_instructions">Enter any email addresses of your attraction.  We'll send them an <strong><i>anonymous</i></strong> invitation - <strong><i>sent from our JustMaybe.us email address</i></strong>.</div>
 
    {% csrf_token %}
 

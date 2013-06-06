@@ -13,11 +13,10 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-<div id="remove_crush_dialog" title="Remove Crush">Are you sure you want to remove this person from your crush list?</div>
+<div id="remove_crush_dialog" title="Remove Crush"></div>
 <div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
 <div id="privacy_check"></div>
 <div id="response_modal" title = "Your Attraction's Response"></div>
-
 <script type="text/javascript">
 $(document).ready(function() 
 {
@@ -72,7 +71,6 @@ $(document).ready(function()
   $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){redirect_after_response_viewed();}});
   
   window.display_response_modal = function(crush_id) {
-
    	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
     
     $("#response_modal").html('<div id="site-loading"></div>');
@@ -90,12 +88,12 @@ $(document).ready(function()
    };
    
    
-   $("#response_view_rating a").click(function(){
+   $(".response_view_rating a").click(function(){
    		unique_id=$(this).attr('unique_id');
 	   	purchase_rating(unique_id);
    });
    
-   $("#response_modal").on('click','#response_view_rating a',function(){
+   $("#response_modal").on('click','.response_view_rating a',function(){
 		unique_id=$(this).attr('unique_id');
 		purchase_rating(unique_id);
    });
@@ -115,7 +113,7 @@ $(document).ready(function()
  	window.rating_purchased = function(unique_id){
 			var rating,html;
 			$.get('/ajax_get_platonic_rating/' + unique_id, function(rating){
-					rating_element = $('#response_view_rating');
+					rating_element = $('.response_view_rating');
 					rating_element.html(rating);
 				}).fail(function(){
 					window.alert_user("{{ajax_error}}");
@@ -294,4 +292,3 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	</span>
 {% endif %}
 {% endblock %}
-

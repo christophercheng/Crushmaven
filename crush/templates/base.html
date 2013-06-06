@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
 		 // search for the associated button and update it's html
 		target_element = $('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button[username=' + attraction_username + ']');
 		console.log(target_element);
-		target_element.html('invite(s) sent&nbsp;<a class="app_invite" crush_username="' + attraction_username + '">send more</a>');
+		target_element.html('invite(s) sent');
 		
 		// if no buttons exist, then auto close the dialog and redirect it 
 		if ($('.attraction_invite_button button').length == 0)
@@ -467,7 +467,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 </div> <!-- close off main_container -->
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="Something's Not Right"></div>
-<div id="app_invite_modal" title="Send Application Invites"></div>
+<div id="app_invite_modal" title="Send Anonymous Invites"></div>
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set Up a Friend"></div>

@@ -865,11 +865,9 @@ a.logo #to {
 
 ul.title_bar {
 	list-style:none;
-	#margin-top:25px;
 	margin-bottom:25px;
 	background:rgb(51,51,51);
 	border:1px solid #474747;
-	#background:#474747;
 	border-radius:15px;
 	display:inline-block;
 	padding-left:15px;
@@ -893,9 +891,7 @@ ul.title_bar li.conversation_title{
 	width:100%;
 }
 ul.title_bar li.conversation_title .conversation_title_name{
-	font-weight:normal;
-	font-size:13px;
-	font-style:italic;
+
 	}
 
 ul.title_bar li.title_bar_page_links  {
@@ -1085,17 +1081,13 @@ ul.nav_bar li#nav_bar_options{
 }
 
 .crush_block img.profile_pic{
-	width:200px;	
-	height:200px;
-		border: 1px solid rgba(0,0,0,.5);
-}
-
-.crush_block .left_half_block {
-	display:inline-block;
-	width:200px;
-	height:200px;
+	width:160px;	
+	height:160px;
+	#border: 1px solid rgba(0,0,0,.5);
 	float:left;
 }
+
+
 .crush_block {
 	background-color:white;
 	#background-color:rgba(204,204,153,.1);
@@ -1109,7 +1101,7 @@ ul.nav_bar li#nav_bar_options{
 	box-shadow: 1px 1px 4px #333366;/*#CC0000;*/
 	box-shadow: 2px 1px 4px rgba(0,0,0,.5);
 	border: 1px solid rgba(0,0,0,.5);
-	height:201px;
+	height:161px;
 }
 
 .crush_block:hover{
@@ -1135,34 +1127,58 @@ ul.nav_bar li#nav_bar_options{
 	vertical-align:middle;
 }
 
-
 .right_half_block{
 	display:inline-block;
-	width:348px;
+	width:388px;
 	height:100%;
+	position:relative;
+}
+
+.crush_status_4 .response_icon{
+	display:inline-block!important;
+	position:absolute!important;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:40px;
+	background-position:-4px -305px;
+	height:40px;
+	top:54px;
+	left:20px;
 }
 
 .crush_response_body{
 	text-align:center;
 	height:100px;
-	margin-top:60px;
+	margin-top:37px;
 }
 
 .crush_response_body .crush_block_name{
 	font-size:17px;
-	margin-bottom:15px;
+	margin-bottom:18px;
+	font-weight:bold;
 }
 
 .crush_response_body .crush_block_button{
-	display:inline-block;
+	display:inline-block!important;
 	padding:5px 12px;
 	background:#254AB8;
 	border-radius:5px;
-	color:white;
+	color:white!important;
+	font-weight:bold;
+	font-size:13px;
 }
 
 .crush_response_body .crush_block_button:hover{
 	background:#3E63D1;
+}
+
+.crush_response_body .crush_block_button:active{
+	border-top:1px solid #254AB8;
+	border-left:1px solid #254AB8;
+	border-right:1px solid #254AB8;
+	padding:5px 12px 4px 11px;
+	word-spacing:-1px;
 }
 
 .crush_status_responded .crush_response_body .crush_block_button{
@@ -1171,7 +1187,15 @@ ul.nav_bar li#nav_bar_options{
 .crush_status_responded .crush_response_body .crush_block_button:hover{
 	background:#E34363;
 }
+.crush_status_responded .crush_response_body .crush_block_button:active{
+		border-color:#DC143C;
+}
 
+.crush_block_send_message{
+	display:block;
+	font-weight:bold;
+	margin-top:5px;
+}
 
 .crush_response_body .hint_anonymous{
 	font-size:10px;
@@ -1186,7 +1210,89 @@ ul.nav_bar li#nav_bar_options{
 	font-weight:bold;
 }
 
+.crush_status_5 .right_half_block .crush_response_body span,.crush_status_4 .right_half_block .crush_response_body span {
+	display:block;
+}
+.crush_status_5 .right_half_block .crush_response_body span.as_of_date, .crush_status_4 .right_half_block .crush_response_body span.as_of_date {
+	font-size:11px;
+	color:gray;
+	margin-top:2px;
+}
 
+.mutual_attraction_message{
+
+	border-bottom:1px solid #D5D5D5;
+	padding:7px 0px 7px 0px;
+	#border-radius:5px;
+	display:inline-block;
+	width:230px;
+	margin-bottom:10px;
+	margin-top:-10px;
+}
+
+.crush_status_4 .mutual_attraction_message{
+		border-color:	#C2C2F0;
+}
+
+.not_mutually_attracted{
+	color:#5F5F5F;
+}
+.mutually_attracted{
+	#font-weight:bold;
+}
+.crush_status_5 .right_half_block .crush_response_body span.response_view_rating a{
+	margin-top:5px;
+}
+
+.right_half_block .crush_response_body span.response_view_border{
+	border-bottom:1px solid gray;
+	width:230px;
+	margin-left:77px;
+	margin-top:8px;
+	margin-bottom:8px;
+	}
+
+#response_modal .response_view_border{
+	display:none;
+}
+#response_modal .response_view_description, #response_modal .response_view_border{
+	display:none;
+}
+#response_modal .response_view_rating{
+	display:inline-block;
+	margin-top:10px;
+}
+#response_modal a{
+	color:#3366FF;
+	font-weight:bold;
+}
+
+.crush_block .response_view_rating span.response_view_description  {
+	display:inline-block!important;
+	font-size:13px;
+}
+.crush_block .response_view_rating span.response_view_score {
+	display:inline-block!important;
+	font-weight:bold;
+	font-size:13px;
+}
+#response_modal span.response_view_score{
+	font-weight:bold;
+	display:block;
+}
+
+.crush_status_5 .right_half_block .crush_response_body {
+	margin-top:20px!important;
+}
+.crush_status_4 .right_half_block .crush_response_body {
+	margin-top:25px!important;
+}
+.crush_block .response_view_score_description{
+	font-size:13px;
+	display:block;
+	font-style:italic;
+	margin-top:2px;
+}
 
 #title_new_responses{
 	display:block;
@@ -1551,7 +1657,7 @@ top:1px;
 .lineup_block {
 	background-color:#2E2E2E;
 	color:white;
-	border-radius:5px 10px 10px 5px;
+	border-radius:2px 10px 10px 2px;
 	border-color: LightSteelBlue;
 	margin-bottom:20px;
 	padding:12px 15px 0px 15px;
@@ -2974,6 +3080,9 @@ div.active_dialog_header {
 	margin-left:5px;
 	width:170px;
 	display:inline-block;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 
 .invite_interstitial_dialog .attraction_invite_button{
@@ -3005,6 +3114,11 @@ div.active_dialog_header {
 	color:#0033ff;
 	font-size: 11px;
 	}
+
+.attraction_invite_row .attraction_invite_button a.interstitial_app_invite {
+	font-size:12px;
+	font-weight:bold;
+}
 
 /* ===========================   App Invite Dialog ========================= */
 
@@ -3329,7 +3443,6 @@ div.active_dialog_header {
 .invite_interstitial_dialog .ui-dialog-content {
 	margin:0px 5px 10px 5px!important;
 }
-
 
 
 .ui-widget-content{
