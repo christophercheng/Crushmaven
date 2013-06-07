@@ -45,20 +45,6 @@ $(document).ready(function()
  		RESPONSE MODAL DIALOG AND HANDLER
  	
  * -------------------------------------------- */
-
-  
-  var redirect_after_response_viewed = function(){
-    //refresh page unless there is just one responded relationship, then go to completed page
-   	{% if crush_type = 0 %}
-   		// we're on attractions page. figure out whether to reload or redirect to completed page
-   		if ({{responded_relationships.count}} > 1 || {{crushes_in_progress_count}} > 0)
-   			location.href="/attractions/";
-   		else
-   			location.href="/attractions_completed";
-   	{% else %}
-   		location.href="/attractions_completed/"; // reload page
-   	{% endif %}
-  };
   
   $("#response_modal").on('click', '#response_send_message', function(e){
   	e.preventDefault();
@@ -68,7 +54,7 @@ $(document).ready(function()
 	   purchase_conversation("{{csrf_token}}",crush_id);
   });
   
-  $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){redirect_after_response_viewed();}});
+  $("#response_modal").dialog({modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/attractions_completed/";}});
   
   window.display_response_modal = function(crush_id) {
    	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
