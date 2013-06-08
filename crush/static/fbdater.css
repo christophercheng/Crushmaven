@@ -688,7 +688,8 @@ a.logo #to {
 .left_sidebar_container #combo_singles_button a.bt-fs-dialog {
 	border-radius:0px 0px 0px 7px;
 	float:left;
-	#border-right:2px solid #595983;
+	border-right:1px solid #595983;
+	border-right:1px solid #808080;
 	width:82px;
 	padding-right:2px;
 }
