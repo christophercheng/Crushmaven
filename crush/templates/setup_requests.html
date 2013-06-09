@@ -13,22 +13,6 @@
   })();
 </script>
 
-<script type="text/javascript">
-$(document).ready(function() 
-{
- 	$('.resend_request').click(function(){
- 		var target_person_username = $(this).attr('target_username');
- 		FB.ui({method: 'send',
-	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
-	  				to: target_person_username,
-	  				link:'http://www.justmaybe.us',
-	  				description:'JustMaybe.us is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
-			      }
-		   	 	);// close off fb.ui
- 	});
-}); // close off $(document).ready
-</script>
-
 <!-- Display the title widget -->  
 <ul class="title_bar" id="title_bar_setup_requests_for_me">
 	<li class="title_bar_title">Setup Requests</li>

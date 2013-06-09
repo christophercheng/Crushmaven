@@ -6,5 +6,5 @@
 		<span class="request_block_name">{{relationship.target_person.get_name}}</span>
 		<span class="request_block_metadata">requested {{relationship.date_added|datetime_since}} ago</span> 
 	</div>
-	<a href="#" target_username="{{relationship.target_person.username}}" class="resend_request">Resend Request</a>	
+	{% if relationship.can_resend %}<a href="#" target_username="{{relationship.target_person.username}}" class="resend_request">Resend Request</a>	{% endif %}
 </div><!--  close off request block -->

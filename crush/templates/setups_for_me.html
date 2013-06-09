@@ -74,6 +74,22 @@ $(document).ready(function()
 	$('.lineup_block_instructions .help_icon').click(function(){
 		$(this).parent().hide(500);
 	});
+	
+ 	$('.resend_request').click(function(){
+ 		var target_person_username = $(this).attr('target_username');
+ 		FB.ui({method: 'send',
+	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
+	  				to: target_person_username,
+	  				link:'http://www.justmaybe.us',
+	  				description:'JustMaybe.us is a new matchmaking service that makes it easy for friends to match their single friends up with one another.',
+			      },
+			      function(response){
+							if (response != null)
+										window.location.href="/setups_for_me/" + target_person_username;
+			  		} // close off function (response)   
+		);// close off fb.ui
+ 	});
+	
 }); // close off $(document).ready
 </script>
 

@@ -571,4 +571,9 @@ class SetupRequestRelationship(BasicRelationship):
         app_label = 'crush' 
     # source person is the one requesting a setup
     # target person is the person who will eventually create the setup
+    def can_resend(self):
+        if (datetime.now() - self.date_added).days < 7:
+            return False
+        else:
+            return True;
 

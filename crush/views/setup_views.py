@@ -13,7 +13,9 @@ import datetime
     
 # -- Crush List Page --
 @login_required
-def setups_for_me(request):
+# requested username: user can resend a setup request to a user. if facebook message is resent then page should reload 
+# and associated relationships should have its date_added properpty reset
+def setups_for_me(request,requested_username=None):
     
     me = request.user
   
@@ -21,6 +23,13 @@ def setups_for_me(request):
     setups_completed_count = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).count()
     
     requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','date_added')
+    if requested_username!=None:
+        try:
+            resent_request = requests_by_me.get(target_person__username=requested_username)
+            resent_request.date_added=datetime.datetime.now()
+            resent_request.save(update_fields=['date_added'])
+        except:
+            pass
     
     return render(request,'setups_for_me.html',
                               {

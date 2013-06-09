@@ -81,6 +81,8 @@ urlpatterns += patterns('crush.views.setup_views',
     (r'^setup_create_form/(?P<target_person_username>\w+)/$','setup_create_form'),    
     
     (r'^setups_for_me/$','setups_for_me'),
+    
+    (r'^setups_for_me/(?P<requested_username>\w+)/$','setups_for_me'),
    
     (r'^completed_setups_for_me/$','completed_setups_for_me'),
     
