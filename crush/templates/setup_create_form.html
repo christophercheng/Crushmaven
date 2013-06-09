@@ -61,6 +61,8 @@ $(document).ready(function()
   	$('.setup_target_pic').attr('src',"http://graph.facebook.com/" + window.setup_target + "/picture?width=60&height=60");
   	$('.setup_target_pic').attr('title',fullname);
   	$('button#select_setup_target').attr('getStoredFriends',window.setup_target);
+   	$('#setup_target_section .dialog_header').removeClass('active_dialog_header'); 	
+   	$('#setup_lineup_section .dialog_header').addClass('active_dialog_header'); 	
   	var amendedExcludeIds = "{{exclude_ids}}";
   	if (amendedExcludeIds != "")
   		amendedExcludeIds += ",";
@@ -147,17 +149,21 @@ $(document).ready(function()
 			<div class="dialog_header active_dialog_header">
 				Step 1: <span class="dialog_header_sentence">Select a friend to set up</span>
 			</div>
-			<img class="setup_target_pic" src = "/static/images/fb_unknown_user_pic.jpg">
-			<button class="setup_button setup_selector" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
+			<div class="setup_section_content">
+				<img class="setup_target_pic" src = "/static/images/fb_unknown_user_pic.jpg">
+				<button class="setup_button setup_selector" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
+	  	</div>
 	  </div><!-- close setup_target_section -->
     <div id="setup_lineup_section">
 			<div class="dialog_header inactive_dialog_header">
 				Step 2: <span class="dialog_header_sentence">Select up to ten others to recommend to your friend</span>
 			</div>
-			{% for x in 10|get_range %}
-				<img class="setup_recommendee_pic" src = "/static/images/fb_unknown_user_pic.jpg" id="recommendee_pic_{{forloop.counter0}}">
-			{% endfor %}
-			<button class="setup_button setup_selector" max_selections="10" setup_select="true" onSubmit="window.process_selected_recommendees" id="select_setup_recommendees" type="button" disabled>select</button>
+			<div class="setup_section_content">
+				{% for x in 10|get_range %}
+					<img class="setup_recommendee_pic" src = "/static/images/fb_unknown_user_pic.jpg" id="recommendee_pic_{{forloop.counter0}}">
+				{% endfor %}
+				<button class="setup_button setup_selector" max_selections="10" setup_select="true" onSubmit="window.process_selected_recommendees" id="select_setup_recommendees" type="button" disabled>select</button>
+	  	</div>
 	  </div><!-- close setup_lineup_section -->
 	  <input type="hidden" name="target_username" id="target_username_input">
 	  <input type="hidden" name="recommendee_username_csl" id="recommendee_username_csl_input">

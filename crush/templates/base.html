@@ -407,7 +407,7 @@ $('body').on('click',".popup_link",function(e){
 
 	//if (!window.setup_create_modal)
 			window.setup_create_modal = $("#setup_create_modal").dialog({
-				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},width:500,height:298});
+				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},width:500,height:350});
 		window.setup_create_modal.html('<div id="site-loading"></div>');
 		window.setup_create_modal.dialog('open');
 		var target_person_username = $(this).attr('target_person_username');
@@ -484,6 +484,6 @@ $(window).resize(function(){
 <div id="app_invite_modal" title="Send Anonymous Invites"></div>
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
-<div id="setup_create_modal" title="Set Up a Friend"></div>
+<div id="setup_create_modal" title="Set up a Friend"></div>
 <div id="contactable"><!-- contactable html placeholder --></div>
 </body>
