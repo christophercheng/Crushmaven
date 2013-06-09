@@ -331,10 +331,12 @@ class CrushRelationship(BasicRelationship):
     # we should show user a false status instead (user signed up)
     def get_display_status(self):
         target_status=self.target_status
-        if target_status < 4:
+        if target_status == 2:
+            return 1 # don't reveal user is sigend up or not
+        if target_status < 4: 
             return target_status
         if self.date_target_responded==None or self.date_target_responded > datetime.now():
-            return 2
+            return 1 #return 2 don't reveal user is signed up or not
         elif self.is_results_paid:
             return target_status
         else:
