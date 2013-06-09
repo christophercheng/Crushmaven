@@ -1,8 +1,10 @@
 {% load fbdater_extras %}
-<div class="request_block ">
+<div class="request_block">
 	<img class="request_block_pic" src="http://graph.facebook.com/{{relationship.source_person.username}}/picture?width=60&height=60">
-	<span class="request_block_preposition">From:</span>
-	<span class="request_block_name">{{relationship.source_person.get_name}}</span>
-	<span class="lineup_subtitle">requested {{relationship.date_added|datetime_since}} ago</span> 
-	<a class="set_up_friend_link" target_person_username="{{relationship.source_person.username}}">Create Setup</a>
+	<div class="request_content">
+		<span class="request_block_preposition">Requested by:</span>
+		<span class="request_block_name">{{relationship.source_person.get_name}}</span>
+		<span class="request_block_metadata">requested {{relationship.date_added|datetime_since}} ago</span> 
+	</div>
+	<a class="set_up_friend_link" target_person_username="{{relationship.source_person.username}}">Set Up Your Friend</a>
 </div><!--  close off request block -->

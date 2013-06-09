@@ -31,46 +31,22 @@ $(document).ready(function()
 
 <!-- Display the title widget -->  
 <ul class="title_bar" id="title_bar_setup_requests_for_me">
-	<li class="title_bar_title">Setup Requests:</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-	<li class="title_bar_page_links">
-		{% if request_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>from your friends<span class="title_bar_count">{{request_relationships.count}}</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/setup_requests_by_me/">made by you<span class="title_bar_count">{{requests_by_me_count}}</span></a>
-		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setup_requests_for_me/">from your friends<span class="title_bar_count">{{requests_for_me_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>made by you<span class="title_bar_count">{{request_relationships.count}}</span></span>
-		{% endif %}
-	</li>
+	<li class="title_bar_title">Setup Requests</li>
 </ul>
 <! -- End of title widget -->  
 
 
 {% if request_relationships %}
 
-	{% if request_type == 0 %}
-		{% for request_rel in request_relationships %}
-			{% with request_rel as relationship %}
-	 			{% include "request_for_me_block.html" %}		
-			{% endwith %}
-		{% endfor %}		
-	{% else %}
-		{% for request_rel in request_relationships %}
-			{% with request_rel as relationship %}
-	 			{% include "request_by_me_block.html" %}		
-			{% endwith %}
-		{% endfor %}	
-	{% endif %}
+	{% for request_rel in request_relationships %}
+		{% with request_rel as relationship %}
+ 			{% include "request_for_me_block.html" %}		
+		{% endwith %}
+	{% endfor %}		
+
 
 {% else %}
-	{% if request_type == 0 %}
-		<span id="no_content">No one has requested a setup from you.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Create a setup</a> anyhow.</span>
-	{% else %}
-		<span id="no_content">You have no outstanding setup requests.&nbsp;&nbsp;<a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span>
-	{% endif %}
+		<span id="no_content">No one has currently requested a setup from you.&nbsp;&nbsp;<BR><BR>Why wait - <a href="javascript:{}" class="set_up_friend_link">set up a friend</a> now.</span>
 {% endif %}
 
 {% endblock %}

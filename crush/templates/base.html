@@ -380,7 +380,7 @@ $('body').on('click',".popup_link",function(e){
 									if (attraction_array.length)
 										send_fb_requests(attraction_array);  	
 									else // reload page so that the new requests can be processed by base.html javascript
-										window.location.href="/setup_requests_by_me/";
+										window.location.href="/setups_for_me/";
 								});
 							}
 							else {
@@ -388,7 +388,7 @@ $('body').on('click',".popup_link",function(e){
 								if (attraction_array.length)
 									send_fb_requests(attraction_array);  	
 								else // reload page so that the new requests can be processed by base.html javascript
-									window.location.href="/setup_requests_by_me/";
+									window.location.href="/setups_for_me/";
 							}
 			  		} // close off function (response)   
 		   	 	);// close off fb.ui

@@ -19,13 +19,16 @@ def setups_for_me(request):
   
     progressing_setups = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
     setups_completed_count = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).count()
-
+    
+    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','date_added')
+    
     return render(request,'setups_for_me.html',
                               {
                                'setup_type': 0, # 0 is in progress, 1 is completed
                                'setup_relationships':progressing_setups,
                                'setups_in_progress_count': progressing_setups.count(),
                                'setups_completed_count':setups_completed_count,
+                               'request_relationships':requests_by_me
                                })     
 
 # -- Crushes Completed Page --
@@ -85,7 +88,6 @@ def setup_requests_for_me(request):
 
     return render(request,'setup_requests.html',
                               {
-                               'request_type': 0, # 0 is in for me, 1 is by me
                                'request_relationships':requests_for_me,
                                'requests_by_me_count': requests_by_me_count,
                                })  

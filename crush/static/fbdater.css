@@ -537,7 +537,7 @@ a.logo #to {
 
 .navbar .menu_count{
 	position:absolute;
-	right:7px;
+	right:6px;
 	top:10px;
 	display:inline-block;
 	font-size:9px!important;
@@ -547,9 +547,16 @@ a.logo #to {
 	font-style:normal!important;
 }
 
+
 .navbar .new_menu_count{
-	color:red;
-	font-style:italic!important;
+	top:8px;
+	right:-1px;
+	background-color:#CC0000;
+	#font-style:italic!important;
+	color:white;
+	padding:2px;
+	border-radius:2px 0px 0px 2px;
+	word-spacing:-2px;
 }
 
 .navbar .new_menu_response_count{
@@ -570,7 +577,9 @@ a.logo #to {
 	right:9px;
 	top:14px;
 }
-
+.navbar li.active .new_menu_count{
+	top:12px;
+}
 .navbar li.active{
 	border-top:1px solid white;
 	border-bottom:1px solid white;
@@ -591,17 +600,17 @@ a.logo #to {
 }
 
 .navbar li.active a .menu_title{
-		color:#DC143C;
+		#color:#DC143C;
 }
 
 .navbar li.active a .setups_for_me_menu_title, .navbar li.active a .admirers_menu_title{
 		color:white;
 }
 .navbar li.active.setups_for_me a {
-	border-bottom:2px solid #FF3300;
+	#border-bottom:2px solid #FF3300;
 	}
 .navbar li.active.admirers a {
-	border-bottom:2px solid #DC143C;
+	#border-bottom:2px solid #DC143C;
 	}
 
 .navbar li.inactive.setups_for_me a,.navbar li.inactive.setup_requests_for_me a{
@@ -3088,7 +3097,91 @@ div.active_dialog_header {
 	font-size:11px;
 	font-style:italic;
 }
+.no_content_abbreviated{
+	margin-top:40px!important;
+	margin-bottom:50px!important;
+}
+.page_secondary_title{
+	display:inline-block;
+	width:100%;
+	padding-bottom:2px;
+	border-bottom:1px solid #D5D5D5;
+	font-weight:bold;
+	margin-top:15px;
+	margin-bottom:15px;
+}
 
+/* ========================== Request block ============================== */
+.request_block {
+	display:inline-block;
+	border-radius:2px 10px 10px 2px;
+	background:#5F5F5F;
+	color:white;
+	padding:10px;
+	margin-bottom:20px;
+	border-left:5px solid #FF6600;
+	font-size:15px;
+	position:relative;
+	width:100%;
+}
+.request_block .request_block_pic {
+	display:inline-block;
+	border:1px solid black;
+	border-radius:3px;
+	margin-top:2px;
+	float:left;
+}
+	
+.request_block .request_content {
+	margin-left:10px;
+	margin-top:8px;
+	display:inline-block;
+}
+
+.request_block .request_block_preposition, .request_block .request_block_name{
+	display:inline-block;
+	font-weight:bold;
+}
+.request_block .request_block_preposition{
+	font-weight:normal;
+}
+.request_block .request_block_name{
+	font-style:italic;
+	font-size:16px;
+	width:195px;
+		overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	margin-top:5px;
+	line-height:15px;
+	vertical-align:bottom;
+}
+
+
+.request_block .request_block_metadata{
+	display:block;
+	margin-top:5px;
+	font-size:11px;
+}
+
+.request_block .resend_request,.request_block .set_up_friend_link {
+	display:inline-block;
+	position:absolute;
+	top:27px;
+	right:25px;
+	color:white;
+	padding:5px 10px 5px 10px;
+	text-align:center;
+	border-radius:7px;
+	font-family:arial;
+	font-size:13px;
+	font-weight:bold;
+	background-color: #6585E6;
+}
+
+.request_block .resend_request:hover{
+	background-color:#4E68B2;
+}
 
 /* ===========================   App Invite Interstitial Dialog ========================= */
 

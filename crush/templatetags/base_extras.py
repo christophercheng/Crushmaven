@@ -12,18 +12,3 @@ def navactive(request, url):
         return "active"
     else:
         return "inactive"
-
-
-"""
-Usage:
-left navigation menu counts
-"""
-@register.filter()
-def left_menu_count_display(value):
-    if value > 0:
-        return str(value) + ' new'
-
-    
-    else:
-        return ""
-    

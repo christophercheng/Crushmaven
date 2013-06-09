@@ -18,7 +18,7 @@ Singles:
 			<a href="{% url 'crush.views.admirer_views.admirers' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
-				<span class="menu_count new_menu_count">{{num_admirers_in_progress | left_menu_count_display}}</span>
+				{% if num_admirers_in_progress %}<span class="menu_count new_menu_count">{{num_admirers_in_progress}} new</span>{% endif %}
 				<span class="nav_subtext">See who is attracted to you</span>
 			</a>
 		</li>
@@ -26,7 +26,7 @@ Singles:
 			<a href="{% url 'postman_inbox' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Messages</span>
-				<span class="menu_count new_menu_count">{{ num_new_messages | left_menu_count_display }}</span>
+				{% if num_new_messages %}<span class="menu_count new_menu_count">{{ num_new_messages}} new</span>{% endif %}
 				<span class="nav_subtext">Chat with mutual attractions</span>
 			</a>
 		</li>
@@ -34,7 +34,7 @@ Singles:
 			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
 				<span class="menu_icon"></span>				
 				<span class="menu_title setups_for_me_menu_title">Friend Setups</span>
-				<span  class="menu_count new_menu_count">{{num_setups_for_me_in_progress | left_menu_count_display}}</span>
+				{% if num_setups_for_me_in_progress %}<span  class="menu_count new_menu_count">{{num_setups_for_me_in_progress}} new</span>{% endif %}
 				<span class="nav_subtext">See who they picked for you</span>
 			</a>
 		</li>
@@ -56,7 +56,7 @@ Matchmakers:
 		<li class="{% navactive request 'setups_by_me' %} setups_by_me">
 			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">
 				<span class="menu_icon"></span>				
-				<span class="menu_title">Your Setups</span> 
+				<span class="menu_title">Setup Results</span> 
 				<span class="menu_count">{{num_setups_by_me_in_progress }}</span>
 				<span class="nav_subtext">Find out if they worked</span>
 			</a>
@@ -65,7 +65,7 @@ Matchmakers:
 			<a href="{% url 'crush.views.setup_views.setup_requests_for_me' %}">
 				<span class="menu_icon"></span>				
 				<span class="menu_title">Friends in Need</span> 
-				<span class="menu_count new_menu_count">{{num_setup_requests | left_menu_count_display}}</span>
+				{% if num_setup_requests %}<span class="menu_count new_menu_count">{{num_setup_requests}} new</span>{% endif %}
 				<span class="nav_subtext">Help friends requesting a setup</span>
 			</a>
 		</li>
