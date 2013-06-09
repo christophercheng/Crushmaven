@@ -473,14 +473,17 @@ class CrushRelationship(BasicRelationship):
         send_time=None
         subject=""
         message=""
-        if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
-            subject= target_person_name + " signed up!"
-            message=target_person_name + " signed up!"
+        
+        # removing crush signed up notification (june 7) for simplification of application in v1
+        #if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
+        #    subject= target_person_name + " signed up!"
+        #    message=target_person_name + " signed up!"
+        
         # don't send crush lineup started notifications any longer
         #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
         #    subject= target_person_name + " started your secret admirer lineup!"
         #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
-        elif (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
+        if (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
             if self.is_results_paid == True: # target person changed their mind
                 subject= target_person_name + " changed their mind."
                 if target_status ==4:

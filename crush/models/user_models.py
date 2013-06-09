@@ -139,9 +139,11 @@ class FacebookUserManager(UserManager):
         for relation in admirer_relationships:
             # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
             relation.target_status = 2
-            relation.updated_flag=True
+            #relation.updated_flag=True
+            # CHC june 6 : don't update the relationship: change the target_status behind the scenes
             relation.date_target_signed_up = datetime.datetime.now()
             relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
+            relation.save(update_fields=['target_status','date_target_signed_up'])
         InviteEmail.objects.delete_activated_user_emails(user)
         user.friends_that_invited_me.clear()
         # update the cache inactive user list
@@ -205,7 +207,7 @@ class FacebookUser(AbstractUser):
     # For inactive users - friends of theirs who have already sent them a fb invite (clear out this field during activation)
     friends_that_invited_me = models.ManyToManyField('self', symmetrical=False,related_name='friends_that_invited_me_set',blank=True)
     
-    bNotify_crush_signed_up = models.BooleanField(default=True)
+    #bNotify_crush_signed_up = models.BooleanField(default=True)
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
     #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
