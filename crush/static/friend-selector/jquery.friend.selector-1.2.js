@@ -109,7 +109,6 @@
     	    	// find the original user in hte old container
     	    	var selected_id = response.id + response.friend_type;
     			var duplicate_element = $('#fs-selected-user-list .fs-friends[value='+selected_id+']');
-    			console.log("duplicate?",duplicate_element);
 
     	    	if ($(duplicate_element).length > 0){
     	    		window.alert_user("You already selected this person");
@@ -489,13 +488,15 @@
       }
       // pre-select elements
       if (fsOptions.getStoredFriends.length){
-    	  var preselected_friends = fsOptions.getStoredFriends.split(',');
-    	  for (var x = 0; x < preselected_friends.length;x++){
-    		  // find element with username
-    		  var username=preselected_friends[x] + '0';
-    		  var target_element = $('#fs-user-list ul li a input.fs-friends[value="' + username + '"]');
-    		  _click(target_element.parents('li'));
-    	  }
+    	  if (fsOptions.getStoredFriends!="") {
+	    	  var preselected_friends = fsOptions.getStoredFriends.split(',');
+	    	  for (var x = 0; x < preselected_friends.length;x++){
+	    		  // find element with username
+	    		  var username=preselected_friends[x] + '0';
+	    		  var target_element = $('#fs-user-list ul li a input.fs-friends[value="' + username + '"]');
+	    		  _click(target_element.parents('li'));
+	    	  }
+    	  }//close off if (fsOptions.getStoredFriends!= "")
       }
       
       $('#fs-loading').remove();
@@ -717,7 +718,6 @@
 	  },
 // called when a click on li is done
   _click = function(th) {
-
     var btn = th;
     		
     if ( btn.hasClass('checked') ) {
@@ -748,7 +748,7 @@
       }
 
       selected_friend_count++;
-
+      
       // add a 'checked' copy to the new container
       var element_copy= btn.clone();
       element_copy.addClass('checked');

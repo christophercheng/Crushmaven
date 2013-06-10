@@ -79,7 +79,7 @@ $(document).ready(function()
 		$('#recommendee_pic_' + x.toString()).show();
 	}
 	// note the space is necessary to clear out any previous getStoredFriends
-	$('button#select_setup_recommendees').attr('getStoredFriends'," ");
+	$('button#select_setup_recommendees').removeAttr('getStoredFriends');
   	$('button#select_setup_target').html("change");
   }
   
