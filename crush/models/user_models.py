@@ -142,7 +142,7 @@ class FacebookUserManager(UserManager):
             #relation.updated_flag=True
             # CHC june 6 : don't update the relationship: change the target_status behind the scenes
             relation.date_target_signed_up = datetime.datetime.now()
-            relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
+            #relation.save(update_fields=['target_status','date_target_signed_up','updated_flag'])
             relation.save(update_fields=['target_status','date_target_signed_up'])
         InviteEmail.objects.delete_activated_user_emails(user)
         user.friends_that_invited_me.clear()
@@ -221,12 +221,6 @@ class FacebookUser(AbstractUser):
         global all_inactive_user_list
     # this is done whenever an active user is first created
         try:
-            # this is a potentially expensive operation, so do it at most every 12 hours
-            if  (self.processed_activated_friends_admirers):
-                time_since_last_update = datetime.datetime.now() - self.processed_activated_friends_admirers 
-                if time_since_last_update < datetime.timedelta(hours=settings.FRIENDS_WITH_ADMIRERS_SEARCH_DELAY):
-                    print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update.hours)
-                    return
 
             print "attempting to load the json results"
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
@@ -274,6 +268,44 @@ class FacebookUser(AbstractUser):
         friend_user.friends_that_invited_me.add(self)
         self.friends_with_admirers.remove(friend_user)
     
+
+    def html_for_inactive_friend_section(self,ajax_reprocess_friends_with_admirers=False): 
+        ajax_response=""
+        print "number of inactive friends: " + str(len(self.friends_with_admirers.all()))
+        for inactive_crush_friend in self.friends_with_admirers.all():
+            print "creating html for: " + inactive_crush_friend.username
+           
+            all_admirers = crush.models.relationship_models.CrushRelationship.objects.all_admirers(inactive_crush_friend)
+            num_admirers = len(all_admirers)
+            if num_admirers==0:
+                continue # in this case, a user was added as a friend but then someone deleted them laster
+            ajax_response +="<li class='friend_with_admirer'><a id='send_fb_invite' crush_name='" + inactive_crush_friend.get_name() + "' crush_username='" + inactive_crush_friend.username + "' href='#'>"
+            ajax_response +="<img src='" + inactive_crush_friend.get_facebook_pic(40) + "'>"
+            ajax_response += "<ul>"
+            ajax_response += "<li class='friend_name'>" + inactive_crush_friend.first_name + "&nbsp;" + inactive_crush_friend.last_name + "</li>"
+            ajax_response += "<li class='friend_admirer_count'>" + str(num_admirers) + " admirer"
+            if num_admirers > 1:
+                ajax_response += "s"
+            elapsed_days = (datetime.datetime.now() - all_admirers[num_admirers-1].date_added).days
+            if elapsed_days==0:
+                elapsed_days = "today"
+            elif elapsed_days == 1:
+                elapsed_days = "yesterday"
+            elif elapsed_days > 60:
+                elapsed_days = str(elapsed_days/30) + " months ago"
+            elif elapsed_days > 30:
+                elapsed_days = "1 month ago"
+            else:
+                elapsed_days = str(elapsed_days) + " days ago"
+                
+            ajax_response += " (" + elapsed_days + ")</li>"
+            ajax_response +="<li class='friend_help_link'>send invite</li>"
+            ajax_response+="</ul></a></li>"
+        if ajax_response=="":
+            ajax_response='<li id="no_friends" class="no_friends">no friends with admirers...</li>'
+        if ajax_reprocess_friends_with_admirers:
+            ajax_response+='<span class="reprocess_friends_with_admirers_section"></span>'
+        return ajax_response 
     
     #processed_inactivated_friends_admirers = models.BooleanField(default=False)
     def find_active_friends_of_inactivated_crush(self):

@@ -257,12 +257,12 @@ jQuery(document).ready(function($) {
       },
       function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
-         if (response != null){
-				  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
-  					if (xhr.status==405)
-  						reauthorize_user();
-  				});
-  			} 
+         if (response != null){	
+		  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
+				if (xhr.status==405)
+					reauthorize_user();
+  			});
+  		} 
       }      
     );// close off fb.ui
   }; // close off send_fb_message
@@ -274,8 +274,8 @@ jQuery(document).ready(function($) {
   });
   
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
-  $(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
-  	if (xhr.status==405)
+$(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
+	if (xhr.status==405)
   			reauthorize_user();
   }); 
 // INITIALIZE FEEDBACK FORM 

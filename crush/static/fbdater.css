@@ -524,7 +524,7 @@ a.logo #to {
 	font-weight:bold;
 	text-decoration:none;
 	border-bottom:1px solid rgb(51,51,51);#c0c0c0;
-	padding:6px 7px 0px 30px;
+	padding:6px 0px 0px 30px;
 	width:195px;
 }
 .navbar li.active a{
