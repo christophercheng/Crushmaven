@@ -98,7 +98,8 @@ class FacebookUserManager(UserManager):
                     fb_profile['is_active']=True
                     # dont' run update_user as a thread the first time
                     #thread.start_new_thread(self.update_user,(user,fb_profile)) 
-                    thread.start_new_thread(self.handle_activated_user,(user,fb_profile))
+                    #thread.start_new_thread(self.handle_activated_user,(user,fb_profile))
+                    self.handle_activated_user(user,fb_profile)
                     self.update_user(user,fb_profile)
                     #self.activate_inactive_user(user, fb_profile)
                 else:
@@ -148,11 +149,28 @@ class FacebookUserManager(UserManager):
         user.friends_that_invited_me.clear()
         # update the cache inactive user list
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
-        all_inactive_user_list.remove(user.username)
+        try:
+            all_inactive_user_list.remove(user.username)
+        except ValueError:
+            pass
         cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
-        # get user's age range
-       
-        
+        # get friends of user who are active user's of application
+            # for each of these friends, modify their friends_with_admirer property
+        fb_query_string = "SELECT uid FROM user WHERE is_app_user=1 AND uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"
+        friend_json_array = graph_api_fetch(fb_profile['access_token'],fb_query_string,True,True)
+        for friend_json in friend_json_array:
+            username = friend_json['uid']
+            # find this friend user object and then remove the current user from its friends_with_admirer field
+            try:
+                friend_user = FacebookUser.objects.get(username=username)
+                #delete_user = friend_user.friends_with_admirers.get(user=self)
+                try:
+                    friend_user.friends_with_admirers.remove(user)
+                except:
+                    pass
+            except FacebookUser.DoesNotExist:# FacebookUser.DoesNotExist:
+                pass
+            
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
     
