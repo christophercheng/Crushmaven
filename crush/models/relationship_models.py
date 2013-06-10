@@ -98,6 +98,11 @@ class PlatonicRelationship(BasicRelationship):
             #if target platonic friend has a crush on this user, then platonic friend must be informed
             try:
                 reciprocal_relationship = self.target_person.crush_crushrelationship_set_from_source.get(target_person=self.source_person)
+                # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
+                if reciprocal_relationship.is_results_paid and reciprocal_relationship.target_status==4:
+                    reciprocal_relationship.notify_source_person_of_target_change(new_status=5);
+                
+                
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.now()
@@ -246,6 +251,10 @@ class CrushRelationship(BasicRelationship):
             try:
                 # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
                 reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)
+                
+                # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
+                if reciprocal_relationship.is_results_paid and reciprocal_relationship.target_status==5:
+                    reciprocal_relationship.notify_source_person_of_target_change(new_status=4);
                 #if we have a match, update the target_status of both relationship
                 reciprocal_relationship.target_status=4 # responded-crush status
                 self.target_status=4
@@ -506,6 +515,16 @@ class CrushRelationship(BasicRelationship):
         subject = "Attraction invite - delivery unsuccessful (" + self.target_person.get_name() + ")"
         message = "Your invite email (" + str(bad_email_address) + ") to " + self.target_person.get_name() + " was not able to be delivered.  Please verify your attraction's email address and try again."
         self.send_notification_email(self.source_person.email, subject, message)
+    
+    def notify_source_person_of_target_change(self,new_status):
+        subject = "Your attraction changed their mind."
+        message = "Your attraction, " + self.target_person.get_name() + " changed their mind.  "
+        if new_status==4:
+            message += "They are now mutually attracted to you!"
+        else:
+            message += "They are no longer mutually attracted to you."
+
+        self.send_notification_email(self.source_person.email,subject,message)
     
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)

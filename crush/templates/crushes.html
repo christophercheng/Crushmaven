@@ -147,16 +147,18 @@ $(document).ready(function()
   	//   if possible to delete, then confirm action with user before making second ajax call to actually perform the delete
    
     $("a.delete_crush").click(function(e) {
-			$(this).parents('ul').css('display','none');
+		$(this).parents('ul').css('display','none');
   		var name=$(this).attr('name');	
-      var username=$(this).attr('username');
-    	$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
+  		var username=$(this).attr('username');
+    
+  		$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
     		// deletion is possible, so open up the confirmation dialog
     		window.remove_crush_dialog.dialog("open");
     	}).fail(function(response){
  				window.alert_user(response.responseText);
  				return false;
-				});  
+		});  
+    
       e.preventDefault();
       window.remove_crush_dialog.text("Are you sure you want to remove " + name + " from your crush list?");
       window.remove_crush_dialog.dialog('option', 'buttons', {
@@ -165,8 +167,7 @@ $(document).ready(function()
  					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
- 				window.alert_user(response.responseText);
-
+ 				 	window.alert_user(response.responseText);
  				});
  			},
   		"Cancel": function() {$("#remove_crush_dialog").dialog("close");

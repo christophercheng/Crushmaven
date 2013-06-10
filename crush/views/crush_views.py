@@ -61,19 +61,22 @@ def ajax_add_crush_targets(request):
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):
     try:
         crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
+        print crush_relationship
         time_since_add = datetime.datetime.now() - crush_relationship.date_added
         if time_since_add.days < settings.MINIMUM_DELETION_DAYS_SINCE_ADD:
             return HttpResponseForbidden(settings.DELETION_ERROR[0])
         if crush_relationship.target_status == 3:
             return HttpResponseForbidden(settings.DELETION_ERROR[1])
-        if crush_relationship.target_status > 3:
-            if crush_relationship.date_target_responded > datetime.datetime.now():
-                return HttpResponseForbidden(settings.DELETION_ERROR[1])
-            elif crush_relationship.is_results_paid == False:
+        if crush_relationship.target_status==5:
+            return HttpResponse('') # allow this
+        if crush_relationship.target_status == 4:
+            try:
+                reciprocal_relationship = CrushRelationship.objects.get(target_person=request.user,source_person__username=crush_username)
+            except:
                 return HttpResponseForbidden(settings.DELETION_ERROR[2])
-        if crush_relationship.is_results_paid == True:
-            time_since_target_responded = datetime.datetime.now() - crush_relationship.date_target_responded;
-            if time_since_target_responded.days < settings.MINIMUM_DELETION_DAYS_SINCE_RESPONSE:
+            if not reciprocal_relationship.is_results_paid:
+                return HttpResponseForbidden(settings.DELETION_ERROR[2])
+            if (datetime.datetime.now() - reciprocal_relationship.date_target_responded).days < settings.MINIMUM_DELETION_DAYS_SINCE_RESPONSE:
                 return HttpResponseForbidden(settings.DELETION_ERROR[3])
         return HttpResponse()  # everything passes
     except CrushRelationship.DoesNotExist:

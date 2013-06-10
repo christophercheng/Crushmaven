@@ -149,7 +149,7 @@ class FacebookUserManager(UserManager):
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
         try:
             all_inactive_user_list.remove(user.username)
-        except ValueError:
+        except :
             pass
         cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
         # get friends of user who are active user's of application

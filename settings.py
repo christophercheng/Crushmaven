@@ -219,7 +219,7 @@ MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the s
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=12# 0 # default is = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=0
-MINIMUM_DELETION_DAYS_SINCE_RESPONSE=7
+MINIMUM_DELETION_DAYS_SINCE_RESPONSE=0
 MAXIMUM_CRUSH_INVITE_EMAILS=5
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=25
 MINIMUM_INVITE_RESEND_DAYS=2
@@ -233,9 +233,9 @@ PLATONIC_RATINGS = {
                      }
 
 DELETION_ERROR = {0:'To prevent gaming of the system, attractions may not be removed during the first ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days.',
-                   1:'Your attraction has already started your lineup.  To prevent system gaming, attractions may only be removed once a response is received and viewed.',
-                   2:'Your attraction has already responded to you.  To prevent system gaming, attractions may only be removed once their response is viewed.',
-                   3: 'To prevent system gaming, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days have passed since the since the response was originally received.',
+                   1:'Your attraction is currently taking your lineup.  To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed',
+                   2: 'Your attraction has not yet viewed your attraction.  To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed.',
+                   3: 'To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed.',
                    }
 
 LINEUP_STATUS_CHOICES = {
