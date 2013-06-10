@@ -99,7 +99,7 @@
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
     		if ('error_message' in response) {
-    			window.alert_user(response.error_message);
+    			window.alert_modal("Invalid Username",response.error_message,$("#fs-dialog-box-wrap") );
     			$("#fs-select-view #site-overlay").css('visibility','hidden');
     	        $('#fs-loading').remove();
     			return false;

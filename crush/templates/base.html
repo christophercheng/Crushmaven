@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
     	window.alert_user("{{ajax_error}}");
     },
     onStart: function(){
-    	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});
+    	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title",containment:$("#fs-overlay")});
     	 window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
     	 //$('body').css('overflow-y','hidden !important');
     },
@@ -222,7 +222,33 @@ $.ajaxSetup({timeout: '45000'});
 <!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
 <script>
 jQuery(document).ready(function($) {
-  $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,zIndex:999999});
+$.maxZIndex = $.fn.maxZIndex = function(opt) {
+    /// <summary>
+    /// Returns the max zOrder in the document (no parameter)
+    /// Sets max zOrder by passing a non-zero number
+    /// which gets added to the highest zOrder.
+    /// </summary>    
+    /// <param name="opt" type="object">
+    /// inc: increment value, 
+    /// group: selector for zIndex elements to find max for
+    /// </param>
+    /// <returns type="jQuery" />
+    var def = { inc: 10, group: "*" };
+    $.extend(def, opt);    
+    var zmax = 0;
+    $(def.group).each(function() {
+        var cur = parseInt($(this).css('z-index'));
+        zmax = cur > zmax ? cur : zmax;
+    });
+    if (!this.jquery)
+        return zmax;
+
+    return this.each(function() {
+        zmax += def.inc;
+        $(this).css("z-index", zmax);
+    });
+}
+  $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
  
   window.alert_user=function(message){
     $("#alert_modal").html(message);
@@ -233,6 +259,16 @@ jQuery(document).ready(function($) {
 		$('#alert_modal').dialog("open");
 		$('#alert_modal').dialog("moveToTop");
   };  
+  
+   window.alert_modal=function(title, message,calling_jquery_element){
+    $("#alert_modal").html(message);
+    $("#alert_modal").dialog('option','title',title);
+		$('#alert_modal').dialog("open");
+		var top_z_index=$(calling_jquery_element).css('z-index');
+		$(".alert_modal_dialog").css('z-index',top_z_index+2);
+		$(".ui-widget-overlay").css('z-index',top_z_index+1);
+  };  
+  
   
   window.access_token_error=function(responseText){
 		if (responseText.indexOf("HTTPError") != -1){
