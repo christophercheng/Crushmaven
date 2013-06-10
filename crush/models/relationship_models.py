@@ -99,10 +99,9 @@ class PlatonicRelationship(BasicRelationship):
             try:
                 reciprocal_relationship = self.target_person.crush_crushrelationship_set_from_source.get(target_person=self.source_person)
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
-                if reciprocal_relationship.is_results_paid and reciprocal_relationship.target_status==4:
-                    reciprocal_relationship.notify_source_person_of_target_change(new_status=5);
-                
-                
+                if reciprocal_relationship.target_status==4 and reciprocal_relationship.is_results_paid:
+                        reciprocal_relationship.notify_source_person_of_target_change(new_status=5);
+    
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.now()
@@ -253,8 +252,9 @@ class CrushRelationship(BasicRelationship):
                 reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)
                 
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
-                if reciprocal_relationship.is_results_paid and reciprocal_relationship.target_status==5:
-                    reciprocal_relationship.notify_source_person_of_target_change(new_status=4);
+                if reciprocal_relationship.target_status==5 and reciprocal_relationship.is_results_paid:
+                        reciprocal_relationship.notify_source_person_of_target_change(new_status=4);
+
                 #if we have a match, update the target_status of both relationship
                 reciprocal_relationship.target_status=4 # responded-crush status
                 self.target_status=4

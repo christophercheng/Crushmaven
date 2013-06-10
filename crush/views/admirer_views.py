@@ -114,7 +114,6 @@ def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
     
     if is_admirer_type==1:
         try:
-            print "HEYEYEYEYE"
             admirer_rel = CrushRelationship.objects.all_admirers(me).get(display_id=admirer_id)
         except CrushRelationship.DoesNotExist:
             return HttpResponse("Error: Could not find an admirer relationship for the lineup.")

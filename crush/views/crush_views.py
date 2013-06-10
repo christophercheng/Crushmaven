@@ -70,6 +70,8 @@ def ajax_can_crush_target_be_platonic_friend(request, crush_username):
         if crush_relationship.target_status==5:
             return HttpResponse('') # allow this
         if crush_relationship.target_status == 4:
+            if not crush_relationship.date_target_responded:
+                return HttpResponseForbidden(settings.DELETION_ERROR[1])   
             try:
                 reciprocal_relationship = CrushRelationship.objects.get(target_person=request.user,source_person__username=crush_username)
             except:
