@@ -127,8 +127,7 @@ def ajax_get_recommendee_exclude_ids(request, setup_target):
         # the source is this request.user
         # the setupLineupMember is not relevant
     for setup in relevant_setups:
-        existing_recommendee_objects = setup.setuplineupmember_set.all();
-        for recommendee_object in existing_recommendee_objects:
+        for recommendee_object in setup.setuplineupmember_set.all():
             if previous_recommendee_id_csl != '':
                 previous_recommendee_id_csl += ','
             previous_recommendee_id_csl += recommendee_object.username
@@ -145,17 +144,33 @@ def setup_create_form(request,target_person_username=""):
             return
         recommendee_username_csl = request.POST['recommendee_username_csl']
         recommendee_username_array=recommendee_username_csl.split(',')
+        filtered_recommendee_username_array=[]
         if len(recommendee_username_array) == 0:
             return;
-        setup = SetupRelationship.objects.create(target_person=setup_target_user,source_person=request.user,updated_flag=True,friendship_type=0)
-        for (counter,recommendee) in enumerate(recommendee_username_array):
-            SetupLineupMember.objects.create(relationship=setup, username = recommendee, position=counter)
+        # filter out any recommendees that were existing recommendees for same target person
+        relevant_setups=request.user.crush_setuprelationship_set_from_source.filter(target_person__username=setup_target_username)
+        previous_recommendee_list = []
+        # grab all setupLineupMembers of previous setups where 
+            # the target is setup_target
+            # the source is this request.user
+            # the setupLineupMember is not relevant
+        for setup in relevant_setups:
+            for recommendee_object in setup.setuplineupmember_set.all():
+                previous_recommendee_list.append(recommendee_object.username)
+        for recommendee in recommendee_username_array:
+            if recommendee not in previous_recommendee_list:
+                filtered_recommendee_username_array.append(recommendee)
+        # only create setup if at least one recommendee filtered through
+        if len(filtered_recommendee_username_array) > 0:      
+            setup = SetupRelationship.objects.create(target_person=setup_target_user,source_person=request.user,updated_flag=True,friendship_type=0)
+            for (counter,recommendee) in enumerate(filtered_recommendee_username_array):
+                SetupLineupMember.objects.create(relationship=setup, username = recommendee, position=counter)
         #look for existing requests to create a setup for this target person, if it exists, then delete it
-        try:
-            outstanding_request = request.user.crush_setuprequestrelationship_set_from_target.get(source_person__username=setup_target_username)
-            outstanding_request.delete()
-        except SetupRequestRelationship.DoesNotExist:
-            pass
+            try:
+                outstanding_request = request.user.crush_setuprequestrelationship_set_from_target.get(source_person__username=setup_target_username)
+                outstanding_request.delete()
+            except SetupRequestRelationship.DoesNotExist:
+                pass
 
         print "success and redirecting"                
         return redirect('/setups_by_me')
