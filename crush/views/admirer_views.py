@@ -213,12 +213,12 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():
         crush_relationship = me.crush_crushrelationship_set_from_source.get(target_person=lineup_member_user)
-        ajax_response += '<span class="choice crush">Added as Attraction<span class="date_lineup_member_added">(' + str(crush_relationship.date_added.strftime("%m/%d/%Y")) + ')</span></span>'
+        ajax_response += '<span class="choice crush">Added as Attraction</span>'
         lineup_member.decision = 0
         lineup_member.save(update_fields=['decision'])
     elif lineup_member_user in me.just_friends_targets.all():
         platonic_relationship = me.crush_platonicrelationship_set_from_source.get(target_person=lineup_member_user)
-        ajax_response += '<span class="choice platonic ">Not Interested<span class="date_lineup_member_added">(' + str(platonic_relationship.strftime("%m/%d/%Y")) + ')</span></span>'
+        ajax_response += '<span class="choice platonic ">Not Interested</span>'
         ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
         lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])
@@ -285,11 +285,11 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                 # to prevent the target person from showing up in the friends_with_admirers module of the recommender, then add the recommender to the target person's friends_that_invited_me list
                 target_user.friends_that_invited_me.add(admirer_rel.source_person)
                         
-            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction<span class="date_lineup_member_added">(' + datetime.datetime.now().strftime("%m/%d/%Y") + ')</span></span>'
+            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction</span>'
             lineup_member.decision=0
         else:
             PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
-            ajax_response = '<span class="choice platonic">Not Interested<span class="date_lineup_member_added">(' + str(datetime.datetime.now().strftime("%m/%d/%Y")) + ')</span></span>'
+            ajax_response = '<span class="choice platonic">Not Interested</span>'
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])

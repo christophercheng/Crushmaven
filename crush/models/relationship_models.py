@@ -101,7 +101,13 @@ class PlatonicRelationship(BasicRelationship):
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
                 if reciprocal_relationship.target_status==4 and reciprocal_relationship.is_results_paid:
                         reciprocal_relationship.notify_source_person_of_target_change(new_status=5);
-    
+                        # find all related lineup members
+                        try:
+                            affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
+                            affected_member.decision=3;
+                            affected_member.save(update_fields=['decision'])
+                        except:
+                            pass
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.now()
@@ -254,6 +260,14 @@ class CrushRelationship(BasicRelationship):
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
                 if reciprocal_relationship.target_status==5 and reciprocal_relationship.is_results_paid:
                         reciprocal_relationship.notify_source_person_of_target_change(new_status=4);
+
+                # find all related lineup members
+                try:
+                    affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
+                    affected_member.decision=0;
+                    affected_member.save(update_fields=['decision'])
+                except:
+                    pass
 
                 #if we have a match, update the target_status of both relationship
                 reciprocal_relationship.target_status=4 # responded-crush status
