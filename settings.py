@@ -267,6 +267,7 @@ FEATURES = {
 }
 
 AJAX_ERROR = "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p."
+GENERIC_ERROR = "Sorry, we are experiencing difficulty with our servers.  We are working to fix this problem a.s.a.p."
 
 # TODO - THESE MUST BE SET
 #RESOURCES_DIR = '/media/shared/src/django-paypal-store-example/samplesite/resources/'

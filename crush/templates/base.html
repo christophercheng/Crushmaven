@@ -184,7 +184,7 @@ jQuery(document).ready(function($) {
 			add_friends_to_db(response);
     },
     onError: function(){
-    	window.alert_user("{{ajax_error}}");
+    	window.alert_modal("Friend Selector Problem", "{{generic_error_message}}", $('#fs-dialog-box-wrap') );
     },
     onStart: function(){
     	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title",containment:$("#fs-overlay")});
@@ -207,8 +207,10 @@ jQuery(document).ready(function($) {
   		// on success redirect to the crush page
   		window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
   		//document.location.href='/attractions/'; // reload page
-  	}).fail(function(error){window.alert_user(error.responseText);});
-  };
+  	}).fail(function(error){
+  		window.alert_modal("Add Attraction Problem", "{{generic_error_message}}",$('#fs-dialog-box-wrap') );
+  });
+  }
 
 }); // close of jQuery(document).ready
 </script>
@@ -222,6 +224,8 @@ $.ajaxSetup({timeout: '45000'});
 <!-- INITIALIZE SITE-WIDE MESSAGE ALERT DIALOG -->
 <script>
 jQuery(document).ready(function($) {
+
+
 $.maxZIndex = $.fn.maxZIndex = function(opt) {
     /// <summary>
     /// Returns the max zOrder in the document (no parameter)
@@ -261,12 +265,20 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   };  
   
    window.alert_modal=function(title, message,calling_jquery_element){
+   console.log(calling_jquery_element);
     $("#alert_modal").html(message);
     $("#alert_modal").dialog('option','title',title);
 		$('#alert_modal').dialog("open");
-		var top_z_index=$(calling_jquery_element).css('z-index');
-		$(".alert_modal_dialog").css('z-index',top_z_index+2);
-		$(".ui-widget-overlay").css('z-index',top_z_index+1);
+		if (typeof calling_jquery_element === 'undefined'){
+				var top_z_index = parseInt($.maxZIndex());
+		}
+		else {
+			var top_z_index=parseFloat($(calling_jquery_element).css('zIndex'));
+		}
+		var dialog_index = top_z_index + 2;
+		var overlay_index = top_z_index + 1;
+		$(".alert_modal_dialog").css('zIndex',dialog_index.toString());
+		$(".ui-widget-overlay").css('zIndex',overlay_index.toString());
   };  
   
   
@@ -280,7 +292,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
 	};
 
 	var reauthorize_user=function(){
-		window.alert_user("For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.");
+		window.alert_modal('User Authentication', "For your security, we must periodically re-confirm your Facebook identity.  Our apologies for the inconvenience.",$('#fs-dialog-box-wrap'));
 		setTimeout(function(){location.href="/facebook/login"},1000);
 	};
 	
@@ -386,7 +398,7 @@ $('body').on('click',".popup_link",function(e){
       ajaxError:"{{ajax_error}}",
     },
     onError: function(){
-    	window.alert_user("{{ajax_error}}");
+    	window.alert_modal('Attraction Selection Problem', "{{generic_error_message}}",$('#fs-dialog-box-wrap') );
     },
     onStart: function(){
     	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});

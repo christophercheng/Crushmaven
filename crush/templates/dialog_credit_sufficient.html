@@ -33,7 +33,7 @@ $('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}
 			$("#num_credits").load("/ajax_update_num_credits/");
 			}) 
 			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
-					window.alert_user("{{ajax_error}}");
+					window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
 					$('#site-overlay').css('visibility','hidden');
 			}); // end of .fail handler
 		}); // close off #credit_deduct_ok handler 

@@ -102,7 +102,7 @@ $(document).ready(function()
 					rating_element = $('.response_view_rating');
 					rating_element.html(rating);
 				}).fail(function(){
-					window.alert_user("{{ajax_error}}");
+					window.alert_modal('Attraction Response Problem', "{{generic_error_message}}");
 					return;
 					});
 		}; 
@@ -155,7 +155,7 @@ $(document).ready(function()
     		// deletion is possible, so open up the confirmation dialog
     		window.remove_crush_dialog.dialog("open");
     	}).fail(function(response){
- 				window.alert_user(response.responseText);
+ 				window.alert_modal('Attraction Removal', "{{generic_error_message}}" );
  				return false;
 		});  
     
@@ -167,7 +167,7 @@ $(document).ready(function()
  					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
- 				 	window.alert_user(response.responseText);
+ 				 	window.alert_modal('Attraction Removal', "{{generic_error_message}}" );
  				});
  			},
   		"Cancel": function() {$("#remove_crush_dialog").dialog("close");

@@ -155,7 +155,7 @@ $(document).ready(function() // handling for the slider
 					return;
 				}
 				$(this).dialog("close");
-				window.alert_user("{{ajax_error}}");
+				window.alert_modal('Lineup Problem', "{{generic_error_message}}", $('.bxslider'));
 				return false;
 			}
 			// load the next thumbnail as well
@@ -268,7 +268,7 @@ $(document).ready(function() // handling for the slider
 					if (crush_decision==true){
 						var closest_ui_dialog = $(this).closest(".ui-dialog");
 					 	if (closest_ui_dialog.find('.attractor_agreement_checkbox').attr('checked') != 'checked'){
-							window.alert_user("You must agree to the terms and conditions before continuing.");
+							window.alert_modal('Terms & Conditions Agreement', "You must agree to the terms and conditions before continuing.", decision_dialog);
 							return;
 						}
 					}
@@ -282,7 +282,7 @@ $(document).ready(function() // handling for the slider
 					decision_div.load(url, function(responseText,textStatus,XHR){
 						decision_div.prev().hide();decision_div.show()
 						if (textStatus!='success'){					
-							window.alert_user("{{ajax_error}}");
+							window.alert_modal('Lineup Decision', "{{generic_error_message}}", decision_dialog);
 							return false;
 						};
 
@@ -349,12 +349,8 @@ $(document).ready(function() // handling for the slider
 				goto_next_slide(activeIndex);
 			else { 
 				var member_name = activeSlideElement.find('.lineup_name').html();
-				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
+				window.alert_modal('Lineup Activity', "Please make a decision on " + member_name + " before jumping ahead", $('.bxslider'));
 			}
-//			if ((parseInt(activeIndex) + 1) < {{member_set.count}}){ 
-//				var member_name = activeSlideElement.find('.lineup_name').html();
-//				window.alert_user("Sorry, you can not jump ahead without making a decision on " + member_name);
-//			}
 		}
 	};
 	/* ----------------------------------------------------------------------

@@ -44,7 +44,7 @@ var goto_conversation = function(){
 		var pattern = /(?=\()(.*)(?=\))/g;
 		var result = selected_user_text.match(pattern);
 		if (result==null){
-			window.alert_user();
+			window.alert_modal("Messaging Problem", "{{generic_error_message}}" );
 			return;	
 		}
 		attraction_id=result[0].substring(1);
@@ -56,7 +56,7 @@ var goto_conversation = function(){
 				return;
 			}
 			else {
-				window.alert_user();
+				window.alert_modal("Messaging Problem", "{{generic_error_message}}" );
 				return;
 			}
 		}); 

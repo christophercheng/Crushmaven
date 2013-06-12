@@ -40,6 +40,7 @@ def context_processor(request):
             'num_platonic_friends' : me.just_friends_targets.count(),
             'facebook_app_id': settings.FACEBOOK_APP_ID,
             'ajax_error':settings.AJAX_ERROR,
+            'generic_error_message':settings.GENERIC_ERROR,
             'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'num_setups_by_me_in_progress' : num_progressing_setups_by_me,

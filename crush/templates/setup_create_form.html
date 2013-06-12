@@ -35,7 +35,7 @@ $(document).ready(function()
     },
 
     onError: function(){
-    	window.alert_user("{{ajax_error}}");
+    	 window.alert_modal('Friend Selection Problem', "{{generic_error_message}}",$('#fs-dialog-box-wrap') );
     },
     onClose: function(){
     	//$(".setup_create_dialog").show();
@@ -126,7 +126,7 @@ $(document).ready(function()
 				  	$('#setup_form').submit();
   				}
   			else {
-  				window.alert_user("We cannot create this set up unless you notify your friend");
+  				window.alert_modal('Friend Set Up', "We cannot create this set up unless you notify your friend",$('.setup_create_dialog') );
   				$("#site-overlay").css('visibility','hidden');
   				//$('#setup_form').submit();
   			}

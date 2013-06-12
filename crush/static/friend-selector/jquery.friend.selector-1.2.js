@@ -44,12 +44,11 @@
   num_connect_tries = 0, // for facebook connect to try mutliple times if errors
   
   content, wrap, overlay,
-  fbDocUri = 'http://developers.facebook.com/docs/reference/javascript/',
 
   _start = function() {
 
 	  if ( FB === undefined ){
-	      window.alert_user('Facebook integration is not defined. View ' + fbDocUri);
+	      window.alert_modal('Facebook Connection Error', "Sorry, we are experiencing difficultly connecting to Facebook.  Please try again later.",$('#fs-dialog-box-wrap'));
 	      return false;
 	    }
 	  
@@ -58,7 +57,7 @@
 	      _start2();
 	  	} else if (response.status === 'not_authorized') {
 	     	// not_authorized
-	  		window.alert_user(fsOptions.lang.ajaxError);
+		      window.alert_modal('Facebook Connection Error', "Sorry, we are currently experiencing diffuclty connecting to Facebook.  Please try again later.",$('#fs-dialog-box-wrap'));
 	  		return false;
 	  	} else {
 	      // not_logged_in
@@ -111,7 +110,7 @@
     			var duplicate_element = $('#fs-selected-user-list .fs-friends[value='+selected_id+']');
 
     	    	if ($(duplicate_element).length > 0){
-    	    		window.alert_user("You already selected this person");
+    	    		window.alert_modal("Invalid Username","You already selected this person",$("#fs-dialog-box-wrap") );
     	    		$("#fs-select-view #site-overlay").css('visibility','hidden');
     	    		$('#fs-loading').remove();
     	    		return false;
@@ -221,7 +220,7 @@
 	// ensure the terms & conditions checkbox is checked
 	 
 	if (!$('#fs-terms-checkbox').is(':checked')){
-		window.alert_user("You can proceed without agreeing to the Terms & Conditions.");
+		window.alert_modal("Terms & Conditions Agreement","You cannot proceed without agreeing to the Terms & Conditions.",$("#fs-dialog-box-wrap") );
 		return false;
   }
     //var selected_friends = [];
@@ -440,7 +439,8 @@
 	  			else // too many tries - give up
 	  			{
 	  				num_connect_tries=0;
-	  				window.alert_user(fsOptions.lang.fbConnectError);
+	  				window.alert_modal('Facebook Connection Error', "We're experiencing difficultly connecting to Facebook.  Please try again later.",$('#fs-dialog-box-wrap') );
+	  				
 	  		        location.href="/facebook/login";
 	  		        //_close();
 	  		        return false;
@@ -448,7 +448,7 @@
 	  		}
 	  		else {
 	  			if (JSON.parse(response[1].body).data.length < fsOptions.minimum_samegender_friends){
-	  				window.alert_user("Sorry, you do not have the required number of friends to use this feature.");
+	  				window.alert_modal('Minimum Friend Requirement', "Sorry, you do not have the required number of Facebook friends to use this feature.",$('#fs-dialog-box-wrap') );
 	  				_close();
 	  				return;
 	  			}
@@ -463,7 +463,7 @@
       var item,person,link;
       // don't allow users with less than 4 friends of same sex to add any type of crush
       if (facebook_friends.length < fsOptions.minimum_crushgender_friends) {
-    	  window.alert_user("Sorry, you do not have the required number of friends to use this feature.");
+    	  window.alert_modal('Minimum Friend Requirement', "Sorry, you do not have the required number of Facebook friends to use this feature.",$('#fs-dialog-box-wrap') );
     	  _close();
       }
       
@@ -510,7 +510,6 @@
 	  var friend1_elements = $('#fs-selected-user-list li').filter('#friend-type1');
 	  var friend2_elements = $('#fs-selected-user-list li').filter('#friend-type2');
 	  var friend0_elements = $('#fs-selected-user-list li').not('#friend-type2').not('#friend-type1');
-	  //window.alert_user("friend-count:" + $(friend0_elements).length + " friend_of_Friend_count:" + $(friend1_elements).length + " non_Friend_count:" + $(friend2_elements).length);
 	  
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
