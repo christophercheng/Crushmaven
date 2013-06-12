@@ -148,7 +148,6 @@ jQuery(document).ready(function($) {
 			window.app_invite_modal.dialog('close');
 		 // search for the associated button and update it's html
 		target_element = $('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button[username=' + attraction_username + ']');
-		console.log(target_element);
 		target_element.html('invite(s) sent');
 		
 		// if no buttons exist, then auto close the dialog and redirect it 
@@ -265,7 +264,6 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   };  
   
    window.alert_modal=function(title, message,calling_jquery_element){
-   console.log(calling_jquery_element);
     $("#alert_modal").html(message);
     $("#alert_modal").dialog('option','title',title);
 		$('#alert_modal').dialog("open");
