@@ -241,10 +241,10 @@ DELETION_ERROR = {0:'To prevent gaming of the system, attractions may not be rem
 LINEUP_STATUS_CHOICES = {
                          0:'Initialization In Progress',
                          1:'Initialized',
-                         2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  We will notify you via email when it is ready.',
-                         3:'You do not have enough friends to create a lineup at this time.',
-                         4:'Sorry, we are having difficulty getting data from Facebook to create a lineup.  Please try again later.',
-                         5:'Sorry, we are having difficulty initializing a lineup.  Please try again later.', # temporary failure - user can restart lineup initialization
+                         2:'Sorry, we do not have enough information about your admirer to create a lineup yet.  You can try again in 12 hours.',
+                         3:'Sorry, you do not have enough friends to create a lineup at this time.  You can try again in in 15 minutes.',
+                         4:'Sorry, we are having difficulty getting data from Facebook to create a lineup.  You can try again in 5 minutes.',
+                         5:'Sorry, we are having difficulty initializing a lineup.  You can try again in 5 minutes.', # temporary failure - user can restart lineup initialization
                          }
 
 FEATURES = {

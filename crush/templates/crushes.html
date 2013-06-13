@@ -112,28 +112,6 @@ $(document).ready(function()
  		display_response_modal('{{reveal_crush_id}}');
  	{% endif %}
  
-/* ---------------------------------------------
- 	
- 		INITIALIZATION OF Type 2 LINEUP
- 	
- * -------------------------------------------- */
-	
-  $('.crush_block').on('click','#initialize_lineup_btn',function(e) {
-
-  	var crush_username=$(this).parents('.crush_block').attr("username");
-  	var initialize_div = $(this).parent('#initialize_lineup');
-    initialize_div.html('<div id="loading">initializing lineup...</div>');
-		var load_url = '/ajax_initialize_nonfriend_lineup/' + crush_username + '/';
-		initialize_div.load(load_url);
-	});
-
-	var auto_initialize_new_nonfriend_crushes = function(){
-		var fake_initialize_btns = $('#initialize_lineup_btn.fake');
-		fake_initialize_btns.each(function(index,element){
-			$(element).trigger('click');
-		});
-		return true;
-	};
 	auto_initialize_new_nonfriend_crushes();
  /* ---------------------------------------------
  	

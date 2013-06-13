@@ -5,6 +5,7 @@ from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,SetupRelationship,LineupMember,FacebookUser
 from crush.models.globals import g_init_dict
 import datetime
+from datetime import timedelta
 import time,thread
 from django.db.models import Q
 from utils import graph_api_fetch
@@ -21,21 +22,47 @@ def admirers(request,show_lineup=None):
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
-    uninitialized_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=None) | Q(lineup_initialization_status__gt=1))
+    uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
+    error_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=0) | Q(lineup_initialization_status__gt=1))
     print "Initializing: " + str(len(uninitialized_relationships)) + " relationships"
+    start_relationships=[]
+    if len(error_relationships) > 0:
+        for relationship in error_relationships: 
+            if relationship.lineup_initialization_status==0:
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=4):
+                    start_relationships.append(relationship)
+                    continue
+            elif relationship.lineup_initialization_status==2:
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(hours=12):
+                    start_relationships.append(relationship)
+                    continue
+            elif relationship.lineup_initialization_status == 3:
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=0):
+                    start_relationships.append(relationship)
+                    continue
+            else:
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=4):
+                    start_relationships.append(relationship)
+                    continue
  
-    if len(uninitialized_relationships)>0:
-        # reset initialize the global variable and set the number of relationships to initialize
-        g_init_dict[me.username]={}    
-        g_init_dict[me.username]['initialization_count'] = len(uninitialized_relationships)    
+    if len(uninitialized_relationships)>0 or len(start_relationships)>0:
+        # reset initialize the global variable and set the number of relationships to initialize   
     
-        for relationship in uninitialized_relationships: 
+        for relationship in uninitialized_relationships:
+            start_relationships.append(relationship)
+            
+        g_init_dict[me.username]={}    
+        g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
+    
+        for relationship in start_relationships: 
             relationship.lineup_initialization_status=0
-            relationship.save(update_fields=['lineup_initialization_status'])
+            relationship.lineup_initialization_date_started = datetime.datetime.now()
+            relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
             print "starting lineup"
             #LineupMember.objects.initialize_lineup(relationship)
             thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
-            
+
+   
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -56,7 +83,7 @@ def ajax_display_lineup_block(request, display_id):
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        ajax_response += settings.LINEUP_STATUS_CHOICES[4]
         return HttpResponse(ajax_response)
     
     crush_id = relationship.target_person.username
@@ -80,11 +107,11 @@ def ajax_display_lineup_block(request, display_id):
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
+        ajax_response += settings.LINEUP_STATUS_CHOICES[4]
         return HttpResponse(ajax_response)
 
     if relationship.lineup_initialization_status > 1: # show error message
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
+        ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         return HttpResponse(ajax_response)
 
     return render(request,'lineup_block.html', {'relationship':relationship,

@@ -28,7 +28,7 @@ class LineupMemberManager(models.Manager):
             g_init_dict[crush_id]['exclude_id_string'] = comma_delimit_list(LineupMember.objects.get_exclude_id_array(relationship))
         rel_id=str(relationship.id)
         g_init_dict[crush_id][rel_id + '_initialization_state']=0
-    
+        
         if relationship.friendship_type==0:
             self.initialize_friend_crush(relationship)
         elif relationship.friendship_type==1:
@@ -717,9 +717,11 @@ class LineupMemberManager(models.Manager):
             # wait 25 seconds for rest of threads to finish their work
             # after 25 seconds delete the main user key if another initialization routine has not been kickstarted
             time.sleep(25)
-            if g_init_dict[crush_id]['initialization_count']==0:
-                del g_init_dict[crush_id]
-            
+            try:
+                if g_init_dict[crush_id]['initialization_count']==0:
+                    del g_init_dict[crush_id]
+            except:
+                pass
 class BasicLineupMember(models.Model):
     class Meta:
         abstract = True

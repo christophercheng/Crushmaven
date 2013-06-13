@@ -17,7 +17,6 @@ from crush_views import attractions_completed
 from crush_views import app_invite_form
 from crush_views import app_invite_form_v2
 from crush_views import ajax_find_fb_user
-from crush_views import ajax_initialize_nonfriend_lineup
 
 from setup_views import setup_create_form
 

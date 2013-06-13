@@ -39,18 +39,6 @@ def ajax_add_crush_targets(request):
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
             CrushRelationship.objects.create(target_person=selected_user, source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
-            # kick off the initialization process if the crush is a non-friend
-            # if friend_type==2:
-            #    target_username=selected_user.username
-            #    if not target_username in g_init_dict:
-            #        g_init_dict[target_username]={}
-            #    if not 'initialization_count' in g_init_dict[target_username]:    
-            #        g_init_dict[target_username]['initialization_count'] = 1
-            #    else:
-            #        g_init_dict[target_username]['initialization_count'] += 1
-            #    relationship.lineup_initialization_status=0
-            #    relationship.save(update_fields=['lineup_initialization_status'])
-            #    thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
     
     if counter > 0:
         return HttpResponse('')
@@ -429,42 +417,6 @@ def ajax_find_fb_user(request):
             response_data['error_message'] = settings.AJAX_ERROR 
 
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
- 
-@login_required
-def ajax_initialize_nonfriend_lineup(request, target_username):
-    ajax_response = ''
-    try:
-        relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=target_username)
-    except CrushRelationship.DoesNotExist:
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[4] + '<button id="initialize_lineup_btn">Re-initialize</button>'
-        return HttpResponse(ajax_response)  # this is a catch all error return state
-    # if the non-friend is a reciprocal admirer (there is a date_target_responded), then there's no need to initialize the lineup, so just get out of here
-    if relationship.date_target_responded != None:
-        return HttpResponse()
-    if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status > 3:
-        relationship.lineup_initialization_status = 0
-        relationship.save(update_fields=['lineup_initialization_status'])
-
-    if relationship.lineup_initialization_status == 0:
-        # wait for a certain amount of time before returning a response
-        counter = 0
-        while True:
-            # print "trying crush lineup initialization for " + relationship.target_person.last_name + " on try: " + str(counter) 
-
-            if relationship.lineup_initialization_status > 0:  # initialization was either a success or failed
-                break
-            elif counter == 25:  # if these number of seconds have passed then give up
-                # print "giving up on crush: " + relationship.target_person.last_name
-                relationship.lineup_initialization_status = 5
-                relationship.save(update_fields=['lineup_initialization_status'])
-                break
-            time.sleep(1)  # wait a quarter second
-            counter += 1
-    if relationship.lineup_initialization_status < 4 :
-        return HttpResponse()  # success or crush doesn't have enough friends
-    else:
-        ajax_response += '* ' + settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status] + '<button id="initialize_lineup_btn">Re-initialize</button>'
-        return HttpResponse(ajax_response)
 
 # called by new message write form to determine if attraction is messageeable
 @login_required
