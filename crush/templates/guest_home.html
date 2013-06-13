@@ -21,9 +21,17 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+  
+window.onload = function(){
+	document.getElementById('facebookbtn').onclick=function(e){
+		this.style.display = 'none';
+		document.getElementById('authentication_wait').style.display='block';
+		window.location.href="/facebook/login";
+	};
 
+};
 </script>
-    
+
 
 <body>
 <div id="logo_section">
@@ -32,7 +40,7 @@
 		<h1 id="guest_logo"><span id="attracted">JustMaybe</span><span id="to">.us<span></h1>
 	  <h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
 		<h2 id="tagline2">Discover your relationship potential <span id="safe_text">safely & anonymously</span>.</h3>
-		<a class ="facebookbtn" href="/facebook/login"></a>
+		<a id ="facebookbtn"></a>
 	</div> <!--  close off center_container div -->
 </div> <!-- close off logo_section div -->
 <div id="howto_section">	
@@ -45,6 +53,7 @@
 	<div class="center_container">
 	</div> <!--  close off center_container div -->
 </div> <!-- close off footer_section div -->
+<div id="authentication_wait">authenticating you...</div>
 </body>
 </html>
 

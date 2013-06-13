@@ -112,7 +112,7 @@ jQuery(document).ready(function($) {
 			var modal_html ="";
 			modal_html += '<div class="modal_instructions">To get a response from your newly added attraction(s), please help us get them signed into the application.</div>';
 			modal_html += '<div class="modal_main_content">';
-			window.invite_interstitial_modal.dialog('open');	
+				
 			
 			var counter = 0;
 			for (var username in attraction_json) {
@@ -132,7 +132,8 @@ jQuery(document).ready(function($) {
 				
 			modal_html += '</div>';//close off dialog_main_content div
 			window.invite_interstitial_modal.html(modal_html);
-			window.invite_interstitial_modal.dialog("option","position","center");
+			window.invite_interstitial_modal.dialog('open');
+			window.wait_modal_close();
 	};
 	
 	
@@ -195,6 +196,7 @@ jQuery(document).ready(function($) {
   function add_friends_to_db(response)
   //response is a json object of username:fullname with username having extra character at end representing friendship type
   {	      
+  	window.wait_modal_open();
 		var result_dictionary = {};
 		var attraction_invites_json={};
 		result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
@@ -252,16 +254,33 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
     });
 }
   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
+  $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, modal: true, autoOpen: false}); 
  
-  window.alert_user=function(message){
-    $("#alert_modal").html(message);
-    $("#alert_modal").dialog('option','buttons',{
-  		"Ok": function() {$(this).dialog("close");
-  		}
-  	});
-		$('#alert_modal').dialog("open");
-		$('#alert_modal').dialog("moveToTop");
+ window.wait_modal_open=function(message,calling_jquery_element){
+  	if (typeof message == 'undefined')
+  		var message="Please Wait";
+  	if (typeof calling_jquery_element === 'undefined')
+			var top_z_index = parseInt($.maxZIndex());
+		else
+			var top_z_index=parseFloat($(calling_jquery_element).css('zIndex'));
+   
+		var dialog_index = top_z_index + 2;
+		var overlay_index = top_z_index + 1;
+
+  	if (!$("#wait_modal").dialog("isOpen"))
+			$('#wait_modal').dialog("open");
+		$(".wait_modal_dialog").css('zIndex',dialog_index.toString());
+		$(".ui-widget-overlay").css('zIndex',overlay_index.toString());
+		$(".ui-widget-overlay").fadeTo(0,.1);
+		 $("#wait_modal").html(message);
   };  
+
+  window.wait_modal_close=function(){
+	 	if (!$("#wait_modal").dialog("isOpen"))
+	 		return;
+		$('#wait_modal').dialog("close");
+		$(".ui-widget-overlay").fadeTo(0,.6);//put it back where it used to be
+	 };  
   
    window.alert_modal=function(title, message,calling_jquery_element){
     $("#alert_modal").html(message);
@@ -527,6 +546,7 @@ $(window).resize(function(){
 </div> <!-- close off main_container -->
 <div id="site-overlay"><div id="site-loading"></div></div>
 <div id="alert_modal" title="Something's Not Right"></div>
+<div id="wait_modal">Please Wait</div>
 <div id="app_invite_modal" title="Send Anonymous Invites"></div>
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>

@@ -3953,3 +3953,30 @@ div.active_dialog_header {
 	margin-top:7px;
 	font-size:11px;
 }
+
+/* ---------- Please Wait Modal ----------------*/
+
+
+.wait_modal_dialog {
+	border-radius:8px!important;
+	box-shadow:none!important;
+	background-color:#000!important;
+	padding:30px 0px 30px 0px!important;
+		opacity:0.6!important;
+	filter:alpha(opacity=60)important!;
+	 /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)"!important;
+}
+#wait_modal{
+	background:none!important;
+	color:white;
+	font-weight:bold!important;
+	text-align:center!important;
+	
+}
+.wait_modal_dialog .ui-dialog-titlebar, .wait_modal_dialog .ui-dialog-buttonpane{
+	display:none;
+}
+
+
+

@@ -438,7 +438,7 @@ $(document).ready(function() // handling for the slider
 
 		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
-
+				window.wait_modal_open();
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
 					redirect_url='/attractions/';
 				if (num_new_attractions){
@@ -448,6 +448,7 @@ $(document).ready(function() // handling for the slider
 			}
 		}
 		if (current_href.indexOf("/setups_for_me/") != -1) {
+				window.wait_modal_open();
 				// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_setups_for_me.count }} == 1)	
 					redirect_url='/attractions/';
