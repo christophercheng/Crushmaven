@@ -430,8 +430,9 @@ $('body').on('click',".popup_link",function(e){
    }); // close off .fSelector function handler
 
 	function send_fb_requests(attraction_array){
-	    var csrf_data={};
-    	csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
+	  var csrf_data={};
+    csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
+    window.wait_modal_open('Please wait while we process your message',$('.center_panel_container'));
 		FB.ui({method: 'send',
 	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
 	  				to: attraction_array[0],
