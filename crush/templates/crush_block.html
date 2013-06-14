@@ -7,8 +7,11 @@
 		<!-- Display MUTUAL ATTRACTION! if relevant -->                 
 		<span class="updated mutual_attraction">mutual attraction</span>
 	{% elif crush.updated_flag == True %}
+			
 	     {% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}
 	     	<span class="updated">new</span>
+	     {% else %}
+	     	<span class="updated">updated</span>
 	     {% endif %}
 	     {{ crush.resetUpdatedFlag }}
 	{% endif %}

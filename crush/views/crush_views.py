@@ -256,12 +256,11 @@ def app_invite_form_v2(request, crush_username):
                     continue
 
             # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
-            if crush_relationship.target_status == 0:
-                if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0:
-                    crush_relationship.target_status = 1;
-                    crush_relationship.date_invite_last_sent = datetime.datetime.now()
-                    crush_relationship.updated_flag = True
-                    crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
+            if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0:
+                crush_relationship.target_status = 1;
+                crush_relationship.date_invite_last_sent = datetime.datetime.now()
+                crush_relationship.updated_flag = True
+                crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
                     
             return HttpResponse("_GOOD") # special text tells app_invite_form_v2 js submission function that the function was a success
     else:
