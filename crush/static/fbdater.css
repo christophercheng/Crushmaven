@@ -352,7 +352,9 @@ a.logo img{
 #right_header_menu a:hover, #center_header_menu a:hover {
 	color:white;
 	transition-property:color;
-	transition-duration:250ms;
+	transition-duration:250ms,200ms;
+-webkit-transition-duration:250ms,200ms;
+-webkit-transition-property:color;
 }
 
 .header_container li.submenu{
@@ -380,7 +382,9 @@ a.logo img{
 
 #get_started_link{
 	transition-property:color;
-	transition-duration:150ms;
+	transition-duration:150ms,150ms;
+-webkit-transition-duration:150ms,500ms;
+-webkit-transition-property:color;
 }
 
 .settings_menu li a{
@@ -656,6 +660,10 @@ a.logo img{
 	color:white;
 	transition-property:color,background-color,border-color;
 	transition-duration:300ms,300ms;
+	
+-webkit-transition-duration:300ms,300ms;
+-webkit-transition-property:color,background-color,border-color;
+
 }
 
 .left_sidebar_container .button_container {
@@ -693,7 +701,17 @@ a.logo img{
 	width:20px;
 	top:11px;
 	left:71px;
+	z-index:101;
 }
+.left_sidebar_container #combo_singles_button .small_add_icon_border{
+	position:absolute;
+	background:#000000;
+	height:19px;
+	width:3px;
+	top:10px;
+	left:80px;
+	z-index:100;
+	}
 
 .left_sidebar_container #combo_singles_button a{
 	display:inline-block;
@@ -732,17 +750,17 @@ a.logo img{
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
-	#background-color:#4A4A64!important;
-	#background-color:#333333!important;
-	#transition-property:background-color;
-	#transition-duration:200ms;
+
 	color:white!important;
-	transition-property:color;
-	transition-duration:200ms;
+	background-color:#1F1F1F!important;
+	transition-property:color,background-color;
+	transition-duration:200ms,200ms;
+	-webkit-transition-duration:200ms,200ms;
+	-webkit-transition-property:color,background-color;
 }
 .left_sidebar_container #combo_singles_button a:active{
-		border:1px solid #232334;
-		cursor:pointer;
+	border:1px solid #232334;
+	cursor:pointer;
 }
 	
 .left_sidebar_container .button_container#create_setup a{
@@ -767,13 +785,11 @@ a.logo img{
 
 }
 .left_sidebar_container .button_container#create_setup a:hover{
-	#background-color:#2447B2;
-	#background-color:#595983;
-	#background-color:#333333;
-	#transition-property:background-color;
 	color:white!important;
 	transition-property:color;
 	transition-duration:200ms;
+-webkit-transition-duration:200ms,200ms;
+-webkit-transition-property:color;
 	}
 	
 	.left_sidebar_container .button_container#create_setup a:active{
@@ -847,7 +863,9 @@ a.logo img{
 #friend_referral_bar li:hover ul li.friend_name {
 		color:white; 
 		transition-property:color;
-		transition-duration:300ms;
+		transition-duration:300ms,300ms;
+-webkit-transition-duration:300ms,300ms;
+-webkit-transition-property:color;
 }
 
 
@@ -873,6 +891,8 @@ a.logo img{
 	color:white!important;
 	transition-property:color,background-color;
 	transition-duration:300ms,100ms;
+-webkit-transition-duration:300ms,100ms;
+-webkit-transition-property:color,background-color;
 }
 #friend_referral_bar li.no_friends{
 	background-color:white!important;
@@ -1001,7 +1021,9 @@ ul.title_bar li.title_bar_page_links a:hover {
 	text-decoration:underline;	
 	color:white;
 	transition-property:color;
-	transition-duration:250ms;
+	transition-duration:250ms,200ms;
+-webkit-transition-duration:240ms,200ms;
+-webkit-transition-property:color;
 }
 
 ul.title_bar li.title_bar_option {
@@ -1027,7 +1049,9 @@ ul.title_bar li.title_bar_option a:hover{
 	text-decoration:underline;
 	color:white;
 	transition-property:color;
-	transition-duration:250ms;
+	transition-duration:250ms,200ms;
+-webkit-transition-duration:250ms,200ms;
+-webkit-transition-property:color;
 }
 .down_arrow{
 	font-size:9px;
@@ -1621,7 +1645,9 @@ ul.attraction_status_bar li.past_status_animated{
 .crush_status_0 .button_container a.button:hover{
 	background-color:#2952CC;
 	transition-property:background-color;
-	transition-duration:200ms;
+	transition-duration:200ms,200ms;
+-webkit-transition-duration:200ms,200ms;
+-webkit-transition-property:background-color;
 	}
 .crush_status_0 .button_container a.button:active{
 left:1px;
@@ -1675,7 +1701,9 @@ top:1px;
 .crush_status_4 .button_container a.button:hover{
 	background-color:#2952CC;
 	transition-property:background-color;
-	transition-duration:200ms;
+	transition-duration:200ms,200ms;
+-webkit-transition-duration:200ms,200ms;
+-webkit-transition-property:background-color;
 	}
 .crush_status_4 .button_container a.button:active{
 left:1px;
@@ -1894,7 +1922,9 @@ top:1px;
 .lineup_block a.button:hover{
 	background-color:#4775FF;
 	transition-property:background-color;
-	transition-duration:200ms;
+	transition-duration:200ms,200ms;
+-webkit-transition-duration:200ms,200ms;
+-webkit-transition-property:background-color;
 	}
 
 

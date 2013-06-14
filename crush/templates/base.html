@@ -345,18 +345,21 @@ $(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_w
 function openSubMenu() {
 	clearTimeout(window.submenu_toggle);
 	var show_me = $(this).find('ul');
+	$(this).find('a').css('color','white');
 	window.submenu_show=setTimeout(function(){
 		if (show_me.parent().is(":hover"))
 			show_me.show(100);
-	},300); 
+	},100); 
 };
 function closeSubMenu() {
 	clearTimeout(window.submenu_toggle);
 	var hide_me = $(this).find('ul');
-	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(300);},400);
+	$(this).find('a').css('color','');
+	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(200);},100);
 };
 $('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
-$('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white');$(this).find('ul').show()},function(){$('#get_started_link').css('color','#DC143C');$(this).find('ul').delay(3000).hide()});
+$('#center_header_menu > li.submenu').hover(openSubMenu,closeSubMenu);
+//$('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white');$(this).find('ul').show()},function(){$('#get_started_link').css('color','#DC143C');$(this).find('ul').delay(3000).hide()});
 // HANDLE TITLE BAR OPTIONS SUBMENU CLICK
 $('.title_bar_option a').bind('click',function(){
 	$(this).parent().children('ul').toggle();
