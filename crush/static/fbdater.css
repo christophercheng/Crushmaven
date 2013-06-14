@@ -532,6 +532,8 @@ a.logo img{
 	border-bottom:1px solid rgb(51,51,51);#c0c0c0;
 	padding:6px 0px 0px 30px;
 	width:195px;
+	white-space:nowrap;
+	overflow:hidden;
 }
 .navbar li.active a{
 	width:207px;
@@ -704,7 +706,7 @@ a.logo img{
 	#font-style:italic;
 	cursor:pointer;
 	text-align:center;
-
+	overflow:hidden;
 }
 .left_sidebar_container #combo_singles_button a.bt-fs-dialog {
 	border-radius:0px 0px 0px 7px;
@@ -756,6 +758,7 @@ a.logo img{
 	border-left: 1px solid #333333;
 	border-right: 1px solid #333333;
 	border-bottom: 1px solid #333333;
+
 }
 .left_sidebar_container .button_container#create_setup a:hover{
 	#background-color:#2447B2;
@@ -1168,7 +1171,7 @@ ul.nav_bar li#nav_bar_options{
 
 .right_half_block{
 	display:inline-block;
-	width:388px;
+	width:385px;
 	height:100%;
 	position:relative;
 }
@@ -1711,9 +1714,9 @@ top:1px;
 
 .view_facebook_widget{
 	position:absolute;
-	left:500px;
+	right:-20px;
 	bottom:5px;
-	width:50px;
+	width:70px;
 }
 .view_facebook_widget a{
 	display:inline-block;
@@ -3224,9 +3227,9 @@ div.active_dialog_header {
 	font-style:italic;
 	font-size:16px;
 	width:195px;
-		overflow:hidden;
 	text-overflow:ellipsis;
 	white-space:nowrap;
+	overflow:hidden;
 	margin-top:5px;
 	line-height:15px;
 	vertical-align:bottom;
