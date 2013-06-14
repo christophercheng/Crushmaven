@@ -133,7 +133,8 @@ jQuery(document).ready(function($) {
 			modal_html += '</div>';//close off dialog_main_content div
 			window.invite_interstitial_modal.html(modal_html);
 			window.invite_interstitial_modal.dialog('open');
-			window.wait_modal_close();
+			//window.invite_interstitial_modal.dialog('moveToTop');
+			//window.wait_modal_close();
 	};
 	
 	
@@ -196,7 +197,7 @@ jQuery(document).ready(function($) {
   function add_friends_to_db(response)
   //response is a json object of username:fullname with username having extra character at end representing friendship type
   {	      
-  	window.wait_modal_open();
+  		window.wait_modal_open();
 		var result_dictionary = {};
 		var attraction_invites_json={};
 		result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
@@ -206,10 +207,11 @@ jQuery(document).ready(function($) {
 		};
   	$.post('/ajax_add_crush_targets/',result_dictionary, function(){
   		// on success redirect to the crush page
+  		window.wait_modal_close();
   		window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
   		//document.location.href='/attractions/'; // reload page
   	}).fail(function(error){
-  		window.alert_modal("Add Attraction Problem", "{{generic_error_message}}",$('#fs-dialog-box-wrap') );
+  		window.alert_modal("Add Attraction Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });
   }
 
@@ -256,21 +258,12 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
   $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, modal: true, autoOpen: false}); 
  
- window.wait_modal_open=function(message,calling_jquery_element){
+ window.wait_modal_open=function(message){
   	if (typeof message == 'undefined')
   		var message="Please Wait";
-  	if (typeof calling_jquery_element === 'undefined')
-			var top_z_index = parseInt($.maxZIndex());
-		else
-			var top_z_index=parseFloat($(calling_jquery_element).css('zIndex'));
-   
-		var dialog_index = top_z_index + 2;
-		var overlay_index = top_z_index + 1;
 
   	if (!$("#wait_modal").dialog("isOpen"))
 			$('#wait_modal').dialog("open");
-		$(".wait_modal_dialog").css('zIndex',dialog_index.toString());
-		$(".ui-widget-overlay").css('zIndex',overlay_index.toString());
 		$(".ui-widget-overlay").fadeTo(0,.1);
 		 $("#wait_modal").html(message);
   };  
@@ -278,8 +271,9 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   window.wait_modal_close=function(){
 	 	if (!$("#wait_modal").dialog("isOpen"))
 	 		return;
-		$('#wait_modal').dialog("close");
-		$(".ui-widget-overlay").fadeTo(0,.6);//put it back where it used to be
+	 	$(".ui-widget-overlay").fadeTo(0,.6);//put it back where it used to be
+	 	$('#wait_modal').dialog("close");
+		
 	 };  
   
    window.alert_modal=function(title, message,calling_jquery_element){
@@ -432,7 +426,7 @@ $('body').on('click',".popup_link",function(e){
 	function send_fb_requests(attraction_array){
 	  var csrf_data={};
     csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
-    window.wait_modal_open('Please wait while we process your message',$('.center_panel_container'));
+    window.wait_modal_open('Please wait while we process your message');
 		FB.ui({method: 'send',
 	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
 	  				to: attraction_array[0],

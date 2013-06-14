@@ -263,7 +263,7 @@ def app_invite_form_v2(request, crush_username):
                     crush_relationship.updated_flag = True
                     crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
                     
-            return HttpResponseGone("")
+            return HttpResponse("_GOOD") # special text tells app_invite_form_v2 js submission function that the function was a success
     else:
         # determine if they haven't surpassed the total number of users to send out emails to:
         

@@ -602,8 +602,8 @@ a.logo img{
   background-color: black;
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
   background-size: 5px 5px;
-	border-radius:0px 4px 4px 0px;
-	border-left:3px solid #DC143C;
+	border-radius:0px;
+	#border-left:3px solid #DC143C;
 }
 
 .navbar li.active a .menu_title{
@@ -684,19 +684,24 @@ a.logo img{
 	height:20px;
 	width:20px;
 	top:11px;
-	left:72px;
+	left:71px;
 }
 
 .left_sidebar_container #combo_singles_button a{
 	display:inline-block;
-	background-color:#3E3E5C;;
+	#background-color:#3E3E5C;;
+	background-color:#000;
 	font-size:11px;
 	border:0px;
 	color:white;
+	color:#DC143C;
+	color:#4791FF;
+	color:#CCCCCC;
+	color:#8099E6;
 	height:40px;
 	padding-top:3px;
 	font-weight:bold;
-	font-style:italic;
+	#font-style:italic;
 	cursor:pointer;
 	text-align:center;
 
@@ -705,7 +710,7 @@ a.logo img{
 	border-radius:0px 0px 0px 7px;
 	float:left;
 	border-right:1px solid #595983;
-	border-right:1px solid #808080;
+	border-right:1px solid #5A5A5A;
 	width:82px;
 	padding-right:2px;
 }
@@ -714,12 +719,17 @@ a.logo img{
 	float:left;
 	width:113px;
 	padding-left:1px;
-	background-color:#32324A!important;
+	#background-color:#32324A!important;
+	background-color:#000!important;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
-	background-color:#4A4A64!important;
-	transition-property:background-color;
+	#background-color:#4A4A64!important;
+	#background-color:#333333!important;
+	#transition-property:background-color;
+	#transition-duration:200ms;
+	color:white!important;
+	transition-property:color;
 	transition-duration:200ms;
 }
 .left_sidebar_container #combo_singles_button a:active{
@@ -735,13 +745,25 @@ a.logo img{
 	width:100%;
 	background-color:#595983;
 	background-color:#3E3E5C;
+	background-color:#000;
 	height:37px;
 	border-radius:0px 0px 7px 7px;
+	#color:#4791FF!important;
+	color: #DC143C;
+	color:#D9D9D9;
+		color:#8099E6;
+	font-style:normal;
+	border-left: 1px solid #333333;
+	border-right: 1px solid #333333;
+	border-bottom: 1px solid #333333;
 }
 .left_sidebar_container .button_container#create_setup a:hover{
-	background-color:#2447B2;
-	background-color:#595983;
-	transition-property:background-color;
+	#background-color:#2447B2;
+	#background-color:#595983;
+	#background-color:#333333;
+	#transition-property:background-color;
+	color:white!important;
+	transition-property:color;
 	transition-duration:200ms;
 	}
 	
