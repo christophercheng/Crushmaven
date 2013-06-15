@@ -67,8 +67,8 @@ $(document).ready(function()
 			FB.ui({method: 'send',
   				name: recommender_name + " found someone you might be attracted to.",
   				to: recipient_id,
-  				link:'http://www.justmaybe.us',
-  				description:'JustMaybe.us is a new matchmaking service for people who already have someone (they know) in mind.'
+  				link:'http://www.flirtally.com',
+  				description:'Flirtally is a new matchmaking service for people who already have someone (they know) in mind.'
       	},function(response){
       		if (response != null){ 
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
@@ -83,8 +83,8 @@ $(document).ready(function()
 			FB.ui({method: 'send',
   				name: recommender_name + " has chosen - just for you - some of {{request.user.get_gender_pronoun}} friends that you may find attractive.",
   				to: recipient_id,
-  				link:'http://www.justmaybe.us',
-  				description:'JustMaybe.us is a new matchmaking service for people who already have someone (they know) in mind.'
+  				link:'http://www.flirtally.com',
+  				description:'Flirtally is a new matchmaking service for people who already have someone (they know) in mind.'
 		      },function(response){
 		      	if (response != null){  		
 							// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 

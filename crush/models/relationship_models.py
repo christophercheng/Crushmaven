@@ -43,7 +43,7 @@ class BasicRelationship(models.Model):
     
     def send_notification_email(self,email_address,subject,message,send_time=None):
         try:
-            data_dict={"from": "JustMabye.us <notifications@justmaybe.us>",\
+            data_dict={"from": "Flirtally <notifications@flirtally.com>",\
                            "to": email_address,"subject": subject,"text": message}
             if send_time != None:
                 data_dict["o:deliverytime"]=str(send_time)        
@@ -229,7 +229,8 @@ class CrushRelationship(BasicRelationship):
         # keeps track of when the crush signed up
     date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of when the crush responded
-    date_target_responded = models.DateTimeField(default=None,null=True,blank=True)    
+    date_target_responded = models.DateTimeField(default=None,null=True,blank=True)   
+    date_results_paid = models.DateTimeField(default=None,null=True,blank=True) 
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     display_id = models.IntegerField(default=0, max_length=60) #previously known as display_id
     # short message that admirer can leave for crush (as seen in their lineup
@@ -402,9 +403,10 @@ class CrushRelationship(BasicRelationship):
             return False
         self.source_person.site_credits=F('site_credits') - feature_cost
         self.is_results_paid=True
+        self.date_results_paid=datetime.now()
         self.updated_flag=True
         # change the status of relationship's is_results_paid and save the object
-        self.save(update_fields=['is_results_paid','updated_flag'])
+        self.save(update_fields=['is_results_paid','updated_flag','date_results_paid'])
         self.source_person.save(update_fields=['site_credits'])
        
         # now check to see if the attraction target was a recommendee for any setups, note:recommenders only get to see recommendee decisions after the client's pay to see them.

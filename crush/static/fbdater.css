@@ -706,9 +706,9 @@ a.logo img{
 .left_sidebar_container #combo_singles_button .small_add_icon_border{
 	position:absolute;
 	background:#000000;
-	height:19px;
+	height:18px;
 	width:3px;
-	top:10px;
+	top:11px;
 	left:80px;
 	z-index:100;
 	}

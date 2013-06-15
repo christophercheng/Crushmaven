@@ -117,8 +117,8 @@ $(document).ready(function()
    	FB.ui({method: 'send',
   				name: "{{request.user.first_name}} {{request.user.last_name}} has selected some  friends of {{request.user.get_gender_pronoun}} which {{request.user.get_gender_pronoun_subject }} think you may find attractive.",
   				to: window.setup_target,
-  				link:'http://www.justmaybe.us',
-  				description:'JustMaybe.us is a new matchmaking service that allows friends to easily set their friends up with eachother.'
+  				link:'http://www.flirtally.com',
+  				description:'Flirtally is a new matchmaking service that allows friends to easily set their friends up with eachother.'
       },
       function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page

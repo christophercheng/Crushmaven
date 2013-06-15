@@ -6,7 +6,7 @@
 	    <meta name="robots" content="all,index" />
 	    <meta name="Revisit-After" content="30 Days" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-		<title>JustMaybe.us - {% block title %}{% endblock %}</title>    	
+		<title>Flirtally - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
@@ -433,8 +433,8 @@ $('body').on('click',".popup_link",function(e){
 		FB.ui({method: 'send',
 	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
 	  				to: attraction_array[0],
-	  				link:'http://www.justmaybe.us',
-	  				description:'JustMaybe.us is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
+	  				link:'http://www.flirtally.com',
+	  				description:'Flirtally is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
 			      },
 			      function(response){
 							if (response != null){

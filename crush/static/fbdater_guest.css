@@ -59,6 +59,13 @@ a{
 	margin-left:30px;
 }
 
+#logo_section img#guest_logo{
+	position:absolute;
+	top:20px;
+	left:40px;
+	height:120px;	
+}
+
 h1{
 	position:absolute;
 	top:20px;

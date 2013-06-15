@@ -55,22 +55,13 @@ def ajax_can_crush_target_be_platonic_friend(request, crush_username):
             return HttpResponseForbidden(settings.DELETION_ERROR[0])
         if crush_relationship.target_status == 3:
             return HttpResponseForbidden(settings.DELETION_ERROR[1])
-        if crush_relationship.target_status==5:
-            return HttpResponse('') # allow this
-        if crush_relationship.target_status == 4:
-            if not crush_relationship.date_target_responded:
-                return HttpResponseForbidden(settings.DELETION_ERROR[1])   
-            try:
-                reciprocal_relationship = CrushRelationship.objects.get(target_person=request.user,source_person__username=crush_username)
-            except:
+        if crush_relationship.target_status >3 and crush_relationship.is_results_paid==True:  
+            time_since_response_view = datetime.datetime.now() - crush_relationship.date_results_paid
+            if time_since_response_view.days < settings.MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW:
                 return HttpResponseForbidden(settings.DELETION_ERROR[2])
-            if not reciprocal_relationship.is_results_paid:
-                return HttpResponseForbidden(settings.DELETION_ERROR[2])
-            if (datetime.datetime.now() - reciprocal_relationship.date_target_responded).days < settings.MINIMUM_DELETION_DAYS_SINCE_RESPONSE:
-                return HttpResponseForbidden(settings.DELETION_ERROR[3])
-        return HttpResponse()  # everything passes
+        return HttpResponse('')  # everything passes
     except CrushRelationship.DoesNotExist:
-        return HttpResponseNotFound("Error: crush can no longer be found.")  # same thing as a successful deletion i guess?
+        return HttpResponseNotFound(settings.GENERIC_ERROR)  # same thing as a successful deletion i guess?
 
 # user is no longer interested in crush and will move them to a platonic friend
 # crush must pass all of the conditions before it can be removed
@@ -139,7 +130,7 @@ def ajax_load_response_dialog_content(request, crush_id):
     if relationship.target_status == 4:
         ajax_response += "<div class='dialog_subtitle'>Congratulations!</div>" 
         ajax_response += "<div id='response_container'>"
-        ajax_response += "<span class='response_message'>" + crush.get_name() + " expressed a mutual attraction for you.</span>"
+        ajax_response += "<span class='response_message'>" + crush.get_name() + " expressed a mutual attraction to you.</span>"
         ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="decision_icon_yes"></span></span>';
         # check for any previously hidden messages from the target_person
         if request.user.received_messages.filter(sender=relationship.target_person).count() == 0:           

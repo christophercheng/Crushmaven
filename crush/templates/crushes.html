@@ -132,7 +132,7 @@ $(document).ready(function()
     		// deletion is possible, so open up the confirmation dialog
     		window.remove_crush_dialog.dialog("open");
     	}).fail(function(response){
- 				window.alert_modal('Attraction Removal', "{{generic_error_message}}" );
+ 				window.alert_modal('Attraction Removal', response.responseText );
  				return false;
 		});  
     

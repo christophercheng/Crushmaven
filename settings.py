@@ -218,8 +218,8 @@ INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times
 MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=12# 0 # default is = 12 hours
-MINIMUM_DELETION_DAYS_SINCE_ADD=0
-MINIMUM_DELETION_DAYS_SINCE_RESPONSE=0
+MINIMUM_DELETION_DAYS_SINCE_ADD=1
+MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=1
 MAXIMUM_CRUSH_INVITE_EMAILS=5
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=25
 MINIMUM_INVITE_RESEND_DAYS=2
@@ -232,10 +232,10 @@ PLATONIC_RATINGS = {
                     1:'very unattractive',
                      }
 
-DELETION_ERROR = {0:'To prevent gaming of the system, attractions may not be removed during the first ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) +' days.',
-                   1:'Your attraction is currently taking your lineup.  To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed',
-                   2: 'Your attraction has not yet viewed your attraction.  To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed.',
-                   3: 'To prevent system gaming, attractions may only be removed ' + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE) + ' days after your attraction is first viewed.',
+DELETION_ERROR = {
+                  0:'To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may not be removed during the first ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days after they are added.',
+                  1:'Your attraction is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions can not be removed while the user is interacting with the associated admirer lineup.',
+                  2:"To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may not be removed for the first " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days after their response is first viewed.", 
                    }
 
 LINEUP_STATUS_CHOICES = {
