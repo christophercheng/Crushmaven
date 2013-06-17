@@ -112,7 +112,28 @@ $(document).ready(function()
 	</li>
 </ul>
 <! -- End of title widget -->  
-
+{% if show_help_popup == 1 %}
+<p class="new_user_instructions">
+	<span class="help_icon" title="close help"></span>
+	<span class="instructions_title">How Friend Setups Work:</span>
+	<span class="first_instruction_section">Simply select any of your facebook friend(s) to request a setup from.  We will ask them to recommend up to ten of their friends for you.  
+		You will be able to pick out which recommendations you are attracted to - and eventually find out if they are mutually attracted to you.
+	</span>
+	<span class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.   
+		 <i>The one difference is that your recommender will help us get your chosen recommendations signed in, 
+		and they can see exactly who is attracted to whom.</i>
+	</span>
+	<a href="javascript:{}" class="request_setup_link instruction_block_button" setup_select="true" title="Request Setups from Friends">Request a Setup</a>
+</p>		<!-- close off instructional content -->
+{% elif show_help_popup == 2 %}
+<p class="new_user_instructions">
+	<span class="help_icon" title="close help"></span>
+	<span class="instructions_title">How Friend Setups Work:</span>
+	<span class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup.  Add any of them as an 'attraction' if you are attracted to them.  We will try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.
+	</span>
+	<span class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.  <i>The one difference is that your recommender will help us get your chosen recommendations signed in, and your recommender can see exactly who is attracted to whom.</i></span>
+</p>		<!-- close off instructional content -->
+{% endif %}
 
 {% if setup_relationships %}
 
@@ -158,7 +179,7 @@ $(document).ready(function()
 
 {% endfor %}
 
-{% else %}
+{% elif show_help_popup == 0 %}
 	{% if setup_type == 0 %}
 		<span id="no_content" {% if request_relationships %}class="no_content_abbreviated"{% endif %}>You have no setups from friends currently.<BR><BR><a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span>
 	{% else %}

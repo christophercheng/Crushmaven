@@ -119,6 +119,20 @@ $(document).ready(function()
 </ul>
 <! -- End of title widget -->  
 
+{% if show_help_popup == True %}
+<p class="new_user_instructions">
+	<span class="help_icon" title="close help"></span>
+	<span class="instructions_title">How Friend Setups Work:</span>
+	<span class="first_instruction_section">As a matchmaker, you can select a single facebook friend to set up - and up to ten other friends who you think might make a good match.  Your set-up friend will be able to view your recommended friends' facebook profiles and choose any they are attracted to.
+	</span>
+	<span class="second_instruction_section">For each chosen recommended friend, we will try to determine if there is a mutual attraction through the <a href="#">standard attraction / admirer lineup process</a>.  We will also need your help to get your recommended friend signed up.  As the process unfolds, you will be able to see exactly who liked whom.
+	</span>
+	<a href="javascript:{}" class="create_setup instruction_block_button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
+</p>		<!-- close off instructional content -->
+<p class="new_user_sub_instructions">
+	Like how this sounds but <strong>prefer to be set up by your friend?</strong><br><a href="javascript:{}" class="request_setup_link" setup_select="true" title="Request Setups from Friends">Request a setup from a friend</a>
+</p>
+{% endif %}
 
 {% if setup_relationships %}
 
@@ -211,7 +225,7 @@ $(document).ready(function()
 
 {% endfor %}
 
-{% else %}
+{% elif show_help_popup == False %}
 	{% if setup_type == 0 %}
 		<span id="no_content">You have no setups for friends.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Add one</a> to get started.</span>
 	{% else %}

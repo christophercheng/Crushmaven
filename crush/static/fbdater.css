@@ -64,7 +64,7 @@ a.button {
 .help_icon{
 		display:inline-block;
 	position:absolute;
-	background:#2E8AE6;
+	#background:#2E8AE6;
 	background-image:url(images/full_sprite.png);	
 	background-repeat:no-repeat;
 	background-size:auto;
@@ -929,6 +929,102 @@ a.logo img{
 }
 
 
+/* ========  instructional help popup =======*/
+
+.new_user_instructions{
+	font-weight:normal;
+	width:530px;
+	margin-left:7px;
+	display:inline-block;
+	#background:#80B2FF;
+	#background:#FAFAFA;
+	background-color: rgba(128,178,255,.1);
+	border:1px solid #8099CC; 
+	color:#2E2E2E;
+	font-size:13px;
+	line-height:21px;
+	padding:15px 10px 15px 20px;
+	#position:relative;
+	#box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+	margin-bottom:30px;
+	border-radius:0 7px 7px 7px;
+	display:none;
+}
+.new_user_instructions span.instructions_title{
+	display:block;
+	font-size:18px;
+	font-weight:bold;
+	margin-bottom:12px;
+}
+.new_user_instructions .help_icon{
+	top:42px;
+	left:2px;
+	#border: 1px solid #85C2FF;
+	border-radius:10px; 
+	#background: transparent!important;
+}
+
+.new_user_instructions span.second_instruction_section{
+	display:inline-block;
+	border-top:1px solid #CFCFD4;#white;
+	width:530px;
+	margin-top:10px;
+	margin-left:-20px;
+	margin-bottom:10px;
+	padding: 8px 10px 0px 20px;	
+}
+
+.new_user_instructions_instructions span.paragraph_break{
+	display:block;
+	height:5px;
+}
+
+.new_user_instructions a {
+	font-size:13px!important;
+	color:inherit;
+	text-decoration:underline;
+}
+.new_user_instructions a.instruction_block_button{
+	padding: 5px 10px 5px 10px!important;
+	border-radius:4px;
+	display:inline-block!important;
+	vertical-align:middle;
+	text-align:center;
+	display:inline-block!important;
+	padding:5px 12px;
+	background:#254AB8;
+	border-radius:5px;
+	color:white!important;
+	font-weight:bold;
+	font-size:13px;
+	margin-left:170px;
+	text-decoration:none;
+	margin-top:5px;
+}
+.new_user_sub_instructions{
+	font-weight:normal;
+	width:470px;
+	margin-left:37px;
+	display:inline-block;
+	#background:#E6F0FF;
+	BACKGROUND:#FCFCFC;
+	border:1px solid #B2B2C2; 
+	color:#434343!important;
+	font-size:13px;
+	line-height:22px;
+	padding:15px 10px 15px 10px;
+	margin-top:40px;
+	border-radius:2px;
+	display:none;
+	text-align:center;
+}
+.new_user_sub_instructions span.sub_instruction_strong{
+	font-weight:bold;
+	font-size:15px;
+}
+.new_user_sub_instructions a {
+	font-size:13px;
+}
 /* ===========================   Title Bar ========================= */
 
 ul.title_bar {
@@ -1813,10 +1909,13 @@ top:1px;
 	border-radius:0 25px 25px 25px;
 	display:none;
 }
-.lineup_block_instructions span.paragraph_break{
-	display:block;
-	height:5px;
+.lineup_block_instructions .help_icon{
+	top:42px;
+	left:2px;
+	border: 1px solid #2E8AE6;
+	border-radius:10px; 
 }
+
 .lineup_block_instructions span.second_instruction_section{
 	display:inline-block;
 	border-top:1px solid white;
@@ -1826,12 +1925,11 @@ top:1px;
 	padding: 5px 10px 0px 20px;
 }
 
-.lineup_block_instructions .help_icon{
-	top:42px;
-	left:2px;
-	border: 1px solid #2E8AE6;
-	border-radius:10px; 
+.lineup_block_instructions span.paragraph_break{
+	display:block;
+	height:5px;
 }
+
 
 .lineup_block .lineup_block_line{
 	display:block;

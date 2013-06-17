@@ -30,6 +30,12 @@ def setups_for_me(request,requested_username=None):
             resent_request.save(update_fields=['date_added'])
         except:
             pass
+    show_help_popup=0 # do not show    
+    # determine if help popup should show, and which one
+    if len(requests_by_me) == 0 and len(progressing_setups)==0 and setups_completed_count==0:
+        show_help_popup=1 # show version 1 of popup
+    elif len(progressing_setups)>0 and setups_completed_count==0:
+        show_help_popup=2 #show version 2 of popup
     
     return render(request,'setups_for_me.html',
                               {
@@ -37,7 +43,8 @@ def setups_for_me(request,requested_username=None):
                                'setup_relationships':progressing_setups,
                                'setups_in_progress_count': progressing_setups.count(),
                                'setups_completed_count':setups_completed_count,
-                               'request_relationships':requests_by_me
+                               'request_relationships':requests_by_me,
+                               'show_help_popup': show_help_popup
                                })     
 
 # -- Crushes Completed Page --
@@ -55,6 +62,7 @@ def completed_setups_for_me(request):
                                'setup_relationships':completed_setups,
                                'completed_setups_count': completed_setups.count(),
                                'setups_incomplete_count':setups_incomplete_count,
+                               'show_help_popup': 0 # never show help popup for this sub page
                                })       
     
 @login_required
@@ -63,13 +71,18 @@ def setups_by_me(request):
     me = request.user
     progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
     setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
-
+    # determine if help popup should be shown
+    if len(progressing_setups) == 0 and setups_completed_count==0:
+        show_help_popup=True
+    else: 
+        show_help_popup=False
     return render(request,'setups_by_me.html',
                               {
                                'setup_type': 0, # 0 is in progress, 1 is completed
                                'setup_relationships':progressing_setups,
                                'setups_in_progress_count': progressing_setups.count(),
                                'setups_completed_count':setups_completed_count,
+                               'show_help_popup':show_help_popup
                                })     
 
 # -- Crushes Completed Page --
@@ -86,6 +99,7 @@ def completed_setups_by_me(request):
                                'setup_relationships':completed_setups,
                                'completed_setups_count': completed_setups.count(),
                                'setups_incomplete_count':setups_incomplete_count,
+                               'show_help_popup': False
                                })     
 
 @login_required
@@ -94,11 +108,17 @@ def setup_requests_for_me(request):
   
     requests_for_me = me.crush_setuprequestrelationship_set_from_target.filter().order_by('-updated_flag','date_added')
     requests_by_me_count = me.crush_setuprequestrelationship_set_from_source.count()
-
+    
+    # determine whether help_popup shoudl be shwon
+    if len(me.crush_setuprelationship_set_from_source.all()) == 0:
+        show_help_popup=True
+    else:
+        show_help_popup=False
     return render(request,'setup_requests.html',
                               {
                                'request_relationships':requests_for_me,
                                'requests_by_me_count': requests_by_me_count,
+                               'show_help_popup':show_help_popup
                                })  
 
 @login_required

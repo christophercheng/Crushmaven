@@ -249,7 +249,25 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 </ul>
-<! -- End of crush type navigation widget -->  
+<! -- End of crush type navigation widget --> 
+
+{% if show_help_popup == True %}
+<p class="new_user_instructions">
+	<span class="help_icon" title="close help"></span>
+	<span class="instructions_title">How Attractions Work:</span>
+	<span class="first_instruction_section">Simply select any facebook friend - or any facebook user - who you are attracted to.  
+		We will try to get your 'attraction' signed into Flirtally (by sending an <i>anonymous</i> invite) and determine if they are mutually attracted to you.  
+	</span>
+	<span class="second_instruction_section">Once signed in, your attraction will receive a lineup of potential admirers - similar to a police lineup.   To protect your identity as the actual admirer, your facebook profile will be inserted in a random position.
+		Your attraction will tell us which lineup members they are attracted to.   
+		We will then let you know if your attraction is mutual - or not.
+	</span>
+	<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add an Attraction">Add an Attraction</a>
+</p>		<!-- close off instructional content -->
+<p class="new_user_sub_instructions">
+	<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or perhaps you're more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_me/">Friend Setups</a>
+</p>
+{% endif %} 
 
 {% if crush_relationships %}
 	{% for crush in crush_relationships %}
@@ -258,7 +276,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 				{% endwith %}
 	{% endfor %}
 
-{% else %}
+{% elif show_help_popup == False %}
 
 <span id="no_content">
 

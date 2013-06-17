@@ -103,6 +103,12 @@ def attractions(request, reveal_crush_id=None):
     responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
+    # determine whether to show help popup
+    if len(crush_progressing_relationships) == 0 and len(responded_relationships) == 0 and crushes_completed_count == 0:
+        show_help_popup=True
+    else:
+        show_help_popup=False
+
     return render(request, 'crushes.html',
                               {
                                'crush_type': 0,  # 0 is in progress, 1 is matched, 2 is not matched
@@ -114,6 +120,7 @@ def attractions(request, reveal_crush_id=None):
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
                                'check_fb_privacy_setting':check_fb_privacy,
                                'reveal_crush_id':reveal_crush_id,
+                               'show_help_popup':show_help_popup
                                })    
 @login_required
 def ajax_load_response_dialog_content(request, crush_id):
@@ -202,6 +209,7 @@ def attractions_completed(request, reveal_crush_id=None):
                                'crushes_in_progress_count': crushes_in_progress_count,
                                'crushes_completed_count' : crushes_completed_relationships.count,
                                'reveal_crush_id':reveal_crush_id,
+                               'show_help_popup':False # never show help popup for this subpage
                                })   
 
 @login_required    
