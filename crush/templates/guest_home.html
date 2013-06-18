@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
-  <meta name="description" content="When you already have someone in mind, but not sure they feel the same... Discover your relationship potential - safely and anonymously." />
+  <meta name="description" content="Attracted to someone you know, but not sure they feel the same... Discover your relationship potential - safely and anonymously." />
   <meta name="robots" content="all,index" />
   <meta name="Revisit-After" content="30 Days" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
@@ -10,6 +10,7 @@
 	<title>Flirtally | Discover relationship potential safely & anonymously</title>
 </head>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -21,41 +22,211 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-  
-window.onload = function(){
-	document.getElementById('facebookbtn').onclick=function(e){
-		this.style.display = 'none';
-		document.getElementById('authentication_wait').style.display='block';
-		window.location.href="/facebook/login";
-	};
 
-};
+jQuery(document).ready(function($) {
+	
+	/*-- ------ HANDLE FACEBOOK LOGIN BUTTON CLICK  -------- */
+	
+	$('#facebookbtn').click(function(e){
+		$(this).hide();
+		$('#authentication_wait').show();
+		window.location.href="/facebook/login";
+	});
+	
+	/* --------- HANDLE SLIDER BUTTON CLICKS ----------------- */
+	
+	$('.slide_button').click(function(event){
+		if ($(this).hasClass('slide_button_active'))
+			return;
+		var inactive_toggle_delay=400;
+		var inactive_toggle_duration=4000;		
+		var active_toggle_duration=1000;
+		var active_slide=$('.active_tagline_slide');
+		var inactive_slide=$('.inactive_tagline_slide');
+		// stop the automatic timer if user clicked one of the slider buttons
+		if (event.originalEvent!==undefined){
+			
+			// make toggles quick!
+			inactive_toggle_duration=500;
+			active_toggle_duration=250;
+			if (window.slider_control!=null){
+				clearInterval(window.slider_control);
+				window.slider_control=null;
+			}
+		}
+		else{ // in case of automated slide - only allow two automatic changes
+			window.number_automatic_slides+=1;
+			if (window.number_automatic_slides ==2 )
+				clearInterval(window.slider_control);
+		}
+			
+
+		var active_button=$('.slide_button_active');
+		var active_core=active_button.children('span');
+		var inactive_button=$(this);
+		var inactive_core=$(this).children('span');
+		
+		inactive_button.removeClass('slide_button_inactive').addClass('slide_button_active');
+		
+		inactive_core.removeClass('slide_button_core_inactive').addClass('slide_button_core_active');
+		
+		active_button.removeClass('slide_button_active').addClass('slide_button_inactive');
+		
+		active_core.removeClass('slide_button_core_active').addClass('slide_button_core_inactive');
+		
+
+	
+		//active_slide.animate({left:'-985px'},1000,function(){active_slide.css('left','925px');});//slide left out of view
+		//inactive_slide.animate({left:'0px'},1000);// slide left into view (from left 925 px)
+		//active_slide.fadeToggle('2000');
+		active_slide.fadeToggle(active_toggle_duration);
+		inactive_slide.delay(inactive_toggle_delay).fadeToggle(inactive_toggle_duration);
+		active_slide.removeClass('active_tagline_slide').addClass('inactive_tagline_slide');
+		inactive_slide.removeClass('inactive_tagline_slide').addClass('active_tagline_slide');
+		// put the slide slid out of view back into the right position:
+		
+	}); // close of $('.slide_button').click
+	
+	/* ----------  AUTOMATED SLIDE FLOW --------- */
+	// automatically slide in and out the tagline slides until a button is pressed
+	window.number_automatic_slides=0;	
+	window.slider_control = setInterval(function(){
+			$('.slide_button_inactive').trigger('click');
+		},5000);
+	// auto show the slide marked active (since it is default to display:none
+	$('.active_tagline_slide').fadeToggle(3000);
+	//$('.active_how_to_slide').fadeToggle(1000);
+	
+	/* --------- HANDLE HOW TO SECTION CLICKS ----------------- */
+	
+	$('.how_to_link').click(function(event){
+		if ($(this).hasClass('how_to_link_active'))
+			return;
+		var active_slide=$('.active_how_to_slide');
+		var inactive_slide=$('.inactive_how_to_slide');
+		var active_link=$('.how_to_link_active');
+		var inactive_link=$(this);
+
+		inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
+		active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
+	
+		var new_height=inactive_slide.css('height');
+		$('.how_to_slide_container').animate({height:new_height},500);
+		active_slide.fadeToggle(500,function(){
+			inactive_slide.fadeToggle(500,function(){
+				active_slide.removeClass('active_how_to_slide').addClass('inactive_how_to_slide');
+				inactive_slide.removeClass('inactive_how_to_slide').addClass('active_how_to_slide');
+			});
+		}); // close off active_slide.fadeToggle
+		
+	});//close off .how_to_link_inactive click handler
+}); // close of jQuery(document).ready
+
+
 </script>
 
 
 <body>
 <div id="logo_section">
 	<div class="center_container">
-		<span id="top_links"><a href="#">Privacy</a><a href="#">Contact</a></span>
-		<!-- <h1 id="guest_logo"><span id="attracted">Flirtally</span><span id="to"><span></h1> -->
 		<img id="guest_logo" src="/static/images/flirtally_logo.png">
-	  <h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
-		<h2 id="tagline2">Discover your relationship potential <span id="safe_text">safely & anonymously</span>.</h3>
+		<span id="top_links"><a href="#">Privacy</a><a href="#">Contact</a></span>
+		<div class="tagline_slide_container">
+			<div class="tagline_slide active_tagline_slide" id="tagline_slide1">
+				<h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
+				<h2 id="tagline2">Discover your relationship potential <span id="safe_text">anonymously.</span></h3>
+			</div>
+			<div class="tagline_slide inactive_tagline_slide" id="tagline_slide2">
+				<h2 id="tagline1">Interested in being set up by friends<br> but don't want to be a bother?</h2>
+				<h2 id="tagline2">Make it easy for friends to set you up <BR><span id="safe_text">without the hassle of introductions.</span></h3>
+			</div>
+		</div> <!-- close off div class=tagline_slide_container -->
 		<a id ="facebookbtn"></a>
 		<div id="authentication_wait">authenticating...</div>
+		<div id="slide_buttons">
+			<span class="slide_button slide_button_active" id="slide_button1"><span class="slide_button_core slide_button_core_active"></span></span>
+			<span class="slide_button slide_button_inactive" id="slide_button2"><span class="slide_button_core slide_button_core_inactive"></span></span>
+		</div>
 	</div> <!--  close off center_container div -->
 </div> <!-- close off logo_section div -->
-<div id="howto_section">	
+<div id="how_to_section">	
 	<div class="center_container">
-		<h2 id="howto_title" class="section_title">How it Works:</h2>
-		<BR><BR><i>it is magic. yes, magic. duh.</i>
+		<div class="title_section">
+			<h2 id="howto_title" class="section_title">How it Works:</h2>
+			<a href="javascript:;" class="how_to_link how_to_link_active for_singles" id="for_singles">for singles</a>
+			<a href="javascript:;" class="how_to_link how_to_link_inactive" id="for_matchmakers">for matchmakers</a>
+		</div>
+		<div class="how_to_slide_container">
+			<div class="how_to_slide active_how_to_slide" id="how_to_slide_singles">
+				<div id="singles_step_1" class="singles_step">
+					<span class="singles_step_text_column">
+						<span class="singles_step_image"></span>
+						<span class="singles_step_title">Friend Selection</span>
+						<span class="singles_step_text">
+							Select a Facebook friend - or any Facebook user - that you are attracted to. We will send out an anonymous invite to get them signed in.				</span>
+						</span>
+					</span>
+					</div>
+				<div id="singles_step_2" class="singles_step">
+					<span class="singles_step_text_column">
+						<span class="singles_step_image"></span>
+						<span class="singles_step_title">Admirer Lineup</span>
+						<span class="singles_step_text">
+							Once your 'attraction' is signed in, we present them with a carefully constructed lineup of potential admirers - you and nine other friends of theirs inserted in random order.  Your friend identifies anyone they are attracted to, and similar to a police lineup, they won't know who their actual admirer is. 				</span>
+						</span>
+					</span>
+				</div>
+				<div id="singles_step_3" class="singles_step">
+					<span class="singles_step_text_column">
+						<span class="singles_step_image"></span>
+						<span class="singles_step_title">Match Notification</span>
+						<span class="singles_step_text">
+							If you are picked from the lineup, we notify both parties about the match.   Your attraction might actually think they chose you first.  If you are not picked, your identity remains protected.			</div>
+						</span>
+					</span>
+					</div>
+			<div class="how_to_slide inactive_how_to_slide" id="how_to_slide_setup">
+				<div id="setup_step_1" class="setup_step">
+				<span class="setup_step_image"></span>
+				<span class="setup_step_title">1 Friend Selection</span>
+	
+					<span class="setup_step_text">
+						Select any Facebook friend that you wish to set up i.e. 'setup friend'.  Select up to ten more friends that you think will make a good match.  We will pass your recommendations on to your setup friend.  <i><strong>Note:</strong> Your friends can also request setups from you.</i>
+					</span>
+				</div>
+				<div id="setup_step_2" class="setup_step">
+				<span class="setup_step_image"></span>
+				<span class="setup_step_title">2 Setup Selection</span>
+	
+					<span class="setup_step_text">
+						Your setup friend will view the facebook profiles of your recommendations and select the ones they are attracted to.  We invite the chosen recommendations to sign in, so we can determine if they are mutually attracted
+					</span>
+				</div>
+				<div id="setup_step_3" class="setup_step">
+				<span class="setup_step_image"></span>
+				<span class="setup_step_title">3 Match Assessment</span>
+	
+					<span class="setup_step_text">
+						Once a recommended user is signed up, we present them with a carefully constructed lineup of potential admirers  -  your setup friend and nine others inserted in random order.  Similar to a police lineup, the recommended user selects anyone they are attracted to. 
+					</span>
+				</div>
+				<div id="setup_step_4" class="setup_step">
+				<span class="setup_step_image"></span>
+				<span class="setup_step_title">4 Notifications</span>
+	
+					<span class="setup_step_text">
+					If your setup friend is selected, both parties are notified.   If not, your setup friend's identify is protected.<span class="text_break">.</span><strong>As a matchmaker, you get visibility into the entire process.</strong>  We notify you each time one of your friends responds to your setup.  After all is said and done, you'll know exactly who liked whom.
+					</span>
+				</div>
+			</div> <!-- close off <div id="how_to_slide_setup"-->
+		</div> <!-- close off how_to_slide_container -->
 	</div> <!--  close off center_container div -->
 </div> <!-- close off howto_section div -->
-<div id="footer_section">	
+<div class="footer_section">
 	<div class="center_container">
-	</div> <!--  close off center_container div -->
-</div> <!-- close off footer_section div -->
-
+		<span class="first_footer_line">Flirtally © 2013<span class="company_text">&nbsp;&nbsp;operated by 1310 DCL, Inc.&nbsp;&nbsp;</span><span class="hidden_text">Go Illini!</span></span>
+	</div>
+</div>
 </body>
 </html>
 

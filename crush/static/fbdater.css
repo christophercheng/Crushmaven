@@ -679,12 +679,13 @@ a.logo img{
 	background-image:url(images/full_sprite.png);	
 	background-repeat:no-repeat;
 	background-size:auto;
-	background-position:-32px -242px;
+	background-position:-33px -242px;
 	height:30px;
 	width:30px;
 	top:2px;
 	left:33px;
 }
+
 
 .left_sidebar_container #combo_singles_button {
 	height:38px;
@@ -739,6 +740,8 @@ a.logo img{
 	border-right:1px solid #5A5A5A;
 	width:82px;
 	padding-right:2px;
+	border-left:2px solid #595983!important;
+	border-bottom:2px solid #595983!important;
 }
 .left_sidebar_container a.request_setup_link{
 	border-radius:0px 0px 7px 0px;	
@@ -747,6 +750,8 @@ a.logo img{
 	padding-left:1px;
 	#background-color:#32324A!important;
 	background-color:#000!important;
+	border-right:2px solid #595983!important;
+	border-bottom:2px solid #595983!important;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
@@ -779,9 +784,9 @@ a.logo img{
 	color:#D9D9D9;
 		color:#8099E6;
 	font-style:normal;
-	border-left: 1px solid #333333;
-	border-right: 1px solid #333333;
-	border-bottom: 1px solid #333333;
+	border-left: 2px solid #595983;
+	border-right: 2px solid #595983;
+	border-bottom: 2px solid #595983;
 
 }
 .left_sidebar_container .button_container#create_setup a:hover{
@@ -793,7 +798,9 @@ a.logo img{
 	}
 	
 	.left_sidebar_container .button_container#create_setup a:active{
-		border:1px solid #232334;
+		#border-bottom:1px solid #595983;
+		padding:12px 10px 3px 36px;
+		box-shadow: inset -1px 1px 4px #474747;
 	}
 
 /* ===========================   Right Sidebar ========================= */
@@ -957,7 +964,7 @@ a.logo img{
 	margin-bottom:12px;
 }
 .new_user_instructions .help_icon{
-	top:42px;
+	top:39px;
 	left:2px;
 	#border: 1px solid #85C2FF;
 	border-radius:10px; 
