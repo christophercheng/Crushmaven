@@ -10,7 +10,7 @@
 	<title>Flirtally | Discover relationship potential safely & anonymously</title>
 </head>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -35,8 +35,8 @@ jQuery(document).ready(function($) {
 	
 	/* --------- HANDLE SLIDER BUTTON CLICKS ----------------- */
 	
-	$('.slide_button').click(function(event){
-		if ($(this).hasClass('slide_button_active'))
+	$('.slide_button').on('click',function(event){
+		if ($(this).hasClass('active_slide_button_active'))
 			return;
 		var inactive_toggle_delay=400;
 		var inactive_toggle_duration=4000;		
@@ -45,6 +45,9 @@ jQuery(document).ready(function($) {
 		var inactive_slide=$('.inactive_tagline_slide');
 		// stop the automatic timer if user clicked one of the slider buttons
 		if (event.originalEvent!==undefined){
+			
+			// stop and fast forward any ongoing animations
+			active_slide.finish();
 			
 			// make toggles quick!
 			inactive_toggle_duration=500;
@@ -91,33 +94,56 @@ jQuery(document).ready(function($) {
 	// automatically slide in and out the tagline slides until a button is pressed
 	window.number_automatic_slides=0;	
 	window.slider_control = setInterval(function(){
-			$('.slide_button_inactive').trigger('click');
+			//$('.slide_button_inactive').trigger('click');
 		},5000);
 	// auto show the slide marked active (since it is default to display:none
 	$('.active_tagline_slide').fadeToggle(2000);
-	//$('.active_how_to_slide').fadeToggle(1000);
 	
 	/* --------- HANDLE HOW TO SECTION CLICKS ----------------- */
 	
 	$('.how_to_link').click(function(event){
 		if ($(this).hasClass('how_to_link_active'))
 			return;
-		var active_slide=$('.active_how_to_slide');
+		
+		var active_slide=$('.active_how_to_slide');	
 		var inactive_slide=$('.inactive_how_to_slide');
+		var slide_container=$('.how_to_slide_container');
+	
+		// stop and fast forward any ongoing animations	
+		active_slide.stop(true,false);
+		inactive_slide.stop(true,false);
+		slide_container.finish();
+		
+		
+		if ($(this).hasClass('for_singles')){
+			active_slide=$('#how_to_slide_setup');
+			inactive_slide=$('#how_to_slide_singles');
+			var new_height='370';
+		}
+		else{
+			active_slide=$('#how_to_slide_singles');
+			inactive_slide=$('#how_to_slide_setup');
+			var new_height='540';
+		}
+		//var new_height=inactive_slide.css('height');
+		console.log('moving to new height:',new_height);
+		
 		var active_link=$('.how_to_link_active');
 		var inactive_link=$(this);
-
+		
 		inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
 		active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
 	
-		var new_height=inactive_slide.css('height');
-		$('.how_to_slide_container').animate({height:new_height},500);
-		active_slide.fadeToggle(500,function(){
-			inactive_slide.fadeToggle(500,function(){
-				active_slide.removeClass('active_how_to_slide').addClass('inactive_how_to_slide');
-				inactive_slide.removeClass('inactive_how_to_slide').addClass('active_how_to_slide');
+
+		slide_container.animate({height:new_height},{duration: 500,queue:false});
+		
+		active_slide.fadeOut({duration:500,queue:false,complete:function(){
+			console.log("showing inactive slide and swapping classes");
+				inactive_slide.fadeIn(500,function(){
+					active_slide.removeClass('active_how_to_slide').addClass('inactive_how_to_slide');
+					inactive_slide.removeClass('inactive_how_to_slide').addClass('active_how_to_slide');
 			});
-		}); // close off active_slide.fadeToggle
+		}}); // close off active_slide.fadeToggle
 		
 	});//close off .how_to_link_inactive click handler
 }); // close of jQuery(document).ready
@@ -137,7 +163,7 @@ jQuery(document).ready(function($) {
 				<h2 id="tagline2">Discover your relationship potential <span id="safe_text">easily and anonymously.</span></h3>
 			</div>
 			<div class="tagline_slide inactive_tagline_slide" id="tagline_slide2">
-				<h2 id="tagline1">Interested in being set up by friends<br> but don't want to be a bother?</h2>
+				<h2 id="tagline1">Interested in being set up by friends<br> but not if it's complicated?</h2>
 				<h2 id="tagline2">Make it easy for friends to set you up <span id="safe_text">without the hassle of introductions.</span></h3>
 			</div>
 		</div> <!-- close off div class=tagline_slide_container -->
@@ -154,7 +180,7 @@ jQuery(document).ready(function($) {
 		<div class="title_section">
 			<h2 id="howto_title" class="section_title">How it Works</h2>
 			<a href="javascript:;" class="how_to_link how_to_link_active for_singles" id="for_singles">for singles</a>
-			<a href="javascript:;" class="how_to_link how_to_link_inactive" id="for_matchmakers">for matchmakers</a>
+			<a href="javascript:;" class="how_to_link how_to_link_inactive for_setup" id="for_matchmakers">for matchmakers</a>
 		</div>
 		<div class="how_to_slide_container">
 			<div class="how_to_slide active_how_to_slide" id="how_to_slide_singles">

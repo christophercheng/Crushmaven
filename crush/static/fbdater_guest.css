@@ -308,14 +308,14 @@ h2#tagline2 #safe_text{
 	display:none;
 }
 #how_to_slide_setup{
-	padding-top:100px;
+	padding-top:90px;
 	margin-left:-12px;
 	padding-bottom:20px;
 }
 .setup_step{
 	display:inline-block;
 	width:240px;
-	height:480px;
+	height:430px;
 	top:0px;
 	margin-right:0px;
 	z-index:10;
@@ -444,7 +444,7 @@ h2#tagline2 #safe_text{
 	display:block;
 	height:1px;
 	text-align:center;
-	background:#EAEAEA;
+	#background:#CFCFD0;
 	padding:0px 25px;
 	margin-top:5px;
 	margin-bottom:5px;
