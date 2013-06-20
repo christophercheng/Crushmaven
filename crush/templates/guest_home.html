@@ -59,8 +59,12 @@ jQuery(document).ready(function($) {
 		}
 		else{ // in case of automated slide - only allow two automatic changes
 			window.number_automatic_slides+=1;
-			if (window.number_automatic_slides ==2 )
+			if (window.number_automatic_slides ==2 ){
 				clearInterval(window.slider_control);
+				window.slider_control = setInterval(function(){
+					$('.slide_button_inactive').trigger('click');
+				},7000);
+			}
 		}
 			
 
@@ -94,8 +98,8 @@ jQuery(document).ready(function($) {
 	// automatically slide in and out the tagline slides until a button is pressed
 	window.number_automatic_slides=0;	
 	window.slider_control = setInterval(function(){
-			//$('.slide_button_inactive').trigger('click');
-		},5000);
+			$('.slide_button_inactive').trigger('click');
+		},4000);
 	// auto show the slide marked active (since it is default to display:none
 	$('.active_tagline_slide').fadeToggle(2000);
 	
@@ -114,19 +118,18 @@ jQuery(document).ready(function($) {
 		inactive_slide.stop(true,false);
 		slide_container.finish();
 		
-		
+		var bForSingles = true;
 		if ($(this).hasClass('for_singles')){
 			active_slide=$('#how_to_slide_setup');
 			inactive_slide=$('#how_to_slide_singles');
-			var new_height='370';
+			var new_height='380';
 		}
 		else{
 			active_slide=$('#how_to_slide_singles');
 			inactive_slide=$('#how_to_slide_setup');
 			var new_height='540';
+			bForSingles=false;
 		}
-		//var new_height=inactive_slide.css('height');
-		console.log('moving to new height:',new_height);
 		
 		var active_link=$('.how_to_link_active');
 		var inactive_link=$(this);
@@ -134,18 +137,34 @@ jQuery(document).ready(function($) {
 		inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
 		active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
 	
-
-		slide_container.animate({height:new_height},{duration: 500,queue:false});
+		slide_container.animate({'min-height':new_height},{duration: 500,queue:false});
 		
 		active_slide.fadeOut({duration:500,queue:false,complete:function(){
 			console.log("showing inactive slide and swapping classes");
 				inactive_slide.fadeIn(500,function(){
 					active_slide.removeClass('active_how_to_slide').addClass('inactive_how_to_slide');
 					inactive_slide.removeClass('inactive_how_to_slide').addClass('active_how_to_slide');
+					if (!bForSingles)
+						window.set_setup_height();
 			});
 		}}); // close off active_slide.fadeToggle
-		
 	});//close off .how_to_link_inactive click handler
+	
+	/*  ensure all setup step boxes are same length */
+	window.set_setup_height = function() {
+		  if ($('#how_to_slide_setup').hasClass('active_how_to_slide')) {
+			  var max_height = $('#setup_step_4').css('height');
+			  $('.setup_step').animate({'min-height':max_height},250);
+		  }
+	};
+	
+	var timeoutPointer;
+	$(window).resize(function(){
+		clearTimeout(timeoutPointer);
+		timeoutPointer = setTimeout(window.set_setup_height,100);
+	});
+	
+	
 }); // close of jQuery(document).ready
 
 
@@ -163,7 +182,7 @@ jQuery(document).ready(function($) {
 				<h2 id="tagline2">Discover your relationship potential <span id="safe_text">easily and anonymously.</span></h3>
 			</div>
 			<div class="tagline_slide inactive_tagline_slide" id="tagline_slide2">
-				<h2 id="tagline1">Interested in being set up by friends<br> but not if it's complicated?</h2>
+				<h2 id="tagline1">Interested in being set up by friends<br> but not if it's complicated or painful?</h2>
 				<h2 id="tagline2">Make it easy for friends to set you up <span id="safe_text">without the hassle of introductions.</span></h3>
 			</div>
 		</div> <!-- close off div class=tagline_slide_container -->
