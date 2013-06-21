@@ -7,9 +7,9 @@
 <div id="lineup_container">
 <div id="lineup-header">
 	{% if is_admirer_type == 1 %}
-		One of these line-up members is your admirer!  Add any as an attraction, and we will notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with you in it!
+		One of these line-up members is your admirer!  Add any as an attraction, and we'll notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with you in it!
 	{% else %}
-		b.	Your friend recommended these lineup members.  Add any as an attraction, and we will notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with other potential admirers and you randomly inserted in it.
+		Your friend recommended these lineup members.  Add any as an attraction, and we'll notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with other potential admirers and you randomly inserted in it.
 	{% endif %}
 </div>
 
@@ -60,12 +60,12 @@
 </ul>
 </div>  <!--  close off lineup_container -->
 
-<div class="modal_dialog_footer lineup-footer">
-			<span id="footer-msg"></span>
-			<div class="button_bar">
-				<button id="finish-btn" type="button" disabled>Finish</button>
-			</div><!-- close off button_bar -->
-		</div><!-- close off modal_dialog_footer -->
+<div class="ui-dialog-buttonpane lineup-footer">
+	<span id="footer-msg"></span>
+	<div class="ui-dialog-buttonset">
+				<button id="finish-btn" class="site_dialog_button" type="button" disabled>Finish</button>
+	</div><!-- close off buttonset -->
+</div><!-- close off buttonpane -->
 		
 
 <script type="text/javascript">
@@ -83,11 +83,11 @@ $(document).ready(function() // handling for the slider
   *		enable finish button and add footer summary message
 	*  ---------------------------------------------------------------------- */
 	var process_completed_lineup = function(){
-		footer_element=$('.modal_dialog_footer');
+		footer_element=$('.lineup-footer');
 		footer_element.find('#finish-btn').removeAttr('disabled');
 		footer_element.find('#finish-btn').show();
 	  footer_msg_element = footer_element.children('#footer-msg');
-	  footer_msg_element_html='<b>Your lineup evaluation is complete!</b>'
+	  footer_msg_element_html='Your lineup evaluation is complete!'
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
@@ -107,7 +107,7 @@ $(document).ready(function() // handling for the slider
   *		called everytime a slide load is completed
 	*  ---------------------------------------------------------------------- */
 		var updateFooterMsg = function(){
-		footer_msg_element=$('.modal_dialog_footer #footer-msg');
+		footer_msg_element=$('.lineup-footer #footer-msg');
 		// number of evaluated members
 		var decided_li_elements = $('.bxslider li.preload .lineup_decision .choice');	
 	 	var total_decisions=decided_li_elements.length;
@@ -189,17 +189,17 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */
 	window.added_lineup_attraction=null;// set whenever attraction is added - used to know when at least one attraction added
 	var attraction_dialog = $("#dialog_attraction_add");
-	attraction_dialog.dialog({modal: true, autoOpen: false,width:400,resizable:false,dialogClass:'decision_confirmation_dialog'});		
+	attraction_dialog.dialog({modal: true, autoOpen: false,width:400, resizable:false,dialogClass:'decision_confirmation_dialog blacktop'});		
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
-		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we will try to get <span class="attractor_pronoun_object"></span> signed up - if not already - so <span class="attractor_pronoun_subject"></span> can take a similar lineup. You will be notified when she responds.<span class="ahelp_icon"></span></p>';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we will try to get <span class="attractor_pronoun_object"></span> signed up so <span class="attractor_pronoun_subject"></span> can take a similar lineup. We\'ll notify you when she responds.<span class="ahelp_icon"></span></p>';
 		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		//dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
 	dialog_attraction_html += '</div>';
   var platonic_dialog = $("#dialog_platonic_add");
-	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog'});
+	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog blacktop'});
   var dialog_platonic_html = '<div class="dialog_content_wrapper">';
  		dialog_platonic_html += '<span class="attractor_text">Although you are not attracted to <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
 		dialog_platonic_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
@@ -215,11 +215,12 @@ $(document).ready(function() // handling for the slider
   	// this allows the inputs to be clickable on the next confirmation dialog opening
   attraction_dialog.on('click', function(e){e.stopPropagation();});
   platonic_dialog.on('click', function(e){e.stopPropagation();});
+  
   $('#lineup_container ').on('click','a.decision,a.platonic_reconsider',function(e) {
-		e.preventDefault();
-		var this_element = $(this);
-		var slide_number = this_element.closest('li.preload').attr('lineup_position'); // this is used to find the associated thumbnail to modify if a decision is made
-  	var decision_div = this_element.parent(); 
+	  e.preventDefault();
+	  var this_element = $(this);
+	  var slide_number = this_element.closest('li.preload').attr('lineup_position'); // this is used to find the associated thumbnail to modify if a decision is made
+	  var decision_div = this_element.parent(); 
 	  var url,decision_dialog,crush_decision;
 	  var username=this_element.attr('username');
 	  var full_name=this_element.attr('name');
@@ -256,9 +257,9 @@ $(document).ready(function() // handling for the slider
 
 	  // substitute in the actual attractor names into the dialog
 	  decision_dialog.find('.attractor_first_name').html(first_name);
-		decision_dialog.find('.attractor_full_name').html(full_name);
-		decision_dialog.find('.attractor_pronoun_object').html(gender_pronoun_object);
-		decision_dialog.find('.attractor_pronoun_subject').html(gender_pronoun_subject);		
+	  decision_dialog.find('.attractor_full_name').html(full_name);
+	  decision_dialog.find('.attractor_pronoun_object').html(gender_pronoun_object);
+	  decision_dialog.find('.attractor_pronoun_subject').html(gender_pronoun_subject);		
 	  decision_dialog.find('.attractor_image').html('<img src="http://graph.facebook.com/' + username + '/picture?width=60&height=60" />');
 	  decision_dialog.dialog({buttons: {
 				"Cancel": function() {	
@@ -308,7 +309,11 @@ $(document).ready(function() // handling for the slider
 			open:function(event,ui) {
 				var closest_ui_dialog = $(this).closest(".ui-dialog");
 				// style each button except cancel button (assuming cancel button is called 'Cancel')
-				closest_ui_dialog.find('.ui-button').each(function(counter,element){if ($(element).find('span').html()!='Cancel')$(element).addClass("site_dialog_button")});
+				closest_ui_dialog.find('.ui-button').each(function(counter,element){
+					$(element).addClass("site_dialog_button")
+					if ($(element).find('span').html()=='Cancel')
+						$(element).addClass("site_dialog_cancel_button")
+				});
     	}
     }); // end of .dialog handler
     
@@ -344,12 +349,11 @@ $(document).ready(function() // handling for the slider
 		}
 		else {
 			slide_decision = activeSlideElement.find('.lineup_decision .choice');
-			console.log(slide_decision);
 			if (slide_decision.length)
 				goto_next_slide(activeIndex);
 			else { 
 				var member_name = activeSlideElement.find('.lineup_name').html();
-				window.alert_modal('Lineup Activity', "Please make a decision on " + member_name + " before jumping ahead", $('.bxslider'));
+				window.alert_modal('Lineup Enforcement', "Please make a decision on " + member_name + " before jumping ahead.", $('.lineup_modal_dialog'));
 			}
 		}
 	};
@@ -384,6 +388,7 @@ $(document).ready(function() // handling for the slider
 	* possibly load the next upcoming slide if we are at first position or if lineup is already paid
 	* then call the slider launching function
 	*/
+	window.startup_slider = function(){
 	var next_loaded_slide=last_loaded_slide+1;
 	if (next_loaded_slide < {{member_set.count}}) { // we haven't decided on last member yet
 		if (last_loaded_slide < 0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
@@ -395,7 +400,7 @@ $(document).ready(function() // handling for the slider
 		launch_slider_at(0);
 		process_completed_lineup(); // if lineup is finished then just process it
 	}
-
+	};
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - LAUNCH_CREDIT_CHECK
 	*  ---------------------------------------------------------------------- */    

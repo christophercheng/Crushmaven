@@ -76,6 +76,213 @@ a.button {
 	opacity:1;
 }
 
+
+/* ===========================   Generic Jquery UI Dialog ========================= */
+
+.ui-dialog .ui-dialog-content{
+	background:#FFF!important;
+	margin:0px 0px!important;
+	padding:0 !important;
+	overflow-x:hidden!important;
+	overflow-y:hidden!important;
+	min-height:auto!important;
+}
+
+.ui-dialog{
+	background:white!important;
+	color:#474747!important;
+	box-shadow: 0px 0px 10px black!important;
+	padding:0px 0px 5px 0px!important;
+	border-radius:8px!important;
+	border: none!important;
+    -webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+}
+
+.ui-widget-content{
+	border:none!important;
+}
+
+
+.ui-dialog-titlebar {
+	padding-top:15px!important;
+	#background:#F5F5F5!important;
+	background:white!important;
+	color:#474747!important;
+	color:rgb(0,0,70)!important;
+	border-left:none!important;
+	border-top:none!important;
+	border-right:none!important;
+	border-bottom:1px solid #E2E2E2!important;
+	border-bottom:1px solid #000033!important;
+	vertical-align:middle!important;
+	height:48px!important;
+	border-radius:8px 8px 0 0!important;
+	font-size:18px!important;
+	font-weight:normal!important;
+}
+.ui-dialog-titlebar .ui-dialog-title {
+	#margin-top:5px;
+	}
+
+.ui-icon{
+	display:inline-block!important;
+	position:absolute!important;
+	background-image:url(images/full_sprite.png)!important;	
+	background-repeat:no-repeat;
+	background-size:auto!important;
+	width:30px!important;
+	vertical-align:-1px!important;
+	background-position:-179px -26px!important;
+	height:30px!important;
+	top:-12px!important;
+	right:-5px!important;
+	cursor:pointer!important;
+	z-index:10000 !important;
+	border:none!important;
+}
+
+
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
+	background:white!important;
+	background-image:url(images/full_sprite.png)!important;	
+	background-position:-178px -27px!important;
+	border:none!important;
+}
+.blacktop .ui-state-hover .ui-icon, .blacktop .ui-state-focus .ui-icon {
+	background:#000033!important;
+	background-image:url(images/full_sprite.png)!important;	
+	background-position:-178px -27px!important;
+	border:none!important;
+
+	}
+
+.ui-state-focus .ui-icon, .ui-state-hover .ui-icon {
+	border:none!important;
+}
+
+/* this is a hack to hide an extra close icon*/
+.delete_crush_dialog  .ui-resizable-handle.ui-icon{
+	display:none!important;
+}
+
+
+/* used when the buttons of dialog are jquery buttons */
+.dialog_content_wrapper{
+	padding:15px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	background:white!important;
+	#background:#F5F5F5!important;
+	margin:0!important;
+	padding:10px 0!important;
+	height:40px!important;
+	overflow: hidden!important;
+	border-top:1px solid #E2E2E2!important;
+	float:none!important;
+	width:100%!important;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+	vertical-align:middle;
+}
+.ui-dialog-buttonset {
+	float:right!important;
+	height:30px!important;
+	padding:0 15px!important;
+	display:inline-block!important;
+}
+.ui-button-text{
+	padding:0px!important;
+	line-height:14px!important;
+	font-size:14px!important;
+}
+
+.site_dialog_button {
+	display:inline-block;
+	background:#254AB8!important;
+	color:#FFF!important;
+	border: 1px solid #1E3B93!important;
+	padding:4px 12px 4px 12px!important;
+	text-align:center!important;
+	border-radius:5px!important;
+	font-family:arial!important;
+	font-weight:normal!important;
+	font-size:14px!important;
+	line-height:14px!important;
+	text-shadow:0px -1px 1px rgba(0,0,0,0.8)!important;
+	vertical-align:middle!important;
+	margin:0px 0px 0px 6px!important;
+	cursor:pointer!important;
+}
+
+.site_dialog_button[disabled],.site_dialog_button[disabled=""],.site_dialog_button[disabled]:hover,.site_dialog_button[disabled=""]:hover  {
+	background:#CACACA!important;
+	opacity:0.6!important;
+	text-shadow:none;
+	cursor:inherit;
+	color: #9D9D9D!important;
+	border:1px solid #BFBFBF!important;
+	text-shadow:none!important;
+	}
+
+.site_dialog_button:hover {
+	background-color:#1E3B93!important;
+}
+
+.site_dialog_back_button{
+	background:#5C7DBD!important;
+	border:1px solid #4A6497!important;
+}
+.site_dialog_back_button:hover{
+	background:#476CB5!important;
+}
+.site_dialog_cancel_button {
+	background:#565656!important;
+	background:white!important;
+	border:1px solid #C8C8C8!important;
+	text-shadow:none!important;
+	color:#595959!important;
+}
+.site_dialog_cancel_button:hover {
+	background:#F2F2F2!important;
+	border:1px solid #DEDEDE!important;
+}
+
+.site_dialog_select_button{
+	#text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4)!important;
+	background:#3A455C!important;
+	border-radius:10px!important;
+}
+.site_dialog_select_button:hover{
+	background:#2A3142!important;
+	border-radius:10px!important;
+}
+.dialog_subtitle {
+	display:inline-block;
+	background:rgb(102,102,255);
+	width:100%;
+	padding:7px 10px;
+	color:white;
+	font-weight:bold;
+	font-size:12px;
+}	
+
+.blacktop .ui-dialog-titlebar{
+	background:#000033!important;
+		background: -moz-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
+	background: -webkit-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
+	background: -0-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
+	background: linear-gradient(top, #000033, #000033 60%, #33335C)!important;
+	color:white!important;
+	border:0px!important;
+}
+
+.blacktop{
+	box-shadow:0 0 10px white!important;
+}
+
 /* ===========================   Site Layout ========================= */
 
 .main_container {
@@ -592,7 +799,6 @@ a.logo img{
 }
 
 .navbar li.active .menu_count{
-	right:9px;
 	top:14px;
 }
 .navbar li.active .new_menu_count{
@@ -725,6 +931,7 @@ a.logo img{
 	color:#4791FF;
 	color:#CCCCCC;
 	color:#8099E6;
+	color:#B2C2E0;
 	height:40px;
 	padding-top:3px;
 	font-weight:bold;
@@ -783,6 +990,7 @@ a.logo img{
 	color: #DC143C;
 	color:#D9D9D9;
 		color:#8099E6;
+	color:#B2C2E0;
 	font-style:normal;
 	border-left: 2px solid #595983;
 	border-right: 2px solid #595983;
@@ -946,7 +1154,7 @@ a.logo img{
 	#background:#80B2FF;
 	#background:#FAFAFA;
 	background-color: rgba(128,178,255,.1);
-	border:1px solid #8099CC; 
+	border:1px solid #CCD6EB; 
 	color:#2E2E2E;
 	font-size:13px;
 	line-height:21px;
@@ -1345,6 +1553,7 @@ ul.nav_bar li#nav_bar_options{
 	font-size:10px;
 	vertical-align:middle;
 	margin-left:1px;
+	font-style:normal!important;
 }
 .crush_block_name .down-dir {
 	margin-bottom:2px;
@@ -2017,7 +2226,7 @@ top:1px;
 	right:70px;
 	height:28px;
 	width:130px;
-	padding:6px 2px 0px 5px;
+	padding:7px 5px 5px 5px;
 	text-align:center;
 	border-radius:7px;
 	font-family:arial;
@@ -2099,6 +2308,10 @@ top:1px;
 
 /* ===========================   Admirer Lineup ========================= */
 
+.lineup_modal_dialog .ui-dialog-buttonpane {
+	border-radius:0px 0px 6px 6px !important;
+}
+
 #lineup_container {
 	width:100%;
 	text-align:center;
@@ -2108,7 +2321,6 @@ top:1px;
 	width:100%;
 	background:	#EBEBF0;
 	display:inline-block;
-	margin-top:-2px;
 	padding-bottom:9px;
 	padding-top:9px;
 }
@@ -2220,15 +2432,16 @@ ul.bxslider{
 
 #lineup_container #lineup-header {
 	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-	font-size: 11px;  
-  line-height: 1.28;
-  text-align: left;
+	font-size: 12px;  
+  	line-height: 17px;
+  	text-align: left;
 	color: #333333;
 	#background-color: #eceff6;
+	
 	display: block;
 	overflow: hidden;
 	padding: 8px 8px;
-	margin-bottom:0px;
+	margin:0px!important;
 	text-overflow: ellipsis;
 }
 
@@ -2285,10 +2498,11 @@ ul.bxslider{
 	display:inline-block;
 	left:130px;
 	top:165px;
+	
 }
 
 .lineup_facebook_link a{
-	font-size:13px;
+	font-size:15px;
 	color:#606060;
 	
 }
@@ -2311,55 +2525,39 @@ ul.bxslider{
 .lineup_decision .lineup_decision_button{
 	height:52px;
 	width:120px;
-	padding:8px 25px 5px 10px;
+	padding:7px 0px 6px 20px;
 	line-height:18px;
 	text-align:left;
 	border-radius:8px;
-	font-size:16px;
+	font-size:17px;
 	font-weight:normal;
 	position:absolute;
+	font-style:italic;
 	left:7px;
+}
+.lineup_decision .lineup_decision_button:active{
+	padding:8px 0px 5px 21px;
 }
 
 .lineup_decision a.decision[add_type='crush']{
 
 	top:-45px;
-	background:#000066;
-	background-image: -webkit-linear-gradient(top,#6666CC 0%, #333399 50%, #2E2E8A 50%, #000066 100%);
-	background-image: -moz-linear-gradient(top,#6666CC 0%, #333399 50%, #2E2E8A 50%, #000066 100%);
-	background-image: -o-linear-gradient(top,#6666CC 0%, #333399 50%, #2E2E8A 50%, #000066 100%);
-	background-image: linear-gradient(top,#6666CC 0%, #333399 50%, #2E2E8A 50%, #000066 100%);	
+	background:#5252A3;
+	border:1px solid #424282;
 }
 
 .lineup_decision a.decision[add_type='crush']:hover{
-		background:#6666CC;
-	background-image: -webkit-linear-gradient(top,#6666CC 0%, #333399 100%);
-	background-image: -moz-linear-gradient(top,#6666CC 0%, #303083 100%);
-	background-image: -o-linear-gradient(top,#6666CC 0%, #333399 100%);
-	background-image: linear-gradient(top,#6666CC 0%, #333399 100%);
+	background:#3D3D7A;
 }
-
 .lineup_decision a.decision[add_type='platonic']{
 	top:14px;
-	color:#333333;
-	background:#cccccc;
-	border:1px solid 	#B8B8B8; 
-	background-image: -webkit-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: -moz-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: -o-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	text-shadow:0px -1px 1px #cccccc;
-	box-shadow: 0 0 0 1px rgba(100, 100, 100, 0.4) inset, 0 1px 3px gray;
+	color:white;
+	background:#DBDBDB;
+	border:1px solid #C5C5C5;
 }
+
 .lineup_decision a.decision[add_type='platonic']:hover{
-	background:#cccccc;
-	border:1px solid 	#DBDBDB; 
-	background-image: -webkit-linear-gradient(top,#DBDBDB 50%, #cccccc 100%);
-	background-image: -moz-linear-gradient(top,#FFFFFF 0%,#DBDBDB 100%);
-	background-image: -o-linear-gradient(top,#DBDBDB 50%, #cccccc 100%);
-	background-image: linear-gradient(top,#DBDBDB 50%, #cccccc 100%);
-	text-shadow:0px -1px 1px #cccccc;
-	box-shadow: 0 0 0 1px rgba(100, 100, 100, 0.4) inset, 0 1px 3px gray;
+	background:#B8B8B8;
 }
 
 .lineup_decision span.crush{
@@ -2408,6 +2606,7 @@ ul.bxslider{
 .lineup-footer{
 	text-align:center;
 	position:relative;
+	height:39px!important;
 }
 
 #lineup_modal .modal_dialog_footer #footer-msg {
@@ -2428,16 +2627,11 @@ ul.bxslider{
 	bottom:0px;
 }
 
+
 #dialog_platonic_add, #dialog_attraction_add {
-	#display:inline-block;
-	width:390px!important;
 	text-align:center;
 	position:relative;
 }
-#dialog_platonic_add{
-	width:400px!important;
-}
-
 
 .first_attractor_text .help_icon{
 	position:absolute;
@@ -2577,9 +2771,9 @@ ul.bxslider{
 	display:inline-block;
 	font-size:11px;
 	position:absolute;
-	color:#f2f2f2;
+	color:#707070;
 	left:10px;
-	bottom:8px;
+	bottom:7px;
 	letter-spacing:-1px;
 	height:25px;
 }
@@ -2590,32 +2784,22 @@ ul.bxslider{
 
 #attractor_agreement a {
 	font-size:11px;
-	color:#f2f2f2;
+	color:#707070;
 	text-decoration:underline;
 	margin-left:2px;
 	vertical-align:middle;	
 }
-	
-#finish-btn{
-	background:#cccccc;
-	border:1px solid 	#B8B8B8; 
-	background-image: -webkit-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: -moz-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: -o-linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	background-image: linear-gradient(top,#FFFFFF 0%, 	#DBDBDB 50%, #D6D6D6 50%, #cccccc 100%);
-	text-shadow:0px -1px 1px #cccccc;
-	border-radius:3px;
-	#box-shadow: 0 0 0 1px rgba(100, 100, 100, 0.4) inset, 0 1px 3px gray;
-	display:none;
-}
 
-	/*
-#lineup_modal #lineup-footer #footer-msg {
-	float:left;
-	width: 510px;
-	font-size:12px;
-}
 
+#footer-msg {
+	display:inline-block;
+	margin-top:5px;
+	margin-left:130px;
+	font-weight:normal;
+	font-size:12px!important;
+	color:#707070;
+}
+/*
 
 #lineup_modal #lineup-footer #footer-msg #progressing {
 	margin-left:200px;
@@ -2640,14 +2824,16 @@ ul.bxslider{
 	display:inline-block;
 	background:rgb(102,102,255);
 	width:100%;
-	padding:7px 10px;
+	padding:5px 15px;
 	color:white;
-	font-weight:bold;
+	font-weight:normal;
 	font-size:12px;
 }
 #credit_check_container #purchase_description_container{
 	display:inline-block;
-	padding:15px 0 5px 0;
+	padding:15px 0 0 9px;
+	width:100%;
+	border-bottom:1px solid #E2E2E2;
 }
 
 #credit_check_container #purchase_description_container .split_column_line{
@@ -2687,18 +2873,20 @@ ul.bxslider{
 #purchase_title{
 	display:block;
 	font-weight:bold;
-	font-size:12px;
-	margin-bottom:5px;
+	font-size:14px;
+	margin-bottom:10px;
 	background:rgb(102,102,255);
-	padding:3px 0px 3px 5px;
-	color:white;
-	opacity:.8;
+	background:#EBEBF0;
+	background:none;
+	padding:10px 0px 0px 0px;
+	margin-left:-5px;
+	color:black;
+	border-radius:6px 6px 0 0;
 }
 #credit_purchase_selection{
 	display:inline-block;
-	border-top:2px solid rgb(0,0,70);
 	width:100%;
-	padding: 10px 15px 5px 12px;
+	padding: 0px 15px 5px 23px;
 	display:relative;
 	font-size:12px;
 }
@@ -2710,7 +2898,7 @@ ul.bxslider{
 }
 #credit_purchase_selection .purchase_option {
 	display:block;
-	margin-bottom:5px;
+	margin-bottom:8px;
 }
 
 #credit_check_container  .credit_option_amount {
@@ -2726,12 +2914,30 @@ ul.bxslider{
 #purchase_button_description{
 	position:absolute;
 	left:15px;
-	color:#DADADA;
+	bottom:9px;
+	color:#7E7E7E;
 	font-style:italic;
 	font-size:11px;	
 	letter-spacing:-1px;
 }
 
+.credit_check_dialog{
+	border-radius:6px!important;
+}
+.credit_check_dialog .ui-dialog-buttonpane{
+	height:39px!important;
+	border-radius:0 0 6px 6px!important;
+	text-align:center!important;
+	width:100%!important;
+	padding:10px 0px!important;
+}
+.credit_check_dialog .ui-dialog-buttonset{
+	float:none!important;
+	margin:0px!important;
+}
+#credit_check_modal{
+	border-radius:0 0 6px 6px!important;
+}
 /* ===========================  Response Dialog  ========================= */
 
 #response_no_match {
@@ -2805,8 +3011,8 @@ ul.bxslider{
 
 /* style the overlay of all jquery modals */
 .ui-widget-overlay{
-	background:gray;
-	opacity:0.6;
+	background:black!important;
+	opacity:0.5!important;
 	#z-index:1499!important;
 }
 
@@ -3054,7 +3260,6 @@ ul.bxslider{
 #setup_form{
 	font-size:12px;
 	padding:10px;
-
 }
 
 .setup_create_dialog{
@@ -3062,17 +3267,40 @@ ul.bxslider{
 	#z-index:1500!important;
 }
 
+
 div.dialog_header {
-	background:#D5D5D5;
-	color:white;
-	font-weight:bold;
-	margin-bottom:5px;
+	#background:#CACACA;
+	color:#9D9D9D;
+	font-size:14px!important;
+	opacity:.3;
+	line-height:20px;
+	vertical-align:bottom;
+	white-space:nowrap;
+}
+div.dialog_header span.step_label{
+	display:inline-block;
+	float:left;
+	#background:#292952;
+	border:2px solid #292952;
+	padding:1px 8px 1px 5px;
+	border-radius:0 25px 25px 0;
+	color:#292952;
+	display:inline-block;
+	margin-right:2px;
+	letter-spacing:-1px;
 }
 div.dialog_header span.dialog_header_sentence{
-	font-style:italic;
+	display:inline-block;
+	margin-top:4px;
 }
 div.active_dialog_header {
-	background:#333366;
+	#background:#292952;
+	background:none;
+	color:white;
+	color:#292952;
+	font-weight:normal;
+	opacity:1;
+	font-size:14px!important;
 }
 
 .setup_target_pic{
@@ -3085,14 +3313,16 @@ div.active_dialog_header {
 	width:40px;
 	height:40px;
 	margin-right:1px;
+	opacity:.3;
 }
 
 .setup_button{
-	display:block;
+	display:block!important;
+	margin-top:5px!important;
 }
 
 #setup_form .dialog_header{
-	padding:2px 10px 2px 10px;
+	padding:2px 10px 2px 8px;
 	margin-bottom: 15px;
 }
 
@@ -3102,7 +3332,6 @@ div.active_dialog_header {
 #setup_target_section img{
 	border:1px solid black;
 }
-
 
 #setup_lineup_section .dialog_header{
 	margin-top:15px;
@@ -3119,12 +3348,27 @@ div.active_dialog_header {
 
 #setup_form button{
 	display:inline-block;
-	margin-left:0px;
-	margin-top:5px;
+	margin-left:0px!important;
+	margin-top:5px!important;
 }
-#setup_lineup_section button{
-	margin-left:-2px;
+
+#setup_form .site_dialog_select_button{
+	width:65px!important;
+	padding:4px!important;
+	text-align:center!important;
 }
+
+#setup_form .selected{
+	background:#757D8D!important;
+	background:none!important;
+	color:#3366ff!important;
+	#text-decoration!important;
+	border:0px!important;
+	text-shadow:none!important;
+	margin-left:-2px!important;
+	margin-top:-1px!important;
+}
+
 /* ===========================   Setups By Me Block Dialog ========================= */
 
 .setup_by_me_block {
@@ -3410,6 +3654,7 @@ div.active_dialog_header {
 	padding: 5px 10px 5px 10px;
 	color:white; 
 	font-size:12px;
+	#border-radius:10px;
 }
 
 .modal_main_content {
@@ -3461,14 +3706,13 @@ div.active_dialog_header {
 	font-size:11px;
 	padding:5px 10px;
 	letter-spacing:0px;
-	font-weight:bold;
+	font-weight:normal;
 	cursor:pointer;
 }
 .attraction_invite_row .attraction_invite_button button:hover {
 	background:#3366FF;
 	
 }
-
 
 .attraction_invite_row .attraction_invite_button a {
 	color:#0033ff;
@@ -3480,10 +3724,27 @@ div.active_dialog_header {
 	font-weight:bold;
 }
 
+.invite_interstitial_dialog .ui-dialog-buttonpane{
+	height:36px!important;
+	padding-top:5px!important;
+}
+.invite_interstitial_dialog .ui-dialog-buttonset{ 
+	margin-right:17px!important;
+
+}
+.invite_interstitial_dialog .site_dialog_button{
+	background:none!important;
+	color:#7E7E7E!important;
+	text-shadow:none!important;
+	text-decoration:underline!important;
+	font-size:12px!important;
+	border:0px!important;
+	}
 /* ===========================   App Invite Dialog ========================= */
 
 #app_invite_form{
 	font-size:12px;
+	padding-bottom:3px;
 }
 
 .app_invite_dialog{
@@ -3561,7 +3822,7 @@ div.active_dialog_header {
 #mutual_friend_input_section{
 	overflow-y:auto;
 	max-height: 160px; 
-	padding-bottom:10px;
+	padding-bottom:0px;
 }
 #mutual_friend_input_section .mf_email_name {
 	display:inline-block;
@@ -3639,332 +3900,22 @@ div.active_dialog_header {
 	font-size:10px;
 	color:#909090;
 }
-.mutualFriendListWrapper{
-	display:inline-block;
-	font-style:italic;
-	width:100%;
-	padding-top:3px;
-	line-height:14px;
-}
 
-#email_preview_section{
-	width:100%
-	display:block;
-	padding:5px 10px 10px;
-	#border-top:2px solid rgb(0,0,70);
+#app_invite_form .ui-dialog-buttonpane{
+	text-align:center!important;
 }
-
-.email_preview_tab{
-	background:#fff;
-	background:#f2f2f2;
-	display:inline-block;
-	padding:0px 10px;
-	height:25px;
-	line-height:25px;
-	#border-radius: 5px 5px 0 0;
-	text-align:center;
-	vertical-align:middle;
-	z-index:1001;
-	font-weight:bold;
-	border: 1px solid #D0D0D0;
-	border-bottom: 0px;	
+#app_invite_form .ui-dialog-buttonset{
+	float:none!important;
 }
-.inactive_email_preview_tab{
-	cursor:pointer;
-	font-weight:normal;	
-	font-size:11px;
-	color:#474747;
-	height:23px;
-	line-height:23px;
-	background:#D1D1D1;
-	border:1px solid #D8D8D8;
-	border-bottom:none;
-}
-.inactive_email_preview_tab:hover{
-		background:#E8E8E8;
-		border:1px solid #D8D8D8;
-		border-bottom:none;
-		height:25px;
-		color:#000;
-}
-
-#attraction_email_preview_tab{
-	border-radius:8px 0 0 0;
-}
-
-#mf_email_preview_tab{
-	border-radius:0 8px 0 0;
-		margin-left:-2px;
-}
-.email_preview_content{
-	width:100%;
-	height:150px;
-	border:1px solid #D0D0D0;
-	z-index:1000;
-	padding:15px;
-	overflow-y:scroll;
-	color:#404040;
-	background:#fff;
-	background:#f2f2f2;
-	margin-top:-1px;
-}
-#mf_email_preview_content{
-	display:none;
-}
-.email_address_holder{
-	font-style:italic;
-}
-.email_content_header_labels{
-	display:inline-block;
-	width:60px;
-	color:#404040;
-	line-height:18px;
-	font-style:italic;
-}
-.email_content_header_content{
-	display:inline-block;
-	line-height:18px;
-	width:285px;
-}
-.email_content_body{
-	display:inline-block;
-	margin-top:5px;
-	line-height:12px!important;
-}
-.anonymous_email_callout{
-	font-weight:bold;
-	position:relative;
-}
-
-.sent_from_us_pointer{
-	width: 0; 
-	height: 0; 
-	position:absolute;
-	left:-8px;
-	top:-5px;
-	border-top: 16px solid transparent;
-	border-bottom: 16px solid transparent;
-	border-right: 12px solid #2E8AE6;
-}
-
-.sent_from_us{
-	background:	#2E8AE6;
-	font-weight:bold;
-	position:absolute;
-	display:inline-block;
-	vertical-align:middle;
-	text-align:center;
-	width:105px;
-	padding:1px 5px 1px 4px;
-	#left:120px;
-	left:420px;
-	top:-4px;
-	color:white;
-	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
-	z-index:200000;
-	opacity:0;
-}
-
-.subject_text{
-	#display:inline-block;
-	#line-height:14px !important;
-}
-
-.app_invite_preview{
-	display:inline-block;
-	text-decoration:underline!important; 
-	color:white!important;
-	font-size:10px!important;
-	margin-top:0px;
-	margin-left:160px;
-}
-
-/* ===========================   Generic Jquery UI Dialog ========================= */
-
-
-.ui-dialog{
-	background:black !important;
-	border-radius: 12px!important;
-	color:#474747!important;
-	box-shadow: 1px 2px 2px rgba(0,0,0,.5)!important;
-	padding:0px!important;
-}
-
-
-.ui-dialog .ui-dialog-content{
-	background:#FFF!important;
-	margin:0 5px!important;
-	padding:0 !important;
-	overflow-x:hidden!important;
-	overflow-y:hidden!important;
-	min-height:auto!important;
-}
-
-.invite_interstitial_dialog .ui-dialog-content {
-	margin:0px 5px 10px 5px!important;
-}
-
-
-.ui-widget-content{
-	border:none!important;
-}
-
-.ui-dialog-titlebar {
-	background:none !important;
-	color:white !important;
-	border:none !important;
-	height:40px!important;
-}
-.ui-dialog-titlebar .ui-dialog-title {
-	margin-top:5px;
-	}
-
-.ui-icon{
-	display:inline-block!important;
-	position:absolute!important;
-	background-image:url(images/full_sprite.png)!important;	
-	background-repeat:no-repeat;
-	background-size:auto!important;
-	width:30px!important;
-	vertical-align:-1px!important;
-	background-position:-179px -26px!important;
-	height:30px!important;
-	top:-12px!important;
-	right:-5px!important;
-	cursor:pointer!important;
-	z-index:10000 !important;
-}
-
-
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
-	background:black!important;
-	background-image:url(images/full_sprite.png)!important;	
-	background-position:-179px -26px!important;
-}
-
-.ui-state-focus .ui-icon, .ui-state-hover .ui-icon {
-	background-position:-178px -26px!important;
-}
-
-/* this is a hack to hide an extra close icon*/
-.delete_crush_dialog  .ui-resizable-handle.ui-icon{
-	display:none!important;
-}
-
-
-/* used when the buttons of dialog are jquery buttons */
-.dialog_content_wrapper{
-	padding:15px;
-}
-
-.ui-dialog .ui-dialog-buttonpane {
-	background:black!important;
-	margin:0!important;
-	padding:0!important;
-	height:45px!important;
-	line-height:45px!important;
-	overflow: hidden!important;
-}
-
-.ui-dialog .ui-dialog-buttonpane button {
-	vertical-align:middle;
-}
-.ui-button-text{
-	padding:4px 10px;
-	line-height:14px;
-	font-size:14px;
-}
-
-.site_dialog_button {
-	background-color: #3366FF;
-	background:#3366FF;
-	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	color:#F2f2f2;
-	border: 0px solid #194396;
-	padding:1px 4px;
-	text-align:center;
-	border-radius:4px;
-	font-family:arial;
-	font-weight:normal;
-	font-size:14px;
-	text-shadow:0px -1px 1px rgba(0,0,0,0.8);
-	vertical-align:middle;
-	margin:8px 6px 8px 0px!important;
-}
-
-
-.site_dialog_cancel_button {
-	background:#434343!important;
-	border:0px!important;
-	color:white!important;
-}
-
-.site_dialog_button[disabled=""] {
-	color:rgb(0,0,70);
-	text-shadow:none;
-	cursor:inherit;
-	}
-
-.site_dialog_button:hover {
-	#color:#fff;
-	background-color:#0033FF;
-	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
-	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
-	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 100%);
-	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 100%);
-}
-
-.site_dialog_button[disabled=""]:hover{
-	background-color: #3366FF;
-	background-image: -webkit-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: -moz-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: -o-linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-	background-image: linear-gradient(top,#4775FF 0%,  #0033FF 50%, #0029CC 100%);
-}
-.site_dialog_cancel_button:hover {
-	background:#585858!important;
-	color:white;
-}
-
-
-.dialog_subtitle {
-	display:inline-block;
-	background:rgb(102,102,255);
-	width:100%;
-	padding:7px 10px;
-	color:white;
-	font-weight:bold;
-	font-size:12px;
-}	
-.modal_dialog_footer{
-	background:black;
-	width:100%;
-	height:40px;
-	line-height:40px;
-	display:block;
-	color:white;
-}
-
-.modal_dialog_footer .button_bar{
-	float:right;
-	margin-right:10px;
-	vertical-align:middle;
-	line-height:40px;
-	display:inline-block;
-}
-.modal_dialog_footer .button_bar input, .modal_dialog_footer .button_bar button{
-	cursor:pointer;	
+#app_invite_form .site_dialog_button{
+	font-size:14px!important;
 }
 
 /* ===========================   Alert Dialog ========================= */
 
 #alert_modal{
 	diplay:inline-block;
-	padding:20px 10px!important;
-	text-align:center;
+	padding:20px 15px!important;
 	font-size:13px;
 }
 
@@ -3972,15 +3923,25 @@ div.active_dialog_header {
 	diplay:inline-block!important;
 	text-align:center!important;
 	width:100%;
+	margin-left:auto!important;
+	margn-right:auto!important;
+	float:none!important;
+	margin-top:-8px!important;
 	}
 
 .alert_modal_dialog .ui-dialog-buttonpane .ui-button{
-	padding-left:6px;
-	padding-right:6px;
+	padding:0px 15px;
 	height:25px!important;
+	line-height:25px!important;
 	margin-left:auto!important;
-		margin-right:auto!important;
+	margin-right:auto!important;
+	vertical-align:middle!important;
 }
+.alert_modal_dialog .ui-button-text{
+	padding:0px!important;
+	line-height:25px!important;
+	vertical-align:middle!important;
+	}
 
 /* ===========================  Settings Pages ========================= */
 

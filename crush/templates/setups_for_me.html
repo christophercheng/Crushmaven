@@ -21,13 +21,12 @@ $(document).ready(function()
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
-    $("#lineup_modal").dialog({position:{my:"left center",at:"right+20 center-100",of:'.left_sidebar_container .bt-fs-dialog'},modal: true, resizable:false,autoOpen: false,width:575,close:function(event,ui){window.handle_lineup_dialog_close();}});
+    $("#lineup_modal").dialog({modal: true, resizable:false,autoOpen: false,width:575,height:454,close:function(event,ui){window.handle_lineup_dialog_close();}});
     
     $('.lineup_block').on('click', '.view_lineup', function(e) {
         view_lineup_element=$(this);
 		var display_id=view_lineup_element.attr('display_id');	
-		$("#lineup_modal").html('<div id="site-loading"></div>');
-		$("#lineup_modal").dialog("open");
+		window.wait_modal_open();
 		load_url="/ajax_show_lineup_slider/" + display_id + "/0"; // /0 tells function that this is not an admirer lineup - it is instead a recommendation lineup
     e.preventDefault();
     $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
@@ -36,6 +35,10 @@ $(document).ready(function()
 			window.alert_modal("Setup Lineup Problem", "{{generic_error_message}}" );
 			return false;
 			}
+		$("#lineup_modal").dialog("open");
+		window.startup_slider();
+		$(':focus').blur();
+		window.wait_modal_close();
 		});   
 	  return false;    
 	});			
@@ -129,7 +132,7 @@ $(document).ready(function()
 <p class="new_user_instructions">
 	<span class="help_icon" title="close help"></span>
 	<span class="instructions_title">How Friend Setups Work:</span>
-	<span class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup.  Add any of them as an 'attraction' if you are attracted to them.  We will try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.
+	<span class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup for your consideration.  Add any of them as an 'attraction' and we will try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.
 	</span>
 	<span class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.  <i>The one difference is that your recommender will help us get your chosen recommendations signed in, and your recommender can see exactly who is attracted to whom.</i></span>
 </p>		<!-- close off instructional content -->
@@ -138,15 +141,7 @@ $(document).ready(function()
 {% if setup_relationships %}
 
 {% for setup_rel in setup_relationships %}
-		{% if setup_type == 0 and setup_rel.display_id == 1 %}
-		<p class="lineup_block_instructions">
-				This is how it works
-				<span class="second_instruction_section">This is your moral support instructions.  Now get to it, newb.</span>
-		<span class="help_icon" title="close help"></span>
-		</p>		<!-- close off lineup_block line for instructional content -->
-		{% endif %}
 
-	
 	<div class="lineup_block setup_lineup_block" display_id="{{setup_rel.display_id}} ">
 		<div class="lineup_block_line lineup_block_first_line">
 			<img class="from_pic" src="http://graph.facebook.com/{{setup_rel.source_person.username}}/picture?width=60&height=60">

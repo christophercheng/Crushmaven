@@ -20,7 +20,9 @@
 </div><!--  close off credit_check_content -->
 
 <script>
-$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
+$(document).ready(function() 
+{
+	$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
 		// call ajax post function to deduct credit and call related handler
 	 	$("#site-overlay").css('visibility','visible');
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
@@ -37,4 +39,7 @@ $('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}
 					$('#site-overlay').css('visibility','hidden');
 			}); // end of .fail handler
 		}); // close off #credit_deduct_ok handler 
+
+});
+
 </script>

@@ -72,11 +72,13 @@ $(document).ready(function()
 	   
 	</div> <!--  close off mutual_friend_input_section -->      
 
-  <div class="modal_dialog_footer">
-          <a class="app_invite_preview">preview anonymous invitation</a>
-          <div class="button_bar"><input id="sendbutton" class="modal_dialog_button" type="submit" value="Send"/>
-          </div><!-- close off button_bar -->
-  </div><!-- close off modal_dialog_footer -->
+  <div class="ui-dialog-buttonpane">
+          <!--<a class="app_invite_preview">preview anonymous invitation</a>-->
+          <div class="ui-dialog-buttonset">
+          	<button type='button' onclick="window.app_invite_modal.dialog('close');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
+          	<input id="sendbutton" class="site_dialog_button" type="submit" value="Send"/>
+          </div><!-- close off buttonset -->
+  </div><!-- close off buttonpane -->
 	<input type="hidden" name="mutual_friend_json" value="{{mutual_friend_json}}">
 	<input type="hidden" name="posted_form" value="">
 	<input type="hidden" name="crush_fullname" value = "{{crush_fullname}}">

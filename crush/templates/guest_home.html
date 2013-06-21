@@ -59,7 +59,8 @@ jQuery(document).ready(function($) {
 		}
 		else{ // in case of automated slide - only allow two automatic changes
 			window.number_automatic_slides+=1;
-			if (window.number_automatic_slides ==2 ){
+
+			if (window.number_automatic_slides ==1 ){
 				clearInterval(window.slider_control);
 				window.slider_control = setInterval(function(){
 					$('.slide_button_inactive').trigger('click');
@@ -122,7 +123,7 @@ jQuery(document).ready(function($) {
 		if ($(this).hasClass('for_singles')){
 			active_slide=$('#how_to_slide_setup');
 			inactive_slide=$('#how_to_slide_singles');
-			var new_height='380';
+			var new_height='360';
 		}
 		else{
 			active_slide=$('#how_to_slide_singles');
@@ -153,7 +154,7 @@ jQuery(document).ready(function($) {
 	/*  ensure all setup step boxes are same length */
 	window.set_setup_height = function() {
 		  if ($('#how_to_slide_setup').hasClass('active_how_to_slide')) {
-			  var max_height = $('#setup_step_4').css('height');
+			  var max_height = parseInt($('#setup_step_4 .setup_step_text').height()) + 210;
 			  $('.setup_step').animate({'min-height':max_height},250);
 		  }
 	};

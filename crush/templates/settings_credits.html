@@ -62,7 +62,7 @@
 	  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
 		
 		<div id="settings_buttonset">
-			<input type="submit" value="Purchase" onclick="$('#site-overlay').css('visibility','visible');" alt="Make payments with PayPal - it's fast, free and secure!" >
+			<input type="submit" value="Purchase" onclick="window.wait_modal_open();" alt="Make payments with PayPal - it's fast, free and secure!" >
 			<p>(you will be redirected to PayPal to complete purchase)</p>
 		</div>
 	</form>

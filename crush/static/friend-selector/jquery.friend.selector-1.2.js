@@ -292,9 +292,9 @@
     var button_bar =  '<div id="fs-dialog-buttons">' +
 		'<div id="fs-terms"><span id="fs-terms-checkbox-container"><input id="fs-terms-checkbox" type="checkbox" checked="checked"/></span><span id="fs-terms-checkbox-text">I agree to the <a href="/help_terms" target="_blank">terms & conditions</a></span></div>'  +
 		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
-			'<a id="fs-back-button" class="fs-button" href="javascript://"><span>&#60; Back</span></a>' +
-		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="fs-button"><span>Add</span></a>' +
+			'<a id="fs-back-button" class=" site_dialog_button site_dialog_back_button" href="javascript://"><span>&#60; Back</span></a>' +
+		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button site_dialog_go_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
@@ -330,7 +330,7 @@
 	                          	'<input type="text" id="nfs-input-text" title="'+fsOptions.lang.nonFriendSearchText+'" />' +
 	                          	//'<a href="javascript:{}" id="fs-reset">Reset</a>' +
 	                        '</span>' +
-	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button" disabled><span>Select</span></a>' +	
+	                        '<a href="javascript:{}" id="fs-select-button" class="fs-button site_dialog_select_button" disabled><span>Select</span></a>' +	
 
 	                        '<span id=\'nfs-help-link\'><a href="#" class="popup_link"> what is this?</a>' +
 		                       '<div id="nfs-help" class="popup">' +
@@ -489,10 +489,12 @@
       // pre-select elements
       if (fsOptions.getStoredFriends.length){
     	  if (fsOptions.getStoredFriends!="") {
+    		 
 	    	  var preselected_friends = fsOptions.getStoredFriends.split(',');
 	    	  for (var x = 0; x < preselected_friends.length;x++){
 	    		  // find element with username
 	    		  var username=preselected_friends[x] + '0';
+	
 	    		  var target_element = $('#fs-user-list ul li a input.fs-friends[value="' + username + '"]');
 	    		  _click(target_element.parents('li'));
 	    	  }
@@ -604,18 +606,9 @@
       }
     }).blur();
     
-    $('#nfs-help-link a').click(function(){
+    $('#nfs-help-link a').on('click',function(){
 
-	   if ($('#nfs-help').css('display')=='none'){
-		   $('#nfs-help').css('left','-0px');
-		   $('#nfs-help').css('top','0px');
-		   $('#nfs-help').show('1000');
-		   $('#nfs-help').animate({	left:-365,top: 50},500);		   
-	   }
-	   else{
-		   $('#nfs-help').animate({	left:0,top: 0},500);	
-		   $('#nfs-help').hide('1000');
-	   }	   
+	   _showNfsHelpPopup();	   
     });
    $('#nfs-help .delete_button').click(function(e){
 	   $('#nfs-help').animate({	left:0,top: 0},500);	
@@ -624,10 +617,10 @@
    });
    
 
-   $('#nfs-help').click(function(e){ 	
+   //$('#nfs-help').click(function(e){ 	
 	   
-	   e.stopPropagation();
-   });
+//	   e.stopPropagation();
+ //  });
     
     $('#nfs-input-box input').focus(function(){
 
@@ -711,9 +704,23 @@
 	  }
 	   
 	    $('#fs-user-list ul').hide();
-	    $('#fs-nonfriend-help').show();
-	    $('#nfs-help-link').trigger('click');
+	    
+	    _showNfsHelpPopup();
 
+	  },
+	  
+	  _showNfsHelpPopup = function(){
+		  console.log("show popup");
+		   if ($('#nfs-help').css('display')=='none'){
+			   $('#nfs-help').css('left','-0px');
+			   $('#nfs-help').css('top','0px');
+			   $('#nfs-help').show('1000');
+			   $('#nfs-help').animate({	left:-365,top: 50},500);		   
+		   }
+		   else{
+			   $('#nfs-help').animate({	left:0,top: 0},500);	
+			   $('#nfs-help').hide('1000');
+		   }
 	  },
 // called when a click on li is done
   _click = function(th) {

@@ -9,7 +9,7 @@
 // INITIALIZE CREDIT CHECK MODAL 
 $(document).ready(function() // handling for the slider
 { 
-	$("#credit_check_modal").dialog({modal: true,resizable:false, autoOpen: false,width:400,position:{my:"left center",at:"right+110 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+	$("#credit_check_modal").dialog({dialogClass:"credit_check_dialog blacktop",modal: true,resizable:false, autoOpen: false,width:410});
 });
 
 function purchase_feature(data){
@@ -22,9 +22,10 @@ function purchase_feature(data){
 				$(this).html(data.ajax_error);
 		    $("#site-loading").remove();
 		   }
+			dialog_div.dialog("open");
+			$(':focus').blur();
+			dialog_div.dialog("moveToTop");
 	}); 
-	dialog_div.dialog("open");
-	dialog_div.dialog("moveToTop");
 	return false;
 };
 

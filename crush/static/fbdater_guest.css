@@ -106,7 +106,7 @@ h2{
 h2#tagline1{
 	position:absolute;
 	top:65px;
-	left:170px;
+	left:165px;
 	color:#E8E8E8;
 	color:#d6d6d6;
 	color:#dcdcdc;
@@ -121,7 +121,7 @@ h2#tagline1{
 h2#tagline2{
 	position:absolute;
 	top:215px;
-	left:280px;
+	left:310px;
 	color:white;
 	font-size:20px;
 	font-weight:normal;
@@ -137,7 +137,7 @@ h2#tagline2 #safe_text{
 #facebookbtn {
 	position:absolute;
 	background: url('https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png') 0 0 no-repeat;
-	left:280px;
+	left:310px;
 	top:340px;
 }
 #facebookbtn {
@@ -171,7 +171,7 @@ h2#tagline2 #safe_text{
 
 #slide_buttons{
 	position:absolute;
-	left:365px;
+	left:395px;
 	bottom:15px;
 }
 
@@ -307,7 +307,7 @@ h2#tagline2 #safe_text{
 }
 #how_to_slide_setup{
 	padding-top:90px;
-	margin-left:-12px;
+	margin-left:-5px;
 	padding-bottom:20px;
 }
 .setup_step{
@@ -330,31 +330,31 @@ h2#tagline2 #safe_text{
 
 #setup_step_4{	
 	background-color:#CCCCD6;
-	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#CCCCD6);
-	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#CCCCD6);
-	background: -0-linear-gradient(top, #FFF, #FFF 20%,#CCCCD6);
-	background: linear-gradient(top, #FFF, #FFF 20%,#CCCCD6);
+	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#B5B5CE);
+	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#B5B5CE);
+	background: -0-linear-gradient(top, #FFF, #FFF 20%,#B5B5CE);
+	background: linear-gradient(top, #FFF, #FFF 20%,#B5B5CE);
 }
 #setup_step_3{	
 	background-color:#DBDBE2;
-	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#DBDBE2);
-	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#DBDBE2);
-	background: -0-linear-gradient(top, #FFF, #FFF 20%,#DBDBE2);
-	background: linear-gradient(top, #FFF, #FFF 20%,#DBDBE2);
+	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#C8C8DA);
+	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#C8C8DA);
+	background: -0-linear-gradient(top, #FFF, #FFF 20%,#C8C8DA);
+	background: linear-gradient(top, #FFF, #FFF 20%,#C8C8DA);
 }
 #setup_step_2{	
 	background-color:#EBEBEF;
-	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#EBEBEF);
-	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#EBEBEF);
-	background: -0-linear-gradient(top, #FFF, #FFF 20%,#EBEBEF);
-	background: linear-gradient(top, #FFF, #FFF 20%,#EBEBEF);
+	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#DADAE7);
+	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#DADAE7);
+	background: -0-linear-gradient(top, #FFF, #FFF 20%,#DADAE7);
+	background: linear-gradient(top, #FFF, #FFF 20%,#DADAE7);
 }
 #setup_step_1{	
 	background-color:#FAFAFB;
-	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#FAFAFB);
-	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#FAFAFB);
-	background: -0-linear-gradient(top, #FFF, #FFF 20%,#FAFAFB);
-	background: linear-gradient(top, #FFF, #FFF 20%,#FAFAFB);
+	background: -moz-linear-gradient(top, #FFF, #FFF 20%,#EDEDF3);
+	background: -webkit-linear-gradient(top, #FFF, #FFF 20%,#EDEDF3);
+	background: -0-linear-gradient(top, #FFF, #FFF 20%,#EDEDF3);
+	background: linear-gradient(top, #FFF, #FFF 20%,#EDEDF3);
 }
 .setup_step_title{
 	display:inline-block;
@@ -385,8 +385,7 @@ h2#tagline2 #safe_text{
 
 #how_to_slide_singles{
 	padding-top:50px;
-	#height:360px;
-	padding-bottom:40px;
+	padding-bottom:30px;
 }
 
 .singles_step{
@@ -462,7 +461,7 @@ h2#tagline2 #safe_text{
 }
 .footer_section .center_container .first_footer_line{
 	display:inline-block;
-	margin-left:280px;
+	margin-left:310px;
 }
 .footer_section .center_container .company_text{
 	font-size:10px;

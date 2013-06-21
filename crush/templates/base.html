@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-        
+		<link type="text/css" href="{{ STATIC_URL }}fbdater.css?t={% now "U" %}" rel="stylesheet"  />        
         <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
 		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
 
@@ -21,7 +21,6 @@
 
 		<script src="{{ STATIC_URL }}credit_check_dialog.js"></script>
 
-		<link type="text/css" href="{{ STATIC_URL }}fbdater.css?t={% now "U" %}" rel="stylesheet"  />
     </head>
 <body>
 <!-- INITIALIZE FB JS INTEGRATION -->
@@ -77,16 +76,21 @@ jQuery(document).ready(function($) {
 			// only initialize jquery modal dialog once per page load
 
 			if (!window.app_invite_modal)
-				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog blacktop",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
 			window.app_invite_modal.html('<div id="site-loading"></div>');
-			window.app_invite_modal.dialog('open');
+			window.wait_modal_open();
 			var crush_username=$(this).attr('crush_username');	
 			var crush_fullname=$(this).attr('crush_fullname');
 			var load_url="/app_invite_form_v2/" + crush_username + "/";
 			window.app_invite_modal.load(load_url,{'crush_fullname':crush_fullname,'csrfmiddlewaretoken':'{{csrf_token}}' },function(responseText,textStatus,XHR){
+				window.wait_modal_close();
 				if (textStatus!="success"){
 					if (!window.access_token_error(responseText))
 						$(this).html("{{ajax_error}}");
+				}
+				else{
+					window.app_invite_modal.dialog('open');
+					$(':focus').blur();
 				}
 			});	
 		});	
@@ -126,13 +130,19 @@ jQuery(document).ready(function($) {
 					// full name
 					modal_html +='<span class="attraction_invite_full_name">' + attraction_json[username] + '</span>';
 					// invite button (or invite sent text)
-					modal_html +='<div class="attraction_invite_button" username="' + username + '"><button class="app_invite" crush_username="' + username + '" crush_fullname="' + attraction_json[username] + '">send anonymous invite</button></div>';
+					modal_html +='<div class="attraction_invite_button" username="' + username + '"><button class="app_invite" crush_username="' + username + '" crush_fullname="' + attraction_json[username] + '">Send Anonymous Invite</button></div>';
 				modal_html += '</div>'; //close off attraction_invite_row div
 			}
 				
 			modal_html += '</div>';//close off dialog_main_content div
+			modal_html += '<div class="ui-dialog-buttonpane">';
+			modal_html += '<div class="ui-dialog-buttonset">';
+			modal_html += '<button type="button" onclick="window.invite_interstitial_modal.dialog(\'close\');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">send invites later</span></button>';
+			modal_html += '</div></div>';
+			
 			window.invite_interstitial_modal.html(modal_html);
 			window.invite_interstitial_modal.dialog('open');
+			$(':focus').blur();
 			//window.invite_interstitial_modal.dialog('moveToTop');
 			//window.wait_modal_close();
 	};
@@ -174,7 +184,7 @@ jQuery(document).ready(function($) {
     color: "default",
     showRandom:false,
     lang: {
-      title: "Add Crushes",
+      title: "Add Attractions",
       searchText: "Enter a friend's name",
       fbConnectError: "You must be logged in to Facebook in order to use this feature.",
       selectedCountResult: "You have choosen {0} people.",
@@ -277,19 +287,22 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
 	 };  
   
    window.alert_modal=function(title, message,calling_jquery_element){
-    $("#alert_modal").html(message);
-    $("#alert_modal").dialog('option','title',title);
+	   $("#alert_modal").html(message);
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
+		
 		if (typeof calling_jquery_element === 'undefined'){
 				var top_z_index = parseInt($.maxZIndex());
 		}
 		else {
-			var top_z_index=parseFloat($(calling_jquery_element).css('zIndex'));
+			var top_z_index=parseFloat($(calling_jquery_element).css('z-index'));
 		}
 		var dialog_index = top_z_index + 2;
 		var overlay_index = top_z_index + 1;
-		$(".alert_modal_dialog").css('zIndex',dialog_index.toString());
-		$(".ui-widget-overlay").css('zIndex',overlay_index.toString());
+		$(".alert_modal_dialog").css('z-index',dialog_index.toString());
+		var old_overlay_z = $(".ui-widget-overlay").css('z-index'); // set back to this z-index when close pressed
+		$(".ui-widget-overlay").css('z-index',overlay_index.toString());
+		$(':focus').blur();
   };  
   
   
@@ -481,10 +494,9 @@ $('body').on('click',".popup_link",function(e){
 		// only initialize jquery modal dialog once per page load
 
 	//if (!window.setup_create_modal)
-			window.setup_create_modal = $("#setup_create_modal").dialog({
-				dialogClass:"setup_create_dialog",resizable:false, modal: true, autoOpen: false,close:function(){location.reload();},width:500,height:350});
+		window.setup_create_modal = $("#setup_create_modal").dialog({
+		dialogClass:"setup_create_dialog",resizable:false, modal: true,show:'fade',autoOpen: false,close:function(){location.reload();},width:500});
 		window.setup_create_modal.html('<div id="site-loading"></div>');
-		window.setup_create_modal.dialog('open');
 		var target_person_username = $(this).attr('target_person_username');
 		var load_url="/setup_create_form/";
 		if (target_person_username)
@@ -494,6 +506,8 @@ $('body').on('click',".popup_link",function(e){
 				if (!window.access_token_error(responseText))
 					$(this).html("{{ajax_error}}");
 			}
+			window.setup_create_modal.dialog('open');
+			$(':focus').blur();
 		});	
 	}); // close off .click(function(e){
 
@@ -517,7 +531,7 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 		}
 	});
 
-function handle_window_resize(){
+window.handle_window_resize=function(){
 	$('.ui-dialog-content:visible').each(function(){
 		var dialog = $(this).data("dialog");
 		dialog.option("position","center");
@@ -526,7 +540,7 @@ function handle_window_resize(){
 var timeoutPointer;
 $(window).resize(function(){
 	clearTimeout(timeoutPointer);
-	timeoutPointer = setTimeout(handle_window_resize,100);
+	timeoutPointer = setTimeout(window.handle_window_resize,100);
 });
 
 }); // close of jQuery(document).ready

@@ -1,8 +1,11 @@
 <script>
-var morph_dialog = function(){
-$('#credit_check_content #site-loading').show();
-$('#content-holder').hide();
-};
+$(document).ready(function() 
+{
+	window.morph_dialog = function(){
+		$('#credit_check_modal').dialog('close');
+		window.wait_modal_open("Redirecting to Paypal...");
+	};
+});
 </script>
 
 <div id="credit_check_container">
@@ -39,10 +42,10 @@ $('#content-holder').hide();
 		  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
 	</div><!-- close off credit_purchase_selection -->
 	<div class="ui-dialog-buttonpane">
-		<span id="purchase_button_description">You will be directed to PayPal</span>
+		<!-- <span id="purchase_button_description">You will be directed to PayPal</span> -->
 		<div class="ui-dialog-buttonset">
-		<button type='button' onclick="$('#credit_check_modal').dialog('close');" class="ui-button" ><span class="ui-button-text">Cancel</span></button> 
-		<button class="ui-button site_dialog_button" onclick="morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" ><span class="ui-button-text">Make Payment</span></button> 
+		<button type='button' onclick="$('#credit_check_modal').dialog('close');" class="ui-button site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
+		<button class="ui-button site_dialog_button" id="credit_deduct_ok" onclick="window.morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" ><span class="ui-button-text">Make Payment</span></button> 
 		
 		</div>
 	</div><!-- close off button_bar -->

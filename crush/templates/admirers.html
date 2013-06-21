@@ -13,7 +13,7 @@
   })();
 </script>
 
-<div id="lineup_modal" title="Attraction&trade; Lineup"></div>
+<div id="lineup_modal" title="Admirer Lineup&trade;"></div>
 
 <script type="text/javascript">
 $(document).ready(function() 
@@ -21,23 +21,24 @@ $(document).ready(function()
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
-    $("#lineup_modal").dialog({modal: true, resizable:false,autoOpen: false,width:575,height:416,close:function(event,ui){window.handle_lineup_dialog_close();}});
+    var lineup_dialog = $("#lineup_modal").dialog({dialogClass:'lineup_modal_dialog',modal: true, show: 'fade',width:575,height:454,resizable:false,autoOpen: false,close:function(event,ui){window.handle_lineup_dialog_close();}});
     $('.lineup_block').on('click', '.view_lineup', function(e) {
-        view_lineup_element=$(this);
-		var display_id=view_lineup_element.attr('display_id');	
-		
-		$("#lineup_modal").html('<div id="site-loading"></div>');
-		$("#lineup_modal").dialog("open");
+		var display_id=$(this).attr('display_id');		
+		window.wait_modal_open();
 		load_url="/ajax_show_lineup_slider/" + display_id + "/";
-    e.preventDefault();
-    $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
-		if (textStatus!='success'){
-			$(this).dialog("close");
-			window.alert_modal("Lineup Problem", "{{generic_error_message}}" );
-			return false;
-			}
+	    e.preventDefault();
+	    $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
+			if (textStatus!='success'){
+				$(this).dialog("close");
+				window.alert_modal("Lineup Problem", "{{generic_error_message}}" );
+				return false;
+				}
+			lineup_dialog.dialog("open");
+			window.startup_slider();
+			$(':focus').blur();
+			window.wait_modal_close();
 		});   
-	  return false;    
+	    
 	});			
   
     /** AUTOMATIC FUNCTION - WAIT FOR INITIALIZATION BEFORE RENDERING LINEUP BLOCK

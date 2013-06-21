@@ -81,6 +81,8 @@ $(document).ready(function()
 	// note the space is necessary to clear out any previous getStoredFriends
 	$('button#select_setup_recommendees').removeAttr('getStoredFriends');
   	$('button#select_setup_target').html("change");
+  	$('.setup_recommendee_pic').css('opacity','1');
+  	$('#setup_target_section .site_dialog_select_button').addClass('selected');
   }
   
   // exclude anyone already added as a recommendee
@@ -110,6 +112,8 @@ $(document).ready(function()
  	 $('.setup_create_dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.site_dialog_button').removeAttr('disabled');
    $('#recommendee_username_csl_input').attr('value',window.setup_recommendee_csl);
 	$('button#select_setup_recommendees').html("change");
+   	$('#setup_lineup_section .dialog_header').removeClass('active_dialog_header');
+	$('#setup_lineup_section .site_dialog_select_button').addClass('selected');
   }
  
  $(".setup_create_dialog").on('click','#create_setup',function(){
@@ -117,7 +121,9 @@ $(document).ready(function()
  
 
    	FB.ui({method: 'send',
+   				name: "hey what it is",
   				to: window.setup_target,
+  				link: 'http://www.flirtally.com/setups_for_me',
   				description:'Flirtally is a new matchmaking service that allows friends to easily set their friends up with eachother. Visit http://www.flirtally.com'
       },
       function(response){
@@ -148,22 +154,22 @@ $(document).ready(function()
 		{% csrf_token %}
     <div id="setup_target_section">
 			<div class="dialog_header active_dialog_header">
-				Step 1: <span class="dialog_header_sentence">Select a friend to set up</span>
+			<span class="step_label">Step 1 </span><span class="dialog_header_sentence">&nbsp;Select A Friend To Set Up:</span>
 			</div>
 			<div class="setup_section_content">
 				<img class="setup_target_pic" src = "/static/images/fb_unknown_user_pic.jpg">
-				<button class="setup_button setup_selector" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
+				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
 	  	</div>
 	  </div><!-- close setup_target_section -->
     <div id="setup_lineup_section">
 			<div class="dialog_header inactive_dialog_header">
-				Step 2: <span class="dialog_header_sentence">Select up to ten others to recommend to your friend</span>
+				<span class="step_label">Step 2</span> <span class="dialog_header_sentence">&nbsp;Select Up To Ten Others To Recommend To Your Friend:</span>
 			</div>
 			<div class="setup_section_content">
 				{% for x in 10|get_range %}
 					<img class="setup_recommendee_pic" src = "/static/images/fb_unknown_user_pic.jpg" id="recommendee_pic_{{forloop.counter0}}">
 				{% endfor %}
-				<button class="setup_button setup_selector" max_selections="10" setup_select="true" onSubmit="window.process_selected_recommendees" id="select_setup_recommendees" type="button" disabled>select</button>
+				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="10" setup_select="true" onSubmit="window.process_selected_recommendees" id="select_setup_recommendees" type="button" disabled>select</button>
 	  	</div>
 	  </div><!-- close setup_lineup_section -->
 	  <input type="hidden" name="target_username" id="target_username_input">
@@ -171,7 +177,7 @@ $(document).ready(function()
 </form>
 <div class="ui-dialog-buttonpane">
 		<div class="ui-dialog-buttonset">
-			<button type='button' onclick="location.reload();" class="ui-button" ><span class="ui-button-text">Cancel</span></button> 
-			<button class="ui-button site_dialog_button" id="create_setup" disabled><span class="ui-button-text" >Create Set-up & Notify Friend</span></button> 
+			<button type='button' onclick="location.reload();" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
+			<button class="site_dialog_button" id="create_setup" disabled><span class="ui-button-text" >Create Setup</span></button> 
 		</div>
 	</div><!-- close off button_bar -->
