@@ -375,7 +375,19 @@ $('#center_header_menu > li.submenu').hover(openSubMenu,closeSubMenu);
 //$('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white');$(this).find('ul').show()},function(){$('#get_started_link').css('color','#DC143C');$(this).find('ul').delay(3000).hide()});
 
 // HANDLE clicking of drop down menu links
-$('#center_header_menu > li.submenu,.drop_down_menu_link > li.submenu').click(function(){
+$('.header_container ul#center_header_menu li.submenu').on('click',function(){
+	//alert('clicked center_Header menu');
+	var menu_element = $(this).find('ul');
+	if ($(menu_element).is(":visible"))
+		$(menu_element).hide(200);
+	else{
+		$(menu_element).show(200);
+	}
+});
+
+//HANDLE clicking of drop down menu links
+$('.header_container .drop_down_menu_link li.submenu').click(function(){
+	alert('clicked drop down menu link');
 	var menu_element = $(this).find('ul');
 	if ($(menu_element).is(":visible"))
 		$(menu_element).hide(200);
@@ -554,7 +566,7 @@ $('.left_sidebar_container #combo_singles_button a').mousedown(function(event)
 			if (event.button == 0){
 				$(this).css('border-top','0px');
 				console.log('mouseup');
-				var class_name='.' + $(this).attr('class');
+				var class_name='#combo_singles_button a.' + $(this).attr('class');
 				console.log('mouseup',class_name);
 				$(class_name).trigger('click');
 			}
