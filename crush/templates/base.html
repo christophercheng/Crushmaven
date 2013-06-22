@@ -527,9 +527,27 @@ $('.left_sidebar_container .navbar .inactive a').mouseup(function(event)
 		if (event.button == 0){
 			$(this).css('border','none');
 			$(this).css('padding-right','7px');
-			location.href=$(this).attr('href');
+			location.href=$(this).attr('class');
 		}
 	});
+
+$('.left_sidebar_container #combo_singles_button a').mousedown(function(event)
+		{
+		if (event.button == 0){
+			$(this).css('border-top','1px solid #595983');
+		}
+		});
+
+	$('.left_sidebar_container #combo_singles_button a').mouseup(function(event)
+		{
+			if (event.button == 0){
+				$(this).css('border-top','0px');
+				console.log('mouseup');
+				var class_name='.' + $(this).attr('class');
+				console.log('mouseup',class_name);
+				$(class_name).trigger('click');
+			}
+		});
 
 window.handle_window_resize=function(){
 	$('.ui-dialog-content:visible').each(function(){

@@ -922,20 +922,13 @@ a.logo img{
 
 .left_sidebar_container #combo_singles_button a{
 	display:inline-block;
-	#background-color:#3E3E5C;;
 	background-color:#000;
 	font-size:11px;
 	border:0px;
-	color:white;
-	color:#DC143C;
-	color:#4791FF;
-	color:#CCCCCC;
-	color:#8099E6;
 	color:#B2C2E0;
 	height:40px;
 	padding-top:3px;
 	font-weight:bold;
-	#font-style:italic;
 	cursor:pointer;
 	text-align:center;
 	overflow:hidden;
@@ -955,7 +948,6 @@ a.logo img{
 	float:left;
 	width:113px;
 	padding-left:1px;
-	#background-color:#32324A!important;
 	background-color:#000!important;
 	border-right:2px solid #595983!important;
 	border-bottom:2px solid #595983!important;
@@ -969,10 +961,6 @@ a.logo img{
 	transition-duration:200ms,200ms;
 	-webkit-transition-duration:200ms,200ms;
 	-webkit-transition-property:color,background-color;
-}
-.left_sidebar_container #combo_singles_button a:active{
-	border:1px solid #232334;
-	cursor:pointer;
 }
 	
 .left_sidebar_container .button_container#create_setup a{
