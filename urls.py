@@ -192,11 +192,11 @@ urlpatterns += patterns('crush.views.static_file_views',
     
     (r'^help_how_it_works/$','help_how_it_works'),
     
-    (r'^help_terms/$', 'help_terms'),
+    (r'^terms/$', 'help_terms'),
     
-    (r'^help_privacy/$', 'help_privacy'),
+    (r'^privacy/$', 'help_privacy'),
         
-    (r'^help_contact/$', 'help_contact'),
+    (r'^contact/$', 'help_contact'),
     
     (r'^help_fb_privacy_setting/$','help_fb_privacy_setting'),
 )

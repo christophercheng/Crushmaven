@@ -298,32 +298,26 @@ a.button {
 
 .header {
 	height: 55px;
-	background: -moz-linear-gradient(top, rgb(0,0,90),rgb(0,0,51));
-	background: -webkit-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
-	background: -0-linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
-	background: linear-gradient(top, rgb(0,0,70),rgb(0,0,51));
-	background:	#181818;
-		background: -moz-linear-gradient(top, #2F2F2F, #181818);
+	background:#000000;
+	background: -moz-linear-gradient(top, #2F2F2F, #181818);
 	background: -webkit-linear-gradient(top, #2F2F2F, #181818);
 	background: -0-linear-gradient(top, #2F2F2F, #181818);
 	background: linear-gradient(top, #2F2F2F, #181818);
+#	box-shadow: 0 0 3px rgba(0,0,0,0.5);
 	color: white;
 	width:100%;
-  #box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
-  position: fixed;
-  top: 0;
-  padding-top:3px;
-  padding-left:15px;
-  width: 100%;
-  z-index: 900;
+  	position: fixed;
+  	top: 0;
+  	padding-top:3px;
+  	padding-left:15px;
+  	width: 100%;
+  	z-index: 900;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	box-shadow: 0 0 3px rgba(0,0,0,0.5);
-	#border-bottom:1px solid white;
 }
 
 .header_container{
@@ -554,6 +548,10 @@ a.logo img{
 	color:#DC143C;
 	font-size:14px;
 	vertical-align:middle;
+	font-weight:normal;
+	letter-spacing:1px;
+	#text-shadow:0px -1px 1px rgba(220,20,60,0.5)!important;
+	
 }
 
 #right_header_menu a:hover, #center_header_menu a:hover {
@@ -661,7 +659,7 @@ a.logo img{
 	list-style:none;	
 	border-left: 1px solid #474747;
 	border-right: 1px solid #474747;
-	border-bottom: 2px solid #474747;
+	border-bottom: 1px solid #474747;
 	border-radius: 0px 0px 5px 5px;
 	position:relative;
 	width:195px;
@@ -676,7 +674,7 @@ a.logo img{
 
 .left_sidebar_container .navbar{
 	border-radius:0px;
-	border-bottom:2px solid #595983;
+	border-bottom:1px solid #595983;
 	border-left: 0px;
 	border-right: 0px;
 }
@@ -906,7 +904,7 @@ a.logo img{
 	background-position:-89px -246px;
 	height:20px;
 	width:20px;
-	top:11px;
+	top:12px;
 	left:71px;
 	z-index:101;
 }
@@ -926,12 +924,15 @@ a.logo img{
 	font-size:11px;
 	border:0px;
 	color:#B2C2E0;
+	color:#A3CC29;
+	color:#E02B50;
 	height:40px;
-	padding-top:3px;
-	font-weight:bold;
+	padding-top:4px;
+	font-weight:normal;
 	cursor:pointer;
 	text-align:center;
 	overflow:hidden;
+	letter-spacing:1px;
 }
 .left_sidebar_container #combo_singles_button a.bt-fs-dialog {
 	border-radius:0px 0px 0px 7px;
@@ -939,24 +940,24 @@ a.logo img{
 	border-right:1px solid #595983;
 	border-right:1px solid #5A5A5A;
 	width:82px;
-	padding-right:2px;
-	border-left:2px solid #595983!important;
-	border-bottom:2px solid #595983!important;
+	padding-right:4px;
+	border-left:1px solid #595983!important;
+	border-bottom:1px solid #595983!important;
 }
 .left_sidebar_container a.request_setup_link{
 	border-radius:0px 0px 7px 0px;	
 	float:left;
 	width:113px;
-	padding-left:1px;
+	padding-left:9px;
 	background-color:#000!important;
-	border-right:2px solid #595983!important;
-	border-bottom:2px solid #595983!important;
+	border-right:1px solid #595983!important;
+	border-bottom:1px solid #595983!important;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
 
 	color:white!important;
-	background-color:#1F1F1F!important;
+	#background-color:#1F1F1F!important;
 	transition-property:color,background-color;
 	transition-duration:200ms,200ms;
 	-webkit-transition-duration:200ms,200ms;
@@ -964,7 +965,7 @@ a.logo img{
 }
 	
 .left_sidebar_container .button_container#create_setup a{
-	padding:11px 10px 3px 37px;
+	padding:11px 10px 3px 52px;
 	position:absolute;	
 	top:0px;
 	left:0px;
@@ -979,10 +980,14 @@ a.logo img{
 	color:#D9D9D9;
 		color:#8099E6;
 	color:#B2C2E0;
+	color:#A3CC29;
+	color:#E02B50;
+	letter-spacing:1px;
 	font-style:normal;
-	border-left: 2px solid #595983;
-	border-right: 2px solid #595983;
-	border-bottom: 2px solid #595983;
+	font-weight:bold;
+	border-left: 1px solid #595983;
+	border-right: 1px solid #595983;
+	border-bottom: 1px solid #595983;
 
 }
 .left_sidebar_container .button_container#create_setup a:hover{
@@ -4104,6 +4109,4 @@ div.active_dialog_header {
 .wait_modal_dialog .ui-dialog-titlebar, .wait_modal_dialog .ui-dialog-buttonpane{
 	display:none;
 }
-
-
 
