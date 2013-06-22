@@ -373,6 +373,17 @@ function closeSubMenu() {
 $('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
 $('#center_header_menu > li.submenu').hover(openSubMenu,closeSubMenu);
 //$('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white');$(this).find('ul').show()},function(){$('#get_started_link').css('color','#DC143C');$(this).find('ul').delay(3000).hide()});
+
+// HANDLE clicking of drop down menu links
+$('#center_header_menu > li.submenu,.drop_down_menu_link > li.submenu').click(function(){
+	var menu_element = $(this).find('ul');
+	if ($(menu_element).is(":visible"))
+		$(menu_element).hide(200);
+	else{
+		$(menu_element).show(200);
+	}
+});
+
 // HANDLE TITLE BAR OPTIONS SUBMENU CLICK
 $('.title_bar_option a').bind('click',function(){
 	$(this).parent().children('ul').toggle();
