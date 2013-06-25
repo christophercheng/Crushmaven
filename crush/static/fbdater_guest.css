@@ -60,7 +60,7 @@ a{
 }
 #top_links a{
 	font-size:14px;
-	display:inline;
+	display:inline-block;
 	margin-left:30px;
 }
 
@@ -472,6 +472,17 @@ h2#tagline2 #safe_text{
 	color:#141432;
 }
 
+#bottom_links{
+
+}
+#bottom_links a{
+	font-size:12px;
+	display:inline-block;
+	margin-left:15px;
+	font-weight:normal;
+	color:#4D4D70;
+}
+
 /*  ----------- GUEST PAGES ------------ */
 
 body#guest_page{
@@ -521,8 +532,12 @@ div.guest_header.authenticated .center_container{
 	left:7px;
 }
 
+.guest_header #top_links{
+	margin-top:22x;
+}
+
 .guest_header.authenticated #top_links{
-	margin-top:20px;
+	margin-top:15px;
 	margin-right:400px;
 }
 .guest_page{
@@ -608,20 +623,36 @@ div.legal{
 
 .legal h1{
 	display:block;
-	font-size:20px;
+	font-size:22px;
 	font-weight:bold;
 	margin-bottom:15px;
 }
 
-.legal h2{
+.legal h2, .legal h3{
 	display:block;
-	font-size:16px;
+	font-size:18px;
 	font-weight:bold;
-	margin-bottom:5px;
+	margin-bottom:10px;
 	margin-top:20px;
+}
+.legal h3{
+	font-size:16px;
 }
 
 .legal h2.noteworthy{
 	font-style:italic;
 	margin-bottom:10px;
+}
+
+.legal a{
+	color:#0047B2;
+}
+
+.legal ul {
+	margin-left:25px;
+	margin-bottom:10px;
+}
+.legal ul li {
+	margin-bottom:5px;
+	font-size:14px;
 }

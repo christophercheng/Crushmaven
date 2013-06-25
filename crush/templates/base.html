@@ -376,7 +376,6 @@ $('#center_header_menu > li.submenu').hover(openSubMenu,closeSubMenu);
 
 // HANDLE clicking of drop down menu links
 $('.header_container ul#center_header_menu li.submenu').on('click',function(){
-	//alert('clicked center_Header menu');
 	var menu_element = $(this).find('ul');
 	if ($(menu_element).is(":visible"))
 		$(menu_element).hide(200);
@@ -387,7 +386,6 @@ $('.header_container ul#center_header_menu li.submenu').on('click',function(){
 
 //HANDLE clicking of drop down menu links
 $('.header_container .drop_down_menu_link li.submenu').click(function(){
-	alert('clicked drop down menu link');
 	var menu_element = $(this).find('ul');
 	if ($(menu_element).is(":visible"))
 		$(menu_element).hide(200);
