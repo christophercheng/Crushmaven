@@ -62,7 +62,9 @@ $(document).ready(function()
   	$('.setup_target_pic').attr('title',fullname);
   	$('button#select_setup_target').attr('getStoredFriends',window.setup_target);
    	$('#setup_target_section .dialog_header').removeClass('active_dialog_header'); 	
-   	$('#setup_lineup_section .dialog_header').addClass('active_dialog_header'); 	
+	$('#setup_target_section .dialog_header').addClass('past_dialog_header');
+	$('#setup_lineup_section .dialog_header').removeClass('past_dialog_header');
+	$('#setup_lineup_section .dialog_header').addClass('active_dialog_header'); 	
   	var amendedExcludeIds = "{{exclude_ids}}";
   	if (amendedExcludeIds != "")
   		amendedExcludeIds += ",";
@@ -80,9 +82,13 @@ $(document).ready(function()
 	}
 	// note the space is necessary to clear out any previous getStoredFriends
 	$('button#select_setup_recommendees').removeAttr('getStoredFriends');
-  	$('button#select_setup_target').html("change");
+ 	$('.setup_target_name').html(fullname);
+ 	$('button#select_setup_target').html("change");
   	$('.setup_recommendee_pic').css('opacity','1');
   	$('#setup_target_section .site_dialog_select_button').addClass('selected');
+	 $('#setup_create_modal #create_setup').attr('disabled','true');
+  	$('#setup_lineup_section .site_dialog_select_button').removeClass('selected');
+  	$('#setup_lineup_section .site_dialog_select_button').html('select');
   }
   
   // exclude anyone already added as a recommendee
@@ -109,10 +115,11 @@ $(document).ready(function()
  	 $('button#select_setup_recommendees').attr('getStoredFriends',window.setup_recommendee_csl);
  	 // don't need to exlude recommendees from target selection list cause the recommendees list gets cleared out whenever a new target is chosen
  	 //$('button#select_setup_target').attr('excludeIds',window.recomendation_recommendee_csl);
- 	 $('.setup_create_dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.site_dialog_button').removeAttr('disabled');
+ 	 $('#setup_create_modal #create_setup').removeAttr('disabled');
    $('#recommendee_username_csl_input').attr('value',window.setup_recommendee_csl);
 	$('button#select_setup_recommendees').html("change");
    	$('#setup_lineup_section .dialog_header').removeClass('active_dialog_header');
+	$('#setup_lineup_section .dialog_header').addClass('past_dialog_header');
 	$('#setup_lineup_section .site_dialog_select_button').addClass('selected');
   }
  
@@ -154,16 +161,17 @@ $(document).ready(function()
 		{% csrf_token %}
     <div id="setup_target_section">
 			<div class="dialog_header active_dialog_header">
-			<span class="step_label">Step 1 </span><span class="dialog_header_sentence">&nbsp;Select A Friend To Set Up:</span>
+			<span class="step_label">Step 1:</span><span class="dialog_header_sentence">&nbsp;Select a friend to set up</span>
 			</div>
 			<div class="setup_section_content">
 				<img class="setup_target_pic" src = "/static/images/fb_unknown_user_pic.jpg">
-				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="1" {% if excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
+				<span class="setup_target_name"></span>
+				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="1" {% if excludeIds or excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
 	  	</div>
 	  </div><!-- close setup_target_section -->
     <div id="setup_lineup_section">
 			<div class="dialog_header inactive_dialog_header">
-				<span class="step_label">Step 2</span> <span class="dialog_header_sentence">&nbsp;Select Up To Ten Others To Recommend To Your Friend:</span>
+				<span class="step_label">Step 2:</span> <span class="dialog_header_sentence">&nbsp;Select up to ten others to recommend to your friend</span>
 			</div>
 			<div class="setup_section_content">
 				{% for x in 10|get_range %}

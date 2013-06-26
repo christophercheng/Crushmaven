@@ -217,7 +217,7 @@ a.button {
 	cursor:pointer!important;
 }
 
-.site_dialog_button[disabled],.site_dialog_button[disabled=""],.site_dialog_button[disabled]:hover,.site_dialog_button[disabled=""]:hover  {
+.site_dialog_button[disabled],.site_dialog_button[disabled="true"],.site_dialog_button[disabled]:hover,.site_dialog_button[disabled=""]:hover  {
 	background:#CACACA!important;
 	opacity:0.6!important;
 	text-shadow:none;
@@ -229,6 +229,10 @@ a.button {
 
 .site_dialog_button:hover {
 	background-color:#1E3B93!important;
+		transition-property:background;
+	transition-duration:200ms;
+	-webkit-transition-duration:200ms;
+	-webkit-transition-property:background;
 }
 
 .site_dialog_back_button{
@@ -237,6 +241,10 @@ a.button {
 }
 .site_dialog_back_button:hover{
 	background:#476CB5!important;
+			transition-property:background;
+	transition-duration:200ms;
+	-webkit-transition-duration:200ms;
+	-webkit-transition-property:background;
 }
 .site_dialog_cancel_button {
 	background:#565656!important;
@@ -247,17 +255,29 @@ a.button {
 }
 .site_dialog_cancel_button:hover {
 	background:#F2F2F2!important;
+	background:#595959!important;
+	border:0px!important;
+	color:white!important;
 	border:1px solid #DEDEDE!important;
+	transition-property:color,background;
+	transition-duration:200ms,200ms;
+	-webkit-transition-duration:200ms,200ms;
+	-webkit-transition-property:color,background;
 }
 
 .site_dialog_select_button{
 	#text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4)!important;
 	background:#3A455C!important;
-	border-radius:10px!important;
+	border-radius:8px!important;
+	border:0px!important;
 }
 .site_dialog_select_button:hover{
 	background:#2A3142!important;
-	border-radius:10px!important;
+	border-radius:8px!important;
+			transition-property:background;
+	transition-duration:200ms;
+	-webkit-transition-duration:200ms;
+	-webkit-transition-property:background;
 }
 .dialog_subtitle {
 	display:inline-block;
@@ -3263,44 +3283,45 @@ ul.bxslider{
 
 
 div.dialog_header {
-	#background:#CACACA;
-	color:#9D9D9D;
+	background:#CACACA;
+	color:white!important;
 	font-size:14px!important;
 	opacity:.3;
 	line-height:20px;
 	vertical-align:bottom;
 	white-space:nowrap;
+	#border-radius:8px 8px 0 0;
+	border-radius:4px;
+	margin-top:5px;
 }
-div.dialog_header span.step_label{
-	display:inline-block;
-	float:left;
-	#background:#292952;
-	border:2px solid #292952;
-	padding:1px 8px 1px 5px;
-	border-radius:0 25px 25px 0;
-	color:#292952;
-	display:inline-block;
-	margin-right:2px;
-	letter-spacing:-1px;
-}
-div.dialog_header span.dialog_header_sentence{
-	display:inline-block;
-	margin-top:4px;
-}
+
+
 div.active_dialog_header {
-	#background:#292952;
-	background:none;
-	color:white;
-	color:#292952;
+	background:#292952;
+	background:#4E586C;
+	#color:#292952;
 	font-weight:normal;
 	opacity:1;
 	font-size:14px!important;
 }
 
+div.past_dialog_header {
+	color:#7E7E7E!important;
+	opacity:1;
+	background:#EFEFEF;
+}
+
 .setup_target_pic{
-	display:block;
 	width:60px;
 	height:60px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+.setup_target_name{
+	display:block;
+	margin:5px auto 0 auto;
+	font-size:16px;
 }
 .setup_recommendee_pic{
 	display:inline-block;
@@ -3313,6 +3334,9 @@ div.active_dialog_header {
 .setup_button{
 	display:block!important;
 	margin-top:5px!important;
+	margin-left:auto!important;
+	margin-right:auto!important;
+	margin-bottom:5px!important;
 }
 
 #setup_form .dialog_header{
@@ -3324,7 +3348,7 @@ div.active_dialog_header {
 	border-radius:4px;
 }
 #setup_target_section img{
-	border:1px solid black;
+	#border:1px solid black;
 }
 
 #setup_lineup_section .dialog_header{
@@ -3337,12 +3361,15 @@ div.active_dialog_header {
 
 .setup_section_content{
 	display:inline-block;
-	margin-left:10px;
+	text-align:center;
+	width:100%;
+}
+.setup_section_content{
+	padding-right:10px;
 }
 
 #setup_form button{
 	display:inline-block;
-	margin-left:0px!important;
 	margin-top:5px!important;
 }
 
@@ -3355,12 +3382,12 @@ div.active_dialog_header {
 #setup_form .selected{
 	background:#757D8D!important;
 	background:none!important;
-	color:#3366ff!important;
+	color:#2952CC!important;
 	#text-decoration!important;
 	border:0px!important;
 	text-shadow:none!important;
-	margin-left:-2px!important;
 	margin-top:-1px!important;
+	margin-bottom:-5px!important;
 }
 
 /* ===========================   Setups By Me Block Dialog ========================= */

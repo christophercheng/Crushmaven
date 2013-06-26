@@ -21,10 +21,14 @@
 	    		options.max=parseInt(attr_max_selections);
 	    	if (attr_getStoredFriends)
 	    		options.getStoredFriends=attr_getStoredFriends;
+	    	else 
+	    		options.getStoredFriends='';
 	    	if (attr_onSubmit)
 	    		options.onSubmit=attr_onSubmit;
 	    	if (attr_excludeIds)
 	    		options.excludeIds=attr_excludeIds;
+	    	else
+	    		options.excludeIds='';
 	    	if (attr_setup_select)
 	    		options.setup_select=true;
 	    	else
@@ -489,12 +493,10 @@
       // pre-select elements
       if (fsOptions.getStoredFriends.length){
     	  if (fsOptions.getStoredFriends!="") {
-    		 
 	    	  var preselected_friends = fsOptions.getStoredFriends.split(',');
 	    	  for (var x = 0; x < preselected_friends.length;x++){
 	    		  // find element with username
-	    		  var username=preselected_friends[x] + '0';
-	
+	    		  var username=preselected_friends[x] + '0';// there was a hack where type of friend was noted as an extra character at end
 	    		  var target_element = $('#fs-user-list ul li a input.fs-friends[value="' + username + '"]');
 	    		  _click(target_element.parents('li'));
 	    	  }
