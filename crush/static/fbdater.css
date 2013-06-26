@@ -3400,11 +3400,9 @@ div.past_dialog_header {
 	margin-bottom:25px;
 	position:relative;
 	#height:200px;
-	padding-bottom:35px;
+	padding-bottom:15px;
 	border:1px solid #E0E0E0;
 }
-
-
 
 .setup_by_me_block img.setup_block_target_pic {
 	display:inline-block;
@@ -3445,7 +3443,6 @@ div.past_dialog_header {
 	top:-9px;
 }
 
-
 .setup_by_me_block .setup_response_label{
 	border-top:1px solid #666666;
 	border-right:1px solid #666666;
@@ -3465,6 +3462,29 @@ div.past_dialog_header {
 	border-radius:10px;
 	font-size:11px;
 	color:white;
+}
+
+.setup_by_me_block  .setup_status {
+	display:inline-block;
+	margin-top:30px;
+	margin-left:40px;
+	font-size:13px;
+	line-height:20px;	
+	color:#6C6C6C;
+}
+.setup_by_me_block  .status_label {
+	display:inline-block;
+	font-weight:bold;	
+	float:left;
+	width:55px;
+}
+.setup_by_me_block .status_text{
+	display:inline-block;
+	float:left;
+	width:430px;
+}
+.setup_by_me_block .please_help{
+	font-style:italic;
 }
 
 
@@ -3496,12 +3516,15 @@ div.past_dialog_header {
 	display:inline-block;
 	width:100%;
 	text-align:center;
-	height:85px;
+	height:87px;
+	background:white;
 }
 
 .setup_lineup_member_block {
 	display:inline-block;
-	background:#E8E8EA;
+	#background:#E8E8EA;	
+	#background:#E8E8E9;
+	#background:white;
 	font-size:9px;
 	width:45px;
 	height:100%;
@@ -3509,9 +3532,43 @@ div.past_dialog_header {
 	border-radius:4px;
 	vertical-align:top;
 }
+
+.setup_by_me_block .setup_vertical_divider {
+	display:inline-block;
+	width:1px;
+	height:103px;
+	margin-top:-7px;
+	margin-left:2px;
+	margin-right:2px;
+	background:#666666;
+}
+.setup_by_me_block .setup_vertical_divider.a {
+	margin-left:5px;
+	}
+
+.setup_lineup_member_block.mutual_yes{
+	#background:#3333cc;
+	#background:#C2C2E0;
+	background:none;
+	#background:#C2C2E0;
+	#background:white;
+	
+}
+.setup_lineup_member_block.mutual_no{
+	#background:#7D7D7F;
+	#border:1px solid #979799;
+	#background:#D1D1D2;
+	background:none;
+	#background:white;
+	#background:#E8E8E9;
+
+}
+.setup_lineup_member_block.mutual_no img {
+	opacity:.5;
+	}
 .setup_recommendee_response,.setup_recommendee_target_response{
 	display:block;
-	height:20px;
+	height:25px;
 	position:relative;
 }
 .setup_recommendee_response a {
@@ -3536,27 +3593,87 @@ div.past_dialog_header {
 	height:20px;
 	opacity:1;
 	right:13px;
-	top:1px;
+	top:3px;
 	bottom:0px;
 }
 
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_recommendee_responded{
-	top:3px;
+	top:0px;
 }
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_yes {
-	background-position:-125px -173px;
+	background-position:-92px -116px;
 }
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_waiting {
 	background-position:-155px -2px;
 }
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_no {
-	background-position:-187px -132px;
+	background-position:-92px -86px;
 }
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_null {
 	background-position:-155px -47px;
-	opacity:.6;
+	#opacity:.6;
+}
+.setup_by_me_block .setup_match_yes{
+	display:inline-block;
+	position:absolute;
+	bottom:-7px;
+	#left:5px;
+	left:5px;
+	#width:35px;
+	width:35px;
+	height:11px;
+	background:#333399;
+	color:white;
+	vertical-align:middle;
+	line-height:10px;
+	border-radius:2px;
+	font-weight:bold;
 }
 
+.setup_by_me_block .setup_match_no{
+	display:inline-block;
+	position:absolute;
+	bottom:-7px;
+	#left:5px;
+	left:7px;
+	#width:35px;
+	width:31px;
+	height:11px;
+	background:#474747;
+	color:white;
+	vertical-align:middle;
+	line-height:10px;
+	border-radius:2px;
+}
+
+/*
+.setup_by_me_block .setup_match_yes{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:20px;
+	height:20px;
+	right:12px;
+	top:-17px;
+	background-position:-187px -273px;
+}
+
+.setup_by_me_block .setup_match_no{
+	display:inline-block;
+	position:absolute;
+	background-image:url(images/full_sprite.png);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	width:20px;
+	height:20px;
+	opacity:.8;
+	right:-7px;
+	bottom:-5px;
+	background-position:-187px -130px;
+}
+*/
 .setup_added_date{
 	position:absolute;
 	bottom:5px;

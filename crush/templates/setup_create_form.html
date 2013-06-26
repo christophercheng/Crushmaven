@@ -124,23 +124,24 @@ $(document).ready(function()
   }
  
  $(".setup_create_dialog").on('click','#create_setup',function(){
- $("#site-overlay").css('visibility','visible');
- 
+	window.wait_modal_open();
 
-   	FB.ui({method: 'send',
-   				name: "hey what it is",
-  				to: window.setup_target,
-  				link: 'http://www.flirtally.com/setups_for_me',
-  				description:'Flirtally is a new matchmaking service that allows friends to easily set their friends up with eachother. Visit http://www.flirtally.com'
+   	FB.ui({
+   			method: 'send',
+   			name:"I've set you up!",
+  			to: window.setup_target,
+  			link: 'http://www.google.com',
+  			description:'Flirtally is a new matchmaking service that allows friends to easily set their friends up with eachother. Visit http://www.flirtally.com'
       },
       function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
-         if (response != null){
+    	  
+    	  if (response != null){
 				  	$('#setup_form').submit();
   				}
   			else {
+  				window.wait_modal_close();
   				window.alert_modal('Friend Set Up', "We cannot create this set up unless you notify your friend",$('.setup_create_dialog') );
-  				$("#site-overlay").css('visibility','hidden');
   				//$('#setup_form').submit();
   			}
   		} // close off function (response)   

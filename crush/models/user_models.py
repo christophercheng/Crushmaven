@@ -378,6 +378,11 @@ class FacebookUser(AbstractUser):
             return 'his'
         else:
             return 'her'
+    def get_gender_pronoun_possessive(self):
+        if self.gender==u'M':
+            return 'his'
+        else:
+            return 'her'
     
     def get_gender_pronoun_subject(self):
         if self.gender==u'M':

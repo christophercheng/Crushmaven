@@ -158,60 +158,53 @@ $(document).ready(function()
 			</div><!-- close off setup_block_title -->
 			<div class="setup_response_label setup_target_response_label">
 				<div class="setup_response_label setup_response_innerlabel">
-					<span class="setup_label_text setup_response_label_text">{{setup_rel.target_person.first_name}}'s responses ({{ setup_rel | setup_target_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span>
+					<span class="setup_label_text setup_response_label_text">{{setup_rel.target_person.first_name}}'s selections</span>
 				</div>
 			</div>
 		<div class = "setup_response_section">
-		{% for lineup_member in setup_rel.setuplineupmember_set.all %}
-			<div class="setup_lineup_member_block">
-					<div class="setup_recommendee_target_response"{% if lineup_member.decision == None %}title="waiting for response from {{setup_rel.target_person.first_name}}"{% endif %}>
-						<span class="setup_responded {% if lineup_member.decision == None %}setup_responded_waiting{% elif lineup_member.decision == 0 %}setup_responded_yes{% else %}setup_responded_no{% endif %}"></span>
-					</div>
-					<img class="setup_lineup_member_block_pic" src="http://graph.facebook.com/{{lineup_member.username}}/picture?width=40&height=40">
-					<div class="setup_recommendee_response"{% if lineup_member.decision != 0 %} title="recommendee can only respond if {{setup_rel.target_person.first_name}} is attracted to them"{% endif %}>
-						{% if lineup_member.decision == 0 %} 
-							{% if lineup_member.lineup_member_attraction == 1 %}
-								<span class="setup_responded setup_recommendee_responded setup_responded_yes"></span>
-							{% elif lineup_member.lineup_member_attraction == 0 %}
-								<span class="setup_responded setup_recommendee_responded setup_responded_no"></span>
-							{% elif lineup_member.date_last_notified == None %}
-								<a href="#" class="send_setup_notification" target_is_recommendee="true" target_person_username="{{lineup_member.username}}">notify friend</a>						
-							{% elif lineup_member.date_last_notified|days_since > 6 %}
-								<a href="#" class="send_setup_notification" target_is_recommendee="true" target_person_username="{{lineup_member.username}}">notify again</a>
-							{% else %}
-								<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response{% if lineup_member.user != None %} from {{ lineup_member.user.first_name }}{% endif %}"></span>
-							{% endif %}
-						{% else %}
-							<span class="setup_responded setup_recommendee_responded setup_responded_null"></span>
-						{% endif %}
-					</div><!--  close off setup_recommendee_response -->
-			</div><!-- close off setup_lineup_member_block -->
+		{% for lineup_member in setup_rel.get_lineup_members_picked_yes %}
+			{% with lineup_member as lineup_member %}
+				{% include "lineup_member_card.html" %}
+	 		{% endwith %}
 		{% endfor %}
+		{% for lineup_member in setup_rel.get_lineup_members_picked_unknown %}
+			{% with lineup_member as lineup_member %}
+				{% include "lineup_member_card.html" %}
+	 		{% endwith %}
+ 		{% endfor %}
+		{% if setup_rel.get_lineup_members_picked_yes or setup_rel.get_lineup_members_responded_no and setup_rel.get_lineup_members_responded_yes %}
+		<span class="setup_vertical_divider a"></span>
+		{% endif %}
+		{% for lineup_member in setup_rel.get_lineup_members_responded_yes %}
+			{% with lineup_member as lineup_member %}
+				{% include "lineup_member_card.html" %}
+			{% endwith %}
+
+		{% for lineup_member in setup_rel.get_lineup_members_responded_no %}
+			{% with lineup_member as lineup_member %}
+				{% include "lineup_member_card.html" %}
+			{% endwith %}
+		{% endfor %}
+		{% endfor %}
+		{% if setup_rel.get_lineup_members_picked_no %}
+			<span class="setup_vertical_divider b"></span>
+		{% endif %}
+		{% for lineup_member in setup_rel.get_lineup_members_picked_no %}
+			{% with lineup_member as lineup_member %}
+				{% include "lineup_member_card.html" %}
+			{% endwith %}
+		{% endfor %}	
 		</div> <!-- close off setup_response_section -->
 		<div class="setup_response_label setup_recommendee_response_label"><span class="setup_label_text setup_recommendee_responses_label_text">recommendee
-		 responses ({{setup_rel | setup_recommendees_responses_length}}/{{setup_rel.setuplineupmember_set.all|length}})</span></div>
-	<span class = "setup_added_date">added {{setup_rel.date_added | datetime_since}} ago</span>
-	</div><!--  close off setup block -->
-
-{% comment %}
-		<div class="admirer_block_line lineup_block" display_id="{{admirer_rel.display_id}}">
-			{% if admirer_rel.lineup_initialization_status == 1 %}
-					{% with admirer_rel as relationship %}
-					 	{% include "lineup_block.html" %}
-					{% endwith %}
-				{% else %}
-				     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
-				{% endif %}
-		</div><!-- close off admirer_block line -->
-		<div class="admirer_block_line admirer_block_footer">
-		
-		{% if relationship.date_lineup_finished != None %}
-			lineup completed {{relationship.date_lineup_finished}}
+		 responses</span></div>
+	<span class = "setup_status"><span class="status_label">Status:</span><span class="status_text">
+		{% if setup_rel.has_target_responded %}
+			Waiting for all of {{setup_rel.target_person.first_name}}'s selected attractions to sign in and respond. <span class="please_help"> Please help us notify them.</span>
 		{% else %}
-			added {{admirer_rel.date_added|datetime_since}} ago
+			Waiting for {{setup_rel.target_person.first_name}} to pick out {{setup_rel.target_person.get_gender_pronoun_possessive}} attractions.
 		{% endif %}
-		</div><!-- close off admirer_block line -->
-		{% endcomment %}
+	</span></span>
+	</div><!--  close off setup block -->
 
 {% endfor %}
 

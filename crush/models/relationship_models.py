@@ -565,7 +565,7 @@ class SetupRelationship(BasicRelationship):
     # keeps track of how many setups the source person has done for the target person
     display_id = models.IntegerField(default=0, max_length=60)
    
-    def is_setup_complete(self,*args,**kwargs):
+    def is_setup_complete(self):
         all_lineup_members = self.setuplineupmember_set.all()
         # check to see that all lineup members have been decided upon, if at least one not decided then return False
         if len(all_lineup_members.filter(decision=None)) > 0:
@@ -574,6 +574,29 @@ class SetupRelationship(BasicRelationship):
         if len(all_lineup_members.filter(decision=0,lineup_member_attraction=None))>0:
             return False
         return True
+    
+    # true if target has responded to at least one added attraction
+        # used for displaying status in the setup block
+    def has_target_responded(self):
+        if self.setuplineupmember_set.filter(decision=0).count() > 0:
+            return True
+        return False
+    
+    # used by setup_by_me block to order the lineup members
+    def get_lineup_members_picked_yes(self):
+        return self.setuplineupmember_set.filter(decision=0,lineup_member_attraction=None)
+    # used by setup_by_me block to order the lineup members
+    def get_lineup_members_picked_unknown(self):
+        return self.setuplineupmember_set.filter(decision=None)
+    # used by setup_by_me block to order the lineup members
+    def get_lineup_members_responded_yes(self):
+        return self.setuplineupmember_set.filter(lineup_member_attraction=True)
+        # used by setup_by_me block to order the lineup members
+    def get_lineup_members_responded_no(self):
+        return self.setuplineupmember_set.filter(lineup_member_attraction = False)
+    # used by setup_by_me block to order the lineup members
+    def get_lineup_members_picked_no(self):
+        return self.setuplineupmember_set.filter(decision__gt = 0)
     
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):

@@ -771,3 +771,16 @@ class SetupLineupMember(BasicLineupMember):
     date_last_notified = models.DateTimeField(null=True,default=None,blank=True);
     lineup_member_attraction = models.NullBooleanField(null=True,blank=True,default=None)
     
+    # return None if unknown
+    # return True if match
+    # return False if no match
+    def is_attraction_mutual(self):
+        if self.lineup_member_attraction == True:
+            return True
+        elif self.lineup_member_attraction == False:
+            return False
+        elif self.decision > 0:
+            return False
+        else:
+            return None
+        
