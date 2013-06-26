@@ -22,9 +22,10 @@
 		{% endif %}
 	{% elif lineup_member.decision == None %}
 		<span class="setup_responded setup_recommendee_responded setup_responded_waiting"></span>
-	{% else %}
-		<span class="setup_match setup_match_no">no</span>
-
+	{% comment %} 
+		{% else %}
+		<span class="setup_match setup_match_no"></span>
+	{% endcomment %}
 	{% endif %}
 </div><!--  close off setup_recommendee_response -->
 </div><!-- close off setup_lineup_member_block -->
