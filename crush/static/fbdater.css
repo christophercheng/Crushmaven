@@ -3400,7 +3400,7 @@ div.past_dialog_header {
 	margin-bottom:25px;
 	position:relative;
 	#height:200px;
-	padding-bottom:15px;
+	padding-bottom:5px;
 	border:1px solid #E0E0E0;
 }
 
@@ -3475,6 +3475,7 @@ div.past_dialog_header {
 .setup_by_me_block  .status_label {
 	display:inline-block;
 	font-weight:bold;	
+	color:#414141;
 	float:left;
 	width:55px;
 }
@@ -3543,7 +3544,7 @@ div.past_dialog_header {
 	background:#666666;
 }
 .setup_by_me_block .setup_vertical_divider.a {
-	margin-left:5px;
+	#margin-left:5px;
 	}
 
 .setup_lineup_member_block.mutual_yes{

@@ -198,10 +198,12 @@ $(document).ready(function()
 		<div class="setup_response_label setup_recommendee_response_label"><span class="setup_label_text setup_recommendee_responses_label_text">recommendee
 		 responses</span></div>
 	<span class = "setup_status"><span class="status_label">Status:</span><span class="status_text">
-		{% if setup_rel.has_target_responded %}
+		{% if setup_rel.date_setup_completed %}
+			Setup is complete.
+		{% elif setup_rel.has_target_responded %}
 			Waiting for all of {{setup_rel.target_person.first_name}}'s selected attractions to sign in and respond. <span class="please_help"> Please help us notify them.</span>
 		{% else %}
-			Waiting for {{setup_rel.target_person.first_name}} to pick out {{setup_rel.target_person.get_gender_pronoun_possessive}} attractions.
+			Waiting for {{setup_rel.target_person.first_name}} to sign in and decide who {{setup_rel.target_person.get_gender_pronoun_subject}} is attracted to.
 		{% endif %}
 	</span></span>
 	</div><!--  close off setup block -->
