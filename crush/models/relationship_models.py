@@ -578,7 +578,7 @@ class SetupRelationship(BasicRelationship):
     # true if target has responded to at least one added attraction
         # used for displaying status in the setup block
     def has_target_responded(self):
-        if self.setuplineupmember_set.filter(decision=0).count() > 0:
+        if self.setuplineupmember_set.exclude(decision=None).count() > 0:
             return True
         return False
     
@@ -601,6 +601,25 @@ class SetupRelationship(BasicRelationship):
     # used by setup_by_me block to order the lineup members
     def get_lineup_members_picked_no(self):
         return self.setuplineupmember_set.filter(decision__gt = 0)
+    
+    #used by setup_by_me block to deterine if vertical divider should be shown between target person's non-attracted lineup members and the rest of lineup
+    def show_vertical_divider_a(self):
+        if self.setuplineupmember_set.filter(decision=0,lineup_member_attraction=None).count()>0 or self.setuplineupmember_set.filter(decision=None).count()>0:
+            if self.setuplineupmember_set.exclude(lineup_member_attraction=None).count()>0:
+                return True
+            else:
+                return False
+        else:
+            return False
+    #used by setup_by_me block to deterine if vertical divider should be shown between target person's non-attracted lineup members and the rest of lineup
+    def show_vertical_divider_b(self):
+        num_elements_to_right=self.setuplineupmember_set.filter(decision__gt = 0).count()
+        num_total_elements = self.setuplineupmember_set.count()
+        if num_elements_to_right < num_total_elements:
+            return True
+        else:
+            return False
+
     
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):

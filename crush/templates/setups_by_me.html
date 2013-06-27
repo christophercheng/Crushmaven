@@ -174,10 +174,8 @@ $(document).ready(function()
 	 		{% endwith %}
  		{% endfor %}
  		
-		{% if setup_rel.get_lineup_members_picked_yes or setup_rel.get_lineup_members_unknown %} 
-			{% if setup_rel.get_lineup_members_responded_yes %}
-				<span class="setup_vertical_divider a"></span>
-			{% endif %}
+		{% if setup_rel.show_vertical_divider_a %} 
+			<span class="setup_vertical_divider a"></span>
 		{% endif %}
 		
 		{% for lineup_member in setup_rel.get_lineup_members_responded_yes %}
@@ -192,9 +190,9 @@ $(document).ready(function()
 			{% endwith %}
 		{% endfor %}
 		
-			{% if setup_rel.get_lineup_members_picked_no %}
-				<span class="setup_vertical_divider b"></span>
-			{% endif %}
+		{% if setup_rel.show_vertical_divider_b %}
+			<span class="setup_vertical_divider b"></span>
+		{% endif %}
 
 		{% for lineup_member in setup_rel.get_lineup_members_picked_no %}
 			{% with lineup_member as lineup_member %}

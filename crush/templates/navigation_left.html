@@ -18,7 +18,7 @@ For Singles:
 			<a href="{% url 'crush.views.admirer_views.admirers' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
-				{% if num_admirers_in_progress %}<span class="menu_count new_menu_count">{{num_admirers_in_progress}} new</span>{% endif %}
+				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count">{{num_admirers_in_progress}} new {% else %}">0{% endif %}</span>
 				<span class="nav_subtext">Find out who they are</span>
 			</a>
 		</li>
@@ -26,7 +26,7 @@ For Singles:
 			<a href="{% url 'postman_inbox' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Messages</span>
-				{% if num_new_messages %}<span class="menu_count new_menu_count">{{ num_new_messages}} new</span>{% endif %}
+				<span class="menu_count{% if num_new_messages %} new_menu_count">{{ num_new_messages}} new{% else %}">0{% endif %}</span>
 				<span class="nav_subtext">Chat with mutual attractions</span>
 			</a>
 		</li>
@@ -34,7 +34,7 @@ For Singles:
 			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
 				<span class="menu_icon"></span>				
 				<span class="menu_title setups_for_me_menu_title">Friend Setups</span>
-				{% if num_setups_for_me_in_progress %}<span  class="menu_count new_menu_count">{{num_setups_for_me_in_progress}} new</span>{% endif %}
+				<span  class="menu_count{% if num_setups_for_me_in_progress %} new_menu_count">{{num_setups_for_me_in_progress}} new{% else %}">0{% endif %}</span>
 				<span class="nav_subtext">See who friends recommended</span>
 			</a>
 		</li>
@@ -66,7 +66,7 @@ For Matchmakers:
 			<a href="{% url 'crush.views.setup_views.setup_requests_for_me' %}">
 				<span class="menu_icon"></span>				
 				<span class="menu_title">Setup Requests</span> 
-				{% if num_setup_requests %}<span class="menu_count new_menu_count">{{num_setup_requests}} new</span>{% endif %}
+				<span class="menu_count{% if num_setup_requests %} new_menu_count">{{num_setup_requests}} new{% else %}">0{% endif %}</span>
 				<span class="nav_subtext">Set up friends asking for help</span>
 			</a>
 		</li>

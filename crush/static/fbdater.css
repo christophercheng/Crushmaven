@@ -947,7 +947,7 @@ a.logo img{
 	color:#A3CC29;
 	color:#E02B50;
 	height:40px;
-	padding-top:4px;
+	padding-top:3px;
 	font-weight:normal;
 	cursor:pointer;
 	text-align:center;
@@ -3466,7 +3466,7 @@ div.past_dialog_header {
 
 .setup_by_me_block  .setup_status {
 	display:inline-block;
-	margin-top:30px;
+	margin-top:20px;
 	margin-left:40px;
 	font-size:13px;
 	line-height:20px;	
