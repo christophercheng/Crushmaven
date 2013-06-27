@@ -167,28 +167,35 @@ $(document).ready(function()
 				{% include "lineup_member_card.html" %}
 	 		{% endwith %}
 		{% endfor %}
+		
 		{% for lineup_member in setup_rel.get_lineup_members_picked_unknown %}
 			{% with lineup_member as lineup_member %}
 				{% include "lineup_member_card.html" %}
 	 		{% endwith %}
  		{% endfor %}
-		{% if setup_rel.get_lineup_members_picked_yes or setup_rel.get_lineup_members_responded_no and setup_rel.get_lineup_members_responded_yes %}
-		<span class="setup_vertical_divider a"></span>
+ 		
+		{% if setup_rel.get_lineup_members_picked_yes or setup_rel.get_lineup_members_unknown %} 
+			{% if setup_rel.get_lineup_members_responded_yes %}
+				<span class="setup_vertical_divider a"></span>
+			{% endif %}
 		{% endif %}
+		
 		{% for lineup_member in setup_rel.get_lineup_members_responded_yes %}
 			{% with lineup_member as lineup_member %}
 				{% include "lineup_member_card.html" %}
 			{% endwith %}
+		{% endfor %}
 
 		{% for lineup_member in setup_rel.get_lineup_members_responded_no %}
 			{% with lineup_member as lineup_member %}
 				{% include "lineup_member_card.html" %}
 			{% endwith %}
 		{% endfor %}
-		{% endfor %}
-		{% if setup_rel.get_lineup_members_picked_no %}
-			<span class="setup_vertical_divider b"></span>
-		{% endif %}
+		
+			{% if setup_rel.get_lineup_members_picked_no %}
+				<span class="setup_vertical_divider b"></span>
+			{% endif %}
+
 		{% for lineup_member in setup_rel.get_lineup_members_picked_no %}
 			{% with lineup_member as lineup_member %}
 				{% include "lineup_member_card.html" %}

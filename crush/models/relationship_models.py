@@ -583,17 +583,21 @@ class SetupRelationship(BasicRelationship):
         return False
     
     # used by setup_by_me block to order the lineup members
+    # filter out lineup members picked by target but recommendee hasn't reponded
     def get_lineup_members_picked_yes(self):
         return self.setuplineupmember_set.filter(decision=0,lineup_member_attraction=None)
     # used by setup_by_me block to order the lineup members
+    # filter out any recommendees who the target has not decided upon
     def get_lineup_members_picked_unknown(self):
         return self.setuplineupmember_set.filter(decision=None)
+    # filter out any recommendees picked by attraction and recommendee liked them
     # used by setup_by_me block to order the lineup members
     def get_lineup_members_responded_yes(self):
-        return self.setuplineupmember_set.filter(lineup_member_attraction=True)
+        return self.setuplineupmember_set.filter(lineup_member_attraction=1)
         # used by setup_by_me block to order the lineup members
+        # filter out any recommendees picked by attraction and recommendee DID NOT like them
     def get_lineup_members_responded_no(self):
-        return self.setuplineupmember_set.filter(lineup_member_attraction = False)
+        return self.setuplineupmember_set.filter(lineup_member_attraction = 0)
     # used by setup_by_me block to order the lineup members
     def get_lineup_members_picked_no(self):
         return self.setuplineupmember_set.filter(decision__gt = 0)
