@@ -183,7 +183,7 @@
       $('#fs-tab').hide();
       $('#fs-continue-button').hide();
       $('#fs-submit-button').show();
-      $('#fs-terms').show();
+      //$('#fs-terms').show();
       $('#fs-back-button').show();
       $('#fs-select-view').hide();
       $('#fs-confirm-view').show();
