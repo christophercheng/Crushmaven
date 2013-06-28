@@ -54,11 +54,12 @@
 			</li>
 		</ul><!-- close off settings_menu div -->
 	</li>
-	<li class="pic">
-		<img src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
-	</li>
+
+
 	<li class="submenu">
-		<a  href="#">Settings<i class="icon down-dir">&#x25BC;</i></a>
+		<a  href="#">
+			<img  class="pic"src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
+			Settings<i class="icon down-dir">&#x25BC;</i></a>
 		<ul id="settings_menu" class="settings_menu popup">
 			<li>
 				<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
