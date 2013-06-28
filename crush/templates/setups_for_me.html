@@ -116,26 +116,28 @@ $(document).ready(function()
 </ul>
 <! -- End of title widget -->  
 {% if show_help_popup == 1 %}
-<p class="new_user_instructions">
+<div class="new_user_instructions">
 	<span class="help_icon" title="close help"></span>
-	<span class="instructions_title">How Friend Setups Work:</span>
-	<span class="first_instruction_section">Simply select any of your facebook friend(s) to request a setup from.  We will ask them to recommend up to ten of their friends for you.  
-		You will be able to pick out which recommendations you are attracted to - and eventually find out if they are mutually attracted to you.
-	</span>
-	<span class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.   
-		 <i>The one difference is that your recommender will help us get your chosen recommendations signed in, 
-		and they can see exactly who is attracted to whom.</i>
-	</span>
-	<a href="javascript:{}" class="request_setup_link instruction_block_button" setup_select="true" title="Request Setups from Friends">Request a Setup</a>
-</p>		<!-- close off instructional content -->
+	<span class="instructions_title">How Friend Setups Work</span>
+	<div class="first_instruction_section">Simply select any facebook friend to request a setup from.  We'll ask them to select up to ten of their friends to recommend.  
+		You'll be able to pick out which 'recommendees' you're attracted to - and eventually find out if they're mutually attracted to you - or not. <a class="show_more">show more</a>
+	</div>
+	<div class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a> - each of your chosen recommendees is treated like an attraction. 
+		 The one difference is that your recommender will help us get your chosen recommendees signed in, 
+		and <i>they can see exactly who is attracted to whom</i>.<a class="show_less">show less</a>
+	</div>
+	<div class="instruction_block_button_line">
+		<a href="javascript:{}" class="request_setup_link instruction_block_button" setup_select="true" title="Request Setups from Friends">Request a Setup</a>
+	</div>
+</div>		<!-- close off instructional content -->
 {% elif show_help_popup == 2 %}
-<p class="new_user_instructions">
+<div class="new_user_instructions">
 	<span class="help_icon" title="close help"></span>
 	<span class="instructions_title">How Friend Setups Work:</span>
-	<span class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup for your consideration.  Add any of them as an 'attraction' and we will try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.
-	</span>
-	<span class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.  <i>The one difference is that your recommender will help us get your chosen recommendations signed in, and your recommender can see exactly who is attracted to whom.</i></span>
-</p>		<!-- close off instructional content -->
+	<div class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup for your consideration.  Add any of them as an 'attraction' and we'll try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.<a class="show_more">show more</a>
+	</div>
+	<div class="second_instruction_section">From here on out, everything works much like it does in the <a href="#">standard attraction / admirer lineup process</a>.  The one difference is that your recommender will help us get your chosen recommendations signed in, and <i>your recommender can see exactly who is attracted to whom.</i><a class="show_less">show less</a></div>
+</div>		<!-- close off instructional content -->
 {% endif %}
 
 {% if setup_relationships %}

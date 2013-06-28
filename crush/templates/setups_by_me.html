@@ -120,15 +120,17 @@ $(document).ready(function()
 <! -- End of title widget -->  
 
 {% if show_help_popup == True %}
-<p class="new_user_instructions">
+<div class="new_user_instructions">
 	<span class="help_icon" title="close help"></span>
-	<span class="instructions_title">How Friend Setups Work:</span>
-	<span class="first_instruction_section">As a matchmaker, you can select a single facebook friend to set up - and up to ten other friends who you think might make a good match.  Your set-up friend will be able to view your recommended friends' facebook profiles and choose any they are attracted to.
-	</span>
-	<span class="second_instruction_section">For each chosen recommended friend, we will try to determine if there is a mutual attraction through the <a href="#">standard attraction / admirer lineup process</a>.  We will also need your help to get your recommended friend signed up.  As the process unfolds, you will be able to see exactly who liked whom.
-	</span>
-	<a href="javascript:{}" class="create_setup instruction_block_button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
-</p>		<!-- close off instructional content -->
+	<span class="instructions_title">How Friend Setups Work</span>
+	<div class="first_instruction_section">As a matchmaker, you can select a single facebook friend to set up - and up to ten other friends who might make a good match.  Your set-up friend will be able to view your recommended friends' facebook profiles and choose any they are attracted to. <a class="show_more">show more</a>
+	</div>
+	<div class="second_instruction_section">For each chosen recommended friend, we'll try to determine if there is a mutual attraction through the <a href="/attractions">standard attraction / admirer lineup process</a>.  We'll also need your help to get your recommended friend signed up.  As the process unfolds, you'll be able to see exactly who liked whom.<a class="show_less">show less</a>
+	</div>
+	<div class="instruction_block_button_line">
+		<a href="javascript:{}" class="create_setup instruction_block_button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
+	</div>
+</div>		<!-- close off instructional content -->
 <p class="new_user_sub_instructions">
 	Like how this sounds but <strong>prefer to be set up by your friend?</strong><br><a href="javascript:{}" class="request_setup_link" setup_select="true" title="Request Setups from Friends">Request a setup from a friend</a>
 </p>

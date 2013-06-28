@@ -4,15 +4,21 @@ from django.views.generic import TemplateView
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from ajax_select import urls as ajax_select_urls
-
+from django.views.generic.base import RedirectView
 
 admin.autodiscover()
+
 
 # Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
    (r'^facebook/login/$', 'login'),
    (r'^facebook/authentication_callback$', 'authentication_callback'),                    
 )
+
+urlpatterns += patterns('',
+(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon.png')),
+)
+
 
 # in case something bad has happened enable this view so that all site requests go here
 #urlpatterns += patterns('crush.views.infrastructure_views',    

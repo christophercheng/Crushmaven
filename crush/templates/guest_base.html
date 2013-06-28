@@ -8,7 +8,10 @@
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
 		<title>Flirtally - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
+
 	    <link type="text/css" href="{{ STATIC_URL }}fbdater_guest.css?t={% now "U" %}" rel="stylesheet" />  
+	    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
+	    <link rel="icon" type="image/x-icon" href="/favicon.png" /> 
 	</head>
 <body id="guest_page">
 <div class="guest_header{% if request.user.is_authenticated %} authenticated{% endif %}">

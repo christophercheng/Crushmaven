@@ -9,6 +9,9 @@
 		<title>Flirtally - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
+	    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+	    <link rel="icon" type="image/x-icon" href="favicon.png" /> 
+
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     
@@ -532,6 +535,7 @@ $('body').on('click',".popup_link",function(e){
 		});	
 	}); // close off .click(function(e){
 
+	/*
 // work-around solution for left menu click problem 
 $('.left_sidebar_container .navbar .inactive a').mousedown(function(event)
 	{
@@ -567,6 +571,8 @@ $('.left_sidebar_container #combo_singles_button a').mousedown(function(event)
 				$(class_name).trigger('click');
 			}
 		});
+		
+		*/
 
 window.handle_window_resize=function(){
 	$('.ui-dialog-content:visible').each(function(){
@@ -579,6 +585,26 @@ $(window).resize(function(){
 	clearTimeout(timeoutPointer);
 	timeoutPointer = setTimeout(window.handle_window_resize,100);
 });
+
+/* ---------------------------------------------
+	
+	NEW USER INSTRUCTION - SHOW MORE LINK HANDLER
+
+* -------------------------------------------- */
+
+$('.show_more').click(function(){
+	
+	$('.second_instruction_section').show(200);
+	$(this).hide();
+	$('.new_user_instructions').addClass('expanded');
+	
+});
+$('.show_less').click(function(){
+	$('.show_more').show();
+	$('.second_instruction_section').hide(200);
+	$('.new_user_instructions').removeClass('expanded');
+});
+
 
 }); // close of jQuery(document).ready
 

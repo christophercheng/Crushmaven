@@ -869,6 +869,7 @@ a.logo img{
 	border-right:1px solid #D5D5D5;
 }
 
+
 .nav_subtext {
 	display:block;
 	font-size:10px;
@@ -879,7 +880,7 @@ a.logo img{
 
 .navbar li.inactive a:hover {
 	background-color:#2E2E2E;
-	background-color:	#404040;
+	background-color:	#333333;
 	border-color:#404040;
 	color:white;
 	transition-property:color,background-color,border-color;
@@ -887,6 +888,12 @@ a.logo img{
 	
 -webkit-transition-duration:300ms,300ms;
 -webkit-transition-property:color,background-color,border-color;
+
+}
+
+.navbar li.inactive a:active {
+	background-color:black;
+	top:0px;
 
 }
 
@@ -946,6 +953,7 @@ a.logo img{
 	color:#B2C2E0;
 	color:#A3CC29;
 	color:#E02B50;
+	color:white;
 	height:40px;
 	padding-top:3px;
 	font-weight:normal;
@@ -977,11 +985,16 @@ a.logo img{
 .left_sidebar_container #combo_singles_button a:hover{
 
 	color:white!important;
+	color:#E02B50!important;
 	#background-color:#1F1F1F!important;
 	transition-property:color,background-color;
 	transition-duration:200ms,200ms;
 	-webkit-transition-duration:200ms,200ms;
 	-webkit-transition-property:color,background-color;
+}
+.left_sidebar_container #combo_singles_button a:active{
+			border-color:#ff0033;
+	
 }
 	
 .left_sidebar_container .button_container#create_setup a{
@@ -1002,6 +1015,7 @@ a.logo img{
 	color:#B2C2E0;
 	color:#A3CC29;
 	color:#E02B50;
+	color:white;
 	letter-spacing:1px;
 	font-style:normal;
 	font-weight:normal;
@@ -1012,6 +1026,7 @@ a.logo img{
 }
 .left_sidebar_container .button_container#create_setup a:hover{
 	color:white!important;
+	color:#E02B50!important;
 	transition-property:color;
 	transition-duration:200ms;
 -webkit-transition-duration:200ms,200ms;
@@ -1020,8 +1035,9 @@ a.logo img{
 	
 	.left_sidebar_container .button_container#create_setup a:active{
 		#border-bottom:1px solid #595983;
-		padding:12px 10px 3px 52px;
+		#padding:12px 10px 3px 52px;
 		box-shadow: inset -1px 1px 4px #474747;
+		border-color:#ff0033;
 	}
 
 /* ===========================   Right Sidebar ========================= */
@@ -1166,8 +1182,7 @@ a.logo img{
 	display:inline-block;
 	#background:#80B2FF;
 	#background:#FAFAFA;
-	background-color: rgba(128,178,255,.1);
-	background-color:#F1F1F1;
+	background-color:#F4F4F4;
 	#border:1px solid #CCD6EB; 
 	#border:1px solid #BEC9EA;
 	color:#2E2E2E;
@@ -1179,6 +1194,29 @@ a.logo img{
 	display:none;
 	box-shadow: inset 0px 0px 3px #C8C8C8;
 }
+
+.new_user_instructions .show_more,.new_user_instructions .show_less{
+	color:#3366ff;
+	display:inline-block;
+	text-decoration:none;
+	margin-left:1px;
+}
+.new_user_instructions .show_more{
+	position:absolute;
+	left:200px;
+	bottom:-10px;
+	padding-left:5px;
+	padding-right:5px;
+	background:#F4F4F4;
+}
+.new_user_instructions .show_less{
+	margin-left:5px;
+}
+.new_user_instructions .show_less:hover,.new_user_instructions .show_more:hover{
+	color:#3366ff;
+	text-decoration:underline;
+}
+
 .new_user_instructions span.instructions_title{
 	display:block;
 	font-size:18px;
@@ -1193,13 +1231,25 @@ a.logo img{
 	#background: transparent!important;
 }
 
-.new_user_instructions span.second_instruction_section{
-	display:inline-block;
-	border-top:1px solid #CFCFD4;#white;
+.new_user_instructions div.first_instruction_section{
+	border-bottom:1px solid #CFCFD4;
+	position:relative;
+	padding-bottom:15px;
+}
+
+.new_user_instructions div.first_instruction_section.no_button_underneath{
+	margin-bottom:15px;
+}
+.new_user_instructions.expanded div.first_instruction_section{
+	padding-bottom:8px;
+	margin-bottom:0px!important;
+}
+	
+.new_user_instructions div.second_instruction_section{
+	display:none;
+	#border-top:1px solid #CFCFD4;#white;
 	width:530px;
-	margin-top:10px;
 	margin-left:-20px;
-	margin-bottom:10px;
 	padding: 8px 10px 0px 20px;	
 }
 
@@ -1210,25 +1260,41 @@ a.logo img{
 
 .new_user_instructions a {
 	font-size:13px!important;
-	color:inherit;
+	color:#3366ff;
+}
+.new_user_instructions a:hover{
 	text-decoration:underline;
 }
+.new_user_instructions .instruction_block_button_line{
+	text-align:center;
+	width:97%;
+	margin-top:22px;
+	margin-bottom:3px;
+}
+.new_user_instructions.expanded .instruction_block_button_line{
+	margin-top:12px;
+}
+
 .new_user_instructions a.instruction_block_button{
-	padding: 5px 10px 5px 10px!important;
+	padding: 5px 10px!important;
 	border-radius:4px;
-	display:inline-block!important;
 	vertical-align:middle;
 	text-align:center;
 	display:inline-block!important;
-	padding:5px 12px;
 	background:#254AB8;
 	border-radius:5px;
 	color:white!important;
 	font-weight:bold;
 	font-size:13px;
-	margin-left:170px;
 	text-decoration:none;
-	margin-top:5px;
+}
+
+.new_user_instructions a.instruction_block_button:hover{
+	background:#1E3B93;
+	transition-property:background;
+	transition-duration:200ms;
+	-webkit-transition-duration:200ms;
+	-webkit-transition-property:background;
 }
 .new_user_sub_instructions{
 	font-weight:normal;
@@ -1347,8 +1413,8 @@ ul.title_bar li.title_bar_page_links a:hover {
 	color:white;
 	transition-property:color;
 	transition-duration:250ms,200ms;
--webkit-transition-duration:240ms,200ms;
--webkit-transition-property:color;
+	-webkit-transition-duration:240ms,200ms;
+	-webkit-transition-property:color;
 }
 
 ul.title_bar li.title_bar_option {
@@ -2539,18 +2605,19 @@ ul.bxslider{
 .lineup_decision .lineup_decision_button{
 	height:52px;
 	width:120px;
-	padding:7px 0px 6px 20px;
+	padding:8px 0px 6px 18px;
 	line-height:18px;
 	text-align:left;
 	border-radius:8px;
 	font-size:17px;
-	font-weight:bold;
+	font-weight:normal;
 	position:absolute;
 	font-style:italic;
 	left:7px;
+	#letter-spacing:1px;
 }
 .lineup_decision .lineup_decision_button:active{
-	padding:8px 0px 5px 21px;
+	padding:9px 0px 5px 18px;
 }
 
 .lineup_decision a.decision[add_type='crush']{
@@ -2567,7 +2634,7 @@ ul.bxslider{
 	top:14px;
 	color:white;
 	background:#DBDBDB;
-	border:1px solid #C5C5C5;
+	border:1px solid #D4D4D4;
 }
 
 .lineup_decision a.decision[add_type='platonic']:hover{
@@ -3080,13 +3147,14 @@ ul.bxslider{
 	#background-color:#2E2E2E;
 	padding-left:10px;
 	padding-right:12px;
-	color:#7094FF;
+	color:#66A3FF;
 }
 #postman #delete_conversation {
 	position:absolute;
 	right:13px;
 	top:1px;
 	font-size:13px;
+	color:#66a3ff;
 }
 #postman #delete_conversation:hover, #postman #compose_new_message:hover {
 	color:white;
@@ -4064,7 +4132,7 @@ div.past_dialog_header {
 	font-size:13px;
 }
 
-.alert_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+.response_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset, .alert_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
 	diplay:inline-block!important;
 	text-align:center!important;
 	width:100%;
@@ -4074,7 +4142,7 @@ div.past_dialog_header {
 	margin-top:-8px!important;
 	}
 
-.alert_modal_dialog .ui-dialog-buttonpane .ui-button{
+.alert_modal_dialog .ui-dialog-buttonpane .ui-button,.response_modal_dialog .ui-dialog-buttonpane .ui-button{
 	padding:0px 15px;
 	height:25px!important;
 	line-height:25px!important;
@@ -4082,7 +4150,7 @@ div.past_dialog_header {
 	margin-right:auto!important;
 	vertical-align:middle!important;
 }
-.alert_modal_dialog .ui-button-text{
+.response_modal_dialog .ui-button-text,.alert_modal_dialog .ui-button-text{
 	padding:0px!important;
 	line-height:25px!important;
 	vertical-align:middle!important;

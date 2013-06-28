@@ -95,12 +95,14 @@ $(document).ready(function()
 
 {% for admirer_rel in admirer_relationships %}
 		{% if admirer_type == 0 and admirer_rel.display_id == 1 %}
-		<p class="new_user_instructions">
+		<div class="new_user_instructions">
+			<div class="first_instruction_section">
 				To protect your admirer's identity (in case you are not mutually attracted), we have created a lineup of potential attractors 
-				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction.  
-				<span class="second_instruction_section">In turn, we provide each of your selections with a similar lineup experience - and the option to select you. You are notified if there is a mutual attraction or not.</span>
+				and inserted your admirer in a random position.  You may view each lineup member (revealed one-at-a-time) and select any as an attraction. <a class="show_more">show more</a>  
+			</div>
+			<div class="second_instruction_section">In turn, we provide each of your selections with a similar lineup experience - and the option to select you. You are notified if there is a mutual attraction or not.<a class="show_less"></a></div>
 		<span class="help_icon" title="close help"></span>
-		</p>		<!-- close off lineup_block line for instructional content -->
+		</div>		<!-- close off lineup_block line for instructional content -->
 		{% endif %}
 
 	<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
