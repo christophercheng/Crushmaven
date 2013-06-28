@@ -586,17 +586,55 @@ div.guest_header.authenticated .center_container{
 	cursor:default;
 	}
 
-
-
 .guest_page .center_container{
 	padding-top:85px;
 	background:white;
 	padding-left:40px;
 	padding-right:40px;
 	width:880px;
-	border-left:1px solid #EDEDED;
-	border-right:1px solid #EDEDED;
 }
+.guest_page.how_it_works .center_container{
+	width:1000px!important;
+	margin-top:55px;
+}
+.guest_header.how_it_works .center_container{
+	width:1000px!important;
+}
+
+.header {
+	height: 55px;
+	background:#000000;
+	background: -moz-linear-gradient(top, #2F2F2F, #181818);
+	background: -webkit-linear-gradient(top, #2F2F2F, #181818);
+	background: -0-linear-gradient(top, #2F2F2F, #181818);
+	background: linear-gradient(top, #2F2F2F, #181818);
+#	box-shadow: 0 0 3px rgba(0,0,0,0.5);
+	color: white;
+	width:100%;
+  	position: fixed;
+  	top: 0;
+  	padding-top:3px;
+  	padding-left:15px;
+  	width: 100%;
+  	z-index: 900;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.header_container{
+	width:1000px;
+	margin-left: auto;
+	margin-right:auto;
+	#background-color:rgba(255,255,255,.5);
+	z-index: 901;
+	position:relative;
+
+}
+
 
 div.legal{
 	width:100%;
@@ -655,4 +693,9 @@ div.legal{
 .legal ul li {
 	margin-bottom:5px;
 	font-size:14px;
+}
+
+/* HOW TO PAGE */
+.guest_page .center_container #how_to_section .center_container {
+	margin-left:-100px;
 }

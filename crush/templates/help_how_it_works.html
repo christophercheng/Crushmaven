@@ -1,6 +1,19 @@
-{% extends "base.html" %}
-{% block title %}How it Works{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	    <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
+	    <meta name="description" content="When you already have someone in mind, but not sure they feel the same... Discover your relationship potential - safely and anonymously." />
+	    <meta name="robots" content="all,index" />
+	    <meta name="Revisit-After" content="30 Days" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
+		<title>Flirtally - How it Works</title>    	
+
+	    <link type="text/css" href="{{ STATIC_URL }}fbdater_guest.css?t={% now "U" %}" rel="stylesheet" />  
+	    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
+	    <link rel="icon" type="image/x-icon" href="/favicon.png" /> 
+	</head>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -13,6 +26,159 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 
+  jQuery(document).ready(function($) {
+		
+		/* --------- HANDLE HOW TO SECTION CLICKS ----------------- */
+		
+		$('.how_to_link').click(function(event){
+			if ($(this).hasClass('how_to_link_active'))
+				return;
+			
+			var active_slide=$('.active_how_to_slide');	
+			var inactive_slide=$('.inactive_how_to_slide');
+			var slide_container=$('.how_to_slide_container');
+		
+			// stop and fast forward any ongoing animations	
+			active_slide.stop(true,false);
+			inactive_slide.stop(true,false);
+			slide_container.finish();
+			
+			var bForSingles = true;
+			if ($(this).hasClass('for_singles')){
+				active_slide=$('#how_to_slide_setup');
+				inactive_slide=$('#how_to_slide_singles');
+				var new_height='360';
+			}
+			else{
+				active_slide=$('#how_to_slide_singles');
+				inactive_slide=$('#how_to_slide_setup');
+				var new_height='540';
+				bForSingles=false;
+			}
+			
+			var active_link=$('.how_to_link_active');
+			var inactive_link=$(this);
+			
+			inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
+			active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
+		
+			slide_container.animate({'min-height':new_height},{duration: 500,queue:false});
+			
+			active_slide.fadeOut({duration:500,queue:false,complete:function(){
+					inactive_slide.fadeIn(500,function(){
+						active_slide.removeClass('active_how_to_slide').addClass('inactive_how_to_slide');
+						inactive_slide.removeClass('inactive_how_to_slide').addClass('active_how_to_slide');
+						if (!bForSingles)
+							window.set_setup_height();
+				});
+			}}); // close off active_slide.fadeToggle
+		});//close off .how_to_link_inactive click handler
+		
+		/*  ensure all setup step boxes are same length */
+		window.set_setup_height = function() {
+			  if ($('#how_to_slide_setup').hasClass('active_how_to_slide')) {
+				  var max_height = parseInt($('#setup_step_4 .setup_step_text').height()) + 210;
+				  $('.setup_step').animate({'min-height':max_height},250);
+			  }
+		};
+		
+		var timeoutPointer;
+		$(window).resize(function(){
+			clearTimeout(timeoutPointer);
+			timeoutPointer = setTimeout(window.set_setup_height,100);
+		});
+		window.set_setup_height();
+		
+	}); // close of jQuery(document).ready  
+  
 </script>
-<h2>How it works.</h2>
-{% endblock %}
+
+
+<body id="guest_page">
+<div class="guest_header how_it_works authenticated">
+	<div class="center_container">
+		<a class="logo" href="/home"><img src={% if request.user.is_authenticated %}"/static/images/flirtally_logo_text_white.png"{% else %}"/static/images/flirtally_logo.png"{% endif %}></a>
+		<a class="logo" href="/home"><img src={% if request.user.is_authenticated %}"/static/images/flirtally_logo_text_white.png"{% else %}"/static/images/flirtally_logo.png"{% endif %}></a>
+			<span id="top_links"><a href="/how_it_works"{% if request.get_full_path == '/how_it_works/' %} class="active"{% endif %}>How it Works</a></span>
+
+	</div>
+</div>
+
+<div class="guest_page how_it_works">
+<div id="how_to_section">	
+<div class="center_container">
+	<div class="title_section">
+		<h2 id="howto_title" class="section_title">How it Works</h2>
+		<a href="javascript:;" class="how_to_link how_to_link_inactive for_singles" id="for_singles">for singles</a>
+		<a href="javascript:;" class="how_to_link how_to_link_active for_setup" id="for_matchmakers">for matchmakers</a>
+	</div>
+	<div class="how_to_slide_container">
+		<div class="how_to_slide inactive_how_to_slide" id="how_to_slide_singles">
+			<div id="singles_step_1" class="singles_step">
+				<span class="singles_step_text_column">
+					<span class="singles_step_image"></span>
+					<span class="singles_step_title">Friend Selection</span>
+					<span class="singles_step_text">
+						Select a Facebook friend - or any Facebook user - that you are attracted to. We will send out an anonymous invite to get them signed in.</span>
+					</span>
+				</span>
+				</div>
+			<div id="singles_step_2" class="singles_step">
+				<span class="singles_step_text_column">
+					<span class="singles_step_image"></span>
+					<span class="singles_step_title">Admirer Lineup</span>
+					<span class="singles_step_text">
+						Once your 'attraction' is signed in, we present them with a carefully constructed lineup of potential admirers - you and nine other friends of theirs inserted in random order.  Your friend identifies anyone they are attracted to. Similar to a police lineup, they won't know who their actual admirer is. 				</span>
+					</span>
+				</span>
+			</div>
+			<div id="singles_step_3" class="singles_step">
+				<span class="singles_step_text_column">
+					<span class="singles_step_image"></span>
+					<span class="singles_step_title">Match Notification</span>
+					<span class="singles_step_text">
+						If you are picked from the lineup, we notify both parties about the match.   Your attraction might actually think they chose you first.  If you are not picked, your identity remains protected.			
+					</span>
+				</span>
+			</div>
+		</div>
+		<div class="how_to_slide active_how_to_slide" id="how_to_slide_setup">
+			<div id="setup_step_1" class="setup_step">
+			<span class="setup_step_image"></span>
+			<span class="setup_step_title">1 Friend Selection</span>
+
+				<span class="setup_step_text">
+					Select any Facebook friend that you wish to set up i.e. 'your setup friend'.  Select up to ten more friends that you think will make a good match.  We will pass your recommendations on to your setup friend.  <i><strong>Note:</strong> Your friends can also request setups from you.</i>
+				</span>
+			</div>
+			<div id="setup_step_2" class="setup_step">
+			<span class="setup_step_image"></span>
+			<span class="setup_step_title">2 Setup Selection</span>
+
+				<span class="setup_step_text">
+					Your setup friend will view the facebook profiles of your recommendations and select the ones they are attracted to.  We invite the chosen recommendations to sign in, so we can determine if the attraction is mutual.
+				</span>
+			</div>
+			<div id="setup_step_3" class="setup_step">
+			<span class="setup_step_image"></span>
+			<span class="setup_step_title">3 Match Assessment</span>
+
+				<span class="setup_step_text">
+					Once a recommended user is signed in, we present them with a carefully constructed lineup of potential admirers  -  your setup friend and nine others inserted in random order.  Similar to a police lineup, the recommended user selects anyone they are attracted to. 
+				</span>
+			</div>
+			<div id="setup_step_4" class="setup_step">
+			<span class="setup_step_image"></span>
+			<span class="setup_step_title">4 Notifications</span>
+
+				<span class="setup_step_text">
+				If your setup friend is selected, both parties are notified.   If not, your setup friend's identify is protected.<span class="text_break">.</span><strong>As a matchmaker, you get visibility into the entire process.</strong>  We notify you each time one of your friends responds to your setup.  After all is said and done, you'll know exactly who liked whom.
+				</span>
+			</div>
+		</div> <!-- close off <div id="how_to_slide_setup"-->
+	</div> <!-- close off how_to_slide_container -->
+</div> <!--  close off center_container div -->
+</div> <!-- close off howto_section div -->
+
+</div><!-- close off div guest page
+</body>
