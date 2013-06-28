@@ -25,7 +25,6 @@
 			hideOnSubmit: false
 
 		};
-
 		//call in the default otions
 		var options = $.extend(defaults, options);
 		//act upon the element that is passed into the design    
@@ -34,25 +33,26 @@
 			var this_id_prefix = '#'+this.id+' ';
 			$(this).html('<div id="contactable_inner">Feedback</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/></div></form>');
 			//show / hide function
-			$(this_id_prefix+'div#contactable_inner').toggle(function() {
-				$(this_id_prefix+'#overlay').css({display: 'block'});
-				$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=250px"}, "fast");
-				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "fast"); 
-
-			}, 
-			function() {
-				$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "fast");
-				$(this).animate({"marginBottom": "-=250px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
-				$(this_id_prefix+'#overlay').css({display: 'none'});
-			});
-			
+			$(this_id_prefix+'div#contactable_inner').click(function(){
+				var fromMarginBottom = parseInt($(this_id_prefix+'#contactForm').css('marginBottom'));
+				// fromMarginBottom is a hack to determine if the form is visible or not.  after jquery 1.8.3, the toggle() button was changed so this is the workaround
+				if (fromMarginBottom < -100){
+					$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=250px"}, "fast");
+					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "fast"); 
+				}
+				else {
+					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "fast");
+					$(this).animate({"marginBottom": "-=250px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
+				}
+			}); // close off .click
+				
 			$(this_id_prefix+'#message').click(function(){
-				var border=$(this_id_prefix+'#message').css("border-color");
-				$(this_id_prefix+'#message').css("border-width","0px").css("border-color","white");
-				//if (border=="rgb(255, 0, 0)")
-				//	$(this_id_prefix+'#message').css("border-width","0px").css("border-color","white");
-				// set text area background to white if it is not already
-			});
+					var border=$(this_id_prefix+'#message').css("border-color");
+					$(this_id_prefix+'#message').css("border-width","0px").css("border-color","white");
+					//if (border=="rgb(255, 0, 0)")
+					//	$(this_id_prefix+'#message').css("border-width","0px").css("border-color","white");
+					// set text area background to white if it is not already
+				});
 			
 			$(this_id_prefix+'input').click(function(){
 				// if text area is empty, then simply change the background color of text area

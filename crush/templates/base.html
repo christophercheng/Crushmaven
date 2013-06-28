@@ -353,7 +353,6 @@ $(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_w
   }); 
 // INITIALIZE FEEDBACK FORM 
  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
-
 // -------------  CSS additions ------------------
 // HANDLE SETTINGS MENU CLICK
 function openSubMenu() {
@@ -564,9 +563,7 @@ $('.left_sidebar_container #combo_singles_button a').mousedown(function(event)
 		{
 			if (event.button == 0){
 				$(this).css('border-top','0px');
-				console.log('mouseup');
 				var class_name='#combo_singles_button a.' + $(this).attr('class');
-				console.log('mouseup',class_name);
 				$(class_name).trigger('click');
 			}
 		});
@@ -585,9 +582,6 @@ $(window).resize(function(){
 
 }); // close of jQuery(document).ready
 
-
-
-
 </script>
 
 <div class="header">
@@ -605,7 +599,7 @@ $(window).resize(function(){
 		<div class="center_panel_container">
 			{% block content %}
 			{% endblock %}
-			<div id="contactable"><!-- contactable html placeholder --></div>
+
 		</div> <!-- close off center_content_container -->
 	</div> <!-- close off center_panel -->
 </div> <!-- close off main_container -->
@@ -616,5 +610,5 @@ $(window).resize(function(){
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set up a Friend"></div>
-
+<div id="contactable"></div><!-- contactable html placeholder -->
 </body>
