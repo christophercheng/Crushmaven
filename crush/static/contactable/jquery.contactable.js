@@ -12,6 +12,8 @@
 //extend the plugin
 (function($){
 
+
+
 	//define the new for the plugin ans how to call it	
 	$.fn.contactable = function(options) {
 		//set default options  
@@ -33,9 +35,11 @@
 			//construct the form
 			var this_id_prefix = '#'+this.id+' ';
 			$(this).html('<div id="contactable_inner"></div><form id="contactForm" method="" action=""><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="8" cols="25" ></textarea><input class="submit" type="submit" value="'+options.submit+'"/></div></form>');
+			
+			$(this_id_prefix+'div#contactable_inner').click(function(){alert("HEY");});
 			//show / hide function
 			$(this_id_prefix+'div#contactable_inner').toggle(function() {
-			
+				alert("HEY");
 				$(this_id_prefix+'#overlay').css({display: 'block'});
 				$(this).animate({"marginRight": "-=5px"}, "fast"); 
 				$(this_id_prefix+'#contactForm').animate({"marginRight": "-=0px"}, "fast");
@@ -43,6 +47,7 @@
 				$(this_id_prefix+'#contactForm').animate({"marginRight": "+=380px"}, "slow"); 
 			}, 
 			function() {
+				alert("HEY");
 				$(this_id_prefix+'#contactForm').animate({"marginRight": "-=380px"}, "slow");
 				$(this).animate({"marginRight": "-=380px"}, "slow").animate({"marginRight": "+=5px"}, "fast"); 
 				$(this_id_prefix+'#overlay').css({display: 'none'});

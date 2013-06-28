@@ -9,14 +9,16 @@
 		<title>Flirtally - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
-        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 		<link type="text/css" href="{{ STATIC_URL }}fbdater.css?t={% now "U" %}" rel="stylesheet"  />        
-        <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+    
+    <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
 		<script type="text/javascript" src="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js"></script>
 
-        <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
 		<script type="text/javascript" src="{{ STATIC_URL }}contactable/jquery.contactable_sw.js"></script>
 
 		<script src="{{ STATIC_URL }}credit_check_dialog.js"></script>
@@ -62,7 +64,7 @@
 <!-- INITIALIZE ATTRACTION SELECTOR DIALOG -->   
 <script> 
 jQuery(document).ready(function($) {
-
+	$('#contactable #contactable_inner').click(function(){alert("HEY");});
 
 	 /* ---------------------------------------------
 	 	
@@ -604,6 +606,7 @@ $(window).resize(function(){
 		<div class="center_panel_container">
 			{% block content %}
 			{% endblock %}
+			<div id="contactable"><!-- contactable html placeholder --></div>
 		</div> <!-- close off center_content_container -->
 	</div> <!-- close off center_panel -->
 </div> <!-- close off main_container -->
@@ -614,5 +617,5 @@ $(window).resize(function(){
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="setup_create_modal" title="Set up a Friend"></div>
-<div id="contactable"><!-- contactable html placeholder --></div>
+
 </body>

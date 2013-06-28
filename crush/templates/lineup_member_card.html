@@ -18,7 +18,7 @@
 		{% elif lineup_member.date_last_notified|days_since > 6 %}
 			<a href="#" class="send_setup_notification" target_is_recommendee="true" target_person_username="{{lineup_member.username}}">notify again</a>
 		{% else %}
-			<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response{% if lineup_member.user != None %} from {{ lineup_member.user.first_name }}{% endif %}"></span>
+			<span class="setup_responded setup_recommendee_responded setup_responded_notified" title="waiting for a response{% if lineup_member.user != None %} from {{ lineup_member.user.first_name }}{% endif %}">notified</span>
 		{% endif %}
 	{% elif lineup_member.decision == None %}
 		<span class="setup_responded setup_recommendee_responded setup_responded_waiting"></span>

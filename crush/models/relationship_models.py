@@ -615,7 +615,7 @@ class SetupRelationship(BasicRelationship):
     def show_vertical_divider_b(self):
         num_elements_to_right=self.setuplineupmember_set.filter(decision__gt = 0).count()
         num_total_elements = self.setuplineupmember_set.count()
-        if num_elements_to_right < num_total_elements:
+        if num_elements_to_right  and num_elements_to_right < num_total_elements:
             return True
         else:
             return False

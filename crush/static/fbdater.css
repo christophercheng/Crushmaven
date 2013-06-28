@@ -1020,7 +1020,7 @@ a.logo img{
 	
 	.left_sidebar_container .button_container#create_setup a:active{
 		#border-bottom:1px solid #595983;
-		padding:12px 10px 3px 36px;
+		padding:12px 10px 3px 52px;
 		box-shadow: inset -1px 1px 4px #474747;
 	}
 
@@ -2544,7 +2544,7 @@ ul.bxslider{
 	text-align:left;
 	border-radius:8px;
 	font-size:17px;
-	font-weight:normal;
+	font-weight:bold;
 	position:absolute;
 	font-style:italic;
 	left:7px;
@@ -3614,6 +3614,12 @@ div.past_dialog_header {
 	background-position:-155px -47px;
 	#opacity:.6;
 }
+
+.setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_notified{
+	right:19px;
+	top:2px;
+}
+
 .setup_by_me_block .setup_match_yes{
 	display:inline-block;
 	position:absolute;
