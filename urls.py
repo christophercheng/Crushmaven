@@ -197,6 +197,8 @@ urlpatterns += patterns('crush.views.static_file_views',
     (r'^help_FAQ/$', 'help_faq'),
     
     (r'^how_it_works/$','help_how_it_works'),
+
+    (r'^how_it_works/(?P<help_type>\w+)/$','help_how_it_works'),
     
     (r'^terms/$', 'help_terms'),
     

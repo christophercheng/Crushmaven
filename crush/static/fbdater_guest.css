@@ -593,10 +593,14 @@ div.guest_header.authenticated .center_container{
 	padding-right:40px;
 	width:880px;
 }
+
+/* HOW IT WORKS */
+
 .guest_page.how_it_works .center_container{
 	width:1000px!important;
 	margin-top:55px;
 }
+
 .guest_header.how_it_works .center_container{
 	width:1000px!important;
 }
@@ -635,6 +639,36 @@ div.guest_header.authenticated .center_container{
 
 }
 
+.guest_page.how_it_works .center_container .how_to_slide_container #how_to_slide_singles{
+	padding-top:45px!important;
+}
+.guest_page.how_it_works .center_container .how_to_slide_container #how_to_slide_setup{
+	padding-top:40px!important;
+}
+
+
+/* Contact Us */
+
+div.subtitle{
+	margin-bottom:30px;
+	margin-top:-8px;
+	color:#000033;
+}
+div.contact_box{
+	display:block;
+	width:250px;
+	margin-bottom:35px;
+}
+.contact_box_title{
+	font-weight:bold;
+	font-size:18px;
+	margin-bottom:8px;
+}
+div.contact_box a{
+	color:#3366ff;
+}
+
+/* LEGAL DOCS (Privacy & Terms) */
 
 div.legal{
 	width:100%;
@@ -664,6 +698,7 @@ div.legal{
 	font-size:22px;
 	font-weight:bold;
 	margin-bottom:15px;
+	color:#000033;
 }
 
 .legal h2, .legal h3{

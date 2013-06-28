@@ -1,8 +1,11 @@
 from django.shortcuts import render
 
+
+
 # -- How It Works Page --
-def help_how_it_works(request):
-    return render(request,'help_how_it_works.html')
+def help_how_it_works(request, help_type='singles'):
+        return render(request,'help_how_it_works.html',{'help_type':help_type})
+    
 
 # -- FAQ Page --
 def help_faq(request):

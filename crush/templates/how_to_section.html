@@ -2,11 +2,11 @@
 	<div class="center_container">
 		<div class="title_section">
 			<h2 id="howto_title" class="section_title">How it Works</h2>
-			<a href="javascript:;" class="how_to_link how_to_link_active for_singles" id="for_singles">for singles</a>
-			<a href="javascript:;" class="how_to_link how_to_link_inactive for_setup" id="for_matchmakers">for matchmakers</a>
+			<a href="javascript:;" class="how_to_link {% if help_type and help_type == 'matchmakers' %}how_to_link_inactive{% else %}how_to_link_active{% endif %} for_singles" id="for_singles">for singles</a>
+			<a href="javascript:;" class="how_to_link {% if help_type and help_type == 'matchmakers' %}how_to_link_active{% else %}how_to_link_inactive{% endif %} for_setup" id="for_matchmakers">for matchmakers</a>
 		</div>
 		<div class="how_to_slide_container">
-			<div class="how_to_slide active_how_to_slide" id="how_to_slide_singles">
+			<div class="how_to_slide {% if help_type and help_type == 'matchmakers' %}inactive_how_to_slide{% else %}active_how_to_slide{% endif %}" id="how_to_slide_singles">
 				<div id="singles_step_1" class="singles_step">
 					<span class="singles_step_text_column">
 						<span class="singles_step_image"></span>
@@ -35,7 +35,7 @@
 					</span>
 				</div>
 			</div>
-			<div class="how_to_slide inactive_how_to_slide" id="how_to_slide_setup">
+			<div class="how_to_slide {% if help_type and help_type == 'matchmakers' %}active_how_to_slide{% else %}inactive_how_to_slide{% endif %}" id="how_to_slide_setup">
 				<div id="setup_step_1" class="setup_step">
 				<span class="setup_step_image"></span>
 				<span class="setup_step_title">1 Friend Selection</span>

@@ -88,8 +88,7 @@
 			timeoutPointer = setTimeout(window.set_setup_height,100);
 		});
 		window.set_setup_height();
-		setTimeout(function(){$('.how_to_link').trigger('click');},500);
-		
+		//setTimeout(function(){$('.how_to_link').trigger('click');},750);
 	}); // close of jQuery(document).ready  
   
 </script>
@@ -107,7 +106,8 @@
 
 <div class="guest_page how_it_works">
 
-{% include "how_to_section.html" %}
-
+{% with help_type as help_type %}
+	{% include "how_to_section.html" %}
+{% endwith %}
 </div><!-- close off div guest page
 </body>

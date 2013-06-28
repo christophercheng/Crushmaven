@@ -626,6 +626,9 @@ a.logo img{
 #settings_menu li a {
 	padding:7px 20px;
 }
+#help_menu li a {
+	padding:7px 20px;
+}
 
 #get_started_menu li a .get_started_menu_icon{
 	position:absolute;
@@ -1632,7 +1635,8 @@ ul.nav_bar li#nav_bar_options{
 	display:inline-block;
 	font-size:10px;
 	vertical-align:middle;
-	margin-left:1px;
+	margin-left:2px;
+	margin-top:-1px;
 	font-style:normal!important;
 }
 .crush_block_name .down-dir {

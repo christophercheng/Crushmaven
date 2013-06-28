@@ -25,10 +25,10 @@
 -->
 
 <!-- ============ MIDDLE BUTTON(S) ============= -->	
-<ul id="center_header_menu">
+<ul id="center_header_menu" class="drop_down_menu_link">
 	<li class="submenu">
 		<a href="#" id="get_started_link">Get Started<i class="icon down-dir">&#x25BC;</i></a>
-		<ul id="get_started_menu" class="settings_menu">
+		<ul id="get_started_menu" class="settings_menu popup">
 			<li>
 				<a href="#" class="bt-fs-dialog add_attraction_link">Add an Attraction<span class="get_started_menu_icon"></span></a>
 			</li>
@@ -43,15 +43,23 @@
 </ul>
 <!-- ============ RIGHT HEADER ITEMS ============= -->	
 <ul id="right_header_menu" class="drop_down_menu_link">
-	<li>
-		<a href="{% url 'crush.views.static_file_views.help_how_it_works' %}">How it Works</a>		
+	<li class="submenu">
+		<a href="#">How it Works<i class="icon down-dir">&#x25BC;</i></a>	
+		<ul id="help_menu" class="settings_menu popup">
+			<li>
+				<a href="{% url 'crush.views.static_file_views.help_how_it_works' "singles" %}">for Singles</a>
+			</li>
+			<li>
+				<a href="{% url 'crush.views.static_file_views.help_how_it_works' "matchmakers" %}">for Matchmakers</a>	
+			</li>
+		</ul><!-- close off settings_menu div -->
 	</li>
 	<li class="pic">
 		<img src="http://graph.facebook.com/{{ user.username }}/picture" height=25 width=25>
 	</li>
 	<li class="submenu">
 		<a  href="#">Settings<i class="icon down-dir">&#x25BC;</i></a>
-		<ul id="settings_menu" class="settings_menu">
+		<ul id="settings_menu" class="settings_menu popup">
 			<li>
 				<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
 			</li>
