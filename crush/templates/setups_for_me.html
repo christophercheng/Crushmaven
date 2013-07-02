@@ -81,10 +81,10 @@ $(document).ready(function()
  	$('.resend_request').click(function(){
  		var target_person_username = $(this).attr('target_username');
  		FB.ui({method: 'send',
-	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
+	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help.",
 	  				to: target_person_username,
 	  				link:'http://www.flirtally.com',
-	  				description:'Flirtally is a new matchmaking service that makes it easy for friends to match their single friends up with one another.',
+	  				description:"Flirtally is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
 			      },
 			      function(response){
 							if (response != null)

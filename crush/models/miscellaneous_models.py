@@ -3,6 +3,8 @@ from django.db.models import F,Q
 from django.conf import settings
 from smtplib import SMTPException
 import hashlib, hmac
+from utils import send_mailgun_email
+from utils_email import send_mail_crush_invite,send_mail_mf_invite
 # for mail testing 
 #from django.core.mail import send_mail
 import datetime
@@ -30,14 +32,15 @@ class InviteEmailManager(models.Manager):
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
                 new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush)
                 new_invite.send()
-
-            else: # user has already created a maximum number of crush emails
+            # for now just ignore user's request and don't send out an email - we don't want to overflood the database with random emails.
+                
+            #else: # user has already created a maximum number of crush emails
                 # overwrite the oldest invite email
                     #oldest_invite_email=invite_emails[0]
                     #oldest_invite_email.email=new_email
                     #oldest_invite_email.save(update_fields=['email'])
                     #oldest_invite_email.send() # send email out right away
-                return False
+                    #return False   
         return True
             
     def delete_activated_user_emails(self,crush_user):
@@ -69,30 +72,19 @@ class InviteEmail(models.Model):
             return self.email + '(mutual_friend) : ' +  str(self.relationship) 
 
     def send(self):
-
         crush_user= self.relationship.target_person
-        crush_name = crush_user.first_name + " " + crush_user.last_name
-        crush_body='Visit http://attractedto.com to find out whom.'
-        subject=''
-        message=''
+        crush_full_name = crush_user.first_name + " " + crush_user.last_name
+        crush_short_name = crush_user.first_name + " " + crush_user.last_name[0] + "."
+        crush_first_name = crush_user.first_name
         if self.is_for_crush:
-            subject = 'Your Facebook friend is attracted to you - find out who.'
-            message=crush_body 
-        else:
-            subject = 'Your friend ' + crush_name + ' has a secret admirer and needs your help.'
-            message='Please forward this message to your friend, ' + crush_name + ':\n\n' + crush_body
+            subject = crush_short_name + ", you have an admirer!"
+            send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
 
-        try:
-            #send_mail(subject,message,'no-reply@attractedto.com',[self.email],fail_silently=False)     
-            result = requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",\
-                     auth=("api", settings.MAILGUN_API_KEY),\
-                     data={"from": "AttractedTo.com <notifications@attractedTo.com>",\
-                           "to": self.email,\
-                           "subject": subject,\
-                           "text": message})
-            print "MailGun Response: " + str(result)          
-        except Exception as e:
-            print e
+        else:
+            subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
+            send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,self.email)
+
+        #send_mailgun_email("Flirtally <notifications@flirtally.com>",self.email,subject,message)
  
 class Purchase(models.Model):
 

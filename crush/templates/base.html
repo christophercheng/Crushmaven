@@ -292,7 +292,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   
    window.alert_modal=function(title, message,calling_jquery_element){
 	   $("#alert_modal").html(message);
-	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
 		
 		if (typeof calling_jquery_element === 'undefined'){
@@ -324,12 +324,12 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
 		setTimeout(function(){location.href="/facebook/login"},1000);
 	};
 	
-	var send_fb_invite = function(recipient_id,crush_name){
+	var send_fb_invite = function(recipient_id,crush_short_name){
   	FB.ui({method: 'send',
-  				name: crush_name + " was added as an 'attraction' by one of our users",
+  				name: crush_short_name + " has an admirer!",
   				to: recipient_id,
-  				link:'http://www.attractedto.com',
-  				description:'AttractedTo.com is a new matchmaking service for people who already have someone (they know) in mind.'
+  				link:'http://www.flirtally.com',
+  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at Flirtally.com.'
       },
       function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
@@ -464,11 +464,14 @@ $('body').on('click',".popup_link",function(e){
 	  var csrf_data={};
     csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
     window.wait_modal_open('Please wait while we process your message');
+    source_person_last_name="{{request.user.last_name}}";
+    source_person_first_name = "{{request.user.first_name}}"
+    source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
 		FB.ui({method: 'send',
-	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help to find potential dates.",
+	  				name: source_person_short_name + " would like your help.",
 	  				to: attraction_array[0],
 	  				link:'http://www.flirtally.com',
-	  				description:'Flirtally is a new matchmaking service that makes it easy for friends to match their single friends up with one another.'
+	  				description:"Flirtally is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
 			      },
 			      function(response){
 							if (response != null){
