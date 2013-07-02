@@ -74,7 +74,7 @@ class InviteEmail(models.Model):
     def send(self):
         crush_user= self.relationship.target_person
         crush_full_name = crush_user.first_name + " " + crush_user.last_name
-        crush_short_name = crush_user.first_name + " " + crush_user.last_name[0] + "."
+        crush_short_name = crush_user.first_name + " " + crush_user.last_name[0]
         crush_first_name = crush_user.first_name
         if self.is_for_crush:
             subject = crush_short_name + ", you have an admirer!"

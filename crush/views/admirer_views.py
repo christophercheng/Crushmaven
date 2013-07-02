@@ -342,8 +342,8 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                     admirer_rel.save(update_fields=['date_lineup_finished','date_setup_completed','updated_flag'])
                 else:
                     admirer_rel.save(update_fields=['date_lineup_finished','updated_flag'])
-                # notify recommender that the client completed the lineup
-                admirer_rel.notify_source_person()
+                    # notify recommender that the client completed the setup lineup
+                    admirer_rel.notify_source_person() # CHC 0701 no longer doing this
             else:
                 admirer_rel.save(update_fields=['date_lineup_finished'])
 

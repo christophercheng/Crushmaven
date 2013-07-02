@@ -40,11 +40,6 @@ class BasicRelationship(models.Model):
         
     def __unicode__(self):
         return 'Basic relationship for:' + str(self.target_person.username)
-    
-    def send_notification_email(self,email_address,subject,message,send_time=None):
-        send_mailgun_email("Flirtally <notifications@flirtally.com>",email_address,subject,message,send_time)
-
-            
             
 class PlatonicRelationshipQuerySet(models.query.QuerySet):
     
@@ -92,7 +87,6 @@ class PlatonicRelationship(BasicRelationship):
                 reciprocal_relationship = self.target_person.crush_crushrelationship_set_from_source.get(target_person=self.source_person)
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
                 if reciprocal_relationship.target_status==4 and reciprocal_relationship.is_results_paid:
-                        reciprocal_relationship.notify_source_person_of_target_change(new_status=5);
                         # find all related lineup members
                         try:
                             affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
@@ -253,8 +247,6 @@ class CrushRelationship(BasicRelationship):
                 
                 # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
                 if reciprocal_relationship.target_status==5 and reciprocal_relationship.is_results_paid:
-                    reciprocal_relationship.notify_source_person_of_target_change(new_status=4);
-
                     # find all related lineup members
                     try:
                         affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
@@ -275,12 +267,15 @@ class CrushRelationship(BasicRelationship):
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 # save the reciprocal crush relationship to database
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
-                if reciprocal_relationship.is_results_paid==True:
+                
+                # CHC 07 01 13 COMMENTING OUT THIS BLOCK BECAUSE I THINKN IT"S REDUNDANT LOGIC CHAIN FROM ABOVE
+                #if reciprocal_relationship.is_results_paid==True: # i think this is repetitive logic from up above 7/1/13 CHC
                     # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process will do this
-                    response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
+                #   response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                #    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
                     # notify the source person (notification will go out at the future date_target_responded time
-                    self.notify_source_person()
+                #    self.notify_source_person()
+                    
             except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
                 try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
                     PlatonicRelationship.objects.all_friends(self.target_person).get(target_person=self.source_person)
@@ -470,7 +465,7 @@ class CrushRelationship(BasicRelationship):
         print "notifying the target person of a new admirer at : " 
         target_person=self.target_person
         full_name=target_person.get_name()
-        short_name = target_person.first_name + ' ' + target_person.last_name[0] + '.'
+        short_name = target_person.first_name + ' ' + target_person.last_name[0]
         first_name = target_person.first_name
         target_person_email=target_person.email
         if (not target_person_email):
@@ -489,7 +484,7 @@ class CrushRelationship(BasicRelationship):
                 return
         target_person=self.target_person
         full_name = target_person.first_name + " " + target_person.last_name
-        short_name = target_person.first_name + " " + target_person.last_name[0] + "."
+        short_name = target_person.first_name + " " + target_person.last_name[0]
         first_name = target_person.first_name
         pronoun_subject = target_person.get_gender_pronoun_subject()
         pronoun_possessive = target_person.get_gender_pronoun_possessive()
@@ -517,28 +512,15 @@ class CrushRelationship(BasicRelationship):
                     send_time= send_time.timetuple()
                     send_time=time.mktime(send_time)
                     send_time = utils.formatdate(send_time)
-                utils_email.send_mail_changed_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
+                utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
                 
         
     def notify_source_person_bad_invite_email(self,bad_email_address):      
         target_person=self.target_person
         full_name = target_person.first_name + " " + target_person.last_name
-        short_name = target_person.first_name + " " + target_person.last_name[0] + "."
+        short_name = target_person.first_name + " " + target_person.last_name[0]
         first_name = target_person.first_name
         utils_email.send_mail_delivery_problem(full_name, short_name, first_name, bad_email_address, self.source_person.email)
-    
-    def notify_source_person_of_target_change(self,new_status):
-        target_person=self.target_person
-        full_name = target_person.first_name + " " + target_person.last_name
-        short_name = target_person.first_name + " " + target_person.last_name[0] + "."
-        first_name = target_person.first_name
-        pronoun_subject = target_person.get_gender_pronoun_subject()
-        pronoun_possessive = target_person.get_gender_pronoun_possessive()
-        if new_status == 4:
-            utils_email.send_mail_changed_attraction_response(True, full_name, short_name, first_name, pronoun_subject, pronoun_possessive, self.source_person.email)
-        else:
-            utils_email.send_mail_changed_attraction_response(False, full_name, short_name, first_name, pronoun_subject, pronoun_possessive, self.source_person.email)
-
     
     def __unicode__(self):
         return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
@@ -643,16 +625,16 @@ class SetupRelationship(BasicRelationship):
             target_person=self.target_person
             recommendee_person = setup_lineup_member.user
             full_name=recommendee_person.get_name()
-            short_name=recommendee_person.first_name + ' ' + recommendee_person.last_name[0] + '.'
+            short_name=recommendee_person.first_name + ' ' + recommendee_person.last_name[0]
             first_name = recommendee_person.first_name
             pronoun_subject = recommendee_person.get_gender_pronoun_subject()
             pronoun_possessive = recommendee_person.get_gender_pronoun_possessive()
             target_full_name = target_person.get_name()
-            utils_email.send_mail_setup_recommendee_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, setup_lineup_member.lineup_member_attraction, source_person_email)
+            utils_email.send_mail_setup_recommendee_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, target_person.get_name(),setup_lineup_member.lineup_member_attraction, source_person_email)
         else:
             target_person=self.target_person
             full_name=target_person.get_name()
-            short_name=target_person.first_name + ' ' + target_person.last_name[0] + '.'
+            short_name=target_person.first_name + ' ' + target_person.last_name[0]
             first_name=target_person.first_name
             pronoun_subject = target_person.get_gender_pronoun_subject()
             pronoun_possessive = target_person.get_gender_pronoun_possessive()

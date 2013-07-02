@@ -218,8 +218,8 @@ INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times
 MINIMUM_LINEUP_MEMBERS=0 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=12# 0 # default is = 12 hours
-MINIMUM_DELETION_DAYS_SINCE_ADD=1
-MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=1
+MINIMUM_DELETION_DAYS_SINCE_ADD=0# 7 is default
+MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=0#7 is default
 MAXIMUM_CRUSH_INVITE_EMAILS=7
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=2

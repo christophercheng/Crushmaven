@@ -16,15 +16,15 @@ function purchase_feature(data){
 	load_url="/credit_checker/";
 	dialog_div = $("#credit_check_modal");
 	dialog_div.attr("feature_id",data.feature_id)
-	dialog_div.html('<div id="site-loading"></div>');
+	window.wait_modal_open();
 	dialog_div.load(load_url,data,function(responseTxt,statusTxt,xhr){
-			if (statusTxt!="success"){
+		window.wait_modal_close();
+		if (statusTxt!="success"){
 				$(this).html(data.ajax_error);
-		    $("#site-loading").remove();
-		   }
-			dialog_div.dialog("open");
-			$(':focus').blur();
-			dialog_div.dialog("moveToTop");
+		  }
+		dialog_div.dialog("open");
+		$(':focus').blur();
+		dialog_div.dialog("moveToTop");
 	}); 
 	return false;
 };
