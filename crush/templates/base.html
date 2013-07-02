@@ -292,7 +292,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   
    window.alert_modal=function(title, message,calling_jquery_element){
 	   $("#alert_modal").html(message);
-	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
 		
 		if (typeof calling_jquery_element === 'undefined'){

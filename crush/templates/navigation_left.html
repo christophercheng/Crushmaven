@@ -33,9 +33,9 @@ For Singles
 		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
 			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
 				<span class="menu_icon"></span>				
-				<span class="menu_title setups_for_me_menu_title">Friend Setups</span>
+				<span class="menu_title setups_for_me_menu_title">Setup <span class="shrink_text">by</span> Friends</span>
 				<span  class="menu_count{% if num_setups_for_me_in_progress %} new_menu_count">{{num_setups_for_me_in_progress}} new{% else %}">0{% endif %}</span>
-				<span class="nav_subtext">See who friends recommended</span>
+				<span class="nav_subtext">See who they recommended</span>
 			</a>
 		</li>
 </ul>
@@ -59,7 +59,7 @@ For Matchmakers
 				<span class="menu_icon"></span>				
 				<span class="menu_title">Setup Results</span> 
 				<span class="menu_count">{{num_setups_by_me_in_progress }}</span>
-				<span class="nav_subtext">Find out if friends matched</span>
+				<span class="nav_subtext">Find out which friends matched</span>
 			</a>
 		</li>		
 		<li class="{% navactive request 'setup_requests' %} setup_requests_for_me">

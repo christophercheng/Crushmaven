@@ -63,7 +63,7 @@ $(document).ready(function()
   	$('button#select_setup_target').attr('getStoredFriends',window.setup_target);
    	$('#setup_target_section .dialog_header').removeClass('active_dialog_header'); 	
 	$('#setup_target_section .dialog_header').addClass('past_dialog_header');
-	$('#setup_lineup_section .dialog_header').removeClass('past_dialog_header');
+	$('#setup_lineup_section .dialog_header').removeClass('inactive_dialog_header');
 	$('#setup_lineup_section .dialog_header').addClass('active_dialog_header'); 	
   	var amendedExcludeIds = "{{exclude_ids}}";
   	if (amendedExcludeIds != "")
@@ -163,7 +163,7 @@ $(document).ready(function()
 <form id="setup_form" action="http://{{request.get_host}}{% url 'crush.views.setup_create_form' %}" method="post">
 		{% csrf_token %}
     <div id="setup_target_section">
-			<div class="dialog_header active_dialog_header">
+			<div class="dialog_header header_1">
 			<span class="step_label">Step 1:</span><span class="dialog_header_sentence">&nbsp;Select a friend to set up</span>
 			</div>
 			<div class="setup_section_content">
@@ -173,7 +173,7 @@ $(document).ready(function()
 	  	</div>
 	  </div><!-- close setup_target_section -->
     <div id="setup_lineup_section">
-			<div class="dialog_header inactive_dialog_header">
+			<div class="dialog_header inactive_dialog_header header_2">
 				<span class="step_label">Step 2:</span> <span class="dialog_header_sentence">&nbsp;Select up to ten others to recommend to your friend</span>
 			</div>
 			<div class="setup_section_content">
