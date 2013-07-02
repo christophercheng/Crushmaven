@@ -228,7 +228,6 @@ class FacebookUser(AbstractUser):
     #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
-    bNotify_setup_lineup_completed= models.BooleanField(default=True)
     bNotify_setup_response_received= models.BooleanField(default=True)
     
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
