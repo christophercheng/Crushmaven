@@ -269,7 +269,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
         $(this).css("z-index", zmax);
     });
 }
-  $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
+  $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
   $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, modal: true, autoOpen: false}); 
  
  window.wait_modal_open=function(message){
@@ -292,7 +292,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   
    window.alert_modal=function(title, message,calling_jquery_element){
 	   $("#alert_modal").html(message);
-	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
 		
 		if (typeof calling_jquery_element === 'undefined'){

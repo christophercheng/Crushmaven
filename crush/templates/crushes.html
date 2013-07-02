@@ -119,7 +119,7 @@ $(document).ready(function()
  * -------------------------------------------- */
 
  
-  	window.remove_crush_dialog = $("#remove_crush_dialog").dialog({dialogClass: 'delete_crush_dialog',modal: true, autoOpen: false});
+  	window.remove_crush_dialog = $("#remove_crush_dialog").dialog({dialogClass: 'delete_crush_dialog blacktop',modal: true, autoOpen: false});
   	// call ajax function to see if deletion if possible, if not then raise alert
   	//   if possible to delete, then confirm action with user before making second ajax call to actually perform the delete
    
@@ -131,26 +131,28 @@ $(document).ready(function()
   		$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
     		// deletion is possible, so open up the confirmation dialog
     		window.remove_crush_dialog.dialog("open");
+    	      $(':focus').blur();
     	}).fail(function(response){
  				window.alert_modal('Attraction Removal', response.responseText );
  				return false;
 		});  
     
       e.preventDefault();
-      window.remove_crush_dialog.text("Are you sure you want to remove " + name + " from your crush list?");
+      window.remove_crush_dialog.text("Are you sure you want to remove " + name + " from your crush list?  Maybe you should give it just a bit more time?");
       window.remove_crush_dialog.dialog('option', 'buttons', {
- 			"Delete": function() {
+    		"Cancel": function() {$("#remove_crush_dialog").dialog("close");
+      		},
+      		"Delete": function() {
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
  					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
  				 	window.alert_modal('Attraction Removal', "{{generic_error_message}}" );
  				});
- 			},
-  		"Cancel": function() {$("#remove_crush_dialog").dialog("close");
-  		}
+ 			}
   		});
-      
+      $('.delete_crush_dialog .ui-button').addClass('site_dialog_button');
+      $(".delete_crush_dialog .ui-button:nth-child(1)").addClass("site_dialog_cancel_button");
       return false;
   });
 

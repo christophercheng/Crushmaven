@@ -4202,6 +4202,21 @@ div.past_dialog_header {
 	vertical-align:middle!important;
 	}
 
+/* ===========================   Remove Crush Dialog ========================= */
+
+.delete_crush_dialog {
+	min-width:400px;
+}
+
+#remove_crush_dialog{
+	diplay:inline-block;
+	padding:20px 20px!important;
+	font-size:14px!important;
+	line-height:24px;
+	color:#474747!important;
+		
+}
+
 /* ===========================  Settings Pages ========================= */
 
 .settings_container {
