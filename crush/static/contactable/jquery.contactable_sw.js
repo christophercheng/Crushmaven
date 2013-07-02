@@ -21,7 +21,7 @@
 			submit : 'SEND',
 			recievedMsg : 'Thank you for your message.',
 			notRecievedMsg : 'Sorry, your message could not be sent.<BR><BR>Please try again.',
-			disclaimer: "Have a suggestion or comment? <BR>&nbsp;&nbspLet us know!",
+			disclaimer: "We welcome suggestions and comments",
 			hideOnSubmit: false
 
 		};
@@ -31,18 +31,18 @@
 		return this.each(function() {
 			//construct the form
 			var this_id_prefix = '#'+this.id+' ';
-			$(this).html('<div id="contactable_inner">Feedback</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/></div></form>');
+			$(this).html('<div id="contactable_inner">Feedback</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/><span id="powered">- POWERED <i>by</i> FLIRTALLY -</span></div></form>');
 			//show / hide function
 			$(this_id_prefix+'div#contactable_inner').click(function(){
 				var fromMarginBottom = parseInt($(this_id_prefix+'#contactForm').css('marginBottom'));
 				// fromMarginBottom is a hack to determine if the form is visible or not.  after jquery 1.8.3, the toggle() button was changed so this is the workaround
 				if (fromMarginBottom < -100){
-					$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=250px"}, "fast");
+					$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=280px"}, "fast");
 					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "fast"); 
 				}
 				else {
 					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "fast");
-					$(this).animate({"marginBottom": "-=250px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
+					$(this).animate({"marginBottom": "-=280px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
 				}
 			}); // close off .click
 				
