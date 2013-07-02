@@ -33,7 +33,20 @@ jQuery(document).ready(function($) {
 		$(this).hide();
 		$('#authentication_wait').show();
 		window.location.href="/facebook/login";
+		clearInterval(window.slider_control);// stop the automatic sliding of tagline slides
+		setInterval(function(){shift_dot();},200); // animate the elipses
 	});
+	
+	var shift_dot = function(){
+		var dot_element = $('#authentication_dot');
+		var dot_x = dot_element.css('right');
+		var new_dot_x = '56px';
+		if (dot_x == '56px')
+			new_dot_x = '46px';
+		else if (dot_x == '46px')
+			new_dot_x = '36px'
+		dot_element.css('right',new_dot_x);
+	}
 	
 	/* --------- HANDLE SLIDER BUTTON CLICKS ----------------- */
 	
@@ -190,7 +203,7 @@ jQuery(document).ready(function($) {
 			</div>
 		</div> <!-- close off div class=tagline_slide_container -->
 		<a id ="facebookbtn"></a>
-		<div id="authentication_wait">authenticating...</div>
+		<div id="authentication_wait">authenticating .  .  .<span id="authentication_dot">.</span></div>
 		<div id="slide_buttons">
 			<span class="slide_button slide_button_active" id="slide_button1"><span class="slide_button_core slide_button_core_active"></span></span>
 			<span class="slide_button slide_button_inactive" id="slide_button2"><span class="slide_button_core slide_button_core_inactive"></span></span>

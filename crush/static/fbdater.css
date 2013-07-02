@@ -798,6 +798,10 @@ a.logo img{
 	font-weight:bold;
 }
 
+.navbar .setups_for_me_menu_title{
+	word-spacing:-2px;
+}
+
 .navbar a {
 	#position:absolute;
 	display:block;
@@ -1180,13 +1184,17 @@ a.logo img{
 	background-color:#F4F4F4;
 	color:#2E2E2E;
 	font-size:12px;
-	line-height:23px;
+	line-height:24px;
 	padding:15px 10px 15px 20px;
 	margin-bottom:30px;
 	border-radius:0 7px 7px 7px;
 	display:none;
 	box-shadow: inset 0px 0px 3px #C8C8C8;
 }
+
+.new_user_instructions.expanded{
+	padding-bottom:18px;
+	}
 
 .new_user_instructions .show_more,.new_user_instructions .show_less{
 	color:#3366ff;
@@ -1198,7 +1206,7 @@ a.logo img{
 	padding-right:5px;
 	text-align:center;
 	background:#F4F4F4;
-	bottom:-10px;
+	bottom:-11px;
 	border-radius:4px;
 }
 
@@ -1242,7 +1250,7 @@ a.logo img{
 	#border-top:1px solid #CFCFD4;#white;
 	width:530px;
 	margin-left:-20px;
-	padding: 8px 10px 0px 20px;	
+	padding: 10px 10px 0px 20px;	
 	position:relative;
 	#margin-top:5px;
 }
@@ -1627,17 +1635,26 @@ ul.nav_bar li#nav_bar_options{
 	
 .down-dir{
 	display:inline-block;
-	font-size:9px;
+	font-size:8px;
 	vertical-align:middle;
 	margin-left:2px;
 	margin-top:2px;
 	font-style:normal!important;
-	color:#333333!important;
+	color:#E8E8E8;
+}
+.header_container .down-dir{
+	margin-top:1px;
+	font-size:7px;
+}
+
+#get_started_link .down-dir{
+	color:#DC143C;
+	font-size:8px;
 }
 .crush_block_name .down-dir {
 	margin-bottom:2px;
 	margin-left:2px;
-	color:#828282;
+	color:#333333;
 }
 .crush_block_name .crush_block_name_center{
 	display:inline-block;
@@ -3358,7 +3375,7 @@ div.dialog_header, div.active_dialog_header {
 	background:#333333;
 	color:white;
 	font-size:14px!important;
-	line-height:32px;
+	line-height:28px;
 	vertical-align:bottom;
 	white-space:nowrap;
 	margin-bottom: 20px;

@@ -168,7 +168,17 @@ h2#tagline2 #safe_text{
 	letter-spacing:1px;
 	text-align:center;
 	font-family:helvetica;
+	z-index:10;
 }
+#authentication_dot {
+	position:absolute;
+	right:56px;
+	bottom:15px;
+	color:white;
+	font-sytle:bold;
+	font-size:20px;
+}
+
 
 
 #slide_buttons{
