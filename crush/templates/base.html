@@ -590,16 +590,17 @@ $(window).resize(function(){
 * -------------------------------------------- */
 
 $('.show_more').click(function(){
-	
-	$('.second_instruction_section').show(200);
 	$(this).hide();
-	$('.new_user_instructions').addClass('expanded');
+	$('.second_instruction_section').show(200);
+	$('.first_instruction_section .show_less').show();
+	setTimeout(function(){$('.new_user_instructions').addClass('expanded');},100);
 	
 });
 $('.show_less').click(function(){
+	$(this).hide();
 	$('.show_more').show();
 	$('.second_instruction_section').hide(200);
-	$('.new_user_instructions').removeClass('expanded');
+	setTimeout(function(){$('.new_user_instructions').removeClass('expanded');},100);
 });
 
 
