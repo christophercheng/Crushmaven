@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title></title>
+		</style>
+	</head>
+	<body>
+		<table align="center" style="border:1px solid black;padding:15px 25px 45px 25px" width="600px">
+		<tbody><tr><td>
+		
+			<table width="100%" style="font-size:16px;color:#2B2B2B">
+				<tr style="background-color:black" width="100%" valign="middle" height="55px" >
+					<td width="100%" style="padding-left:25px">
+						<img height="50px" src="http://127.0.0.1:8000/static/images/flirtally_logo_text_white.png">
+					</td>
+				</tr>
+				<tr>
+					<td width="500px" style="padding:30px 25px 15px 25px;line-height:30px;font-size:16px">
+						{{full_name}} responded to your setup.
+					</td>
+				</tr>
+				<tr>
+				<td width="500px" style="padding:10px 25px 20px 25px;line-height:30px;font-size:16px">
+					{% if is_attracted == True %}
+						{{first_name}} is mutually attracted to {{target_full_name}}.  Congrats - a job well done!
+					{% else %}
+						Sorry, {{first_name}} is not attracted to {{target_full_name}}.
+					{% endif %}
+				</td>
+			</tr>
+				<tr width="100%"height="40px">
+					<td align="center" style="padding-top:25px">
+						<a href="http://www.flirtally.com/setups_by_me" style="margin-top:15px;border-radius:8px;background-color:#2952CC;color:white;text-align:center;cursor:pointer;padding:8px 25px;letter-spacing:1px;text-decoration:none;font-size:16px"><b>See Full Details</b></a>
+					</td>
+				</tr>	
+			</table>
+		</td></tr></tbody>	
+		</table>
+		<table align="center" style="padding-bottom:30px" width="600px">
+		<tbody><tr><td>
+			<table width="100%" style="font-size:16px;color:#2B2B2B">
+				<tr>
+					<td width="500px" style="padding:15px 25px 0px 25px;line-height:24px;font-size:14px">
+						Change your notifications in <a href="http://www.flirtally.com/settings_notifications">account settings</a>.
+					</td>
+				</tr>
+			</table>
+		</td></tr></tbody>
+		</table>
+	</body>
+</html>
