@@ -77,7 +77,7 @@ $(document).ready(function()
 
 <!-- Display the title widget -->  
 <ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers:</li>
+	<li class="title_bar_title">Admirers</li>
 	<li class="title_bar_option">
 		sort:
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
@@ -153,9 +153,9 @@ $(document).ready(function()
 
 {% else %}
 	{% if admirer_type == 0 %}
-		<span id="no_content">You have no current admirers.</span>
+		<span id="no_content">You have no <i>new</i> admirers.</span>
 	{% else %}
-		<span id="no_content">You have no admirers with completed lineups.</span>
+		<span id="no_content">You have no admirers with finished lineups.</span>
 	{% endif %}
 {% endif %}
 

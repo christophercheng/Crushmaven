@@ -53,7 +53,7 @@ in the INSTALLED_APPS setting.
 
 {% paginate %}
 {% else %}
-<p id = "no_content">{% trans "You do not have any messages." %}</p>
+<p id = "no_content">{% trans "You have no messages <i>from mutual attractions</i>.<BR><BR><BR><a href='/messages/write'>Send</a> one now." %}</p>
 {% endif %}
 {% endif %}
 {% block pm_footer_info %}{% endblock %}

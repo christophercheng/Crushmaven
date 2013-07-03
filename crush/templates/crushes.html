@@ -236,7 +236,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 
 <!-- Display the crush type navigation widget -->  
 <ul class="title_bar" id="title_bar_attractions">
-	<li class="title_bar_title">Attractions:</li>
+	<li class="title_bar_title">Attractions</li>
 	<li class="title_bar_page_links">
 		{% if crush_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
@@ -285,9 +285,9 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <span id="no_content">
 
 	{% if crush_type == 0 %}
-		You have no {% if responded_relationships %} ongoing {% endif %}attractions.&nbsp;&nbsp;<a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
+		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}attractions.&nbsp;&nbsp;<a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
 	{% else %}
-		You have no responded attractions.
+		You have no <i>responded</i> attractions.
 	{% endif %}
 	</span>
 {% endif %}

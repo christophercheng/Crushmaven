@@ -359,7 +359,7 @@ a.button {
 	width:205px;
 	position:fixed;
 	margin-left:0px;
-	margin-top:0px;
+	margin-top:-3px;
 	#background-color:rgba(255,0,0,.1);
 }
 .left_sidebar_container {
@@ -685,36 +685,44 @@ a.logo img{
 /* ===========================   Left Sidebar Container ========================= */
 
 .nav_header {
-	font-weight:bold;
 	font-family:helvetica;
 	font-size:15px;
-	#font-style:italic;
 	color:white;
 	color:rgb(51,51,51);
 	#color:#3E3E5C;
 	background:white;
-	border:1px solid rgb(51,51,51);
-	border-radius:6px 6px 0px 0px;
+	#border:1px solid rgb(51,51,51);
+	#border-radius:6px 6px 0px 0px;
 	height:26px;
-	padding:5px 8px 0px 8px;
+	padding:5px 8px 0px 6px;
+	background:#F4F4F4;
+}
+.nav_header .nav_header_preposition{
+	font-size:13px;
+	letter-spacing:0px;
 }
 .left_sidebar_container .nav_header{
 	letter-spacing:3px;
 	border-bottom:2px solid rgb(51,51,51);
 	text-shadow:0px 1px 1px #C2C2C2!important;
+	word-spacing:-2px;
+	font-style:italic;
+	#border-top:1px solid #333333;
 }
 .right_sidebar_container .nav_header{
 	color:white;
 	background-color:rgb(51,51,51);
 	letter-spacing:1px;
 	font-size:13px;
+	font-weight:bold;
+	border-radius:6px 6px 0px 0px;
 }
-.right_sidebar_container .navbar li{
+.right_sidebar_container li.friend_with_admirer{
 	border-left:1px solid rgb(51,51,51);
 	border-right:1px solid rgb(51,51,51);
 }
 .right_sidebar_container .navbar {
-	border-bottom:4px solid rgb(51,51,51)
+	border-bottom:3px solid rgb(51,51,51)
 }
 
 .navbar {
@@ -879,8 +887,8 @@ a.logo img{
 	color:#3E3E5C;
 	color:rgb(51,51,51);
 	height:50px;
-	border-left:1px solid rgb(51,51,51);
-	border-right:1px solid rgb(51,51,51);
+	#border-left:1px solid rgb(51,51,51);
+	#border-right:1px solid rgb(51,51,51);
 }
 
 .nav_subtext {
@@ -1046,7 +1054,7 @@ a.logo img{
 /* ===========================   Right Sidebar ========================= */
 
 #friend_referral_bar_header {
-	height:32px;
+	height:31px;
 	padding-left:12px;
 	padding-top:3px;
 }
@@ -1063,7 +1071,6 @@ a.logo img{
 	position:relative!important;
 }
 
-
  #friend_referral_bar li#no_friends {
  	padding-top:15px;
  	padding-left:10px;
@@ -1079,7 +1086,6 @@ a.logo img{
  border-bottom:1px solid gray;
  background:#fff;
 }
-
 
 #friend_referral_bar li.friend_with_admirer img {
  	position:absolute;
@@ -1109,11 +1115,11 @@ a.logo img{
 		color:#474747; 
 }
 #friend_referral_bar li:hover ul li.friend_name {
-		color:white; 
+		color:black; 
 		transition-property:color;
-		transition-duration:300ms,300ms;
--webkit-transition-duration:300ms,300ms;
--webkit-transition-property:color;
+		transition-duration:100ms;
+		-webkit-transition-duration:100ms;
+		-webkit-transition-property:color;
 }
 
 
@@ -1134,13 +1140,11 @@ a.logo img{
 	width:100%;
 }
 #friend_referral_bar li a:hover {
-	background-color:#474747;
-	border:1px solid white;
-	color:white!important;
-	transition-property:color,background-color;
-	transition-duration:300ms,100ms;
--webkit-transition-duration:300ms,100ms;
--webkit-transition-property:color,background-color;
+	background-color:#F4F4F4;
+	transition-property:background-color;
+	transition-duration:100ms;
+	-webkit-transition-duration:100ms;
+	-webkit-transition-property:background-color;
 }
 #friend_referral_bar li.no_friends{
 	background-color:white!important;
@@ -1354,8 +1358,10 @@ ul.title_bar > li {
 }
 
 ul.title_bar li.title_bar_title{
-	font-weight:bold;
-	padding-right:30px;
+	font-size:14px;
+	padding-right:25px;
+	line-height:10px;
+	padding-bottom:3px;
 }
 
 ul.title_bar li.conversation_title{

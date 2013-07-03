@@ -56,13 +56,22 @@ a{
 #top_links{
 	float:right;
 	margin-top:25px;
-	margin-right:80px;
+	margin-right:100px;
 }
 #top_links a{
 	font-size:14px;
 	display:inline-block;
 	margin-left:30px;
 }
+#guest_home_page #top_links a{
+		color:#82829B;
+}
+#guest_home_page #top_links a:hover{
+		color:white;
+		transition-property:color;
+		transition-duration:200ms;
+}
+
 
 #logo_section img#guest_logo{
 	position:absolute;
@@ -484,9 +493,6 @@ h2#tagline2 #safe_text{
 	color:#141432;
 }
 
-#bottom_links{
-
-}
 #bottom_links a{
 	font-size:12px;
 	display:inline-block;
@@ -563,6 +569,7 @@ div.guest_header.authenticated .center_container{
 	margin-left:22px;
 	margin-right:-8px;
 }
+/*
 .guest_header #top_links a:hover{
 	background:#4D4D70;
 	border-radius:15px;
@@ -578,7 +585,7 @@ div.guest_header.authenticated .center_container{
 	margin-right:-8px;
 	cursor:default;
 	}
-	
+*/	
 .guest_header.authenticated #top_links a.active{
 	background:#575757;
 }
@@ -588,9 +595,11 @@ div.guest_header.authenticated .center_container{
 	padding:4px 8px;
 	margin-left:22px;
 	margin-right:-8px;
+		transition-property:background;
+		transition-duration:200ms;
 }
 .guest_header #top_links a.active:hover{
-	background:#575757;
+	background:#666685;
 	border-radius:15px;
 	padding:4px 8px;
 	margin-left:22px;
@@ -735,10 +744,11 @@ div.legal{
 
 .legal ul {
 	margin-left:25px;
-	margin-bottom:10px;
+	margin-bottom:20px;
+	margin-top:20px;
 }
 .legal ul li {
-	margin-bottom:5px;
+	margin-bottom:15px;
 	font-size:14px;
 }
 

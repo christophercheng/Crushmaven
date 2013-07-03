@@ -21,7 +21,7 @@
 			submit : 'SEND',
 			recievedMsg : 'Thank you for your message.',
 			notRecievedMsg : 'Sorry, your message could not be sent.<BR><BR>Please try again.',
-			disclaimer: "We welcome suggestions and comments",
+			disclaimer: "Suggestions or comments - let us know!",
 			hideOnSubmit: false
 
 		};

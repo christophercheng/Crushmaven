@@ -110,7 +110,7 @@ $(document).ready(function()
 	<li class="title_bar_page_links">
 		{% if setup_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>started<span class="title_bar_count">{{setup_relationships.count}}</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_by_me/">finished <span class="title_bar_count">{{setups_completed_count}}</span></a>
+			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_by_me/">finished<span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
 			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_by_me/">started<span class="title_bar_count">{{setups_incomplete_count}}</span></a>
 			<span class="title_bar_page_link active_title_bar_page_link"><span class="page_link_pointer_container"><span class="page_link_pointer page_link_first_pointer"></span></span>finished<span class="title_bar_count">{{setup_relationships.count}}</span></span>
@@ -219,9 +219,9 @@ $(document).ready(function()
 
 {% elif show_help_popup == False %}
 	{% if setup_type == 0 %}
-		<span id="no_content">You have no setups for friends.&nbsp;&nbsp;<a href="javascript:{}" class="set_up_friend_link">Add one</a> to get started.</span>
+		<span id="no_content">You have no <i>ongoing</i> setups for friends.&nbsp;&nbsp;<BR><BR><a href="javascript:{}" class="set_up_friend_link">Add one</a> to get started.</span>
 	{% else %}
-		<span id="no_content">You have no finished setups for friends.</span>
+		<span id="no_content">You have no <i>finished</i> setups for friends.<BR><BR><BR><a href="javascript:{}" class="set_up_friend_link">Add one</a> to get started.</span>
 	{% endif %}
 {% endif %}
 
