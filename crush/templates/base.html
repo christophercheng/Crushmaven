@@ -430,6 +430,7 @@ $('body').on('click',".popup_link",function(e){
     max:12,
 	  excludeIds: "{% for request_rel in request.user.crush_setuprequestrelationship_set_from_source.all %}{{request_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",    
     closeOverlayClick: false,
+    setupSelect:true,
     overlayOpacity: "0.5",
     overlayColor: '#000',
     closeOnSubmit: true,
