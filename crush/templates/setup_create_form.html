@@ -23,6 +23,7 @@ $(document).ready(function()
     overlayColor: '#000',
     closeOnSubmit: true,
     showSelectedCount: true,
+    setupSelect:true,//setup mode - no confirmation view tab
     color: "default",
     showRandom:false,
     lang: {
@@ -61,6 +62,7 @@ $(document).ready(function()
   	$('.setup_target_pic').attr('src',"http://graph.facebook.com/" + window.setup_target + "/picture?width=60&height=60");
   	$('.setup_target_pic').attr('title',fullname);
   	$('button#select_setup_target').attr('getStoredFriends',window.setup_target);
+  	window.getStoredFriends = window.setup_target;
    	$('#setup_target_section .dialog_header').removeClass('active_dialog_header'); 	
 	$('#setup_target_section .dialog_header').addClass('past_dialog_header');
 	$('#setup_lineup_section .dialog_header').removeClass('inactive_dialog_header');
@@ -81,7 +83,7 @@ $(document).ready(function()
 		$('#recommendee_pic_' + x.toString()).show();
 	}
 	// note the space is necessary to clear out any previous getStoredFriends
-	$('button#select_setup_recommendees').removeAttr('getStoredFriends');
+	$('button#select_setup_recommendees').attr('getStoredFriends',""); // don't just remove attribute, set it to "" so that the friend selector code can override previous getStoredFriends
  	$('.setup_target_name').html(fullname);
  	$('button#select_setup_target').html("change");
   	$('.setup_recommendee_pic').css('opacity','1');
@@ -113,6 +115,7 @@ $(document).ready(function()
   	for (var hide_index=x;hide_index<10;hide_index++)
  	 	$('#recommendee_pic_' + hide_index.toString()).hide();
  	 $('button#select_setup_recommendees').attr('getStoredFriends',window.setup_recommendee_csl);
+ 	window.getStoredFriends = window.setup_recommendee_csl;
  	 // don't need to exlude recommendees from target selection list cause the recommendees list gets cleared out whenever a new target is chosen
  	 //$('button#select_setup_target').attr('excludeIds',window.recomendation_recommendee_csl);
  	 $('#setup_create_modal #create_setup').removeAttr('disabled');
@@ -169,7 +172,7 @@ $(document).ready(function()
 			<div class="setup_section_content">
 				<img class="setup_target_pic" src = "/static/images/fb_unknown_user_pic.jpg">
 				<span class="setup_target_name"></span>
-				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="1" {% if excludeIds or excludeIds != "" %}excludeIds ="{{exclude_ids}}" {% endif %} setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
+				<button class="setup_button setup_selector site_dialog_button site_dialog_select_button" max_selections="1" excludeIds="{% if excludeIds and excludeIds != "" %}{{exclude_ids}}{% endif %}" setup_select="true" onSubmit="window.process_selected_target" id="select_setup_target" type="button">select</button>
 	  	</div>
 	  </div><!-- close setup_target_section -->
     <div id="setup_lineup_section">

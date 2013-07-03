@@ -9,37 +9,35 @@
 ;(function(window, document, $, undefined) {
   'use strict';
   
+  /*
+   * any of the following attributes: max_selections, excludeIds,getStoredFriends,onSubmit will automatically overwrite existing properties set in the original dictionary parameter
+   * one caveat, if a previous attribute was set, then future iterations of the dialog will always use this attribute value, unless it is changed
+   * in other words, the attribute must be reset by setting it to "" and not just removing the attribute from the dom element
+   */
   $.fn.fSelector = function ( options ) {
-	  this.unbind("click.fs");
-	    this.bind("click.fs", function(){
-	    	var attr_max_selections= $(this).attr('max_selections');
-	    	var attr_getStoredFriends = $(this).attr('getStoredFriends');
-	    	var attr_onSubmit = $(this).attr('onSubmit');
-	    	var attr_excludeIds = $(this).attr('excludeIds');
-	    	var attr_setup_select=$(this).attr('setup_select');
-	    	if (attr_max_selections)// we are in friend setup mode most likely
-	    		options.max=parseInt(attr_max_selections);
-	    	if (attr_getStoredFriends)
-	    		options.getStoredFriends=attr_getStoredFriends;
-	    	else 
-	    		options.getStoredFriends='';
-	    	if (attr_onSubmit)
-	    		options.onSubmit=attr_onSubmit;
-	    	if (attr_excludeIds)
-	    		options.excludeIds=attr_excludeIds;
-	    	else
-	    		options.excludeIds='';
-	    	if (attr_setup_select)
-	    		options.setup_select=true;
-	    	else
-	    		options.setup_select=false;
-	    	fsOptions = options;
-	      _start();
-	    });
-	    return this;
+	this.unbind("click.fs");
+    this.bind("click.fs", function(){
+    	var attr_max_selections= $(this).attr('max_selections');
+    	var attr_getStoredFriends = $(this).attr('getstoredfriends');
+    	console.log('getStoredFriends',attr_getStoredFriends);
+    	var attr_onSubmit = $(this).attr('onSubmit');
+    	var attr_excludeIds = $(this).attr('excludeids');
+
+    	if (attr_max_selections != undefined)// we are in friend setup mode most likely
+    		options.max=parseInt(attr_max_selections);
+    	if (attr_getStoredFriends != undefined)
+    		options.getStoredFriends=attr_getStoredFriends;
+    	if (attr_onSubmit!=undefined)
+    		options.onSubmit=attr_onSubmit;
+    	if (attr_excludeIds != undefined)
+    		options.excludeIds=attr_excludeIds;
+    	fsOptions = options;
+      _start();
+    });
+    return this;
 
 	  };
-	  
+
   var fsOptions = {},
   running = false, isShowSelectedActive = false,
   windowWidth = 0, windowHeight = 0, selected_friend_count = 1,
@@ -73,7 +71,8 @@
   _start2 = function() {
 
     fsOptions = $.extend(true, {}, defaults, fsOptions);
-
+	console.log('getStoredFriends post extend',fsOptions.getStoredFriends);
+	console.log('excludeIds post extend',fsOptions.excludeIds);
     if ( fsOptions.max > 0 && fsOptions.max !== null ) {
       fsOptions.showSelectedCount = true;
 
@@ -164,7 +163,6 @@
     running = false;
     isShowSelectedActive = false;
     fsOptions.onClose();
-
   },
   
   _continue = function() {
@@ -302,7 +300,7 @@
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
-    if (!fsOptions.setup_select){
+    if (!fsOptions.setupSelect){
 	    title_bar = title_bar + 
 	    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
 	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>';
@@ -572,7 +570,7 @@
     });
     
     wrap.delegate('#fs-continue-button', 'click.fs', function(){
-    	if (fsOptions.setup_select)
+    	if (fsOptions.setupSelect)
     		_submit();
     	else
     		_continue();
@@ -1067,6 +1065,7 @@
     closeOnSubmit: false,
     showSelectedCount: true,
     showButtonSelectAll: false,
+    setupSelect:false,// setup mode - no confirmation tab view
     color: "default",
     lang: {
       title: "Friend Selector",
