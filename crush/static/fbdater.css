@@ -4385,7 +4385,7 @@ div.past_dialog_header {
 	color:white;
 	font-weight:bold!important;
 	text-align:center!important;
-	
+	letter-spacing:1px;
 }
 .wait_modal_dialog .ui-dialog-titlebar, .wait_modal_dialog .ui-dialog-buttonpane{
 	display:none;

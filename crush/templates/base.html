@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
 			// only initialize jquery modal dialog once per page load
 
 			if (!window.app_invite_modal)
-				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog blacktop",resizable:false, modal: true, autoOpen: false,position:{my:"left center",at:"right+33 center-90",of:'.left_sidebar_container .bt-fs-dialog'}});
+				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog blacktop",resizable:false, modal: true, autoOpen: false});
 			window.app_invite_modal.html('<div id="site-loading"></div>');
 			window.wait_modal_open();
 			var crush_username=$(this).attr('crush_username');	
@@ -270,11 +270,11 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
     });
 }
   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
-  $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, modal: true, autoOpen: false}); 
+  $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, height:80,width:300,modal: true, autoOpen: false}); 
  
  window.wait_modal_open=function(message){
   	if (typeof message == 'undefined')
-  		var message="Please Wait";
+  		var message="please wait...";
 
   	if (!$("#wait_modal").dialog("isOpen"))
 			$('#wait_modal').dialog("open");
@@ -463,7 +463,7 @@ $('body').on('click',".popup_link",function(e){
 	function send_fb_requests(attraction_array){
 	  var csrf_data={};
     csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
-    window.wait_modal_open('Please wait while we process your message');
+    window.wait_modal_open("processing message...");
     source_person_last_name="{{request.user.last_name}}";
     source_person_first_name = "{{request.user.first_name}}"
     source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
@@ -605,7 +605,7 @@ $('.show_less').click(function(){
 	$('.second_instruction_section').hide(200);
 	setTimeout(function(){$('.new_user_instructions').removeClass('expanded');},100);
 });
-
+window.wait_modal_open();
 }); // close of jQuery(document).ready
 
 </script>
