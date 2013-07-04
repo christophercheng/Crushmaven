@@ -250,18 +250,15 @@ a.button {
 	-webkit-transition-property:background;
 }
 .site_dialog_cancel_button {
-	background:#595959!important;
 	background:white!important;
 	border:1px solid #C8C8C8!important;
 	text-shadow:none!important;
 	color:#595959!important;
 }
 .site_dialog_cancel_button:hover {
-	background:#F2F2F2!important;
-	background:#595959!important;
-	border:0px!important;
+	background:#474747!important;
+	border:1px solid #353535!important;
 	color:white!important;
-	border:1px solid #DEDEDE!important;
 	transition-property:color,background;
 	transition-duration:200ms,200ms;
 	-webkit-transition-duration:200ms,200ms;
@@ -270,15 +267,14 @@ a.button {
 
 .site_dialog_select_button{
 	#text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4)!important;
-	#background:#3A455C!important;
 	background-color:#1E3B93!important;
+	background-color:#323E59!important;
 	border-radius:8px!important;
 	border:0px!important;
 	padding:3px 12px 3px 12px!important;
 }
 .site_dialog_select_button:hover{
-	#background:#2A3142!important;	
-	background-color:#152967!important;
+	background-color:#212A3C!important;
 	border-radius:8px!important;
 			transition-property:background;
 	transition-duration:200ms;
