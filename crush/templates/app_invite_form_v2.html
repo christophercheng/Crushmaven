@@ -40,13 +40,12 @@ $(document).ready(function()
 
 /* ---------------- PREVIEW INVITE HANDLING ---------------- */
 
-$('#preview_invite_button').click(function(){
+$('#app_invite_form').on('click','#preview_invite_button',function(){
 	var preview_element = $('#preview_section');
-				
 	if ( preview_element.is(':visible') ){
 			
 			$(this).children('.ui-button-text').html('Preview Invites');
-			preview_element.slideToggle(500);
+			preview_element.slideToggle(250);
 			$(this).removeClass('preview_close');
 			$('.sent_from_us').fadeTo(0,0).css('left',420);
 			$('#app_invite_form #sendbutton').removeAttr('disabled');
@@ -61,13 +60,13 @@ $('#preview_invite_button').click(function(){
 		$(this).children('.ui-button-text').html('Close Preview');
 		$('.email_preview_content').height(form_height - buttonpane_height - 75);
 		$('.email_content_body').height(form_height - buttonpane_height - 165);
-		preview_element.slideToggle(1000);
+		preview_element.slideToggle(750);
 		$('.sent_from_us').delay(1000).animate({opacity:1,left:"-=330"},1000);
 		$('#app_invite_form #sendbutton').attr('disabled','true');
 	}
 });// close off #preview_invite_button
 
-$('#preview_section').on('click', '.inactive_tab',function(){
+$('#app_invite_form').on('click', '.inactive_tab',function(){
 $('.sent_from_us').css('opacity',0);
 
 	$('#preview_section .active_tab').removeClass('active_tab').addClass('inactive_tab');

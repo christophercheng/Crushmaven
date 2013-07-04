@@ -1216,14 +1216,17 @@ a.logo img{
 	font-weight:bold;
 	font-size:11px!important;
 	letter-spacing:0px;
+	border-radius:5px;
 }
 
 .new_user_instructions .show_less{
 	display:none;
-		#color:#474775!important;
+	#color:#474775!important;
 }
 .new_user_instructions .show_less:hover,.new_user_instructions .show_more:hover{
 	text-decoration:none;
+	color:#2952CC;
+	background:#FBFBFB;
 }
 
 .new_user_instructions span.instructions_title{
