@@ -224,7 +224,7 @@ a.button {
 	filter:alpha(opacity=60)important!;
 	-moz-opacity:0.6!important;
 	text-shadow:none;
-	cursor:inherit;
+	cursor:inherit!important;
 	color: #9D9D9D!important;
 	border:1px solid #BFBFBF!important;
 	text-shadow:none!important;
