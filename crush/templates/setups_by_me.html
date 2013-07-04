@@ -102,7 +102,7 @@ $(document).ready(function()
 <!-- Display the title widget -->  
 <span class="title_line"></span>
 <ul class="title_bar" id="title_bar_setups_by_me">
-	<li class="title_bar_title">Setup Responses</li>
+	<li class="title_bar_title">Setup Results</li>
 	<li class="title_bar_option">
 		sort:
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
@@ -219,9 +219,9 @@ $(document).ready(function()
 
 {% elif show_help_popup == False %}
 	{% if setup_type == 0 %}
-		<span id="no_content">You have no <i>ongoing</i> setups for friends.<span class="no_content_action"><a href="javascript:{}" class="set_up_friend_link">Create one</a> to get started.</span></span>
+		<span id="no_content">You have no <i>ongoing</i> setups.<span class="no_content_action"><a href="javascript:{}" class="set_up_friend_link">Create one</a> to get started.</span></span>
 	{% else %}
-		<span id="no_content">You have no <i>finished</i> setups for friends.<span class="no_content_action"><a href="javascript:{}" class="set_up_friend_link">Create one</a> to get started.</span></span>
+		<span id="no_content">You have no <i>finished</i> setups.<span class="no_content_action"><a href="javascript:{}" class="set_up_friend_link">Create one</a> to get started.</span></span>
 	{% endif %}
 {% endif %}
 
