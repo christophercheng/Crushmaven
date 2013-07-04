@@ -71,6 +71,7 @@
 	width:100px;
 	text-align:center;
 	border-radius:5px;
+	letter-spacing:1px;
 }
 #contactable #contactForm .submit:hover {
 	background:#C61236;
@@ -83,12 +84,13 @@
 #contactable #contactForm .disclaimer {
 	letter-spacing:1px;
 	text-align:center;
-	font-size:13px;
+	font-size:12px;
 	z-index:100000001;
 	margin-top:15px;
 	margin-bottom:7px;
 	line-height:18px;
 	color:#F0F0F0;
+			text-shadow:0px -1px 1px rgba(0,0,0,0.8)!important;
 }
 
 #contactable #contactForm .red {

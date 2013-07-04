@@ -703,15 +703,18 @@ a.logo img{
 }
 .left_sidebar_container .nav_header{
 	letter-spacing:3px;
-	border-bottom:2px solid rgb(51,51,51);
+	border-bottom:2px solid #254AB8;
+	border-bottom:2px solid #324AB2;
 	text-shadow:0px 1px 1px #C2C2C2!important;
 	word-spacing:-2px;
 	font-style:italic;
 	#border-top:1px solid #333333;
+	font-weight:bold;
 }
 .right_sidebar_container .nav_header{
 	color:white;
 	background-color:rgb(51,51,51);
+	background-color:#4A4A4A;
 	letter-spacing:1px;
 	font-size:13px;
 	font-weight:bold;
@@ -722,7 +725,7 @@ a.logo img{
 	border-right:1px solid rgb(51,51,51);
 }
 .right_sidebar_container .navbar {
-	border-bottom:3px solid rgb(51,51,51)
+	border-bottom:3px solid #4A4A4A;
 }
 
 .navbar {
@@ -1094,7 +1097,6 @@ a.logo img{
  	top:5px;
  	height:40px;
  	width:40px;
- 	#border:1px solid red;
  }
 
 #friend_referral_bar li.friend_with_admirer ul {
@@ -1103,7 +1105,6 @@ a.logo img{
 		top:5px;
 		left:50px;
 		list-style:none;
-		#border:1px solid red;
 		font-size:11px;
 		height:45px;
 		line-height:13px;
@@ -1173,7 +1174,7 @@ a.logo img{
 	margin-left:-25px;
 	color:#333366!important;
 	font-weight:bold;
-  font-size:15px;
+  font-size:14px;
 }
 
 #credit_check_content #site-loading {
@@ -1221,6 +1222,7 @@ a.logo img{
 
 .new_user_instructions .show_less{
 	display:none;
+		color:#474775!important;
 }
 .new_user_instructions .show_less:hover,.new_user_instructions .show_more:hover{
 	text-decoration:none;
@@ -1235,9 +1237,8 @@ a.logo img{
 .new_user_instructions .help_icon{
 	top:39px;
 	left:2px;
-	#border: 1px solid #85C2FF;
 	border-radius:10px; 
-	#background: transparent!important;
+	display:none;
 }
 
 .new_user_instructions div.first_instruction_section{
@@ -1271,7 +1272,7 @@ a.logo img{
 
 .new_user_instructions a {
 	font-size:13px!important;
-	color:#3366ff;
+	color:#333366;
 }
 .new_user_instructions a:hover{
 	text-decoration:underline;
@@ -1358,10 +1359,11 @@ ul.title_bar > li {
 }
 
 ul.title_bar li.title_bar_title{
-	font-size:14px;
+	font-size:13px;
 	padding-right:25px;
 	line-height:10px;
-	padding-bottom:3px;
+	padding-bottom:4px;
+	font-weight:bold;
 }
 
 ul.title_bar li.conversation_title{
@@ -1869,6 +1871,11 @@ ul.nav_bar li#nav_bar_options{
 	margin-top:100px;
 	display:inline-block;
 	position:relative;
+}
+
+.center_panel_container #no_content .no_content_action{
+	display:block;
+	margin-top:23px;
 }
 
 #responses{

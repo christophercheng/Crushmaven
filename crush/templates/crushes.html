@@ -285,9 +285,9 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <span id="no_content">
 
 	{% if crush_type == 0 %}
-		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}attractions.&nbsp;&nbsp;<a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.
+		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}attractions.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% else %}
-		You have no <i>responded</i> attractions.
+		You have no <i>responded</i> attractions.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% endif %}
 	</span>
 {% endif %}

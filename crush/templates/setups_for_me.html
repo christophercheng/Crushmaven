@@ -178,9 +178,9 @@ $(document).ready(function()
 
 {% elif show_help_popup == 0 %}
 	{% if setup_type == 0 %}
-		<span id="no_content" {% if request_relationships %}class="no_content_abbreviated"{% endif %}>You have no setups from friends.<BR><BR><BR><a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span>
+		<span id="no_content" {% if request_relationships %}class="no_content_abbreviated"{% endif %}>You have no setups from friends.<span class="no_content_action"><a href="javascript:{}" setup_select="true" class="request_setup_link">Request one</a> to get started.</span></span>
 	{% else %}
-		<span id="no_content">You have no <i>finished</i> setups from friends.&nbsp;&nbsp;<a href="javascript:{}" class="request_setup_link"><BR><BR><BR>Request one</a> to get started.</span>
+		<span id="no_content">You have no <i>finished</i> setups from friends.<span class="no_content_action"><a href="javascript:{}" class="request_setup_link">Request one</a> to get started.</span></span>
 	{% endif %}
 {% endif %}
 

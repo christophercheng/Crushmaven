@@ -203,6 +203,7 @@ def write(request, recipients=None, form_classes=(WriteForm, AnonymousWriteForm)
             # order_by() is not mandatory, but: a) it doesn't hurt; b) it eases the test suite
             # and anyway the original ordering cannot be respected.
             user_model = get_user_model()
+            #user_model = FacebookUser # hack in place in case interpreter gives IMproperlyConfigured error : AUTH_USER_MODEL refers to model 'crush.FacebookUser' that has not been installed'
             usernames = list(user_model.objects.values_list(user_model.USERNAME_FIELD, flat=True).filter(
                 is_active=True,
                 **{'{0}__in'.format(user_model.USERNAME_FIELD): [r.strip() for r in recipients.split(':') if r and not r.isspace()]}

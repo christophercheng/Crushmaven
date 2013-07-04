@@ -4,7 +4,7 @@ margin: 0; padding: 0; border: 0;
 }
 
 body {
-	font-family: "lucida grande",helvetica,arial,verdana,sans-serif;  
+	font-family: helvetica,"lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: hidden;	
@@ -703,7 +703,8 @@ div.legal{
 	display:block;
 	font-size:14px;
 	margin-bottom:10px;
-	line-height:22px;
+	line-height:26px;
+	
 }
 
 .legal p.noteworthy{
