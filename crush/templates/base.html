@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
 			// only initialize jquery modal dialog once per page load
 
 			if (!window.app_invite_modal)
-				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog blacktop",resizable:false, modal: true, autoOpen: false});
+				window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false});
 			window.app_invite_modal.html('<div id="site-loading"></div>');
 			window.wait_modal_open();
 			var crush_username=$(this).attr('crush_username');	
@@ -374,7 +374,7 @@ function closeSubMenu() {
 	clearTimeout(window.submenu_toggle);
 	var hide_me = $(this).find('ul');
 	$(this).find('a').css('color','');
-	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(200);console.log('hover hide');},100);
+	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(200);},100);
 };
 $('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
 $('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white')},function(){$('#get_started_link').css('color','#DC143C')});

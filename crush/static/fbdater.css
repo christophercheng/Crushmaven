@@ -257,24 +257,23 @@ a.button {
 }
 .site_dialog_cancel_button:hover {
 	background:#474747!important;
-	border:1px solid #353535!important;
+	border-color: #474747!important;
 	color:white!important;
-	transition-property:color,background;
-	transition-duration:200ms,200ms;
-	-webkit-transition-duration:200ms,200ms;
-	-webkit-transition-property:color,background;
+	transition-property:color,background,border-color;
+	transition-duration:200ms,200ms,200ms;
+	-webkit-transition-duration:200ms,200ms,200ms;
+	-webkit-transition-property:color,background,border-color;
 }
 
 .site_dialog_select_button{
 	#text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4)!important;
-	background-color:#1E3B93!important;
-	background-color:#323E59!important;
+	background-color:#212A3C!important;
 	border-radius:8px!important;
 	border:0px!important;
 	padding:3px 12px 3px 12px!important;
 }
 .site_dialog_select_button:hover{
-	background-color:#212A3C!important;
+	background-color:#141924!important;
 	border-radius:8px!important;
 			transition-property:background;
 	transition-duration:200ms;
@@ -1214,11 +1213,14 @@ a.logo img{
 	background:#F4F4F4;
 	bottom:-11px;
 	border-radius:4px;
+	font-weight:bold;
+	font-size:11px!important;
+	letter-spacing:0px;
 }
 
 .new_user_instructions .show_less{
 	display:none;
-		color:#474775!important;
+		#color:#474775!important;
 }
 .new_user_instructions .show_less:hover,.new_user_instructions .show_more:hover{
 	text-decoration:none;
@@ -1736,11 +1738,7 @@ ul.nav_bar li#nav_bar_options{
 }
 
 .crush_response_body .crush_block_button:active{
-	border-top:1px solid #254AB8;
-	border-left:1px solid #254AB8;
-	border-right:1px solid #254AB8;
-	padding:5px 12px 4px 11px;
-	word-spacing:-1px;
+	background:#324FA7;
 }
 
 .crush_status_responded .crush_response_body .crush_block_button{
@@ -3580,6 +3578,7 @@ div.past_dialog_header {
 	border-radius:10px;
 	font-size:11px;
 	color:white;
+	letter-spacing:1px;
 }
 
 .setup_by_me_block  .setup_status {
@@ -3918,6 +3917,7 @@ div.past_dialog_header {
 	padding: 5px 10px 5px 10px;
 	color:white; 
 	font-size:12px;
+	line-height:18px;
 	#border-radius:10px;
 }
 
@@ -4009,6 +4009,7 @@ div.past_dialog_header {
 #app_invite_form{
 	font-size:12px;
 	padding-bottom:3px;
+	position:relative;
 }
 
 .app_invite_dialog{
@@ -4027,9 +4028,8 @@ div.past_dialog_header {
 }
 
 #attraction_email_input_section{
-	padding-top:8px;
-	padding-bottom:7px;
-		border-bottom:1px solid #C0DCF8;
+	padding-top:20px;
+	padding-bottom:10px;
 }
 
 #attraction_email_input_section .crush_email_name {
@@ -4060,33 +4060,29 @@ div.past_dialog_header {
 
 #mutual_friend_input_section_subtitle{
 	display:inline-block;
-	padding-left:10px;
-	padding-right:10px;
-	padding-top:5px;
-	padding-bottom:8px;
-	border-radius:0 0 8px 8px;
-	margin-bottom:8px;
-	margin-left:15px;
-	margin-right:15px;
-	margin-top:1px;
+	padding-left:15px;
+	padding-right:15px;
+	padding-top:2px;
+	padding-bottom:2px;
 	font-size:10px;
-	line-height:14px;
-	background:#E7F2FC;
-	#background:#FFFFF0;
-	border:1px solid #C0DCF8;
-	border-top:0px;
-	color:#4D4D4D;
-
+	line-height:12px;
+	background:#F1F7FD;
+	border-top:1px solid #CCCCD6;
+	#border-bottom:1px solid #E9F3FC;
+	color:#363636;
+	line-height:18px;
 }
 #mutual_friend_input_section_subtitle .strong_subtitle{
 	font-size:11px;
-	font-style:italic;	
+	#font-weight:bold;	
+	color:black;
 }
 
 #mutual_friend_input_section{
 	overflow-y:auto;
 	max-height: 160px; 
-	padding-bottom:0px;
+	padding-bottom:5px;
+	padding-top:18px;
 }
 #mutual_friend_input_section .mf_email_name {
 	display:inline-block;
@@ -4171,9 +4167,182 @@ div.past_dialog_header {
 #app_invite_form .ui-dialog-buttonset{
 	float:none!important;
 }
+
 #app_invite_form .site_dialog_button{
 	font-size:14px!important;
 }
+
+#app_invite_form .ui-dialog-buttonpane {
+	position:relative!important;
+}
+
+#preview_invite_button{
+margin-right:15px!important;
+}
+
+.app_invite_dialog {
+	background:white;
+}
+#preview_section {
+	position:absolute;
+	width:100%;
+	bottom:19px;
+	left:0;
+	background:white;
+	display:none;
+}
+#app_invite_form .preview_button:hover, #app_invite_form .preview_close{
+	background:#000033!important;
+	border-color:#000033!important;
+	color:white!important;
+}
+
+#preview_section .preview_tab{
+	display:inline-block;
+	width:275px;
+	line-height:25px;
+	vertical-align:middle;
+	text-align:center;
+	font-size:12px;
+	border-top:1px solid #000033;
+}
+
+#preview_section .active_tab{
+	font-weight:bold;
+	color:white;
+	background:#666685;
+	background:#000033;
+
+}
+
+#preview_section .inactive_tab{
+	cursor:pointer;
+	color:white;
+	background:white;
+	color:#474747;
+}
+
+#preview_section .inactive_tab:hover{
+	background:#CCCCD6;
+	#color:white;
+	color:black;
+	transition-property:background,color;
+	transition-duration:200ms,200ms;
+	-webkit-transition-duration:200ms,200ms;
+	-webkit-transition-property:background,color;
+}
+
+#preview_section .preview_body{
+	width:100%;
+	height:100%;
+	padding:15px;
+	background:#666685;
+	background:#000033;
+}
+#mf_email_preview_content{
+	display:none;
+}
+
+.email_preview_content{
+	width:100%;
+	height:100%;
+	z-index:1000;
+	color:#393939;
+	#background:#f2f2f2;
+	margin-top:5px;
+	border:1px solid #E6E6EB;
+	margin-top:-1px;
+	position:relative;
+	font-size:12px;
+	font-family:helvetica;
+	#overflow-y:auto;
+	#overflow-x:hidden;
+	border-radius:10px;
+	background:white;
+}
+
+#attraction_email_preview_content .email_content_body{
+	overflow-y:hidden;
+}
+.email_address_holder{
+	font-style:italic;
+}
+
+.email_header{
+	display:inline-block;
+	background:#EBEBEF;
+	width:100%;
+	height:78px;
+	padding:4px 15px 0px 15px;
+	border-radius:10px 10px 0 0;
+}
+.email_content_header_labels{
+	display:inline-block;
+	width:60px;
+	color:#404040;
+	line-height:24px;
+	font-weight:bold;
+	font-size:13px;
+	float:left;
+}
+.email_content_header_content{
+	display:inline-block;
+	line-height:24px;
+	width:350px;
+	float:left;
+}
+.email_content_body{
+	padding-top:8px;
+	display:inline-block;
+	line-height:20px!important;
+	overflow:auto;
+	margin-top:-5px;
+}
+
+.email_content_body p {
+	margin-top:5px;
+	font-size:12px;
+	padding-left:15px;
+	padding-right:15px;
+}
+#mf_email_preview_content p{
+	margin-top:10px;
+}
+
+.anonymous_email_callout{
+	font-weight:bold;
+	position:relative;
+}
+
+.sent_from_us_pointer{
+	width: 0; 
+	height: 0; 
+	position:absolute;
+	left:-8px;
+	top:-4px;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
+	border-right: 12px solid #2E8AE6;
+}
+.sent_from_us{
+	background:	#2E8AE6;
+	font-weight:bold;
+	position:absolute;
+	display:inline-block;
+	vertical-align:middle;
+	text-align:center;
+	font-size:12px;
+	width:92px;
+	padding:1px 3px 1px 2px;
+	left:420px;
+	top:-1px;
+	color:white;
+	#box-shadow: 1px 2px 2px rgba(0,0,0,.5);
+	z-index:200000;
+	opacity:0;
+	line-height:14px;
+}
+
 
 /* ===========================   Alert Dialog ========================= */
 
