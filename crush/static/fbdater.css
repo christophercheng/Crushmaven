@@ -4559,10 +4559,10 @@ margin-right:15px!important;
 	box-shadow:none!important;
 	background-color:#000!important;
 	padding:30px 0px 30px 0px!important;
-	opacity:0.6!important;
-	filter:alpha(opacity=60)important!;
+	opacity:0.8!important;
+	filter:alpha(opacity=80)important!;
 	 /* IE 8 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)"!important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"!important;
 }
 #wait_modal{
 	background:none!important;
