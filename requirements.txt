@@ -1,0 +1,10 @@
+Django==1.5
+PIL==1.1.7
+South==0.8.1
+dj-database-url==0.2.1
+django-ajax-selects==1.2.5
+gunicorn==17.5
+psycopg2==2.5.1
+requests==1.1.0
+virtualenv==1.9.1
+wsgiref==0.1.2

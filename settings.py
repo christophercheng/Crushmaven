@@ -6,8 +6,8 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, PROJECT_PATH) 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+#TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -311,5 +311,12 @@ POSTMAN_AUTOCOMPLETER_APP={
     'arg_default':'postman_users'}
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
+
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
