@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from ajax_select import urls as ajax_select_urls
 from django.views.generic.base import RedirectView
+from django.conf import settings
 
 admin.autodiscover()
 
@@ -24,6 +25,9 @@ urlpatterns += patterns('',
 #urlpatterns += patterns('crush.views.infrastructure_views',    
 #    (r'', 'under_construction'),
 #)
+urlpatterns += patterns('',
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
+)
 
 # ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',

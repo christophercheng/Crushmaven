@@ -177,7 +177,8 @@ class FacebookUser(AbstractUser):
         app_label = 'crush' 
         
     # ------- START OF REQUIRED FIELDS
-    access_token = models.CharField(max_length=50)
+    access_token = models.TextField(null=True,blank=True)
+    
     
     GENDER_CHOICES = (
                       (u'M', u'male'),
