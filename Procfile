@@ -1,1 +1,1 @@
-web: gunicorn fbdater.wsgi
+web: gunicorn fbdater.wsgi:application
