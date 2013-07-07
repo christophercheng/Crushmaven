@@ -45,8 +45,9 @@ ORDER_BY_FIELDS = {
 }
 ORDER_BY_MAPPER = {'sender': 'f', 'recipient': 't', 'subject': 's', 'date': 'd'}  # for templatetags usage
 
-dbms = settings.DATABASES['default']['ENGINE'].rsplit('.', 1)[-1]
-QUOTE_CHAR = '`' if dbms == 'mysql' else '"'
+#dbms = settings.DATABASES['default']['ENGINE'].rsplit('.', 1)[-1]
+QUOTE_CHAR = '"'
+#`' if dbms == 'mysql' else '"'
 
 
 def get_order_by(query_dict):
