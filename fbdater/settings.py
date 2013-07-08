@@ -107,7 +107,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.csrf',
     'django.core.context_processors.static',
-    'fbdater.crush.context_processor.context_processor',
+    'crush.context_processor.context_processor',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -133,7 +133,7 @@ TEMPLATE_DIRS = (
     # MAC PATH:
     #os.path.join(PROJECT_PATH, 'templates'), 
     # PC PATCH:
-    os.path.join(SITE_ROOT, 'crush/templates'), 
+    os.path.join(SITE_ROOT, '../templates'), 
     
     
     #"templates"
@@ -151,9 +151,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'fbdater.facebook',
-    'fbdater.crush',
-    'fbdater.postman',
+    'facebook',
+    'crush',
+    'postman',
     'ajax_select', 
     #for postman app
 )
