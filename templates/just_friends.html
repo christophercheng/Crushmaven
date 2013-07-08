@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38751299-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<div id="dialog" title="Remove Platonic Friend">Are you sure you want to remove this person from your 'Just Friends' list?</div>
+<div id="reconsider_dialog" title="Add as Crush">Are you sure you want to add this user to your Crush list?</div>
+
+<script type="text/javascript">
+
+$(document).ready(function() 
+{
+        $("#dialog").dialog({modal: true,resizable:false, autoOpen: false});
+
+        $("a.delete").click(function(e) {
+        	var name=$(this).attr('name');	
+            var username=$(this).attr('username');
+            e.preventDefault();
+            $("#dialog").text("Are you sure you want to remove " + name + " from your 'just friends' list?");
+            $("#dialog").dialog('option', 'buttons', {
+       			"Delete": function() {window.location = "/just_friends/" + '?delete=' + username;},
+        		"Cancel": function() {$(this).dialog("close");
+        		}
+    		});
+            $("#dialog").dialog("open");
+            return false;
+        });
+        
+        $("#reconsider_dialog").dialog({modal: true,resizable:false, autoOpen: false});
+
+        $("a#reconsider").click(function(e) {
+        	  var name=$(this).attr('name');	
+            var rel_id=$(this).attr('rel_id');
+            e.preventDefault();
+            $("#reconsider_dialog").html("<form action='/reconsider' method='POST'>Are you sure you want to add " + name + " to your crush list? <BR><BR>" +
+            "<input type='checkbox' id='check_terms' name='terms' value='terms_value' checked>" + 
+            " <small>I agree to the <a href='/terms' target=_blank>terms & conditions</a></small></form>"); 
+            
+            $("#reconsider_dialog").dialog('option', 'buttons', {
+       			"Add": function() {
+       				if (!$('#check_terms').is(':checked')){
+       					window.alert_user("You must agree to the terms & conditions before proceeding");
+       					return false;
+       					} // close checkbox check block
+       				$.post("/ajax_reconsider/",{rel_id:rel_id, csrfmiddlewaretoken:'{{csrf_token}}' },function(data){
+      
+       				window.location = "/attractions/";
+       				}); // close post function
+							}, // close add function
+        		"Cancel": function() {$(this).dialog("close");
+ 						 }
+    			}); // close off dialog
+            $("#reconsider_dialog").dialog("open");
+            return false;
+        });
+        
+        
+        
+});
+
+</script>
+
+<!-- Display the Page Title -->  
+<H3>Just Friends</h3> (testing: <a href="javascript:{}" class="bt-fs-dialog">add platonic friend</a>)<BR><BR>
+<! -- End title -->  
+
+{% if platonic_relationships %}
+
+	{% for friendship in platonic_relationships %}
+	
+	<div class="platonic_friend_block">
+		<HR>
+<!-- Display NEW or UPDATED if relevant -->  
+		{% if friendship.updated_flag == 1 %}
+			(New)
+			{{friendship.resetUpdatedFlag}}
+		{% endif %}
+		
+		
+		<img src="{{friendship.target_person.get_facebook_picture }}" height=40 width=40>
+		&nbsp;&nbsp;&nbsp;
+		<b><i>{{friendship.target_person.first_name}} {{friendship.target_person.last_name}}</i></b> 
+		&nbsp;&nbsp;&nbsp;
+		as of {{friendship.date_added}}
+		&nbsp;&nbsp;&nbsp;
+		<a href="#" id="reconsider" rel_id="{{friendship.id}}" name= "{{friendship.target_person.first_name}} 
+				{{friendship.target_person.last_name}}">reconsider</a>
+	
+		
+		<!-- start: secondary data -->
+		<br>
+		<a href="https://www.facebook.com/{{friendship.target_person.username}}" target="_blank">view facebook page</a>		&nbsp;&nbsp;<a username="{{friendship.target_person.username}}" name= "{{friendship.target_person.first_name}} 
+				{{friendship.target_person.last_name}}" class="delete" href="#" >(admin remove)</a>	
+	</div>
+	{% endfor %}
+
+	
+{% else %}
+	You currently do not have anyone in your 'Just Friends' list. <br><BR>You will have the option to add people to this list once you activate the line-up of your first secret admirer.
+{% endif %}
+{% endblock %}
+

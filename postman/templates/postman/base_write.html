@@ -1,0 +1,90 @@
+{% extends "postman/base.html" %}
+{% load i18n %}
+{% block extrahead %}{{ block.super }}
+{% if autocompleter_app.is_active %}
+{# dj v1.4 #}{% load static %}
+
+{% if autocompleter_app.name == "ajax_select" %}{% if autocompleter_app.version == "1.1.4" or autocompleter_app.version == "1.1.5" %}<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.autocomplete.min.js"></script>
+<link type="text/css" media="all" rel="stylesheet" href="{{ STATIC_URL }}css/jquery.autocomplete.css"/>
+{# else: for version 1.2.x use AJAX_SELECT_BOOTSTRAP + AJAX_SELECT_INLINES or arrange to include jqueryUI/js/css #}
+{% endif %}{% endif %}
+{% endif %}
+{% endblock %}
+{% block content %}
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$('#id_recipients').prop('placeholder',"Enter mutual attraction's name");
+
+
+var send_button = $('#send_button');
+var selected_user_text;
+$( "#id_recipients" ).on( "autocompleteselect", function( event, ui ) {send_button.removeProp('disabled');selected_user_text = ui.item.value;} );
+$("#id_recipients").keypress(function() {
+	{send_button.prop('disabled',true);} 
+});
+
+var body_element=$('#id_body');
+body_element.click(function(){
+
+		if (!body_element.prop('error'))
+			return
+		body_element.css("border-width","1px").css("border-color","#DFDFDF");
+		body_element.prop('error',false);
+});
+var goto_conversation = function(){
+		
+		var body = body_element.val();
+		if (body.length< 5){
+			body_element.css("border-width","2px").css("border-color","red");
+			body_element.prop('error',true);
+			return;
+			}
+		// call server and ask if this user has access to messaging
+		//var pattern = /(?=\()(.*)(?=\))/g;
+		var pattern = /(?=\()(.*)(?=\))/g;
+		var result = selected_user_text.match(pattern);
+		if (result==null){
+			window.alert_modal("Messaging Problem", "{{generic_error_message}}" );
+			return;	
+		}
+		attraction_id=result[0].substring(1);
+		$.get('/ajax_user_can_message/' + attraction_id,function(){
+			window.submit_message_form();
+		}).fail(function(responseText,textStatus,XHR){
+			if(responseText.status=='403') {
+				purchase_conversation('{{csrf_token}}',attraction_id,'window.submit_message_form()');
+				return;
+			}
+			else {
+				window.alert_modal("Messaging Problem", "{{generic_error_message}}" );
+				return;
+			}
+		}); 
+		
+
+};
+send_button.click(goto_conversation);
+
+window.submit_message_form=function(){
+			$('#pm_form').submit();
+}
+}); // close of jQuery(document).ready
+
+</script>
+
+<span class="title_line"></span>
+<ul class="title_bar">
+	<li class="title_bar_title">{% block pm_write_title %}{% endblock %}</li>
+</ul>
+
+<div id="postman">
+
+<form id ="pm_form" action="" method="post">{% csrf_token %}
+{% block pm_write_recipient %}{% endblock %}
+{{ form.as_p }}
+	<div id="message_buttonset">
+		<button type="button" id="send_button" disabled >{% trans "Send" %}</button>
+	</div>
+</form>
+</div>
+{% endblock %}

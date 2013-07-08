@@ -1,0 +1,45 @@
+<div id="credit_check_container">
+<div id="feature_description">
+	{{ feature_name }}
+</div>
+
+<div id="purchase_description_container">
+	<span class="split_column_line"><span class="split_column_line1">Credit Available:</span><span class="split_column_line2">{{ credit_available }}&nbsp;{% if credit_available == 1 %}credit
+			{% else %}credits{% endif %}</span></span>
+	<span class="split_column_line"><span class="split_column_line1">Feature Cost:</span><span class="split_column_line2 ">- {{ feature_cost }} credit</span></span>
+	<span class="split_column_line feature_cost_separator"><span class="split_column_line1"></span><span class="split_column_line2 feature_cost_separator_line"></span></span>
+	<span class="split_column_line "><span class="split_column_line1">Remaining After Purchase:</span><span class="split_column_line2">{{ credit_remaining }}&nbsp;{% if credit_available == 1 %}credit
+			{% else %}credits{% endif %}</span></span></span></span>
+</div><!--  close off purchase_description_container -->
+<div class="ui-dialog-buttonpane">
+	<div class="ui-dialog-buttonset">
+		<button id="credit_deduct_not_ok" onclick="$('#credit_check_modal').dialog('close');" class="ui-button site_dialog_button site_dialog_cancel_button" type="button" role="button"><span class="ui-button-text">Cancel</span></button> 
+		<button id="credit_deduct_ok" feature_id="{{feature_id}}" onclick="$('#credit_check_modal').dialog('close');" feature="{{feature_id}}" class="ui-button site_dialog_button" type="button" role="button"><span class="ui-button-text">Purchase</span></button> 
+	</div>
+</div><!-- close off button_bar -->
+</div><!--  close off credit_check_content -->
+
+<script>
+$(document).ready(function() 
+{
+	$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
+		// call ajax post function to deduct credit and call related handler
+	 	$("#site-overlay").css('visibility','visible');
+		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
+		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2
+		$.post(post_url,post_dict,function(data) {
+			// if successful then load next slide and thumbnail and auto go to that slide
+			$('#site-overlay').css('visibility','hidden');
+			{{purchase_callback_name}};
+			// adjust the credits number on the main site
+			$("#num_credits").load("/ajax_update_num_credits/");
+			}) 
+			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
+					window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
+					$('#site-overlay').css('visibility','hidden');
+			}); // end of .fail handler
+		}); // close off #credit_deduct_ok handler 
+
+});
+
+</script>

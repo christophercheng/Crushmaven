@@ -1,0 +1,10 @@
+{% load fbdater_extras %}
+<div class="request_block">
+	<img class="request_block_pic" src="http://graph.facebook.com/{{relationship.target_person.username}}/picture?width=60&height=60">
+	<div class="request_content">
+		<span class="request_block_preposition">Requested of:</span>
+		<span class="request_block_name">{{relationship.target_person.get_name}}</span>
+		<span class="request_block_metadata">requested {{relationship.date_added|datetime_since}} ago</span> 
+	</div>
+	{% if relationship.can_resend %}<a href="#" target_username="{{relationship.target_person.username}}" class="resend_request">Resend Request</a>	{% endif %}
+</div><!--  close off request block -->
