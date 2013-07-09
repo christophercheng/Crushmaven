@@ -438,15 +438,15 @@ h2#tagline2 #safe_text{
 	height:125px;
 	width:125px;
 	position:absolute;
-	left:1px;
-	top:1px;
+	left:2px;
+	top:2px;
 }
 .singles_step_image_border {
 	display:block;
 	border-radius:50%;
-	background:#000033;
-	height:127px;
-	width:127px;
+	background:white;
+	height:129px;
+	width:129px;
 	box-shadow:0px 5px 15px #2E2E2E;
 	position:absolute;
 	left:-140px;
