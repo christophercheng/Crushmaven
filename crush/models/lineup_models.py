@@ -5,6 +5,7 @@ from  crush.models.relationship_models import CrushRelationship
 import random
 import re,thread,time
 from threading import Lock
+from crush.models.globals import g_init_dict
 from crush.utils import graph_api_fetch,fb_fetch
 
 def comma_delimit_list(array):

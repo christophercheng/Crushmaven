@@ -174,7 +174,7 @@ jQuery(document).ready(function($) {
   $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 	  accessToken: "{{request.user.access_token}}",
 	  facebookID: "{{request.user.username}}",
-	  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
+	  malePref:{% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
     maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
     minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
     minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",

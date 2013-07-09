@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.models import CrushRelationship,PlatonicRelationship,SetupRelationship,LineupMember,FacebookUser
-#from crush.models.globals import g_init_dict
+from crush.models.globals import g_init_dict
 import datetime
 from datetime import timedelta
 import time,thread
