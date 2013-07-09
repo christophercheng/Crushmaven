@@ -766,6 +766,15 @@ a.logo img{
 		background-position:-35px -32px;
 }
 .navbar li.inactive.messages a .menu_icon{
+		position:absolute;
+	display:block;
+	background-image:url(images/sprite_jpg.jpg);	
+	background-repeat:no-repeat;
+	background-size:auto;
+	height:20px;
+	width:20px;
+	top:10px;
+	left:5px;
 	background-position:-35px -57px;	
 }
 .navbar li.inactive.setups_for_me a .menu_icon{
