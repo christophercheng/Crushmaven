@@ -6,3 +6,4 @@ psycopg2==2.5.1
 requests==1.1.0
 virtualenv==1.9.1
 wsgiref==0.1.2
+south==0.8.1

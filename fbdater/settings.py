@@ -222,7 +222,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-URLLIB_TIMEOUT=10
+URLLIB_=10
 
 # auto delay the response between the start time and end time (in seconds)
 CRUSH_RESPONSE_DELAY_START = 1 # 180 default = 3hours x 60 minutes =  180
