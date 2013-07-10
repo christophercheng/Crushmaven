@@ -1888,7 +1888,6 @@ ul.nav_bar li#nav_bar_options{
 
 .crush_status_responded{
 box-shadow: 1px 1px 10px #003399;/*#CC0000;*/
-border:1px solid #003399;/*#CC0000;*/
 }
 
 
@@ -3737,8 +3736,7 @@ div.past_dialog_header {
 }
 
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded_notified{
-	right:19px;
-	top:2px;
+	background-position:-155px -2px;
 }
 
 .setup_by_me_block .setup_match_yes{

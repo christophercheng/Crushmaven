@@ -72,7 +72,7 @@ $(document).ready(function()
       	},function(response){
       		if (response != null){ 
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
-     				notification_link.replaceWith('<span class="setup_responded setup_recommendee_responded setup_responded_waiting" title="waiting for a response"></span>');
+     				notification_link.replaceWith('<span class="setup_responded setup_recommendee_responded setup_responded_notified" title="waiting for a response>?</span>');
      		 		// update the setup lineup members' date_last_notified 
      				$.get('/ajax_update_setup_lineup_member_date_last_notified/' + recipient_id + '/');
       		} // close off if (resposne != null)

@@ -33,7 +33,7 @@
 		<li class="{% navactive request 'setups_for_me' %} setups_for_me">
 			<a href="{% url 'crush.views.setup_views.setups_for_me' %}">
 				<span class="menu_icon"></span>				
-				<span class="menu_title setups_for_me_menu_title">Setups <span class="shrink_text">by</span> Friends</span>
+				<span class="menu_title setups_for_me_menu_title">{% if num_setups_for_me_in_progress %}Setup{% else %}Setups{% endif %} <span class="shrink_text">by</span> Friends</span>
 				<span  class="menu_count{% if num_setups_for_me_in_progress %} new_menu_count">{{num_setups_for_me_in_progress}} new{% else %}">0{% endif %}</span>
 				<span class="nav_subtext">See who they recommended</span>
 			</a>
