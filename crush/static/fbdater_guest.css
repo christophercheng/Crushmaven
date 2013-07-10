@@ -9,6 +9,7 @@ body {
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: hidden;	
+ 	overflow-y:scroll;
  	background:#00002A;
 }
 
@@ -21,7 +22,7 @@ a{
 	width:1000px;
 	margin:0 auto;
 	position:relative;
-	padding-left:10px;
+	padding-left:15px;
 }
 
 #logo_section {
@@ -232,7 +233,7 @@ h2#tagline2 #safe_text{
 	position:absolute;
 	display:inilne-block;
 	top:5px;
-	left:10px;	
+	left:13px;	
 	height:100px;
 	width:300px;
 	z-index:20;
@@ -521,7 +522,10 @@ div.guest_header{
 	background: -0-linear-gradient(top, #000, #000 40%,rgb(0,0,70));
 	background: linear-gradient(top, #000, #000 40%,rgb(0,0,70));
 	border-bottom:1px solid black;
-
+	padding-left:15px;
+}
+div.guest_header.how_it_works{
+	padding-left:30px;
 }
 
 .guest_header.authenticated{
@@ -538,6 +542,9 @@ div.guest_header .center_container{
 }
 div.guest_header.authenticated .center_container{
 	width:985px;
+	margin-left:auto;
+	margin-right:auto;
+	background:red;
 }
 .guest_header img{
 	position:absolute;
@@ -547,9 +554,9 @@ div.guest_header.authenticated .center_container{
 }
 .guest_header.authenticated img {
 	height:38px;
-	padding-left:5px;
+	padding-left:0px;
 	top:8px;
-	left:7px;
+	left:0px;
 }
 
 #top_links{
@@ -557,6 +564,7 @@ div.guest_header.authenticated .center_container{
 	margin-top:29px;
 	margin-right:108px;
 }
+
 #top_links a{
 	font-size:14px;
 	display:inline-block;
@@ -580,6 +588,9 @@ div.guest_header.authenticated .center_container{
 	margin-top:18px;
 	margin-right:400px;
 }
+.guest_header.authenticated.how_it_works #top_links{
+	margin-right:450px;
+}
 .guest_page{
 	background:white;
 }
@@ -587,7 +598,7 @@ div.guest_header.authenticated .center_container{
 .guest_header #top_links a.active{
 	background:#666685;
 	border-radius:15px;
-	padding:4px 8px;
+	padding:5px 8px 2px 8px;
 	margin-left:22px;
 	margin-right:-8px;
 }
@@ -614,7 +625,7 @@ div.guest_header.authenticated .center_container{
 .guest_header #top_links a:hover{
 	background:#3D3D3D;
 	border-radius:15px;
-	padding:4px 8px;
+	padding:5px 8px 2px 8px;
 	margin-left:22px;
 	margin-right:-8px;
 		transition-property:background;
@@ -623,7 +634,7 @@ div.guest_header.authenticated .center_container{
 .guest_header #top_links a.active:hover{
 	background:#666685;
 	border-radius:15px;
-	padding:4px 8px;
+	padding:5px 8px 2px 8px;
 	margin-left:22px;
 	margin-right:-8px;
 	cursor:default;
@@ -646,6 +657,7 @@ div.guest_header.authenticated .center_container{
 
 .guest_header.how_it_works .center_container{
 	width:1000px!important;
+	background-color:red;
 }
 
 .header {
