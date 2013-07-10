@@ -739,12 +739,11 @@
     	// compltely remove the copied user from the new container
     	btn.remove();
 
-      selected_friend_count--;
-
-      if (selected_friend_count - 1 !== $('#fs-user-list li').length) {
-        $('#fs-select-all').text(fsOptions.lang.buttonSelectAll);
-      }
-
+		selected_friend_count--;
+		
+		if (selected_friend_count - 1 !== $('#fs-user-list li').length) {
+			$('#fs-select-all').text(fsOptions.lang.buttonSelectAll);
+		}
     }
     else {
 
@@ -764,6 +763,9 @@
       // hide the  user from the main container
       btn.addClass('selected');
       btn.hide();
+	// clear out the filter text box
+	$('#fs-reset').trigger('click');
+	console.log('reset');
     }
 
     var selected_height = $('#fs-selected-user-list').height();
