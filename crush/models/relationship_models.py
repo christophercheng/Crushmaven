@@ -534,7 +534,8 @@ class SetupRelationship(BasicRelationship):
     # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
     #objects = SetupRelationshipManager()
     
-    date_notification_last_sent = models.DateTimeField(auto_now_add=True)  
+    # date notification last sent to the target person - not any recommendee
+    date_notification_last_sent = models.DateTimeField(default=None, null=True,blank=True)  
 
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
@@ -607,6 +608,7 @@ class SetupRelationship(BasicRelationship):
             # give the setup a display id.  this is the unique  identifier
                 # get total previous setups(past and present)made from source to target and add 1
             self.display_id = self.source_person.crush_setuprelationship_set_from_source.all().count() + 1
+            self.date_notification_last_sent = datetime.now()
         super(SetupRelationship,self).save(*args,**kwargs)
   
     # notify the creator of setup whenenver:

@@ -6,9 +6,9 @@ Created on Mar 4, 2013
 
 from django.contrib import admin
 from crush.models.user_models import FacebookUser
-from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
+from crush.models.relationship_models import CrushRelationship,PlatonicRelationship,SetupRelationship,SetupRequestRelationship
 from crush.models.miscellaneous_models import Purchase,InviteEmail
-from crush.models.lineup_models import LineupMember
+from crush.models.lineup_models import LineupMember,SetupLineupMember
 
 class FacebookUserAdmin(admin.ModelAdmin):
     list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email') # what columns to display
@@ -21,19 +21,32 @@ class FacebookUserAdmin(admin.ModelAdmin):
 class CrushRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','target_status','date_added',) # what columns to display
     search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against
-    list_filter = ('target_status','friendship_type','date_added',) # right column auto-filter links
+    list_filter = ('target_status','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('source_person','target_person','target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','lineup_initialization_date_started','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_lineup_finished')
-    raw_id_fields=('source_person','target_person')
+    fields=('target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','lineup_initialization_date_started','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_lineup_finished','date_results_paid','display_id','is_from_setup','updated_flag')
 class PlatonicRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','rating','date_added',) # what columns to display
     search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against
-    list_filter = ('rating','friendship_type','date_added') # right column auto-filter links
+    list_filter = ('rating','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('source_person','target_person','friendship_type','rating')
-    raw_id_fields=('source_person','target_person')
+    fields=('friendship_type','rating')
+
+class SetupRelationshipAdmin(admin.ModelAdmin):
+    list_display = ( 'source_person','target_person','date_added',) # what columns to display
+    search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against
+    #list_filter = ('target_status') # right column auto-filter links
+    ordering = ('-date_added',)
+    date_hierarchy = 'date_added'
+    fields=('date_notification_last_sent','date_lineup_started','date_lineup_finished','date_setup_completed','display_id','updated_flag')
+
+class SetupRequestRelationshipAdmin(admin.ModelAdmin):
+    list_display = ( 'source_person','target_person','date_added',) # what columns to display
+    search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against
+    ordering = ('-date_added',)
+    date_hierarchy = 'date_added'
+    fields=('updated_flag',)
 
 class LineupMemberAdmin(admin.ModelAdmin):
     list_display = ('relationship','username','user','decision','position')
@@ -43,6 +56,15 @@ class LineupMemberAdmin(admin.ModelAdmin):
     ordering = ('-relationship','position')
     raw_id_fields=('user',)
     
+class SetupLineupMemberAdmin(admin.ModelAdmin):
+    list_display = ('relationship','username','user','decision','position','lineup_member_attraction')
+    search_fields=('username','relationship','user')
+    list_filter=('decision','lineup_member_attraction')
+    fields=('username','user','position','decision','lineup_member_attraction','date_last_notified')
+    ordering = ('-relationship','-date_last_notified','position')
+    raw_id_fields=('user',)    
+    
+
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('purchaser', 'price','credit_total','purchased_at')
     search_fields=('purchaser','tx')
@@ -63,6 +85,9 @@ class InviteEmailAdmin(admin.ModelAdmin):
 admin.site.register(FacebookUser,FacebookUserAdmin)
 admin.site.register(CrushRelationship,CrushRelationshipAdmin)
 admin.site.register(PlatonicRelationship,PlatonicRelationshipAdmin)
+admin.site.register(SetupRelationship,SetupRelationshipAdmin)
+admin.site.register(SetupRequestRelationship,SetupRequestRelationshipAdmin)
 admin.site.register(LineupMember,LineupMemberAdmin)
+admin.site.register(SetupLineupMember,SetupLineupMemberAdmin)
 admin.site.register(Purchase,PurchaseAdmin)
 admin.site.register(InviteEmail,InviteEmailAdmin)

@@ -765,6 +765,7 @@
       btn.hide();
 	// clear out the filter text box
 	$('#fs-reset').trigger('click');
+	$('#fs-input-text').focus();
 	console.log('reset');
     }
 
