@@ -19,7 +19,6 @@
     this.bind("click.fs", function(){
     	var attr_max_selections= $(this).attr('max_selections');
     	var attr_getStoredFriends = $(this).attr('getstoredfriends');
-    	console.log('getStoredFriends',attr_getStoredFriends);
     	var attr_onSubmit = $(this).attr('onSubmit');
     	var attr_excludeIds = $(this).attr('excludeids');
 
@@ -71,8 +70,6 @@
   _start2 = function() {
 
     fsOptions = $.extend(true, {}, defaults, fsOptions);
-	console.log('getStoredFriends post extend',fsOptions.getStoredFriends);
-	console.log('excludeIds post extend',fsOptions.excludeIds);
     if ( fsOptions.max > 0 && fsOptions.max !== null ) {
       fsOptions.showSelectedCount = true;
 
@@ -98,8 +95,10 @@
 	$("#fs-user-list").append('<div id="fs-loading"></div>');
 	$("#fs-select-view #site-overlay").css('visibility','visible');
     // see if user exists
+	window.wait_modal_open("",$('#fs-dialog-box-wrap'));
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
+    		window.wait_modal_close();
     		if ('error_message' in response) {
     			window.alert_modal("Invalid Username",response.error_message,$("#fs-dialog-box-wrap") );
     			$("#fs-select-view #site-overlay").css('visibility','hidden');
@@ -124,11 +123,12 @@
     	        _enableContinueButton();
     			$('#nfs-input-text').val("");
     			$("#fs-select-view #site-overlay").css('visibility','hidden');
+    			window.addedNonFriend=true;
     	        $('#fs-loading').remove();
-    		} 			
+    		} 		
     }).fail(function(responseText,textStatus,XHR){
-    	
-    	fsOptions.onError(fsOptions.lang.ajaxError);
+ 		window.wait_modal_close();
+    	fsOptions.onError("Sorry, we are unable to process your Facebook id.  Please re-check your entry and try again.");
     	$("#fs-select-view #site-overlay").css('visibility','hidden');
     	$("#fs-loading").remove();
     });
@@ -305,8 +305,8 @@
 	    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
 	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>';
 	  }
-    title_bar = title_bar + 
-    	'</h2><span class="close_dialog"></span>';
+    //title_bar = title_bar + 
+    //	'</h2><span class="close_dialog"></span>';
     wrap.append(
      title_bar,
      content = $('<div id="fs-dialog-box-content"></div>'),
@@ -588,6 +588,8 @@
         _showNfsInputBox($(this));
         $('#fs-tab').addClass('fs-inactive-tab');
         $('#nfs-tab').removeClass('fs-inactive-tab');
+ 	   if (!window.addedNonFriend)
+ 		   setTimeout(function(){_showNfsHelpPopup();},300); 
       });
     
     $('#fs-dialog-title').on("click","#fs-tab", function(e){
@@ -705,12 +707,11 @@
 	   
 	    $('#fs-user-list ul').hide();
 	    
-	    _showNfsHelpPopup();
 
 	  },
 	  
 	  _showNfsHelpPopup = function(){
-		  console.log("show popup");
+		  
 		   if ($('#nfs-help').css('display')=='none'){
 			   $('#nfs-help').css('left','-0px');
 			   $('#nfs-help').css('top','0px');

@@ -198,8 +198,12 @@ jQuery(document).ready(function($) {
     onSubmit: function(response){
 			add_friends_to_db(response);
     },
-    onError: function(){
-    	window.alert_modal("Friend Selector Problem", "{{generic_error_message}}", $('#fs-dialog-box-wrap') );
+    onError: function(error_message){
+    	var display_message="{{generic_error_message}}";
+    	if (error_message!== 'undefined')
+    		display_message=error_message;
+    		
+    	window.alert_modal("Friend Selector Problem", display_message, $('#fs-dialog-box-wrap') );
     },
     onStart: function(){
     	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title",containment:$("#fs-overlay")});
@@ -272,14 +276,29 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',resizable:false, modal: true, autoOpen: false,buttons: {"Ok": function() {$(this).dialog("close");}}});
   $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, height:80,width:300,modal: true, autoOpen: false}); 
  
- window.wait_modal_open=function(message){
-  	if (typeof message == 'undefined')
-  		var message="please wait...";
-
-  	if (!$("#wait_modal").dialog("isOpen"))
+ window.wait_modal_open=function(custom_message,calling_jquery_element){
+	 console.log("existing overlay z", $(".ui-widget-overlay").css('z-index'));
+	 console.log("existing dialog z", $(".wait_modal_dialog").css('z-index'));
+  	var message="please wait...";
+  	if (custom_message !== 'undefined' && custom_message !== "")
+  		message=custom_message;
+  	
+  	if (!$("#wait_modal").dialog("isOpen")){
 			$('#wait_modal').dialog("open");
-		$(".ui-widget-overlay").fadeTo(0,.1);
-		 $("#wait_modal").html(message);
+  	}
+  	
+	if (typeof calling_jquery_element !== 'undefined')	{
+		var top_z_index=parseFloat($(calling_jquery_element).css('z-index'));
+		var dialog_index = top_z_index + 2;
+		var overlay_index = top_z_index + 1;
+		var old_dialog_z = $(".wait_modal_dialog").css('z-index');
+		$(".wait_modal_dialog").css('z-index',dialog_index.toString());
+		var old_overlay_z = $(".ui-widget-overlay").css('z-index'); // set back to this z-index when close pressed
+		$('.ui-widget-overlay').css('z-index',overlay_index.toString()).addClass('wait_mode');
+		$('#wait_modal').dialog("option",{beforeClose:function(){$('.wait_modal_dialog').css('z-index',old_dialog_z);$('.ui-widget-overlay').css('z-index',old_overlay_z).removeClass('wait_mode')}});
+	}
+	$(".ui-widget-overlay").fadeTo(0,.1);
+	$("#wait_modal").html(message);
   };  
 
   window.wait_modal_close=function(){
@@ -292,7 +311,7 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   
    window.alert_modal=function(title, message,calling_jquery_element){
 	   $("#alert_modal").html(message);
-	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',close:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop',title:title,show:'fade',beforeClose:function(){$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
 		
 		if (typeof calling_jquery_element === 'undefined'){
@@ -475,6 +494,7 @@ $('body').on('click',".popup_link",function(e){
 	  				description:"Flirtally is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
 			      },
 			      function(response){
+			    	  		window.wait_modal_close();
 							if (response != null){
 								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
 									attraction_array.splice(0,1);

@@ -840,7 +840,7 @@ a.logo img{
 
 .navbar .new_menu_count{
 	top:11px;
-	right:-1px;
+	right:-2px;
 	background-color:#CC0000;
 	#font-style:italic!important;
 	color:white;
@@ -3151,6 +3151,11 @@ ul.bxslider{
 	filter:alpha(opacity=50)!important;
 	#z-index:1499!important;
 }
+.ui-widget-overlay.wait_mode{
+	background:white!important;
+	opacity:0!important;
+	filter:alpha(opacity=0)!important;	
+}
 
 .MercuryRepliedIndicator.repliedLast{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
 .MercuryRepliedIndicator.repliedLast.seenByAll{background-image:url(images/fb_icons.png);background-repeat:no-repeat;background-size:auto;background-position:-285px -395px;display:inline-block;height:10px;width:10px;}
@@ -4349,15 +4354,18 @@ margin-right:15px!important;
 
 .alert_modal_dialog {
 	min-width:400px;
+	border:1px solid #000033!important;
 }
 
+.alert_modal_dialog .ui-dialog-titlebar-close {
+	display:none;
+}
 #alert_modal{
 	diplay:inline-block;
 	padding:20px 20px!important;
 	font-size:14px!important;
 	line-height:24px;
 	color:#474747!important;
-	
 }
 
 .response_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset, .alert_modal_dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
@@ -4573,3 +4581,7 @@ margin-right:15px!important;
 	display:none;
 }
 
+/* facebook dialogs should always appear on top */
+.fb_dialog{
+	z-index:100001!important;
+}
