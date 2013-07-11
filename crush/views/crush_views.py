@@ -33,6 +33,8 @@ def ajax_add_crush_targets(request):
         friend_type=int(request.POST[key])
         # find existing site user with this id or create a new user 
         selected_user = FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
+        if selected_user == None:
+            return HttpResponseForbidden("Sorry, we are experiencing problems with our servers at this time.  We hope to have the problem fixed soon.")
         # now that the user is definitely on the system, add that user to the crush list        
         # only create a new relationship if an existing one between the current user and the selected user does not exist 
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):

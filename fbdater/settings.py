@@ -17,23 +17,23 @@ MANAGERS = ADMINS
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'flirtally_db',                      # Or path to database file if using sqlite3.
-        'USER': 'flirtally',                      # Not used with sqlite3.
-        'PASSWORD': 'flirtally',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-    }           
-
 #    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
-#        'USER': '',                      # Not used with sqlite3.
-#        'PASSWORD': '',                  # Not used with sqlite3.
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'flirtally_db',                      # Or path to database file if using sqlite3.
+#        'USER': 'flirtally',                      # Not used with sqlite3.
+#        'PASSWORD': 'flirtally',                  # Not used with sqlite3.
 #        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-#    }   
+#        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+#    }           
+
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }   
 
 }
 
@@ -167,7 +167,7 @@ INSTALLED_APPS = (
     'crush',
     'postman',
     'ajax_select',
-    'south'
+ #   'south'
 )
 
 CACHES={
@@ -222,7 +222,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-URLLIB_=10
+URLLIB_TIMEOUT=30
 
 # auto delay the response between the start time and end time (in seconds)
 CRUSH_RESPONSE_DELAY_START = 1 # 180 default = 3hours x 60 minutes =  180
@@ -327,11 +327,11 @@ AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 
