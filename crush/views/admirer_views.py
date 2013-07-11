@@ -41,7 +41,7 @@ def admirers(request,show_lineup=None):
                     start_relationships.append(relationship)
                     continue
             else:
-                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=4):
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=0): # default is 4 (5 minutes)
                     start_relationships.append(relationship)
                     continue
  

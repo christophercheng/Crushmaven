@@ -1,5 +1,6 @@
 from django.db import models
-import urllib, json
+import urllib,urllib2, json
+from urllib2 import URLError,HTTPError
 from django.conf import settings
 from  crush.models.relationship_models import CrushRelationship
 import random
@@ -119,25 +120,42 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         acceptable_id_array=[]
-        
+        values = {'exclude_id_string' : g_init_dict[crush_id]['exclude_id_string'],
+                 'access_token' : relationship.source_person.access_token }
+        data = urllib.urlencode(values)
+        url = "http://127.0.0.1:8000/initialize_nf_crush/" + admirer_id + "/" + crush_id + "/" + admirer_gender + "/" + str(settings.MINIMUM_LINEUP_MEMBERS)
         try:
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-            data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
-        except:
-            print "Key or Value Error on Fql Query Fetch read!"
+            response_data = urllib2.urlopen(url, data,'240000')
+        except HTTPError as e:
+            print "hTTP Error: " + str(e)
             self.initialize_fail(relationship,5)
             return
-        
-        if not data or len(data) < settings.MINIMUM_LINEUP_MEMBERS:
-            print "NON FRIEND - not enough friends"
-            self.initialize_fail(relationship,2)
+        except URLError as e:
+            self.initialize_fail(relationship,5)
             return
+            print "URL Error: " + str(e)
+        for data in response_data:
+            acceptable_id_array.append(data)
+            g_init_dict[crush_id]['exclude_id_string'] += "," + str(data)
+          
+#        try:
+#            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+#            data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
+#       except:
+#           print "Key or Value Error on Fql Query Fetch read!"
+#           self.initialize_fail(relationship,5)
+#           return
         
-        for item in data:
-            g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
-            acceptable_id_array.append(item['uid'])
+#        if not data or len(data) < settings.MINIMUM_LINEUP_MEMBERS:
+#            print "NON FRIEND - not enough friends"
+#            self.initialize_fail(relationship,2)
+#            return
+        
+#        for item in data:
+#            g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
+#            acceptable_id_array.append(item['uid'])
 
-        print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
+#        print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
         self.create_lineup(relationship,acceptable_id_array)
 
     #================================================================    

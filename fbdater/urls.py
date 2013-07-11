@@ -29,6 +29,16 @@ urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
 )
 
+
+#initialize_nf_crush(request,admirer_id,crush_id,admirer_gender,minimum_lineup_members):
+
+# ----      LINEUP FUNCTIONALITY  --
+urlpatterns += patterns('crush.views.lineup_views',
+  
+    (r'^initialize_nf_crush/(?P<admirer_id>\w+)/(?P<crush_id>\w+)/(?P<admirer_gender>\w+)/(?P<minimum_lineup_members>\w+)/$','initialize_nf_crush'),
+
+)
+
 # ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module

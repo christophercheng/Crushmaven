@@ -42,3 +42,5 @@ from static_file_views import help_terms
 from static_file_views import help_privacy
 from static_file_views import help_contact
 
+from lineup_views import initialize_nf_crush
+
