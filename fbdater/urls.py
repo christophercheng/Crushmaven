@@ -35,7 +35,7 @@ urlpatterns += patterns('',
 # ----      LINEUP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.lineup_views',
   
-    (r'^initialize_nf_crush/(?P<admirer_id>\w+)/(?P<crush_id>\w+)/(?P<admirer_gender>\w+)/(?P<minimum_lineup_members>\w+)/$','initialize_nf_crush'),
+    (r'^initialize_fof_crush/$','initialize_fof_crush'),
 
 )
 

@@ -8,6 +8,7 @@ import re,thread,time
 from threading import Lock
 from crush.models.globals import g_init_dict
 from crush.utils import graph_api_fetch,fb_fetch
+from django.core.context_processors import csrf
 
 def comma_delimit_list(array):
     myString = ",".join(array)
@@ -120,40 +121,23 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         acceptable_id_array=[]
-        values = {'exclude_id_string' : g_init_dict[crush_id]['exclude_id_string'],
-                 'access_token' : relationship.source_person.access_token }
-        data = urllib.urlencode(values)
-        url = "http://127.0.0.1:8000/initialize_nf_crush/" + admirer_id + "/" + crush_id + "/" + admirer_gender + "/" + str(settings.MINIMUM_LINEUP_MEMBERS)
+
         try:
-            response_data = urllib2.urlopen(url, data,'240000')
-        except HTTPError as e:
-            print "hTTP Error: " + str(e)
-            self.initialize_fail(relationship,5)
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
+            data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
+        except:
+           print "Key or Value Error on Fql Query Fetch read!"
+           self.initialize_fail(relationship,5)
+           return
+       
+        if not data or len(data) < int(settings.MINIMUM_LINEUP_MEMBERS):
+            print "NON FRIEND - not enough friends"
+            self.initialize_fail(relationship,2)
             return
-        except URLError as e:
-            self.initialize_fail(relationship,5)
-            return
-            print "URL Error: " + str(e)
-        for data in response_data:
-            acceptable_id_array.append(data)
-            g_init_dict[crush_id]['exclude_id_string'] += "," + str(data)
-          
-#        try:
-#            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
-#            data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
-#       except:
-#           print "Key or Value Error on Fql Query Fetch read!"
-#           self.initialize_fail(relationship,5)
-#           return
-        
-#        if not data or len(data) < settings.MINIMUM_LINEUP_MEMBERS:
-#            print "NON FRIEND - not enough friends"
-#            self.initialize_fail(relationship,2)
-#            return
-        
-#        for item in data:
-#            g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
-#            acceptable_id_array.append(item['uid'])
+       
+        for item in data:
+            g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
+            acceptable_id_array.append(item['uid'])
 
 #        print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
         self.create_lineup(relationship,acceptable_id_array)
@@ -164,12 +148,42 @@ class LineupMemberManager(models.Manager):
     # can be implemented by one of 4 methods (api mutual friend, api 9-fof's, non-api mutual friend, non-api 9-fof's)
     # ================================================================
 
+
+
+          
+
+
     def initialize_friend_of_friend_crush(self,relationship):
         global g_init_dict
+        
+#        values = {'exclude_id_string' : g_init_dict[crush_id]['exclude_id_string'],
+#                 'access_token' : relationship.target_person.access_token }
+#        data = urllib.urlencode(values)
+#        url = "http://127.0.0.1:8000/initialize_fof_crush/" + admirer_id + "/" + crush_id + "/" + admirer_gender + "/" + str(settings.MINIMUM_LINEUP_MEMBERS) + "/"
+#        try:
+#            response_data = urllib2.urlopen(url, data,240000)
+#        except HTTPError as e:
+#            print "hTTP Error: " + str(e)
+#            if e.code == 500:
+#                self.initialize_fail(relationship,2)
+#            else:
+#                self.initialize_fail(relationship,5)
+#            return
+#        except URLError as e:
+#            self.initialize_fail(relationship,5)
+#            return
+#            print "URL Error: " + str(e)
+#        for data in response_data:
+#            acceptable_id_array.append(data)
+#            g_init_dict[crush_id]['exclude_id_string'] += "," + str(data)        
+        
+        admirer_id=relationship.source_person.username
         crush_id=relationship.target_person.username
+        admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         rel_id=str(relationship.id)
         exclude_id_string=g_init_dict[crush_id]['exclude_id_string']
         
+     
         # set up the batch fql queries
         crush_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM+user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + ')))"}'
         crush_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + '))) AND is_app_user"}'
@@ -179,7 +193,7 @@ class LineupMemberManager(models.Manager):
         
         # set up the post data
         post_dict = {}
-        post_dict['access_token'] = relationship.target_person.access_token
+        post_dict['access_token'] = relationship.source_person.access_token
         post_dict['batch'] = '[' + mutual_friend_id_dict + ',' + mutual_friend_dict + ',' + mutual_app_friend_dict + ',' + crush_friend_dict + ',' + crush_app_friend_dict  + ']'
         post_dict=urllib.urlencode(post_dict)    
         
