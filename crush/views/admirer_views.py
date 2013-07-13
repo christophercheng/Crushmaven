@@ -225,7 +225,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
             friend=friend_profile[0]
             ajax_response +='<div id="mutual_friends">connected through: '
             for friend in friend_profile:
-                ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;">'
+                ajax_response += '<a target="_blank" href="http://www.facebook.com/' + friend['id'] + '"><img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;"></a>'
             ajax_response += '</div>'
         except HTTPError as e:
             if e.code==400: # user's access token is invalid, so force user to log back in
