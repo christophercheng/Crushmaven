@@ -215,7 +215,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     ajax_response += '<div class="slide_container">'
     ajax_response +='<span class="lineup_name">' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</span>'#<span class="lineup_position_info">(' + str(display_position)  + ' of ' + str(lineup_count) + ')</span></span>'
     ajax_response +='<span class="lineup_mugshot"><img src="' + lineup_member_user.get_facebook_pic(125) + '"></span>'
-    ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank">view facebook profile<span class="view_facebook_icon"></span></a></span>'
+    ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
 
     # if the relationship is friend-of-friend, then show pictures of mutual friends:
     if admirer_rel.friendship_type==1:
@@ -223,8 +223,9 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         try:
             friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + lineup_member.username)
             friend=friend_profile[0]
-            ajax_response +='<div id="mutual_friends">Connected through: '
-            ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;">'
+            ajax_response +='<div id="mutual_friends">connected through: '
+            for friend in friend_profile:
+                ajax_response += '<img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;">'
             ajax_response += '</div>'
         except HTTPError as e:
             if e.code==400: # user's access token is invalid, so force user to log back in

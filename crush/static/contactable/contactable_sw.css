@@ -13,7 +13,7 @@
 	overflow:hidden;
 	position:fixed;
 	width:82px;
-	z-index:100000000;
+	z-index:45;
 	right:12px;
 	letter-spacing:1.25px;
 }
@@ -33,7 +33,7 @@
 	padding-left:0px;
 	position:fixed;
 	width:380px;
-	z-index:100000001;
+	z-index:45;
 	right:12px;
 	text-align:center;
 }	
@@ -85,7 +85,7 @@
 	letter-spacing:1px;
 	text-align:center;
 	font-size:12px;
-	z-index:100000001;
+	z-index:46;
 	margin-top:15px;
 	margin-bottom:7px;
 	line-height:18px;
