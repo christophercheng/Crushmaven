@@ -130,7 +130,7 @@ class Migration(SchemaMigration):
             ('date_target_responded', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
             ('date_results_paid', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
             ('display_id', self.gf('django.db.models.fields.IntegerField')(default=0, max_length=60)),
-            ('is_from_setup', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('recommender_person_id', self.gf('django.db.models.fields.CharField')(default=None, max_length=30, null=True, blank=True)),
         ))
         db.send_create_signal('crush', ['CrushRelationship'])
 
@@ -261,12 +261,12 @@ class Migration(SchemaMigration):
             'display_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'max_length': '60'}),
             'friendship_type': ('django.db.models.fields.IntegerField', [], {'default': '0', 'max_length': '1'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_from_setup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_lineup_paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_platonic_rating_paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_results_paid': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'lineup_initialization_date_started': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'lineup_initialization_status': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
+            'recommender_person_id': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '30', 'null': 'True', 'blank': 'True'}),
             'source_person': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'crush_crushrelationship_set_from_source'", 'to': "orm['crush.FacebookUser']"}),
             'target_person': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'crush_crushrelationship_set_from_target'", 'to': "orm['crush.FacebookUser']"}),
             'target_platonic_rating': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),

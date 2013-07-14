@@ -60,7 +60,6 @@ def completed_setups_for_me(request):
                               {
                                'setup_type': 1, # 0 is in progress, 1 is completed
                                'setup_relationships':completed_setups,
-                               'completed_setups_count': completed_setups.count(),
                                'setups_incomplete_count':setups_incomplete_count,
                                'show_help_popup': 0 # never show help popup for this sub page
                                })       

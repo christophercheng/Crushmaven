@@ -67,8 +67,6 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^attractions_completed/(?P<reveal_crush_id>\w+)/$','attractions_completed'),
     
     (r'^attractions_completed/$','attractions_completed'),
-    
-    #(r'^app_invite_form/(?P<crush_username>\w+)/$','app_invite_form'),
 
     (r'^app_invite_form_v2/(?P<crush_username>\w+)/','app_invite_form_v2'),
         

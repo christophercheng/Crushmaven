@@ -14,7 +14,6 @@ from admirer_views import admirers_past
 # crush view and creation views
 from crush_views import attractions
 from crush_views import attractions_completed
-from crush_views import app_invite_form
 from crush_views import app_invite_form_v2
 from crush_views import ajax_find_fb_user
 

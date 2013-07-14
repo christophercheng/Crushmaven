@@ -5,7 +5,6 @@ from django.conf import settings
 from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail  # ,LineupMember
 import json
 import datetime
-from crush.appinviteform import AppInviteForm
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
 from urllib2 import URLError, HTTPError
@@ -278,77 +277,6 @@ def app_invite_form_v2(request, crush_username):
     crush_firstname=crush_fullname.split(' ',1)[0]
     return render(request, 'app_invite_form_v2.html', {'form':form, 'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'mutual_friend_json':mutual_friend_json})
 
-    
-@login_required    
-def app_invite_form(request, crush_username):
-    return HttpResponse("HEY")
-    print "APP INVITE FORM!"
-    
-    # crush_name should be first name last name
-    if request.method == 'POST':  # if the form has been submitted...
-        print "METHOD IS POST"
-        form = AppInviteForm(request.POST)
-        if form.is_valid():
-            # send out the emails here
-            crush_email_list = form.cleaned_data['crush_emails']
-            friend_email_list = form.cleaned_data['mutual_friend_emails']
-            try:
-                crush_relationship = CrushRelationship.objects.get(source_person=request.user, target_person__username=crush_username)
-            except CrushRelationship.DoesNotExist:
-                return render(request, "error.html", { 'error': "App Invite Send encountered an unusual error.  Please try again later." })
-            
-            crush_email_success_array = []
-            crush_email_fail_array = []
-            friend_email_success_array = []
-            friend_email_fail_array = []
-            
-            for email in crush_email_list:
-                try:
-                    if InviteEmail.objects.process(new_email=email, new_relationship=crush_relationship, new_is_for_crush=True):
-                        crush_email_success_array.append(email)
-                    else:
-                        crush_email_fail_array.append(email)
-                except:
-                    crush_email_fail_array.append(email)
-                    continue
-            for email in friend_email_list:
-                try:
-                    if InviteEmail.objects.process(new_email=email, new_relationship=crush_relationship, new_is_for_crush=False):
-                        friend_email_success_array.append(email)
-                    else:
-                        friend_email_fail_array.append(email)
-                except:
-                    friend_email_fail_array.append(email)
-                    continue
-
-            # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
-            if crush_relationship.target_status == 0:
-                if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0:
-                    crush_relationship.target_status = 1;
-                    crush_relationship.date_invite_last_sent = datetime.datetime.now()
-                    crush_relationship.updated_flag = True
-                    crush_relationship.save(update_fields=['target_status', 'date_invite_last_sent', 'updated_flag']);
-                    
-            return HttpResponseGone("")
-
-    else:
-        # determine if they haven't surpassed the total number of users to send out emails to:
-        
-        # find mutual friends to pass to the app invite form
-        fb_query_string = str(request.user.username + '/mutualfriends/' + crush_username)
-        try:           
-            friend_profile = graph_api_fetch(request.user.access_token, fb_query_string)
-        except:
-            raise 
-        friendlist_string = ''
-        if friend_profile != None:
-            for friend in friend_profile:
-                friendlist_string += friend['name'] + ', '
-            friendlist_string = friendlist_string[:-2]  # strip out last comma 
-        print "friendlist_string: " + friendlist_string
-        form = AppInviteForm(friendlist_string=friendlist_string)
-        print "instantiated form instance"
-    return render(request, 'app_invite_form.html', {'form':form, 'crush_username':crush_username})
 
 # called by the crush selector dialog
 @login_required
