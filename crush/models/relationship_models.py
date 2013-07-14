@@ -224,7 +224,8 @@ class CrushRelationship(BasicRelationship):
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
     # if the attraction stemmed from a setup recommendation (admirer chose the target person from a set up lineup
-    is_from_setup = models.BooleanField(default=False)
+    #is_from_setup = models.BooleanField(default=False)
+    recommender_person=models.ForeignKey(FacebookUser,related_name="%(app_label)s_%(class)s_set_from_target", blank=True,null=True,default=None)
     
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):

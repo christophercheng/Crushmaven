@@ -85,11 +85,11 @@ def initialize_fof_crush(request):
             mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
             #print "mutual_friend_array: " + str(len(mutual_friend_array)) + " : " + str(mutual_friend_array)
             # random.shuffle(mutual_friend_array) delay shuffling
-            g_init_dict[crush_id][rel_id + '_mutual_friend_array']=mutual_friend_array
+            global_dict[rel_id]['mutual_friend_array']=mutual_friend_array
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
                 crush_friend_array=json.loads(fb_result[3][u'body'])['data']
                 #random.shuffle(crush_friend_array) delay shuffling cause we may not need this yet
-                g_init_dict[crush_id]['crush_friend_array']=crush_friend_array
+                global_dict[rel_id]['crush_friend_array']=crush_friend_array
                 try_nonapi_mf_initialization(rel_id)
                 return waiting_return(); #polling function that polls for about 90 seconds before giving up
 
@@ -102,7 +102,7 @@ def initialize_fof_crush(request):
     # ================================================================
 
 def try_api_mf_initialization(self,rel_id,mutual_app_friend_array):
-    global g_init_dict
+    global global_dict
     crush_id = global_dict[rel_id]['crush_id']
     admirer_id=global_dict[rel_id]['admirer_id']
     exclude_id_string=global_dict[rel_id]['exclude_id_string']
@@ -115,25 +115,25 @@ def try_api_mf_initialization(self,rel_id,mutual_app_friend_array):
         if mutual_friend['friend_count'] < minimum_lineup_members:
             continue
         mfriend_id=str(mutual_friend['uid'])
-        if mfriend_id not in g_init_dict[crush_id]: 
-            g_init_dict[crush_id][mfriend_id]= Lock()
-        g_init_dict[crush_id][mfriend_id].acquire() 
+        if mfriend_id not in global_dict[rel_id]: 
+            global_dict[rel_id][mfriend_id]= Lock()
+        global_dict[rel_id][mfriend_id].acquire() 
         # grab all friends of mutual app with admirer sex, friend sorted by friend count - via graph api
         fql_query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1=' + str(mutual_friend['uid']) + ' AND NOT (uid2 IN (' + g_init_dict[crush_id]['exclude_id_string'] + ')))) AND sex = "' + admirer_gender + '" ORDER BY friend_count DESC LIMIT ' + str(ideal_lineup_members)
         try:
             fql_query_results = graph_api_fetch(access_token,fql_query,expect_data=True,fql_query=True)
         except:
-            g_init_dict[crush_id][mfriend_id].release()
+            global_dict[rel_id][mfriend_id].release()
             continue
         # if less than minimum lineup members, go on to next mutual friend
         if not fql_query_results or len(fql_query_results) < minimum_lineup_members:
-            g_init_dict[crush_id][mfriend_id].release()
+            global_dict[rel_id][mfriend_id].release()
             continue 
         acceptable_id_array=[]
         for result in fql_query_results:
             acceptable_id_array.append(result['uid'])
-            g_init_dict[crush_id]['exclude_id_string'] += "," + str(result['uid'])
-        g_init_dict[crush_id][mfriend_id].release()
+            global_dict[rel_id]['exclude_id_string'] += "," + str(result['uid'])
+        g_init_dict[rel_id][mfriend_id].release()
         # else add to lineup id array and setup in lineup
         return acceptable_id_array
     # if for loop ended without returning, then return False cause no lineup was created

@@ -305,9 +305,10 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             if is_admirer_type==1:
                 CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
             else:  
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,is_from_setup=True)    
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,recommender_person=admirer_rel.source_person)    
                 # to prevent the target person from showing up in the friends_with_admirers module of the recommender, then add the recommender to the target person's friends_that_invited_me list
-                target_user.friends_that_invited_me.add(admirer_rel.source_person)
+                # CHC Correct 7/13: i think it's better to have redundancy cause recommender won't see his recommendees unless he goes to setups by me page.
+                # target_user.friends_that_invited_me.add(admirer_rel.source_person)
                         
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction</span>'
             lineup_member.decision=0
