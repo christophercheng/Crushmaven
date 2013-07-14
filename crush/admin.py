@@ -19,9 +19,9 @@ class FacebookUserAdmin(admin.ModelAdmin):
     fields=('first_name','last_name','email','gender','gender_pref','is_single','site_credits','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','birthday_year','age_pref_min','age_pref_max','date_joined','is_active','is_staff','is_superuser','password')
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
-    list_display = ( 'source_person','target_person','recommender_person','friendship_type','target_status','date_added',) # what columns to display
+    list_display = ( 'source_person','target_person','friendship_type','target_status','date_added',) # what columns to display
     search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against
-    list_filter = ('target_status','friendship_type','recommender_person') # right column auto-filter links
+    list_filter = ('target_status','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
     fields=('target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','lineup_initialization_date_started','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_lineup_finished','date_results_paid','display_id','recommender_person','updated_flag')
