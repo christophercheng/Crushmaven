@@ -193,7 +193,7 @@ class LineupMemberManager(models.Manager):
         
         # set up the post data
         post_dict = {}
-        post_dict['access_token'] = relationship.source_person.access_token
+        post_dict['access_token'] = relationship.target_person.access_token
         post_dict['batch'] = '[' + mutual_friend_id_dict + ',' + mutual_friend_dict + ',' + mutual_app_friend_dict + ',' + crush_friend_dict + ',' + crush_app_friend_dict  + ']'
         post_dict=urllib.urlencode(post_dict)    
         

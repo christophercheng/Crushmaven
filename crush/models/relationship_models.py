@@ -144,6 +144,7 @@ class CrushRelationshipQuerySet(models.query.QuerySet):
         crush_relationships = admirer_user.crush_crushrelationship_set_from_source
         return crush_relationships.filter(is_results_paid=True)
     
+    # returns all crush relationships where the target person (crush) is given
     def all_admirers(self,crush_user):
         return crush_user.crush_crushrelationship_set_from_target.all()
     
