@@ -3,3 +3,5 @@
 .project
 *.sqlite
 tests.py
+fbdater/local_settings.py
+staticfiles

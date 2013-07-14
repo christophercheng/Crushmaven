@@ -15,31 +15,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'flirtally_db',                      # Or path to database file if using sqlite3.
-        'USER': 'flirtally',                      # Not used with sqlite3.
-        'PASSWORD': 'flirtally',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-       'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-    }           
-
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#       'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
-#        'USER': '',                      # Not used with sqlite3.
-#        'PASSWORD': '',                  # Not used with sqlite3.
-#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-#    }   
-
-}
-
-
-
-
 # for testing I am running a temporary python "dumb" SMTP server that receives emails locally and displays them to the terminal
 #@EMAIL_HOST = 'localhost'
 #@EMAIL_PORT = '1025'
@@ -210,8 +185,6 @@ LOGGING = {
 # define the custom user that inherits from Django's User model
 AUTH_USER_MODEL = 'crush.FacebookUser'
 
-NUM_MIN_DAYS_CRUSH = 7
-
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '387261624645161' # Crush Discovery App on Facebook
 FACEBOOK_APP_SECRET = '6345441a2465ba85844916375bbc88aa'
@@ -225,15 +198,15 @@ AUTHENTICATION_BACKENDS = (
 URLLIB_TIMEOUT=30
 
 # auto delay the response between the start time and end time (in seconds)
-CRUSH_RESPONSE_DELAY_START = 1 # 180 default = 3hours x 60 minutes =  180
-CRUSH_RESPONSE_DELAY_END = 5 # 2160 default = 36 hours x 60 minutes = 2160
-STARTING_CREDITS=100 # change to 1 in production
+CRUSH_RESPONSE_DELAY_START = 180 # 180 default = 3hours x 60 minutes =  180
+CRUSH_RESPONSE_DELAY_END = 2160 # 2160 default = 36 hours x 60 minutes = 2160
+STARTING_CREDITS=1 # change to 1 in production
 INITIALIZATION_TIMEOUT=25 # maximum amt of time before ajax initialization times out
-MINIMUM_LINEUP_MEMBERS=0 # change to 4 in production = this value excludes the secret admirer themself
-IDEAL_LINEUP_MEMBERS=9 # change to 4 in production = this value excludes the secret admirer themself
+MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
+IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=12# 0 # default is = 12 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=0# 7 is default
-MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=0#7 is default
+MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=7#7 is default
 MAXIMUM_CRUSH_INVITE_EMAILS=7
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=2
@@ -326,12 +299,17 @@ POSTMAN_AUTOCOMPLETER_APP={
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
 
+DATABASES = {}
 # Parse database configuration from $DATABASE_URL
-#import dj_database_url
-#DATABASES['default'] =  dj_database_url.config()
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+try:
+    from local_settings import *
+except ImportError, e:
+    print 'Unable to load local_settings.py:', e
 
 
