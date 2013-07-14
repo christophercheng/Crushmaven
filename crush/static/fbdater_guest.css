@@ -19,7 +19,7 @@ a{
 }
 
 .center_container{	
-	width:1000px;
+	width:985px;
 	margin:0 auto;
 	position:relative;
 	padding-left:15px;
@@ -78,7 +78,7 @@ a{
 	top:0px;
 	left:0px;
 	padding-left:20px;
-	width:1000px;
+	width:985px;
 	display:inline-block;
 	position:absolute;
 	overflow:hidden;
@@ -315,8 +315,8 @@ h2#tagline2 #safe_text{
 }
 .setup_step{
 	display:inline-block;
-	width:245px;
-	min-height:386px;
+	width:240px;
+	min-height:300px;
 	height:100%;
 	top:0px;
 	margin-right:0px;
