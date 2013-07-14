@@ -573,6 +573,9 @@ a.logo img{
 	#color:#ff0033;
 	font-size:14px;	
 }
+#center_header_menu .submenu .settings_menu a {
+	font-size:13px;
+}
 
 .header_container li.submenu{
 	display:inline-block!important;
@@ -650,7 +653,7 @@ a.logo img{
 	background-size:auto;
 	height:20px;
 	width:20px;
-	top:3px;
+	top:2px;
 	right:10px;
 	background-position:-35px -1px;
 }
@@ -692,18 +695,20 @@ a.logo img{
 	background:#F4F4F4;
 }
 .nav_header .nav_header_preposition{
-	font-size:13px;
+	font-size:11px;
 	letter-spacing:0px;
 }
 .left_sidebar_container .nav_header{
-	letter-spacing:3px;
+	letter-spacing:4px;
 	border-bottom:2px solid #254AB8;
 	border-bottom:2px solid #324AB2;
 	text-shadow:0px 1px 1px #C2C2C2!important;
-	word-spacing:-2px;
+	word-spacing:-3px;
 	font-style:italic;
-	#border-top:1px solid #333333;
 	font-weight:bold;
+	text-shadow: 0px 1px 0px #FFF!important;
+	border-radius: 8px 8px 0px 0px;
+	color:#464854;
 }
 .right_sidebar_container .nav_header{
 	color:white;
@@ -713,6 +718,8 @@ a.logo img{
 	font-size:13px;
 	font-weight:bold;
 	border-radius:6px 6px 0px 0px;
+	text-shadow: 0px -1px 1px #000;
+
 }
 .right_sidebar_container li.friend_with_admirer{
 	border-left:1px solid rgb(51,51,51);
@@ -887,6 +894,7 @@ a.logo img{
 	height:50px;
 	#border-left:1px solid rgb(51,51,51);
 	#border-right:1px solid rgb(51,51,51);
+
 }
 
 .nav_subtext {
@@ -899,9 +907,11 @@ a.logo img{
 }
 
 .navbar li.inactive a:hover {
-	background-color:#F4F4F4;
-	border-top-color:#F4F4F4;
-	border-bottom-color:#DCDCDC;
+	background-color:#f1f1f1;
+	border-top-color:#f1f1f1;
+	border-bottom-color:#dcdcdc;
+	color:#1F1F1F;
+	text-shadow:1px 1px 0 #fff;
 	transition-property:color,background-color,border-color;
 	transition-duration:300ms,300ms,300ms;
 	-webkit-transition-duration:300ms,300ms,300ms;
@@ -935,7 +945,6 @@ a.logo img{
 	top:0px;
 	left:29px;
 }
-
 
 .left_sidebar_container #combo_singles_button {
 	height:38px;
@@ -1058,7 +1067,7 @@ a.logo img{
 }
 .header_subtext {
 	display:block;
-	font-size:10px;
+	font-size:9px;
 	font-weight:normal;
 	font-style:italic;
 	margin-top:-3px;
@@ -1194,8 +1203,9 @@ a.logo img{
 	margin-bottom:30px;
 	border-radius:8px;
 	display:none;
-	box-shadow: inset 0px 0px 3px #C8C8C8;
+	box-shadow: inset 0px 0px 2px #C8C8C8;
 	color:#646778;
+	
 }
 
 .new_user_instructions.expanded{
@@ -1218,6 +1228,7 @@ a.logo img{
 	font-size:11px!important;
 	letter-spacing:0px;
 	border-radius:5px;
+	text-shadow:1px 1px 0 #fff;
 }
 
 .new_user_instructions .show_less{
@@ -1235,6 +1246,8 @@ a.logo img{
 	font-size:18px;
 	font-weight:bold;
 	margin-bottom:12px;
+	text-shadow: 1px 1px 0 #FFFFFF;
+	
 }
 .new_user_instructions span.instructions_subtitle{
 	font-weight:normal;
@@ -1254,6 +1267,7 @@ a.logo img{
 .new_user_instructions .instruction_step_text{
 	display:inline-block;
 	margin-left:28px;
+	text-shadow: 1px 1px 0 #FFFFFF;
 }
 .new_user_instructions .help_icon2{
 	display:inline-block;
@@ -1349,7 +1363,7 @@ a.logo img{
 	display:inline-block;
 	#background:#E6F0FF;
 	BACKGROUND:#FCFCFC;
-	border:1px solid #B2B2C2; 
+	border:1px solid #BABAC8; 
 	color:#595B6A!important;
 	font-size:13px;
 	line-height:22px;
@@ -1358,6 +1372,7 @@ a.logo img{
 	border-radius:4px;
 	display:none;
 	text-align:center;
+	text-shadow:1px 1px 0 #fff;
 }
 .new_user_sub_instructions span.sub_instruction_strong{
 	font-weight:bold;
@@ -1423,6 +1438,8 @@ ul.title_bar li .active_title_bar_page_link {
 	border-right:1px solid #373737;
 	margin-left:-3px!important;
 	#box-shadow: inset 0px 0px 2px #474747;
+	text-shadow: 0px -1px 1px #000;
+	
 }
 
 ul.title_bar li .inactive_title_bar_page_link {
