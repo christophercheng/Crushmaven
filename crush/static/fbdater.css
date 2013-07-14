@@ -324,7 +324,7 @@ a.button {
 	background: -webkit-linear-gradient(top, #2F2F2F, #181818);
 	background: -0-linear-gradient(top, #2F2F2F, #181818);
 	background: linear-gradient(top, #2F2F2F, #181818);
-	box-shadow: 0 0 3px rgba(0,0,0,0.5);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.5);
 	color: white;
 	width:100%;
   	position: fixed;
@@ -458,8 +458,8 @@ a.logo{
 	font-size:32px;
 	color:white;
 	display:inline-block;
-	padding-top:3px;
-	line-height:100%;
+	#padding-top:3px;
+	height:100%;
 	font-weight:bold;
 }
 
@@ -469,7 +469,7 @@ a.logo #to {
 }
 
 a.logo img{
-	margin-top:5px;
+	margin-top:8px;
 	height:38px;
 }
 

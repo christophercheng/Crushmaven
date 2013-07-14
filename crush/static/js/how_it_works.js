@@ -32,8 +32,10 @@ $('.how_to_link').click(function(event){
         
         inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
         active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
-
-        slide_container.animate({'min-height':new_height},{duration: 500,queue:false});
+        if (bForSingles)
+        	slide_container.animate({'min-height':new_height},{duration: 1500,queue:false});
+        else
+        	slide_container.animate({'min-height':new_height},{duration: 500,queue:false});
         
         active_slide.fadeOut({duration:500,queue:false,complete:function(){
                         inactive_slide.fadeIn(500,function(){

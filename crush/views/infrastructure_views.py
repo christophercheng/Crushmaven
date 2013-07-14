@@ -3,9 +3,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from crush.models import CrushRelationship
-from django.core.mail import send_mail
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
+from crush.utils_email import send_mailgun_email
+
+
 
 # end imports for testing
 
@@ -54,11 +56,11 @@ def home(request):
 
 @login_required
 def ajax_submit_feedback(request):
- 
-    email = request.user.email
-    if email=="":
-        email=request.user.username + '@attractedto.com'
-    send_mail('Feedback',request.POST['message'],request.user.email,['attractedto@gmail.com'])
+    message=request.POST['message']
+    from_email= request.user.email
+    if from_email == "":
+        from_email = request.user.username + "_" + "noemail" + "@flirtally.com"
+    send_mailgun_email(from_email, 'feedback@flirtally.com', 'Flirtally User Feedback',message,message,request.user.email)
     return HttpResponse("")
 
 

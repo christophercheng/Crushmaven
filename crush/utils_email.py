@@ -5,7 +5,6 @@ import requests
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
-            from_string = 'AttractedTo <notifications@attractedto.com>'
             data_dict={"from": from_string,\
                            "to": email_address,"subject": subject, "html": html_message, "text":text_message}
             #data_dict={"from": from_string,\
