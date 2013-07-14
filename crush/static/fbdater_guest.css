@@ -19,7 +19,7 @@ a{
 }
 
 .center_container{	
-	width:985px;
+	width:1000px;
 	margin:0 auto;
 	position:relative;
 	padding-left:15px;
@@ -78,7 +78,7 @@ a{
 	top:0px;
 	left:0px;
 	padding-left:20px;
-	width:985px;
+	width:1000px;
 	display:inline-block;
 	position:absolute;
 	overflow:hidden;
@@ -319,7 +319,7 @@ h2#tagline2 #safe_text{
 	min-height:300px;
 	height:100%;
 	top:0px;
-	margin-right:0px;
+	margin-right:1px;
 	z-index:10;
 	border-radius:15px;
 	vertical-align:top;
@@ -363,8 +363,8 @@ h2#tagline2 #safe_text{
 	display:inline-block;
 	width:100%;
 	font-size:20px;
-	margin-bottom:8px;
-	margin-left:8px;
+	margin-bottom:9px;
+	margin-left:11px;
 }
 .setup_step_image{
 	position:absolute;
@@ -394,7 +394,7 @@ h2#tagline2 #safe_text{
 	display:inline-block;
 	font-size:13px;
 	font-weight:normal;
-	padding:0px 5px 0px 12px;
+	padding:0px 6px 0px 13px;
 	line-height:24px;
 }
 
