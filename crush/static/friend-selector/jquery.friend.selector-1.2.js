@@ -93,16 +93,14 @@
     if (username==fsOptions.lang.nonFriendSearchText | username=="")
     	return false;
 	$("#fs-user-list").append('<div id="fs-loading"></div>');
-	$("#fs-select-view #site-overlay").css('visibility','visible');
     // see if user exists
 	window.wait_modal_open("",$('#fs-dialog-box-wrap'));
     $.get("/ajax_find_fb_user/", {username:username},
     	  function(response){
     		window.wait_modal_close();
+	        $('#fs-loading').remove();
     		if ('error_message' in response) {
     			window.alert_modal("Invalid Username",response.error_message,$("#fs-dialog-box-wrap") );
-    			$("#fs-select-view #site-overlay").css('visibility','hidden');
-    	        $('#fs-loading').remove();
     			return false;
     		}
     		else {
@@ -113,8 +111,6 @@
 
     	    	if ($(duplicate_element).length > 0){
     	    		window.alert_modal("Invalid Username","You already selected this person",$("#fs-dialog-box-wrap") );
-    	    		$("#fs-select-view #site-overlay").css('visibility','hidden');
-    	    		$('#fs-loading').remove();
     	    		return false;
     			}
 
@@ -122,14 +118,11 @@
     	        selected_friend_count++;
     	        _enableContinueButton();
     			$('#nfs-input-text').val("");
-    			$("#fs-select-view #site-overlay").css('visibility','hidden');
     			window.addedNonFriend=true;
-    	        $('#fs-loading').remove();
     		} 		
     }).fail(function(responseText,textStatus,XHR){
  		window.wait_modal_close();
     	fsOptions.onError("Sorry, we are unable to process your Facebook id.  Please re-check your entry and try again.");
-    	$("#fs-select-view #site-overlay").css('visibility','hidden');
     	$("#fs-loading").remove();
     });
 },

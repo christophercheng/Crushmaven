@@ -401,56 +401,18 @@ a.button {
   top: 30px;
 }
 
-#admirer-loading {
-	background-image:url(friend-selector/friend-selector-loader.gif);
-	margin: 5px; /* 0 0 -12px; */
-	height: 24px;
-	width: 24px;
-	position: relative;
-	top: 10%;
-	left: 10%;
-}
-
 #loading {
-	background-image:url(friend-selector/friend-selector-loader.gif);
+	background-image:url(./images/loader.gif);
 	margin: 5px; /* 0 0 -12px; */
-	height: 24px;
-	width: 24px;
-	position: relative;
-	top: 10%;
-	left: 10%;
+	margin-left:5px;
+	height: 55px;
+	width: 55px;
+	vertical-align:middle;
+	line-height:55px;
 }
 
-.preload #loading {
-	background-image:url(friend-selector/friend-selector-loader.gif);
-	height: 24px;
-	width: 24px;
-	top:0%;
-	position: relative;
-	display:none;
-}
-
-#site-overlay #site-loading {
-	background-image:url(loading.gif);
-	margin: auto; /* 0 0 -12px; */
-	height: 32px;
-	width: 32px;
-  position: relative;
-  top: 125px;
-}
-
-#site-overlay {
-z-index:125;
-position:absolute;
-top:0;
-bottom:0;
-left:0;
-width:100%;
-background:#000;
-opacity:0.75;
--moz-opacity:0.75;
-filter:alpha(opacity=75);
-visibility:hidden;
+.lineup_block_line #loading {
+	margin-left:65px;
 }
 
 /* ===========================   Header Container ========================= */
@@ -2322,11 +2284,6 @@ top:1px;
 	width:100%;
 }
 
-.lineup_block_line #loading {
-	display:inline-block;
-	margin-left:21px;
-}
-
 .lineup_block_line #loading #creating_lineup_text {
 	display:inline-block;
 	width:200px;
@@ -3450,11 +3407,6 @@ ul.bxslider{
  	font-weight: normal;
 }
 
-#fs-select-view #site-overlay {
-	top:28px;
-	opacity:0.25;
-	-moz-opacity:0.25;
-	filter:alpha(opacity=25);
 }
 
 /* ===========================   Setup Create Dialog ========================= */

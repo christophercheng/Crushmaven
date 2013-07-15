@@ -24,19 +24,19 @@ $(document).ready(function()
 {
 	$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
 		// call ajax post function to deduct credit and call related handler
-	 	$("#site-overlay").css('visibility','visible');
+	 	window.wait_modal_open();
 		var post_dict = {"csrfmiddlewaretoken":"{{csrf_token}}"};
 		var post_url = '/ajax_deduct_credit/' + {{feature_id}} + '/' + {{unique_id}} + '/'; // feature is type 2
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
-			$('#site-overlay').css('visibility','hidden');
+			window.wait_modal_close();
 			{{purchase_callback_name}};
 			// adjust the credits number on the main site
 			$("#num_credits").load("/ajax_update_num_credits/");
 			}) 
 			.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
+					window.wait_modal_close();
 					window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
-					$('#site-overlay').css('visibility','hidden');
 			}); // end of .fail handler
 		}); // close off #credit_deduct_ok handler 
 

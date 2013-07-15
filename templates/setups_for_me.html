@@ -42,29 +42,6 @@ $(document).ready(function()
 		});   
 	  return false;    
 	});			
-  
-    /** AUTOMATIC FUNCTION - WAIT FOR INITIALIZATION BEFORE RENDERING LINEUP BLOCK
-    *
-    */
-    $('.ajax_display_lineup_block').each(function(){
-
-        var display_id=$(this).attr("display_id");
-        var lineup_block_div = $(this).parent('.lineup_block');
-        lineup_block_div.html('<div id="loading">initializing lineup...</div>');
-        var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
-        var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
-        $.ajax(ajax_url, {
-        
-   				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
-   				success: function (data) {
-       			lineup_block_div.html(data);
-   				},
-   				error: function(){
-   					lineup_block_div.html("{{fof_fail_status}}");
-   					$.get(ajax_fail_url);
-   				} 
-				});
-    });
     
 	// auto show lineup if one given
 	var show_lineup_number = '{{show_lineup}}';   

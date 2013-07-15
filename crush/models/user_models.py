@@ -280,7 +280,7 @@ class FacebookUser(AbstractUser):
         try: 
             friend_user = self.friends_with_admirers.get(username=str(remove_username))
         except FacebookUser.DoesNotExist:
-            return
+            raise FacebookUser.DoesNotExist
         friend_user.friends_that_invited_me.add(self)
         self.friends_with_admirers.remove(friend_user)
     
