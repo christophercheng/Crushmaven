@@ -33,7 +33,7 @@ $('.how_to_link').click(function(event){
         inactive_link.removeClass('how_to_link_inactive').addClass('how_to_link_active');
         active_link.removeClass('how_to_link_active').addClass('how_to_link_inactive');
         if (bForSingles)
-        	slide_container.animate({'min-height':new_height},{duration: 1500,queue:false});
+        	setTimeout(function(){slide_container.animate({'min-height':new_height},{duration: 500,queue:false});},500);
         else
         	slide_container.animate({'min-height':new_height},{duration: 500,queue:false});
         
