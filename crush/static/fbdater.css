@@ -816,6 +816,7 @@ a.logo img{
 	padding:2px;
 	border-radius:2px 0px 0px 2px;
 	word-spacing:-2px;
+	text-shadow:none;
 }
 
 .navbar .new_menu_response_count{
@@ -830,6 +831,7 @@ a.logo img{
 	font-style:normal!important;
 		color:red;
 	font-style:italic!important;
+	text-shadow:none;
 }
 
 .navbar li.active .menu_count{

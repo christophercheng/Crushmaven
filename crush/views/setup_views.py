@@ -22,7 +22,7 @@ def setups_for_me(request,requested_username=None):
     progressing_setups = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
     setups_completed_count = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).count()
     
-    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','date_added')
+    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','source_person__first_name')
     if requested_username!=None:
         try:
             resent_request = requests_by_me.get(target_person__username=requested_username)
@@ -53,7 +53,7 @@ def completed_setups_for_me(request):
     
     me = request.user
   
-    completed_setups = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).order_by('-updated_flag','date_added')
+    completed_setups = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).order_by('-updated_flag','source_person__first_name')
     setups_incomplete_count = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count()
 
     return render(request,'setups_for_me.html',
@@ -68,7 +68,7 @@ def completed_setups_for_me(request):
 def setups_by_me(request):
     
     me = request.user
-    progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
+    progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','target_person__first_name')
     setups_completed_count = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
     # determine if help popup should be shown
     if len(progressing_setups) == 0 and setups_completed_count==0:
@@ -89,7 +89,7 @@ def setups_by_me(request):
 def completed_setups_by_me(request):
     
     me = request.user
-    completed_setups = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','date_added')
+    completed_setups = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','target_person__first_name')
     setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
     return render(request,'setups_by_me.html',
@@ -105,7 +105,7 @@ def completed_setups_by_me(request):
 def setup_requests_for_me(request):
     me = request.user
   
-    requests_for_me = me.crush_setuprequestrelationship_set_from_target.filter().order_by('-updated_flag','date_added')
+    requests_for_me = me.crush_setuprequestrelationship_set_from_target.filter().order_by('-updated_flag','source_person__first_name')
     requests_by_me_count = me.crush_setuprequestrelationship_set_from_source.count()
     
     # determine whether help_popup shoudl be shwon
@@ -124,7 +124,7 @@ def setup_requests_for_me(request):
 def setup_requests_by_me(request):
     me = request.user
   
-    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','date_added')
+    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','target_person__first_name') 
     requests_for_me_count = me.crush_setuprequestrelationship_set_from_target.count()
 
     return render(request,'setup_requests.html',

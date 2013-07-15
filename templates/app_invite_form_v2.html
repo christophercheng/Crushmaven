@@ -17,8 +17,6 @@ $(document).ready(function()
                     form.attr('action') + ' #ajaxwrapper',
                     form.serializeArray(),
                     function(responseText, responseStatus,XHR) {
-                    console.log(responseText,responseStatus,XHR);
-            
          				if (responseText=="_GOOD"){
                     		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
                            window.update_invite_interstitial("{{crush_username}}");

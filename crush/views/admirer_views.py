@@ -18,7 +18,7 @@ def admirers(request,show_lineup=None):
     global g_init_dict
     me = request.user 
 
-    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me)
+    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','-display_id')
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
@@ -59,9 +59,10 @@ def admirers(request,show_lineup=None):
             relationship.lineup_initialization_date_started = datetime.datetime.now()
             relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
             print "starting lineup"
-            #LineupMember.objects.initialize_lineup(relationship)
-            thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
-
+            if settings.DEBUG:
+                LineupMember.objects.initialize_lineup(relationship)
+            else:
+                thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
    
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
@@ -234,7 +235,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         except:
             pass
     
-    ajax_response +='<div id="loading"></div><span class="lineup_decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
+    ajax_response +='<span class="lineup_decision" username="' + lineup_member_user.username + '" style="margin-top:5px">'
     
     # check to see if there is an existing crush relationship or platonic relationship:
     if lineup_member_user in me.crush_targets.all():
@@ -377,7 +378,7 @@ def ajax_update_num_new_admirers(request):
 def admirers_past(request):
     me = request.user 
    
-    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('date_added')
+    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
     progressing_admirers_count = CrushRelationship.objects.progressing_admirers(me).count()
 
     return render(request,'admirers.html',

@@ -277,8 +277,6 @@ $.maxZIndex = $.fn.maxZIndex = function(opt) {
   $("#wait_modal").dialog({dialogClass:'wait_modal_dialog',resizable:false, height:80,width:300,modal: true, autoOpen: false}); 
  
  window.wait_modal_open=function(custom_message,calling_jquery_element){
-	 console.log("existing overlay z", $(".ui-widget-overlay").css('z-index'));
-	 console.log("existing dialog z", $(".wait_modal_dialog").css('z-index'));
   	var message="please wait...";
   	if (custom_message !== 'undefined' && custom_message !== "")
   		message=custom_message;
@@ -385,7 +383,6 @@ function openSubMenu() {
 		if (show_me.parent().is(":hover")){
 			$('.popup').hide();
 			show_me.show(100);
-			console.log('hover show');
 		}
 	},100); 
 };
@@ -403,7 +400,6 @@ $('.header_container .drop_down_menu_link li.submenu').click(function(e){
 	e.stopPropagation();
 	var menu_element = $(this).find('ul');
 	var menu_element_id=menu_element.attr('id');
-	console.log(menu_element_id);
 	$('.popup:not(#' + menu_element_id + ')').hide();
 	if ($(menu_element).is(":visible")){
 		$(menu_element).hide(200);

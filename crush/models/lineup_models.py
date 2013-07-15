@@ -1,6 +1,5 @@
 from django.db import models
-import urllib,urllib2, json
-from urllib2 import URLError,HTTPError
+import urllib,json
 from django.conf import settings
 from  crush.models.relationship_models import CrushRelationship
 import random
@@ -8,7 +7,6 @@ import re,thread,time
 from threading import Lock
 from crush.models.globals import g_init_dict
 from crush.utils import graph_api_fetch,fb_fetch
-from django.core.context_processors import csrf
 
 def comma_delimit_list(array):
     myString = ",".join(array)
@@ -381,9 +379,12 @@ class LineupMemberManager(models.Manager):
         if last_fetch_index>len(q_block_array):
             last_fetch_index = len(q_block_array)
         g_init_dict[crush_id][rel_id + '_batch_blocks_requested']=last_fetch_index - q_start_index
-        for x in range(q_start_index,last_fetch_index):
-            thread.start_new_thread(self.fetch_block,(relationship,mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
-            #self.fetch_block(rel_id,mf_index,q_block_array,q_start_index,x)
+        if settings.DEBUG:
+            for x in range(q_start_index,last_fetch_index):          
+                self.fetch_block(relationship,mf_index,q_block_array,q_start_index,x)
+        else:
+            for x in range(q_start_index,last_fetch_index):
+                thread.start_new_thread(self.fetch_block,(relationship,mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
 
     #=================================================================    
     # METHOD 3C - Fetch Single Block
@@ -522,10 +523,14 @@ class LineupMemberManager(models.Manager):
             next_cf_index = len(g_init_dict[crush_id]['crush_friend_array'])
         g_init_dict[crush_id][rel_id+'_batch_friends_requested']= next_cf_index-cf_index # use this variable to determine if all requests have been retrieved and we can process final results
         g_init_dict[crush_id][rel_id+'_batch_friends_received'] = 0
-        for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
-            # call a single person handler 
-            thread.start_new_thread(self.start_single_friend_fetch,(relationship,x)) #initialize lineup asynchronously            
-            #self.start_single_friend_fetch(rel_id,x)     
+        if settings.DEBUG:
+            for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
+                # call a single person handler           
+                self.start_single_friend_fetch(relationship,x)   
+        else:
+            for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
+                # call a single person handler 
+                thread.start_new_thread(self.start_single_friend_fetch,(relationship,x)) #initialize lineup asynchronously                       
 
     # ================================================================    
     # METHOD 4b - Subroutine B: Single Person Fetch Handler - build q block array and fire off processing for each block
@@ -784,6 +789,7 @@ class LineupMember(BasicLineupMember):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush'
+        ordering = ['position']
         
     objects = LineupMemberManager()   
         
@@ -797,6 +803,7 @@ class SetupLineupMember(BasicLineupMember):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush'
+        ordering = ['position']
 
     # if relationship is not a typical crush relationship , then it is a setup relationship
     relationship = models.ForeignKey('SetupRelationship',null=True,blank=True,default=None)

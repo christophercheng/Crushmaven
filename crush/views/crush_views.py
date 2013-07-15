@@ -86,7 +86,7 @@ def attractions(request, reveal_crush_id=None):
     
     me = request.user
   
-    crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag', 'target_status', 'target_person__last_name')
+    crush_progressing_relationships = CrushRelationship.objects.progressing_crushes(me).order_by('-updated_flag','target_person__first_name')
 
     # if there is at least one friend attraction, then we need to check the user's facebook privacy setting.  if their app visibility is not set to "only me", then display warning dialog
     if (len(crush_progressing_relationships.filter(friendship_type=0)) > 0):
@@ -100,7 +100,7 @@ def attractions(request, reveal_crush_id=None):
         except CrushRelationship.DoesNotExist:
             reveal_crush_id = None
             
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
     # determine whether to show help popup
@@ -197,8 +197,8 @@ def attractions_completed(request, reveal_crush_id=None):
                 reveal_crush_id = None  # reset the value in this error case
         except CrushRelationship.DoesNotExist:
             reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me)
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('target_person__last_name')
+    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
+    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('-updated_flag','target_person__first_name')
     crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
     
     return render(request, 'crushes.html',

@@ -759,7 +759,6 @@
 	// clear out the filter text box
 	$('#fs-reset').trigger('click');
 	$('#fs-input-text').focus();
-	console.log('reset');
     }
 
     var selected_height = $('#fs-selected-user-list').height();

@@ -58,6 +58,7 @@ class PlatonicRelationship(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
+        # no ordering is needed cause we don't display platonic relationships anywhere, so hopefully no ordering speeds it up
         
     objects = PlatonicRelationshipManager()
  
@@ -175,7 +176,7 @@ class CrushRelationship(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
-
+        #ordering = ['-updated_flag','target_person__first_name'] enable ordering in crush views so that other queries are faster
     objects = CrushRelationshipManager()
     
     #dynamically tie in the target person's response as a lookup time optimization
@@ -530,6 +531,7 @@ class SetupRelationship(BasicRelationship):
     class Meta:
         # this allows the models to be broken into separate model files
         app_label = 'crush' 
+        # ordering handled by view function 
     # source person is the recommender
     # target person is the recommendee
     # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
@@ -646,6 +648,7 @@ class SetupRelationship(BasicRelationship):
 class SetupRequestRelationship(BasicRelationship):
     class Meta:
         app_label = 'crush' 
+        #default handling done by view function
     # source person is the one requesting a setup
     # target person is the person who will eventually create the setup
     def can_resend(self):

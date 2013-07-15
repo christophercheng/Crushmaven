@@ -288,7 +288,7 @@ class FacebookUser(AbstractUser):
     def html_for_inactive_friend_section(self,ajax_reprocess_friends_with_admirers=False): 
         ajax_response=""
         print "number of inactive friends: " + str(len(self.friends_with_admirers.all()))
-        for inactive_crush_friend in self.friends_with_admirers.all():
+        for inactive_crush_friend in self.friends_with_admirers.all().order_by('first_name'):
             print "creating html for: " + inactive_crush_friend.username
            
             all_admirers = crush.models.relationship_models.CrushRelationship.objects.all_admirers(inactive_crush_friend)
