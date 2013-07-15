@@ -32,6 +32,7 @@ def admirers(request,show_lineup=None):
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=4):
                     start_relationships.append(relationship)
                     continue
+                #else: # need to tell user that relationship is in process of being initialized and they should wait
             elif relationship.lineup_initialization_status==2:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(hours=12):
                     start_relationships.append(relationship)

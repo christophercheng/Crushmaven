@@ -78,12 +78,21 @@ class LineupMemberManager(models.Manager):
                     id = str(new_friend[u'uid'])
                     acceptable_id_array.append(id)
                     g_init_dict[crush_id]['exclude_id_string'] += "," + id
+                if len(acceptable_id_array) >= settings.IDEAL_LINEUP_MEMBERS: # we have enough lineup members, so wrap it up!
+                    g_init_dict[crush_id][crush_id].release()
+                    self.create_lineup(relationship,acceptable_id_array[:settings.IDEAL_LINEUP_MEMBERS]) # make sure you only return up to the max number of lineup members
+                    return
+
         except Exception as e:
             print str(e)
             pass # we're still good, just won't have any recent friends i list
+       
         try:
-            num_members_needed = 9 - len(acceptable_id_array) 
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT " + str(num_members_needed)
+            num_new_members_needed = settings.IDEAL_LINEUP_MEMBERS - len(acceptable_id_array)
+            min_new_members_needed = settings.MINIMUM_LINEUP_MEMBERS - len(acceptable_id_array)
+            if min_new_members_needed < 0:
+                min_new_members_neded = 0
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT " + str(num_new_members_needed)
             data = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
 
         except Exception as e:
@@ -91,11 +100,21 @@ class LineupMemberManager(models.Manager):
             print "Friend Crush FQL Exception: " + str(e)
             self.initialize_fail(relationship,5)
             return
-        if not data or len(data) < settings.MINIMUM_LINEUP_MEMBERS:
+
+        if not data:
+            if len(acceptable_id_array) >= settings.MINIMUM_LINEUP_MEMBERS: # we have enough lineup members, so wrap it up!
+                g_init_dict[crush_id][crush_id].release()
+                self.create_lineup(relationship,acceptable_id_array) # make sure you only return up to the max number of lineup members
+                return
+            else:
+                g_init_dict[crush_id][crush_id].release()
+                self.initialize_fail(relationship,3)
+                return
+        if len(data) < min_new_members_needed:
             g_init_dict[crush_id][crush_id].release()
             self.initialize_fail(relationship,3)
             return
-        
+        # if we got here, then we got data and it has enough lineup members, so extract 'em!
         for item in data:
             g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
             acceptable_id_array.append(item['uid'])

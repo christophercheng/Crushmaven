@@ -48,14 +48,20 @@ $(document).ready(function()
 
         var display_id=$(this).attr("display_id");
         var lineup_block_div = $(this).parent('.lineup_previews');
-        lineup_block_div.html('<div id="loading"><span id="creating_lineup_text">creating your lineup...</span></div>');
+        lineup_block_div.html('<div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;(it might take a few minutes)</span></div>');
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
+        console.log('calling ajax_display_lineup_block');
         $.ajax(ajax_url, {
         
-   				timeout: 90000, // 90 seconds - purposely set high so the server can time out by itself
+   				timeout: 240000, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
    				success: function (data) {
-       			lineup_block_div.html(data);
+   					if (data == ""){
+   						lineup_block_div.html("{{fof_fail_status}}");
+   	   					$.get(ajax_fail_url);
+   					}
+   					else
+   						lineup_block_div.html(data);
    				},
    				error: function(){
    					lineup_block_div.html("{{fof_fail_status}}");
