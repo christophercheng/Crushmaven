@@ -7,11 +7,10 @@ from crush.models import FacebookUser
 class FacebookBackend:
 
     # Reads in Fb code and asks Fb if it's valid and what user it points to
-    def authenticate(self, token=None, request=None):
-        print "called authenticate user"
+    def authenticate(self, token=None, request=None,next_page=""):
         args = {
             'client_id': settings.FACEBOOK_APP_ID,
-            'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback'),
+            'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback' + next_page),
             'client_secret': settings.FACEBOOK_APP_SECRET,
             'code': token,
 

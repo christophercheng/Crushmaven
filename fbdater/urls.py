@@ -8,12 +8,15 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 
 admin.autodiscover()
-
+handler404 = 'crush.views.infrastructure_views.home'
+#handler500 = '/setups_for_me/'
 
 # Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
-   (r'^facebook/login/$', 'login'),
-   (r'^facebook/authentication_callback$', 'authentication_callback'),                    
+    (r'^facebook/login/$', 'login'),
+    (r'^facebook/login/(?P<next_page>\w+)/$', 'login'),
+    (r'^facebook/authentication_callback/$', 'authentication_callback'), 
+    (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
 )
 
 urlpatterns += patterns('',
@@ -27,6 +30,9 @@ urlpatterns += patterns('',
 #)
 urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
+
+
+#    url(r'^accounts/login/$','django.contrib.auth.views.login'),
 )
 
 
@@ -45,8 +51,6 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     url(r'^$', 'home', name="home_short"),
     
     url(r'^home/$', 'home',name="home_medium"),  
-
-    url(r'^accounts/login/$', 'home',name="home_long"),
     
     (r'^ajax_submit_feedback/$','ajax_submit_feedback'),
 
