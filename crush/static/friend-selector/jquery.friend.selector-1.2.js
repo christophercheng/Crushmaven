@@ -1046,7 +1046,7 @@
   defaults = {
 	accessToken: null, // used to get facebook graph api data
 	facebookID:null,
-    malePref: false, // pass in values: true (male), false (female), null (both)
+    malePref: null, // pass in values: true (male), false (female), null (both)
     maleGender: true,
     minimum_samegender_friends:4,
     minimum_crushgender_friends:4,
