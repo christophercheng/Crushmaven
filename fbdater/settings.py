@@ -6,7 +6,7 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, PROJECT_PATH) 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -198,8 +198,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 URLLIB_TIMEOUT=30
-LINEUP_BLOCK_TIMEOUT=240000 # this determines how long each admirer block should wait for initialization request to return a result. if timeout, then relationship initialization status set to error state (via ajax call)
-INITIALIZATION_TIMEOUT=200 # maximum amt of time before ajax initialization times out
+LINEUP_BLOCK_TIMEOUT=240000 # this determines how long (in millisecons) each admirer block should wait for initialization request to return a result. if timeout, then relationship initialization status set to error state (via ajax call)
+INITIALIZATION_TIMEOUT=200 # maximum amt of time in seconds before ajax initialization times out
 
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0=4 #minutes to wait to restart initialization if the current status is 0 (progressing)
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_2=12 #hours to wait to restart initialization if the current status is 2 (admirer doesn't have enough friends)
