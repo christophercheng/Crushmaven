@@ -200,11 +200,12 @@ AUTHENTICATION_BACKENDS = (
 URLLIB_TIMEOUT=30
 LINEUP_BLOCK_TIMEOUT=240000 # this determines how long (in millisecons) each admirer block should wait for initialization request to return a result. if timeout, then relationship initialization status set to error state (via ajax call)
 INITIALIZATION_TIMEOUT=200 # maximum amt of time in seconds before ajax initialization times out
-
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0=4 #minutes to wait to restart initialization if the current status is 0 (progressing)
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_2=12 #hours to wait to restart initialization if the current status is 2 (admirer doesn't have enough friends)
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_3=15 #minutes to wait to restart initialization if the current status is 3 (crush doesn't have enough friends)
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5=2 #minutes to wait to restart initialization if the current status is 4 or 5 (some sort of network or bug in system)
+
+INITIALIZATION_THREADING=True
  
 # auto delay the response between the start time and end time (in seconds)
 CRUSH_RESPONSE_DELAY_START = 180 # 180 default = 3hours x 60 minutes =  180

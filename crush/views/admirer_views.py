@@ -60,7 +60,7 @@ def admirers(request,show_lineup=None):
             relationship.lineup_initialization_date_started = datetime.datetime.now()
             relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
             print "starting lineup"
-            if settings.DEBUG:
+            if not settings.INITIALIZATION_THREADING:
                 LineupMember.objects.initialize_lineup(relationship)
             else:
                 thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
