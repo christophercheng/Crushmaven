@@ -20,8 +20,6 @@ class LineupMemberManager(models.Manager):
     # returns true if successful, false otherwise
     def initialize_lineup(self,relationship):
         global g_init_dict
-        time.sleep(10)
-        print "Initializing relationship for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name
         
         crush_id=relationship.target_person.username
 
@@ -47,7 +45,6 @@ class LineupMemberManager(models.Manager):
         rel_id=str(relationship.id)
         crush_id=relationship.target_person.username
         
-        print "REL ID: " + rel_id + " Initialize friend crush"
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         acceptable_id_array=[]
         
@@ -85,7 +82,7 @@ class LineupMemberManager(models.Manager):
                     return
 
         except Exception as e:
-            print str(e)
+            print "problem initializing friend lineup: " + str(e)
             pass # we're still good, just won't have any recent friends i list
        
         try:
@@ -122,7 +119,6 @@ class LineupMemberManager(models.Manager):
             
         random.shuffle(acceptable_id_array)
         
-        print "REL ID: " + rel_id + " lineup results: " + str(acceptable_id_array)
         g_init_dict[crush_id][crush_id].release()     
         self.create_lineup(relationship,acceptable_id_array)
         
@@ -134,7 +130,6 @@ class LineupMemberManager(models.Manager):
 
     def initialize_nonfriend_crush(self,relationship):
         global g_init_dict
-        print "Initialize non friend crush"
         admirer_id=relationship.source_person.username
         crush_id=relationship.target_person.username
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
@@ -144,12 +139,11 @@ class LineupMemberManager(models.Manager):
             fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = " + admirer_id + " AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + ")) )) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT 9"
             data = graph_api_fetch(relationship.source_person.access_token,fql_query,expect_data=True,fql_query=True)
         except:
-           print "Key or Value Error on Fql Query Fetch read!"
+           print "Exception initializing nonfriend crush: Key or Value Error on Fql Query Fetch read!"
            self.initialize_fail(relationship,5)
            return
        
         if not data or len(data) < int(settings.MINIMUM_LINEUP_MEMBERS):
-            print "NON FRIEND - not enough friends"
             self.initialize_fail(relationship,2)
             return
        
@@ -157,7 +151,6 @@ class LineupMemberManager(models.Manager):
             g_init_dict[crush_id]['exclude_id_string'] += "," + str(item['uid'])
             acceptable_id_array.append(item['uid'])
 
-#        print "json data results for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name + " : " + str(acceptable_id_array)
         self.create_lineup(relationship,acceptable_id_array)
 
     #================================================================    
@@ -172,28 +165,7 @@ class LineupMemberManager(models.Manager):
 
 
     def initialize_friend_of_friend_crush(self,relationship):
-        global g_init_dict
-        
-#        values = {'exclude_id_string' : g_init_dict[crush_id]['exclude_id_string'],
-#                 'access_token' : relationship.target_person.access_token }
-#        data = urllib.urlencode(values)
-#        url = "http://127.0.0.1:8000/initialize_fof_crush/" + admirer_id + "/" + crush_id + "/" + admirer_gender + "/" + str(settings.MINIMUM_LINEUP_MEMBERS) + "/"
-#        try:
-#            response_data = urllib2.urlopen(url, data,240000)
-#        except HTTPError as e:
-#            print "hTTP Error: " + str(e)
-#            if e.code == 500:
-#                self.initialize_fail(relationship,2)
-#            else:
-#                self.initialize_fail(relationship,5)
-#            return
-#        except URLError as e:
-#            self.initialize_fail(relationship,5)
-#            return
-#            print "URL Error: " + str(e)
-#        for data in response_data:
-#            acceptable_id_array.append(data)
-#            g_init_dict[crush_id]['exclude_id_string'] += "," + str(data)        
+        global g_init_dict     
         
         admirer_id=relationship.source_person.username
         crush_id=relationship.target_person.username
@@ -252,7 +224,6 @@ class LineupMemberManager(models.Manager):
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
         if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
             mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
-            #print "mutual_friend_array: " + str(len(mutual_friend_array)) + " : " + str(mutual_friend_array)
             # random.shuffle(mutual_friend_array) delay shuffling
             g_init_dict[crush_id][rel_id + '_mutual_friend_array']=mutual_friend_array
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
@@ -366,7 +337,7 @@ class LineupMemberManager(models.Manager):
             g_init_dict[crush_id][mfriend_id]= Lock()
         g_init_dict[crush_id][mfriend_id].acquire()     
         g_init_dict[crush_id][rel_id + '_filtered_id_array']=[] # reset for each mutual friend processed
-        print "REL ID:" + rel_id + ": Method 3A (process_mutual_friend), mutual friend:" + mfriend_id + " at mf_index: " + str(mf_index)
+        #print "REL ID:" + rel_id + ": Method 3A (process_mutual_friend), mutual friend:" + mfriend_id + " at mf_index: " + str(mf_index)
         num_friends = mfriend['friend_count']
         if num_friends < settings.MINIMUM_LINEUP_MEMBERS or num_friends == None:
             self.finished_process_mutual_friend(relationship,mf_index)
@@ -396,7 +367,7 @@ class LineupMemberManager(models.Manager):
         # reset batch_blocks received and requested before we kickoff a new batch
         g_init_dict[crush_id][rel_id + '_batch_blocks_received']=0
         g_init_dict[crush_id][rel_id + '_batch_id_array']=[]
-        print "REL ID: " + rel_id + " Method 3B (process_batch_blocks), mutual friend: " + str(g_init_dict[crush_id][rel_id + '_mutual_friend_array'][mf_index]['uid']) + ", q_start_index: " + str(q_start_index)
+        #print "REL ID: " + rel_id + " Method 3B (process_batch_blocks), mutual friend: " + str(g_init_dict[crush_id][rel_id + '_mutual_friend_array'][mf_index]['uid']) + ", q_start_index: " + str(q_start_index)
         last_fetch_index=q_start_index+5
         if last_fetch_index>len(q_block_array):
             last_fetch_index = len(q_block_array)
@@ -424,7 +395,7 @@ class LineupMemberManager(models.Manager):
         extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
-        print "REL ID:" + rel_id + " Method 3C (fetch_block), mutual friend: " + str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])  + ", q block: " + str(q_block_array[q_index]) + ", num extracted items: " + str(len(extracted_id_list))     
+        #print "REL ID:" + rel_id + " Method 3C (fetch_block), mutual friend: " + str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])  + ", q block: " + str(q_block_array[q_index]) + ", num extracted items: " + str(len(extracted_id_list))     
         LineupMember.objects.fetch_block_finished(relationship,mf_index,q_block_array,q_start_index,extracted_id_list)
         
     #=================================================================    
@@ -455,7 +426,7 @@ class LineupMemberManager(models.Manager):
             filtered_batch_id_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
         except:
             filtered_batch_id_array=[]
-        print "REL ID:" + rel_id +" Method 3D (fetch_block_finished), mutual friend: " + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + " - finished batch at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array))
+        #print "REL ID:" + rel_id +" Method 3D (fetch_block_finished), mutual friend: " + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + " - finished batch at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array))
         g_init_dict[crush_id][rel_id+'_filtered_id_array'] += filtered_batch_id_array
         if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) >= settings.IDEAL_LINEUP_MEMBERS:
             acceptable_id_array=[]
@@ -520,7 +491,7 @@ class LineupMemberManager(models.Manager):
         rel_id=str(relationship.id)
         crush_id=relationship.target_person.username
         
-        print "TRY METHOD 4"
+        #print "TRY METHOD 4"
         if len(g_init_dict[crush_id]['crush_friend_array']) < settings.MINIMUM_LINEUP_MEMBERS:
             self.initialize_fail(relationship,2)
             return
@@ -539,7 +510,7 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         
         g_init_dict[crush_id][rel_id+'_batch_start_cf_index']=cf_index
-        print "Starting batch fetch at index: " + str(cf_index)
+        #print "Starting batch fetch at index: " + str(cf_index)
         next_cf_index = cf_index + 18
         if next_cf_index > len(g_init_dict[crush_id]['crush_friend_array']):
             next_cf_index = len(g_init_dict[crush_id]['crush_friend_array'])
@@ -669,7 +640,7 @@ class LineupMemberManager(models.Manager):
             # other threads have already completed the job
             return
         g_init_dict[crush_id][rel_id+'_batch_friends_received'] += 1
-        print " - finished processing friend # " + str(g_init_dict[crush_id][rel_id+'_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(g_init_dict[crush_id][rel_id+'_filtered_id_array']))
+        #print " - finished processing friend # " + str(g_init_dict[crush_id][rel_id+'_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(g_init_dict[crush_id][rel_id+'_filtered_id_array']))
         
         if g_init_dict[crush_id][rel_id+'_batch_friends_received'] == g_init_dict[crush_id][rel_id+'_batch_friends_requested']:
             if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) < settings.IDEAL_LINEUP_MEMBERS:
@@ -678,10 +649,10 @@ class LineupMemberManager(models.Manager):
                 if cf_index < len(g_init_dict[crush_id]['crush_friend_array']):
                     self.batch_fetch_friends(relationship,cf_index)
                 else: #no more people to fetch
-                    print "no more friends to process"
+                    #print "no more friends to process"
                     if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) >= settings.MINIMUM_LINEUP_MEMBERS: 
                         # take what we got!
-                        print "take what we got and call finalize initialization"
+                        #print "take what we got and call finalize initialization"
                         self.finalize_initialization(relationship)
                     else:
                         self.initialize_fail(relationship,2)
@@ -699,7 +670,7 @@ class LineupMemberManager(models.Manager):
         if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id+'_initialization_state']>0: 
             # other threads have already completed the job
             return
-        print "finalized initialization with ids: " + str(g_init_dict[crush_id][rel_id+'_filtered_id_array'])
+        #print "finalized initialization with ids: " + str(g_init_dict[crush_id][rel_id+'_filtered_id_array'])
         #console.timeStamp("finished initialization")   
         self.create_lineup(relationship,g_init_dict[crush_id][rel_id+'_filtered_id_array'][:int(settings.IDEAL_LINEUP_MEMBERS)])
 
@@ -727,7 +698,7 @@ class LineupMemberManager(models.Manager):
     # Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
     # ================================================================
     def initialize_fail(self,relationship,status=2):
-        print "REL_ID: " + str(relationship.id) + " Initialize_fail called with status: " + str(status)
+        #print "REL_ID: " + str(relationship.id) + " Initialize_fail called with status: " + str(status)
         relationship.lineup_initialization_status=status
         relationship.save(update_fields=['lineup_initialization_status'])
         self.cleanup_initialization_memory(relationship)
@@ -741,7 +712,7 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         if g_init_dict[crush_id][rel_id+'_initialization_state']>0:
             return
-        print "REL ID:" + rel_id + "create_lineup: " + str(acceptable_id_array)
+        #print "REL ID:" + rel_id + "create_lineup: " + str(acceptable_id_array)
         g_init_dict[crush_id][rel_id+'_initialization_state']=1
         # determine where the admirer should randomly fall into the lineup
         # don't ever put member in last spot, cause there's a chance crush will skip making decision at end

@@ -29,20 +29,20 @@ def admirers(request,show_lineup=None):
     if len(error_relationships) > 0:
         for relationship in error_relationships: 
             if relationship.lineup_initialization_status==0:
-                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=4):
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0):
                     start_relationships.append(relationship)
                     continue
                 #else: # need to tell user that relationship is in process of being initialized and they should wait
             elif relationship.lineup_initialization_status==2:
-                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(hours=12):
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(hours=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_2):
                     start_relationships.append(relationship)
                     continue
             elif relationship.lineup_initialization_status == 3:
-                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=0):
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_3):
                     start_relationships.append(relationship)
                     continue
             else:
-                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=0): # default is 4 (5 minutes)
+                if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5): 
                     start_relationships.append(relationship)
                     continue
  
@@ -78,7 +78,8 @@ def admirers(request,show_lineup=None):
                                'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
                                'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
-                               'show_help_popup':show_help_popup                             
+                               'show_help_popup':show_help_popup,  
+                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT                           
                                })    
     
 @login_required
@@ -104,7 +105,7 @@ def ajax_display_lineup_block(request, display_id):
             relationship.lineup_initialization_status = 5
             relationship.save(update_fields=['lineup_initialization_status'])
             break
-        if g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
+        if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
             break
         elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
             print "giving up on admirer:" + str(display_id)
