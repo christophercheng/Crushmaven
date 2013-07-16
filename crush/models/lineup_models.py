@@ -20,6 +20,7 @@ class LineupMemberManager(models.Manager):
     # returns true if successful, false otherwise
     def initialize_lineup(self,relationship):
         global g_init_dict
+        time.sleep(240)
         print "Initializing relationship for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name
         
         crush_id=relationship.target_person.username
@@ -199,15 +200,17 @@ class LineupMemberManager(models.Manager):
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
         rel_id=str(relationship.id)
         exclude_id_string=g_init_dict[crush_id]['exclude_id_string']
-        
-     
+           
         # set up the batch fql queries
         crush_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM+user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + ')))"}'
         crush_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + '))) AND is_app_user"}'
         mutual_friend_id_dict='{"method":"GET","name":"mutual-friends","relative_url":"' + crush_id +'/mutualfriends/' + relationship.source_person.username + '"}'
         mutual_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + '))"}'
-        mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
-        
+        if relationship.recommender_person_id == None or relationship.recommender_person_id == "":
+            mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
+        else:
+            mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count FROM user WHERE uid IN (' + relationship.recommender_person_id + ') AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
+
         # set up the post data
         post_dict = {}
         post_dict['access_token'] = relationship.target_person.access_token
@@ -229,13 +232,13 @@ class LineupMemberManager(models.Manager):
             time.sleep(.5)
             num_fetch_tries+=1
         
-        # METHOD 1: API MUTUAL APP FRIEND
+        # METHOD 1: API MUTUAL APP FRIEND 
         if len(mutual_app_friend_array)>0:
             acceptable_id_array = self.try_api_mf_initialization(relationship,mutual_app_friend_array)
             if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
                 self.create_lineup(relationship, acceptable_id_array)
                 return
-        
+            
         # METHOD 2: API 9 Friends from 9 Crush App Friends     
         if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
             crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']

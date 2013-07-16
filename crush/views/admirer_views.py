@@ -95,7 +95,11 @@ def ajax_display_lineup_block(request, display_id):
     while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
         #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
         
-        if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
+        if not crush_id in g_init_dict:
+            relationship.lineup_initialization_status = 5
+            relationship.save(update_fields=['lineup_initialization_status'])
+            break
+        if g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
             break
         elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
             print "giving up on admirer:" + str(display_id)
