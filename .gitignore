@@ -1,3 +1,5 @@
+heroku_production
+heroku_production.pub
 *.pyc
 .pydevproject
 .project

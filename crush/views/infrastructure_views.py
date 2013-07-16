@@ -36,7 +36,7 @@ def home(request):
             return HttpResponseRedirect('/attractions/')
 
     else:
-        return render(request,'guest_home.html')
+        return render(request,'guest_home.html',{'site_root':settings.SITE_ROOT,'project_path':settings.PROJECT_PATH})
 
 
 @login_required
