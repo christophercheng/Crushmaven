@@ -1,12 +1,34 @@
-from django.conf import settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'flirtally_db',                      # Or path to database file if using sqlite3.
+        'USER': 'flirtally',                      # Not used with sqlite3.
+        'PASSWORD': 'flirtally',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+       'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+    }           
+
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#       'NAME': 'fbdater.sqlite',                      # Or path to database file if using sqlite3.
+#        'USER': '',                      # Not used with sqlite3.
+#        'PASSWORD': '',                  # Not used with sqlite3.
+#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#    }   
+
+}
+
 # Facebook settings are set via environment variables
-FACEBOOK_APP_ID = '341035956028074' # Crush Discovery App on Facebook
-FACEBOOK_APP_SECRET = '66cb9c533b7b10798aa3daee3ec5c558'
+FACEBOOK_APP_ID = '387261624645161' # Crush Discovery App on Facebook
+FACEBOOK_APP_SECRET = '6345441a2465ba85844916375bbc88aa'
 FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
+
 
 URLLIB_TIMEOUT=30
 LINEUP_BLOCK_TIMEOUT=240000 # this determines how long (in millisecons) each admirer block should wait for initialization request to return a result. if timeout, then relationship initialization status set to error state (via ajax call)
@@ -16,7 +38,7 @@ INITIALIZATION_RESTART_TIME_CRUSH_STATUS_2=12 #hours to wait to restart initiali
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_3=15 #minutes to wait to restart initialization if the current status is 3 (crush doesn't have enough friends)
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5=2 #minutes to wait to restart initialization if the current status is 4 or 5 (some sort of network or bug in system)
 
-INITIALIZATION_THREADING=True
+INITIALIZATION_THREADING=False
 # auto delay the response between the start time and end time (in seconds)
 CRUSH_RESPONSE_DELAY_START = 1 # 180 default = 3hours x 60 minutes =  180
 CRUSH_RESPONSE_DELAY_END = 5 # 2160 default = 36 hours x 60 minutes = 2160
@@ -53,12 +75,5 @@ POSTMAN_SEND_NOTIFICATIONS_FREQUENCY=24#send notifications out once every 24 hou
 POSTMAN_SHOW_USER_AS='get_name'
 MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
 
-DATABASES = {}
-# Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
-
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
