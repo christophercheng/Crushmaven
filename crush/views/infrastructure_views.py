@@ -7,8 +7,6 @@ from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 
-
-
 # end imports for testing
 
 #from django.contrib.auth.models import Use
@@ -36,7 +34,7 @@ def home(request):
             return HttpResponseRedirect('/attractions/')
 
     else:
-        return render(request,'guest_home.html',{'site_root':settings.SITE_ROOT,'project_path':settings.PROJECT_PATH})
+        return render(request,'guest_home.html',{'domain':request.get_host()})
 
 
 @login_required
