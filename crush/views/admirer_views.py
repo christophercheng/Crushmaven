@@ -65,6 +65,10 @@ def admirers(request,show_lineup=None):
             else:
                 thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
    
+    if past_admirers_count == 0 and progressing_admirer_relationships.count > 0:
+        show_help_popup=True
+    else:
+        show_help_popup=False
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
                                'admirer_type': 0, # 0 is in progress, 1 completed
@@ -73,7 +77,8 @@ def admirers(request,show_lineup=None):
                                'show_lineup': show_lineup,
                                'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
-                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,                               
+                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
+                               'show_help_popup':show_help_popup                             
                                })    
     
 @login_required
@@ -228,7 +233,6 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         
         try:
             friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + lineup_member.username)
-            friend=friend_profile[0]
             ajax_response +='<div id="mutual_friends">connected through: '
             for friend in friend_profile:
                 ajax_response += '<a target="_blank" href="http://www.facebook.com/' + friend['id'] + '"><img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;"></a>'
@@ -308,10 +312,37 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                 #ajax_response = "<span id=\"choice\" class='platonic existing_choice'>You previously decided - Not Interested</span>"
            
         if add_type=='crush':
+            # need to determine their friendship type
             if is_admirer_type==1:
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user)
+                if admirer_rel.friendship_type==0:
+                    new_relationship_friendship_type=0;
+                elif admirer_rel.friendship_type== 2: # admirer has no mutual friends, and his friends will be lineup members so they will not be friends or have mutual friends with target person
+                    new_relationship_friendship_type=2;
+                else: # admirer has mutual friends, so new relationship friendship type will likely be FOF (1) or no F (2).  there is a chance the lineup member is a friend, but not likely
+                    # test if there are mutual friends
+                    try:
+                        friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + facebook_id)
+                        if len(friend_profile) > 0:
+                            new_relationship_friendship_type=1
+                        else:
+                            new_relationship_friendship_type=2
+                    except:
+                        # some error, so just assume not friends
+                        new_relationship_friendship_type=2
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,friendship_type=new_relationship_friendship_type)
             else:  
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,recommender_person_id=admirer_rel.source_person.username)    
+                # the added lineup member will either be a friend or a friend of friend (recommender is mutual friend)
+                fql_query = "SELECT uid2 FROM friend WHERE uid1 = " + me.username + " AND uid2 = " + facebook_id
+                try:
+                    data = graph_api_fetch(me.access_token,fql_query,expect_data=True,fql_query=True)
+                    if len(data)>0:
+                        new_relationship_friendship_type=0
+                    else:
+                        new_relationship_friendship_type=1
+                except:
+                    # in case of failure just assume that they are not friends
+                    new_relationship_friendship_type=2
+                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,recommender_person_id=admirer_rel.source_person.username, friendship_type=new_relationship_friendship_type)    
                 # to prevent the target person from showing up in the friends_with_admirers module of the recommender, then add the recommender to the target person's friends_that_invited_me list
                 # CHC Correct 7/13: i think it's better to have redundancy cause recommender won't see his recommendees unless he goes to setups by me page.
                 # target_user.friends_that_invited_me.add(admirer_rel.source_person)

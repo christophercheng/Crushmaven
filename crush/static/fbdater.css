@@ -2633,7 +2633,7 @@ ul.bxslider{
 	position:absolute;
 	display:inline-block;
 	left:130px;
-	top:165px;
+	top:169px;
 }
 
 .lineup_facebook_link a{
@@ -2656,6 +2656,7 @@ ul.bxslider{
 	text-overflow:ellipsis;
 	white-space:nowrap;
 	overflow:hidden;	
+	font-style:italic;
 }
 
 .lineup_decision{

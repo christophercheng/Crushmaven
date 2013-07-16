@@ -20,7 +20,7 @@ class LineupMemberManager(models.Manager):
     # returns true if successful, false otherwise
     def initialize_lineup(self,relationship):
         global g_init_dict
-        time.sleep(240)
+        time.sleep(10)
         print "Initializing relationship for admirer: " + relationship.source_person.first_name + " " + relationship.source_person.last_name
         
         crush_id=relationship.target_person.username
