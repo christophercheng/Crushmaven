@@ -65,7 +65,7 @@ def admirers(request,show_lineup=None):
             else:
                 thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
    
-    if past_admirers_count == 0 and progressing_admirer_relationships.count > 0:
+    if past_admirers_count == 0 and progressing_admirer_relationships.count() > 0:
         show_help_popup=True
     else:
         show_help_popup=False
