@@ -5,5 +5,5 @@ heroku_production.pub
 .project
 *.sqlite
 tests.py
-fbdater/local_settings.py
+fbdater/settings_local.py
 staticfiles
