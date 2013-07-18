@@ -34,7 +34,7 @@ def home(request):
             return HttpResponseRedirect('/attractions/')
 
     else:
-        return render(request,'guest_home.html',{'domain':request.get_host(), 'facebook':settings.FACEBOOK_APP_ID})
+        return render(request,'guest_home.html')
 
 
 @login_required
