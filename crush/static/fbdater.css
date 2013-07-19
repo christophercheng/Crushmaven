@@ -292,7 +292,7 @@ a.button {
 
 .blacktop .ui-dialog-titlebar{
 	background:#000033!important;
-		background: -moz-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
+	background: -moz-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
 	background: -webkit-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
 	background: -0-linear-gradient(top, #000033, #000033 60%, #33335C)!important;
 	background: linear-gradient(top, #000033, #000033 60%, #33335C)!important;
@@ -317,17 +317,12 @@ a.button {
 
 .header {
 	height:50px;
-	background:#000000;
-	background: -moz-linear-gradient(top, #2F2F2F, #333333);
+	background:#262626;
+	background: -moz-linear-gradient(top, #454545, #262626);
 	background: -webkit-linear-gradient(top, #454545, #262626);
-	background: -0-linear-gradient(top, #2F2F2F, #333333);
-	background: linear-gradient(top, #2F2F2F, #333333);
-	#box-shadow: 0 1px 0px rgba(0,0,0,0.5);
-	#background:#333333;
-	#background:#f4f4f4;
-	border-bottom:2px solid #6E6E6E;
-	border-top:1px solid #6E6E6E;
-	
+	background: -0-linear-gradient(top, #454545, #262626);
+	background: linear-gradient(top, #454545, #262626);
+	box-shadow: 0 2px 0px #6e6e6e;
 	color: white;
 	width:100%;
   	position: fixed;
@@ -347,7 +342,6 @@ a.button {
 	width:985px;
 	margin-left: auto;
 	margin-right:auto;
-	#background-color:rgba(255,255,255,.5);
 	z-index: 101;
 	position:relative;
 	height:100%;
@@ -376,7 +370,6 @@ a.button {
 	width:550px;
 	#background-color:white;
 	position:relative;
-	
 }
 
 .right_sidebar {
@@ -402,6 +395,10 @@ a.button {
 	width: 32px;
   position: relative;
   top: 30px;
+}
+/* this is shown in the friends_with_admirer module while ajax is loading  */
+#site-loading.reprocess_friends_with_admirers_section {
+
 }
 
 #loading {
@@ -433,7 +430,7 @@ a.logo #to {
 }
 
 a.logo img{
-	margin-top:6px;
+	margin-top:8px;
 	height:36px;
 }
 
@@ -527,7 +524,7 @@ a.logo img{
 	#color:#333333;
 	font-size:13px;
 	vertical-align:middle;
-	line-height:50px;
+	line-height:48px;
 	font-weight:normal;
 	letter-spacing:1px;
 	display:inline-block;
@@ -551,18 +548,18 @@ a.logo img{
 	top:0px;
 	padding-right:3px;
 	padding-top:2px;
-		transition-property:background-color;
+	transition-property:background-color;
 	transition-duration:600ms;
 	-webkit-transition-duration:600ms;
 	-webkit-transition-property:background-color;
-		border-radius:8px 8px 0 0;}
+	border-radius:8px 8px 0 0;}
 
 #right_header_menu li.submenu{
 	padding-top:4px;
 }
 .header_container li.submenu:hover{
-	background-color:#181818;
-	background-color:#333333;
+	#background-color:#181818;
+	#background-color:#333333;
 }
 .header_container li.submenu:hover > a {
 	text-shadow:none!important;	
@@ -580,7 +577,7 @@ a.logo img{
 	overflow:hidden;
 	padding-top:1px;
 	padding-bottom:5px;
-	background-color:#333333;
+	background-color:#262626;
 	
 }
 #get_started_menu{
