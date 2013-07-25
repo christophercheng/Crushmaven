@@ -323,6 +323,7 @@ a.button {
 	background: -0-linear-gradient(top, #454545, #262626);
 	background: linear-gradient(top, #454545, #262626);
 	box-shadow: 0 2px 0px #6e6e6e;
+	box-shadow: 0 2px 0px #324AB2;
 	color: white;
 	width:100%;
   	position: fixed;
