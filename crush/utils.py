@@ -63,17 +63,17 @@ def fb_fetch(fb_user_id,start_index):
     
     
     
-def send_mailgun_email(from_string, email_address,subject,message,send_time=None):
-        try:
-            data_dict={"from": from_string,\
-                           "to": email_address,"subject": subject,"text": message}
-            if send_time != None:
-                data_dict["o:deliverytime"]=str(send_time) 
-            print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + message
-            #result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
-            #print "MailGun Response: " + str(result)
-        except Exception as e:
-            print "MAIL PROBLEM! " + str(e)
+#def send_mailgun_email(from_string, email_address,subject,message,send_time=None):
+#        try:
+#            data_dict={"from": from_string,\
+#                           "to": email_address,"subject": subject,"text": message}
+#            if send_time != None:
+#                data_dict["o:deliverytime"]=str(send_time) 
+#            print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + message
+#            #result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
+#            #print "MailGun Response: " + str(result)
+#        except Exception as e:
+#            print "MAIL PROBLEM! " + str(e)
 
 #@login_required
 #def testing(request):

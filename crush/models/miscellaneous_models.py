@@ -79,8 +79,6 @@ class InviteEmail(models.Model):
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
             send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,self.email)
-
-        #send_mailgun_email("Flirtally <notifications@flirtally.com>",self.email,subject,message)
  
 class Purchase(models.Model):
 

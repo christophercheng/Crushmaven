@@ -13,7 +13,7 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
                 data_dict["o:deliverytime"]=str(send_time) 
             print data_dict
             print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message
-            #result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
+            result= requests.post("https://api.mailgun.net/v2/flirtally.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
             #print "MailGun Response: " + str(result)
         except Exception as e:
             print "MAIL PROBLEM! " + str(e)

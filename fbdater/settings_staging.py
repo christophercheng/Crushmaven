@@ -52,7 +52,8 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 POSTMAN_SEND_NOTIFICATIONS_FREQUENCY=24#send notifications out once every 24 hours
 
 POSTMAN_SHOW_USER_AS='get_name'
-MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
+#MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
+MAILGUN_API_KEY = 'key-23q7lzko-uih79w3mkh573yl1r69r7u4'
 
 DATABASES = {}
 # Parse database configuration from $DATABASE_URL

@@ -304,7 +304,9 @@ POSTMAN_DISALLOW_MULTIRECIPIENTS=True
 POSTMAN_DISALLOW_COPIES_ON_REPLY=True
 POSTMAN_AUTO_MODERATE_AS=True
 POSTMAN_SHOW_USER_AS='get_name'
-MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
+#MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
+MAILGUN_API_KEY = 'key-23q7lzko-uih79w3mkh573yl1r69r7u4'
+
 # note that NamesLookup is a class that handles the magic behind the dynamic drop down dialog
 AJAX_LOOKUP_CHANNELS={'postman_users':('crush.models.user_models','NamesLookup')}
 POSTMAN_AUTOCOMPLETER_APP={
