@@ -32,13 +32,15 @@ MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=0
 MAXIMUM_ATTRACTIONS=50
 
-# TODO - THESE MUST BE SET
-#RESOURCES_DIR = '/media/shared/src/django-paypal-store-example/samplesite/resources/'
-PAYPAL_PDT_TOKEN = 'HBfJRGv3GKoo9zF1_5t3uA12VlNyvALbtai1rgbZMrYT3wWGcMeuRMpp324'
+#PAYPAL_PDT_TOKEN = 'HBfJRGv3GKoo9zF1_5t3uA12VlNyvALbtai1rgbZMrYT3wWGcMeuRMpp324'
+PAYPAL_PDT_TOKEN = 'S_u0oAhiSDSQpdeppy9KqYANhD2dhH5pm5prcrCcHH0QSIoXLfrMn5-AD0e'
 #PAYPAL_EMAIL = 'buyer1_1344811410_per@gmail.com'
-PAYPAL_EMAIL =  'seller_1344811486_biz@gmail.com'
-PAYPAL_RETURN_URL = 'http://142.255.66.205:443/paypal_pdt_purchase'
-PAYPAL_NOTIFY_URL = 'http://142.255.66.205:443/paypal_ipn_listener/'
+#PAYPAL_EMAIL =  'seller_1344811486_biz@gmail.com'
+PAYPAL_EMAIL = 'admin@flirtally.com'
+
+PAYPAL_RETURN_URL = 'http://www.flirtally-staging.herokuapp.com/paypal_pdt_purchase'
+PAYPAL_NOTIFY_URL = 'http://www.flirtally-staging.herokuapp.com/paypal_ipn_listener/'
+
 # sandbox
 PAYPAL_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
@@ -46,7 +48,6 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 # live
 #PAYPAL_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
 #PAYPAL_PDT_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
-
 
 POSTMAN_SEND_NOTIFICATIONS_FREQUENCY=24#send notifications out once every 24 hours
 
