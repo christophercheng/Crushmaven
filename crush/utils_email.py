@@ -1,12 +1,19 @@
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
-import requests
+import requests, logging
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+logger = logging.getLogger(__name__)
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
             data_dict={"from": from_string,\
-                           "to": email_address,"subject": subject, "html": html_message, "text":text_message}
+                           "to": email_address,"subject": subject, "html": html_message.encode('utf-8'), "text":text_message.encode('utf-8')}
             #data_dict={"from": from_string,\
             #               "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
@@ -14,7 +21,9 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
             print data_dict
             print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message
             result= requests.post("https://api.mailgun.net/v2/flirtally.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
-            #print "MailGun Response: " + str(result)
+            print "MailGun Response: " + str(result)
+            logger.info('Mailgun Response' + str(result))
+        
         except Exception as e:
             print "MAIL PROBLEM! " + str(e)
             
