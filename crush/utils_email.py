@@ -1,4 +1,5 @@
 from django.template.loader import get_template
+from django.template.loader import render_to_string
 from django.template import Context
 from django.conf import settings
 import requests, logging
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
             data_dict={"from": from_string,\
-                           "to": email_address,"subject": subject, "html": html_message.str(), "text":text_message.str()}
+                           "to": email_address,"subject": subject, "html": html_message.decode('ascii'), "text":text_message.decode('ascii')}
             #data_dict={"from": from_string,\
             #               "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
@@ -35,10 +36,8 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,short_name + ', you have an admirer!',html,text)
     
 def send_mail_mf_invite(full_name,short_name,first_name, email_address):
-    t = get_template('email_template_mf_invite.html')
-    html=t.render(Context({'full_name':full_name,'short_name':short_name,'first_name':first_name}))
-    t = get_template('email_template_mf_invite_text.html')
-    text=t.render(Context({'full_name':full_name,'short_name':short_name,'first_name':first_name}))
+    html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name})
+    text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name})
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,'Your friend ' + full_name + ' has an admirer!',html,text)
 
 def send_mail_new_admirer(friendship_type,full_name, short_name, first_name,email_address):
