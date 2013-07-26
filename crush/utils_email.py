@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
-            #data_dict={"from": from_string,\
-            #              "to": email_address,"subject": subject, "html": html_message.encode('utf-8'), "text":text_message.encode('utf-8')}
             data_dict={"from": from_string,\
-                           "to": email_address,"subject": subject, "html":html_message}
+                          "to": email_address,"subject": subject, "html": html_message.encode('ascii'), "text":text_message.encode('ascii')}
+#            data_dict={"from": from_string,\
+#                           "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
                 data_dict["o:deliverytime"]=str(send_time) 
             print data_dict
