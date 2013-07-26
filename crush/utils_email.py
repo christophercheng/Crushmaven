@@ -6,7 +6,7 @@ import requests
 from django.utils.encoding import smart_str
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
-        html_message="hi html"
+        text_message="hi text"
         try:
             data_dict={"from": from_string,\
                           "to": email_address,"subject": subject, "html": html_message, "text":text_message}
