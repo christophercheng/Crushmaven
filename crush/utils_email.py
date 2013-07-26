@@ -3,12 +3,12 @@ from django.template.loader import render_to_string
 from django.template import Context
 from django.conf import settings
 import requests
-from django.utils.encoding import force_unicode
+from django.utils.encoding import smart_str
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
             data_dict={"from": from_string,\
-                          "to": email_address,"subject": subject, "html": force_unicode(html_message), "text":force_unicode(text_message)}
+                          "to": email_address,"subject": subject, "html": smart_str(html_message), "text":smart_str(text_message)}
 #            data_dict={"from": from_string,\
 #                           "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
