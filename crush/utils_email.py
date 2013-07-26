@@ -2,19 +2,13 @@ from django.template.loader import get_template
 from django.template.loader import render_to_string
 from django.template import Context
 from django.conf import settings
-import requests, logging
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-logger = logging.getLogger(__name__)
+import requests
+from django.utils.encoding import force_unicode
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message,send_time=None):
         try:
             data_dict={"from": from_string,\
-                          "to": email_address,"subject": subject, "html": html_message.encode('ascii'), "text":text_message.encode('ascii')}
+                          "to": email_address,"subject": subject, "html": force_unicode(html_message), "text":force_unicode(text_message)}
 #            data_dict={"from": from_string,\
 #                           "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
@@ -23,10 +17,9 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
             print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message
             result= requests.post("https://api.mailgun.net/v2/flirtally.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
             print "MailGun Response: " + str(result)
-            logger.info('Mailgun Response' + str(result))
         
         except Exception as e:
-            print "MAIL PROBLEM! " + str(e)
+            print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address):
     t = get_template('email_template_crush_invite.html')
