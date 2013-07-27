@@ -63,7 +63,7 @@ a{
 #logo_section img#guest_logo{
 	margin-top:5px;
 	margin-left:-2px;
-	height:60px;	
+	height:80px;	
 }
 
 .tagline_slide_container{
@@ -132,7 +132,7 @@ h2#tagline2 #safe_text{
 	#background: url('https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png') 0 0 no-repeat;
 	background:url(images/facebook_btn.png)  0 0 no-repeat;;
 	left:310px;
-	top:340px;
+	top:360px;
 }
 #facebookbtn {
   width: 218px;
@@ -548,8 +548,8 @@ div.guest_header.authenticated .center_container{
 	margin-left:6px;
 }
 .guest_header.authenticated img {
-	height:36px;
-	margin-top:8px;
+	height:40px;
+	margin-top:6px;
 	margin-left:0px;
 }
 
