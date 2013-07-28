@@ -288,7 +288,7 @@ h2#tagline2 #safe_text{
 
 .how_to_slide_container{
 	
-	min-height:370px;
+	min-height:410px;
 	display:inline-block;
 	position:relative;
 	margin-left:-10px;
@@ -402,6 +402,12 @@ h2#tagline2 #safe_text{
 #how_to_slide_singles{
 	padding-top:50px;
 	padding-bottom:30px;
+	position:relative;
+}
+#how_to_slide_singles #dotted_line {
+	position:absolute;
+	top:18px;
+	left:56px;
 }
 
 .singles_step{
