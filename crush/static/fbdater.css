@@ -536,6 +536,7 @@ a.logo img{
 }
 #center_header_menu .submenu a{
 	color:#DC143C;
+	color:#9999FF;
 	#color:#ff0033;
 	font-size:14px;	
 }
@@ -643,7 +644,7 @@ a.logo img{
 .settings_menu a:hover {
 	#background-color:#4E5A65;
 	background:#B01030;
-	background:#3333CC;
+	background:#333399;
 }
 
 #right_header_menu li a .pic{
@@ -1722,6 +1723,7 @@ ul.nav_bar li#nav_bar_options{
 
 #get_started_link .down-dir{
 	color:#DC143C;
+	color:#9999ff;
 	font-size:8px;
 }
 .crush_block_name .down-dir {
