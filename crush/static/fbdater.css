@@ -318,10 +318,10 @@ a.button {
 .header {
 	height:50px;
 	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 40%,#000038);
-	background: -webkit-linear-gradient(top, #000, #000 40%,#000038);
-	background: -0-linear-gradient(top, #000, #000 40%,#000038);
-	background: linear-gradient(top, #000, #000 40%,#000038);
+	background: -moz-linear-gradient(top, #000, #000 40%,#000032);
+	background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
+	background: -0-linear-gradient(top, #000, #000 40%,#000032);
+	background: linear-gradient(top, #000, #000 40%,#000032);
 	
 	box-shadow: 0 2px 0px #6e6e6e;
 	box-shadow: 0 2px 0px #324AB2;
@@ -559,10 +559,7 @@ a.logo img{
 #right_header_menu li.submenu{
 	padding-top:4px;
 }
-.header_container li.submenu:hover{
-	#background-color:#181818;
-	#background-color:#333333;
-}
+
 .header_container li.submenu:hover > a {
 	text-shadow:none!important;	
 }
@@ -572,14 +569,16 @@ a.logo img{
 	position:absolute;
 	top:50px;
 	right:0px;
-	background-color:#181818;
 	display:none;
 	border-radius: 0 0 8px 8px;
+	border-left:2px solid #000;
+	border-right:2px solid #000;
+	border-bottom:1px solid #000;
 	white-space:nowrap;
 	overflow:hidden;
 	padding-top:1px;
 	padding-bottom:5px;
-	background-color:#262626;
+	background-color:#00001E;
 	
 }
 #get_started_menu{
@@ -644,6 +643,7 @@ a.logo img{
 .settings_menu a:hover {
 	#background-color:#4E5A65;
 	background:#B01030;
+	background:#3333CC;
 }
 
 #right_header_menu li a .pic{
@@ -875,6 +875,7 @@ a.logo img{
 .navbar li.active a {
 	color:white;
  	background-color: rgb(51,51,51);
+ 	background:#00001E;
  	height:100%;
  	border-left:1px solid rgb(51,51,51);
  	border-right:1px solid rgb(51,51,51);
