@@ -10,11 +10,15 @@ import time,thread
 from django.db.models import Q
 from crush.utils import graph_api_fetch
 from urllib2 import HTTPError
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
-    print "starting view function admirers()"
     global g_init_dict
     me = request.user 
 
@@ -24,7 +28,7 @@ def admirers(request,show_lineup=None):
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
     error_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=0) | Q(lineup_initialization_status__gt=1))
-    print "Initializing: " + str(len(uninitialized_relationships)) + " relationships"
+    logger.debug("Initializing: " + str(len(uninitialized_relationships)) + " relationships")
     start_relationships=[]
     if len(error_relationships) > 0:
         for relationship in error_relationships: 
@@ -59,7 +63,7 @@ def admirers(request,show_lineup=None):
             relationship.lineup_initialization_status=0
             relationship.lineup_initialization_date_started = datetime.datetime.now()
             relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
-            print "starting lineup"
+            logger.debug("starting lineup")
             if not settings.INITIALIZATION_THREADING:
                 LineupMember.objects.initialize_lineup(relationship)
             else:
@@ -86,7 +90,7 @@ def admirers(request,show_lineup=None):
 def ajax_display_lineup_block(request, display_id):
     global g_init_dict
     int_display_id=int(display_id)
-    print "ajax initialize lineup with display id: " + str(int_display_id)
+    logger.debug("ajax initialize lineup with display id: " + str(int_display_id))
     ajax_response = ""
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
@@ -108,7 +112,7 @@ def ajax_display_lineup_block(request, display_id):
         if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
             break
         elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
-            print "giving up on admirer:" + str(display_id)
+            logger.warning("giving up on initialization of admirer relationship:" + str(relationship.id))
             relationship.lineup_initialization_status = 5
             relationship.save(update_fields=['lineup_initialization_status'])
             break
@@ -185,8 +189,7 @@ def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
 @login_required
 #@csrf_exempt
 def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1):
-    print "ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position
-    print "please change!"
+    logger.debug("ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position)
     ajax_response = ""
     me=request.user
     # obtain the admirer relationship
@@ -199,14 +202,14 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
             #     print "lineup_position just before forbidden error: " + lineup_position
                 return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
         except CrushRelationship.DoesNotExist:
-            print "Error: Could not find the admirer relationship."
+            logger.warning( "Error: Could not find the admirer relationship.")
             return HttpResponseNotFound("Error: Could not find the admirer relationship.")
     else:
         is_admirer_type=False;
         try:
             admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
         except SetupRelationship.DoesNotExist:
-            print "Error: Could not find the setup relationship."
+            logger.warning("Error: Could not find the setup relationship.")
             return HttpResponseNotFound("Error: Could not find the setup.")
         
     if (is_admirer_type):
@@ -218,7 +221,21 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     lineup_member = lineup_member_set.get(position=lineup_position)
     # find or create a new user for the lineup member
     lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
-    if lineup_member.user==None: # need better handling for this case. like remove this lineup member, and change the positions of all future lineup members
+    # if the lineup member user was not found for whatever reason, then we need to modify the lineup and strip out this member
+    if lineup_member_user == None:
+        logger.error (" facebook lineup user not found")
+        ajax_response += '<div class="slide_container">'
+        ajax_response +='<span class="lineup_name">user not available</span>'
+        ajax_response +='<span class="lineup_mugshot"><img src="http://www.flirtally.com/static/images/fb_unknown_user_pic.jpg"></span>'
+        ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + str(lineup_member.username) + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
+        ajax_response +='<span class="lineup_decision" username="' + str(lineup_member.username) + '" style="margin-top:5px">'
+        ajax_response += "<span class=' choice crush existing_choice'>Sorry, this lineup member is no longer available...</span>"
+        lineup_member.decision=1
+        lineup_member.save(update_fields=['decision'])
+        ajax_response += '</span></div>'
+        return HttpResponse(ajax_response)
+    
+    if lineup_member.user==None: 
         lineup_member.user=lineup_member_user
         lineup_member.save(update_fields=['user'])
     
@@ -276,7 +293,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
 
 @login_required
 def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_admirer_type=1):
-    print "adding member to a list"
+    logger.debug("adding member to a list")
     me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
@@ -289,7 +306,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             try:
                 lineup_member=admirer_rel.lineupmember_set.get(username=target_user.username)
             except LineupMember.DoesNotExist:
-                print "could not find lineup member"
+                logger.error("could not find lineup member")
                 return HttpResponse("Server Error: Could not add given lineup user")
         else:
             try:
@@ -299,13 +316,13 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             try:
                 lineup_member=admirer_rel.setuplineupmember_set.get(username=target_user.username)
             except LineupMember.DoesNotExist:
-                print "could not find lineup member"
+                logger.error("could not find lineup member")
                 return HttpResponse("Server Error: Could not add given lineup user")
         if lineup_member.decision!=None:
             # something is wrong, this person was already decided upon, so just return an error message
             # check to see if they haven't already been added as a crush
             if lineup_member.decision == 0:
-                ajax_response = "<span id=\"choice\" class='crush existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " as a an attraction.</span>"
+                ajax_response = "<span id=\"choice\" class='crush choice existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " as a an attraction.</span>"
                 return HttpResponse(ajax_response)
             # else:
                 # user changed their mind about platonic lineup member so exit out of here
@@ -384,7 +401,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                 admirer_rel.save(update_fields=['date_lineup_finished'])
 
     except FacebookUser.DoesNotExist:
-        print "failed to add lineup member: " + facebook_id
+        logger.error( "failed to add lineup member: " + facebook_id )
         return HttpResponse("Server Error: Could not add given lineup user")  
     return HttpResponse(ajax_response)
 

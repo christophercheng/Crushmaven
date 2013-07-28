@@ -1,11 +1,19 @@
-from django.http import HttpResponse,HttpResponseForbidden,HttpResponseNotFound
+# THIS FILE WAS WRITTEN TO ENCAPSULATE THE LINEUP INITIALIZATION PROCESS AS A MODULAR WEB SERVICE
+# IT WAS NOT COMPLETED AND NEEDS TO BE RE-ENGINEERED
+
+
+from django.http import HttpResponse,HttpResponseNotFound
 from crush.utils import graph_api_fetch,fb_fetch
 import json,re,thread
 import urllib,random,time
 from django.views.decorators.csrf import csrf_exempt
 from threading import Lock
 global_dict={} #keys will be relationship id
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # initialize_fof_crush receives a (post) request from flirtally.com to create a lineup from the provided information
 # it perform it's task to completion and then when it is done it will call a view function on flirtally.com with the relationship id and a valid array of user ids or an error code
 # if initialize_fof_crush is already being worked on by a previous request, it should just do nothin
@@ -35,7 +43,7 @@ def initialize_fof_crush(request):
         exclude_id_string=global_dict[rel_id]['exclude_id_string']
         access_token = global_dict[rel_id]['access_token']
         minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-        ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
+        #ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
 
         # set up the batch fql queries
         crush_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM+user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + ')))"}'
@@ -104,8 +112,8 @@ def initialize_fof_crush(request):
 def try_api_mf_initialization(self,rel_id,mutual_app_friend_array):
     global global_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
+    #admirer_id=global_dict[rel_id]['admirer_id']
+    #exclude_id_string=global_dict[rel_id]['exclude_id_string']
     access_token = global_dict[rel_id]['access_token']
     minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
     ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
@@ -147,7 +155,7 @@ def try_api_mf_initialization(self,rel_id,mutual_app_friend_array):
 def try_api_cf_initialization(self,rel_id,crush_app_friend_array):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
+    #admirer_id=global_dict[rel_id]['admirer_id']
     exclude_id_string=global_dict[rel_id]['exclude_id_string']
     access_token = global_dict[rel_id]['access_token']
     minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
@@ -240,7 +248,7 @@ def process_mutual_friend(self,rel_id,mf_index):
         g_init_dict[crush_id][mfriend_id]= Lock()
     g_init_dict[crush_id][mfriend_id].acquire()     
     g_init_dict[crush_id][rel_id + '_filtered_id_array']=[] # reset for each mutual friend processed
-    print "REL ID:" + rel_id + ": Method 3A (process_mutual_friend), mutual friend:" + mfriend_id + " at mf_index: " + str(mf_index)
+    logger.debug( "REL ID:" + rel_id + ": Method 3A (process_mutual_friend), mutual friend:" + mfriend_id + " at mf_index: " + str(mf_index) )
     num_friends = mfriend['friend_count']
     if num_friends < minimum_lineup_members or num_friends == None:
         finished_process_mutual_friend(rel_id,mf_index)
@@ -270,7 +278,7 @@ def process_batch_blocks(self,rel_id,mf_index,q_block_array,q_start_index):
     # reset batch_blocks received and requested before we kickoff a new batch
     g_init_dict[crush_id][rel_id + '_batch_blocks_received']=0
     g_init_dict[crush_id][rel_id + '_batch_id_array']=[]
-    print "REL ID: " + rel_id + " Method 3B (process_batch_blocks), mutual friend: " + str(g_init_dict[crush_id][rel_id + '_mutual_friend_array'][mf_index]['uid']) + ", q_start_index: " + str(q_start_index)
+    logger.debug( "REL ID: " + rel_id + " Method 3B (process_batch_blocks), mutual friend: " + str(g_init_dict[crush_id][rel_id + '_mutual_friend_array'][mf_index]['uid']) + ", q_start_index: " + str(q_start_index) )
     last_fetch_index=q_start_index+5
     if last_fetch_index>len(q_block_array):
         last_fetch_index = len(q_block_array)
@@ -295,7 +303,7 @@ def fetch_block(self,rel_id,mf_index,q_block_array,q_start_index,q_index):
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
     # remove duplicates in extracted_list
     extracted_id_list = list(set(extracted_id_list))
-    print "REL ID:" + rel_id + " Method 3C (fetch_block), mutual friend: " + str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])  + ", q block: " + str(q_block_array[q_index]) + ", num extracted items: " + str(len(extracted_id_list))     
+    logger.debug( "REL ID:" + rel_id + " Method 3C (fetch_block), mutual friend: " + str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])  + ", q block: " + str(q_block_array[q_index]) + ", num extracted items: " + str(len(extracted_id_list)) )    
     fetch_block_finished(rel_id,mf_index,q_block_array,q_start_index,extracted_id_list)
     
 #=================================================================    
@@ -306,9 +314,6 @@ def fetch_block(self,rel_id,mf_index,q_block_array,q_start_index,q_index):
 def fetch_block_finished(self,rel_id,mf_index,q_block_array,q_start_index,extracted_id_list):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
     minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
     ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
     admirer_gender = global_dict[rel_id]['admirer_gender']
@@ -332,7 +337,7 @@ def fetch_block_finished(self,rel_id,mf_index,q_block_array,q_start_index,extrac
         filtered_batch_id_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
     except:
         filtered_batch_id_array=[]
-    print "REL ID:" + rel_id +" Method 3D (fetch_block_finished), mutual friend: " + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + " - finished batch at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array))
+    logger.debug( "REL ID:" + rel_id +" Method 3D (fetch_block_finished), mutual friend: " + str(g_init_dict[crush_id][rel_id+'_mutual_friend_array'][mf_index]['uid']) + " - finished batch at q_start_index " + str(q_start_index) + " . Number filtered results: " + str(len(filtered_batch_id_array)) )
     g_init_dict[crush_id][rel_id+'_filtered_id_array'] += filtered_batch_id_array
     if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) >= ideal_lineup_members:
         acceptable_id_array=[]
@@ -378,12 +383,6 @@ def fetch_block_finished(self,rel_id,mf_index,q_block_array,q_start_index,extrac
 def finished_process_mutual_friend(self,rel_id,mf_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     # try to process next mutual friend
     g_init_dict[crush_id][str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])].release()
     next_mf_index = mf_index + 1
@@ -401,14 +400,9 @@ def finished_process_mutual_friend(self,rel_id,mf_index):
 def try_nonapi_cf_initialization(self,rel_id):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
     minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
-    print "TRY METHOD 4"
+    logger.debug( "TRY METHOD 4" )
     if len(g_init_dict[crush_id]['crush_friend_array']) < minimum_lineup_members:
         initialize_fail(rel_id,5)
         return
@@ -424,15 +418,9 @@ def try_nonapi_cf_initialization(self,rel_id):
 def batch_fetch_friends(self,rel_id,cf_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     g_init_dict[crush_id][rel_id+'_batch_start_cf_index']=cf_index
-    print "Starting batch fetch at index: " + str(cf_index)
+    logger.debug( "Starting batch fetch at index: " + str(cf_index) )
     next_cf_index = cf_index + 18
     if next_cf_index > len(g_init_dict[crush_id]['crush_friend_array']):
         next_cf_index = len(g_init_dict[crush_id]['crush_friend_array'])
@@ -449,12 +437,6 @@ def batch_fetch_friends(self,rel_id,cf_index):
 def start_single_friend_fetch(self,rel_id,cf_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     # calculate max q block by finding total friend count
     number_friends=g_init_dict[crush_id]['crush_friend_array'][cf_index]['friend_count']
@@ -479,12 +461,6 @@ def start_single_friend_fetch(self,rel_id,cf_index):
 def process_friend_block(self,rel_id,cf_index,q_block_array,q_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id+'_initialization_state']>0: 
         # other threads have already completed the job
@@ -512,10 +488,6 @@ def process_friend_block(self,rel_id,cf_index,q_block_array,q_index):
 def filter_ids_by_admirer_conditions(self,rel_id,cf_index,q_block_array,q_index,extracted_id_list):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
     ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
     admirer_gender = global_dict[rel_id]['admirer_gender']
     
@@ -550,12 +522,6 @@ def filter_ids_by_admirer_conditions(self,rel_id,cf_index,q_block_array,q_index,
 def get_another_friend_block(self,rel_id,cf_index,q_block_array,q_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id+'_initialization_state']>0: 
         # other threads have already completed the job
@@ -573,18 +539,14 @@ def get_another_friend_block(self,rel_id,cf_index,q_block_array,q_index):
 def finished_processing_friend(self,rel_id,cf_index):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
     minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
     ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id+'_initialization_state']>0: 
         # other threads have already completed the job
         return
     g_init_dict[crush_id][rel_id+'_batch_friends_received'] += 1
-    print " - finished processing friend # " + str(g_init_dict[crush_id][rel_id+'_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(g_init_dict[crush_id][rel_id+'_filtered_id_array']))
+    logger.debug( " - finished processing friend # " + str(g_init_dict[crush_id][rel_id+'_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(g_init_dict[crush_id][rel_id+'_filtered_id_array'])) )
     
     if g_init_dict[crush_id][rel_id+'_batch_friends_received'] == g_init_dict[crush_id][rel_id+'_batch_friends_requested']:
         if len(g_init_dict[crush_id][rel_id+'_filtered_id_array']) < ideal_lineup_members:
@@ -610,17 +572,12 @@ def finished_processing_friend(self,rel_id,cf_index):
 def finalize_initialization(self,rel_id):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
     ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
       
     if not crush_id in g_init_dict or g_init_dict[crush_id][rel_id+'_initialization_state']>0: 
         # other threads have already completed the job
         return
-    print "finalized initialization with ids: " + str(g_init_dict[crush_id][rel_id+'_filtered_id_array'])
+    logger.debug( "finalized initialization with ids: " + str(g_init_dict[crush_id][rel_id+'_filtered_id_array']) )
     #console.timeStamp("finished initialization")   
     create_lineup(rel_id,g_init_dict[crush_id][rel_id+'_filtered_id_array'][:ideal_lineup_members])
 
@@ -629,7 +586,7 @@ def finalize_initialization(self,rel_id):
     # Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
     # ================================================================
 def initialize_fail(self,rel_id,status=2):
-        print "REL_ID: " + str(rel_id) + " Initialize_fail called with status: " + str(status)
+        logger.debug( "REL_ID: " + str(rel_id) + " Initialize_fail called with status: " + str(status) )
         #relationship.lineup_initialization_status=status
         #relationship.save(update_fields=['lineup_initialization_status'])
         cleanup_initialization_memory(rel_id)
@@ -638,12 +595,6 @@ def initialize_fail(self,rel_id,status=2):
 def cleanup_initialization_memory(self,rel_id):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     
     g_init_dict[crush_id][rel_id + '_initialization_state']=2
     g_init_dict[crush_id]['initialization_count']-=1
@@ -657,20 +608,14 @@ def cleanup_initialization_memory(self,rel_id):
         except:
             pass
 
- # returns true if successful, false otherwise
+# returns true if successful, false otherwise
     # called by either initialize_lineup above, or by admirer_views functions try_mf_initialization & try_cf_initialization (fof initialization)
 def create_lineup(self,rel_id,acceptable_id_array):
     global g_init_dict
     crush_id = global_dict[rel_id]['crush_id']
-    admirer_id=global_dict[rel_id]['admirer_id']
-    exclude_id_string=global_dict[rel_id]['exclude_id_string']
-    access_token = global_dict[rel_id]['access_token']
-    minimum_lineup_members = global_dict[rel_id]['minimum_lineup_members']
-    ideal_lineup_members = global_dict[rel_id]['ideal_lineup_members']
-    admirer_gender = global_dict[rel_id]['admirer_gender']
     if g_init_dict[crush_id][rel_id+'_initialization_state']>0:
         return
-    print "REL ID:" + rel_id + "create_lineup: " + str(acceptable_id_array)
+    logger.debug( "REL ID:" + rel_id + "create_lineup: " + str(acceptable_id_array) )
     g_init_dict[crush_id][rel_id+'_initialization_state']=1
     # determine where the admirer should randomly fall into the lineup
     # don't ever put member in last spot, cause there's a chance crush will skip making decision at end
@@ -680,10 +625,10 @@ def create_lineup(self,rel_id,acceptable_id_array):
     for lineup_id in acceptable_id_array:
         # if the current lineup position is where the admirer should go, then insert the admirer
         if index==admirer_position:
-            #LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
+            LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
             #print "put crush in position: " + str(index) 
             index = index + 1            
-        #LineupMember.objects.create(position=index,username=lineup_id,relationship=relationship,decision=None)
+        LineupMember.objects.create(position=index,username=lineup_id,relationship=relationship,decision=None)
         index = index + 1
     # the following condition (to put admirer in last position) should not occur, but just in case let's handle it    
     if len(acceptable_id_array)==admirer_position:

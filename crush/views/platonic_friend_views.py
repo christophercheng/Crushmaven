@@ -6,8 +6,12 @@ from datetime import datetime,timedelta
 from django.conf import settings
 import random
 from django.db import transaction
-
 from django.http import HttpResponseNotFound
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 @login_required
 @transaction.commit_on_success # rollback entire function if something fails
@@ -58,7 +62,7 @@ def just_friends(request):
                 friend_type= int(request.POST[key][-1])
                 # find existing site user with this id or create a new user 
                 # called function is in a custom UserProfile manager because it is also used during login/authentication
-                print "trying to get a platonic friend user for id=" + crushee_id            
+                logger.debug( "trying to get a platonic friend user for id=" + crushee_id )       
                 selected_user=FacebookUser.objects.find_or_create_user(fb_id=crushee_id, fb_access_token=request.user.access_token, fb_profile=None, is_this_for_me=False)
                 # now that the user is definitely on the system, add that user to the crush list        
                 # only create a new relationship if an existing one between the current user and the selected user does not exist 

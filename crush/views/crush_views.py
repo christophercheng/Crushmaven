@@ -1,4 +1,4 @@
-from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden,HttpResponseGone
+from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -8,7 +8,11 @@ import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
 from urllib2 import URLError, HTTPError
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # for initialization routine
 # import thread
 # from crush.models.globals import g_init_dict
@@ -26,7 +30,7 @@ def ajax_add_crush_targets(request):
     for key in post_data:
         if key == "csrfmiddlewaretoken":
             continue
-        print " ajax added crush key: " + key + " : " + request.POST[key]
+        logger.debug( " ajax added crush key: " + key + " : " + request.POST[key])
         counter += 1
         crushee_id=key;
         friend_type=int(request.POST[key])
@@ -173,7 +177,7 @@ def ajax_get_platonic_rating(request, crush_id):
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound(settings.AJAX_ERROR)
     except Exception as e:
-        print str(e)
+        logger.error("problem getting platonic rating : " + str(e) )
         pass
     except PlatonicRelationship.DoesNotExist:
         return HttpResponseNotFound(settings.AJAX_ERROR)
@@ -214,11 +218,9 @@ def attractions_completed(request, reveal_crush_id=None):
 
 @login_required    
 def app_invite_form_v2(request, crush_username):
-    print "APP INVITE FORM!"
     crush_fullname=request.POST['crush_fullname']
     # crush_name should be first name last name
     if 'posted_form' in request.POST:  # if the form has been submitted...
-        print "METHOD IS POST"
         mutual_friend_json=eval(request.POST['mutual_friend_json'])
         form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json)
         if form.is_valid():
@@ -271,9 +273,8 @@ def app_invite_form_v2(request, crush_username):
             mutual_friend_json = graph_api_fetch(request.user.access_token, fb_query_string)
         except:
             raise 
-        print "Length of mutual_friend json: "+ str(len(mutual_friend_json))
+        logger.debug( "Length of mutual_friend json: "+ str(len(mutual_friend_json)) )
         form = AppInviteForm2(mutual_friend_json=mutual_friend_json)
-        print "instantiated form instance"
     crush_firstname=crush_fullname.split(' ',1)[0]
     return render(request, 'app_invite_form_v2.html', {'form':form, 'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'mutual_friend_json':mutual_friend_json})
 
@@ -288,7 +289,7 @@ def ajax_find_fb_user(request):
         username = request.REQUEST['username']
         me = request.user 
         access_token = me.access_token
-        print "accessing user: " + username
+        logger.debug( "accessing user: " + username )
         # call fb api to get user info and put it in the cleaned_data function
         crush_id = None
         fb_profile = graph_api_fetch('', username, expect_data=False)
@@ -323,13 +324,13 @@ def ajax_find_fb_user(request):
     except HTTPError as e:
         print "Error: " + str(e.code)
         if e.code == 404:
-            print "BAD QUERY STRING"
+            logger.debug ("BAD QUERY STRING")
             response_data['error_message'] = 'Invalid facebook username: ' + username
         elif e.code == 400:
-            print "BAD ACCESS TOKEN"
+            logger.warning ("BAD ACCESS TOKEN")
             raise
     except URLError as e:  # most likley timeout
-        print "Timeout" + str(e.reason)
+        logger.warning( "ajax find user Timeout" + str(e.reason))
         if str(e.reason) == 'timed out':  # timeout
             response_data['error_message'] = settings.AJAX_ERROR 
 

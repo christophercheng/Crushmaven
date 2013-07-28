@@ -6,7 +6,11 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # end imports for testing
 
 #from django.contrib.auth.models import Use
@@ -70,7 +74,7 @@ def failed_email_send(request):
         return
     try:
         bad_email_address=post_data['recipient']
-        print "bad email: " + str(bad_email_address) + " from " + str(request.user)
+        logger.debug( "bad email: " + str(bad_email_address) + " from " + str(request.user) )
         bad_email_results = InviteEmail.objects.filter(email=str(bad_email_address))
         for bad_email in bad_email_results:
             relationship=bad_email.relationship

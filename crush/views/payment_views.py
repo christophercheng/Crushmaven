@@ -5,7 +5,11 @@ from django.conf import settings
 from crush.models import CrushRelationship,FacebookUser, Purchase
 from crush import paypal
 from django.views.decorators.http import require_POST
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 #from django.contrib.auth.models import Use
 # to allow app to run in facebook canvas without csrf error:
@@ -19,7 +23,7 @@ def ajax_update_num_credits(request):
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 @login_required
 def ajax_deduct_credit(request, feature_id, unique_id):
-    print "deducting credit"
+    logger.debug( "deducting credit" )
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     me=request.user
 
@@ -131,16 +135,15 @@ def paypal_pdt_purchase(request):
     feature_id=method_dict.get('feature_id','')
     unique_id=method_dict.get('unique_id','')
     username=method_dict.get('username','')
-    print "printing out pdt get variables:"
-    for element in method_dict:
-        print "element: " + element + " -> " + method_dict[element] 
-#    resource = get_object_or_404( models.Resource, pk=id )
-#    user = get_object_or_404( User, pk=uid )
+    #logger.debug("printing out pdt get variables:")
+    #for element in method_dict:
+    #    logger.debug("element: " + element + " -> " + method_dict[element] )
+
     if request.REQUEST.has_key('tx'):
         tx = request.REQUEST['tx']      
         try:
             Purchase.objects.get( tx=tx )
-            print "duplicate transaction found when processing PAYPAL PDT Handler"
+            logger.error ("duplicate transaction found when processing PAYPAL PDT Handler")
             if feature_id == u'1' and unique_id!='': # handling of lineup payment
                 try:# handle special feature processing 
                     facebook_user = FacebookUser.objects.get(username=username)
@@ -162,11 +165,11 @@ def paypal_pdt_purchase(request):
                     pass
             return HttpResponseRedirect(success_path)
         except Purchase.DoesNotExist:
-            print "processing pdt transaction"
+            logger.debug( "processing pdt transaction" )
             result = paypal.Verify(tx)
             if result.success(): # valid
                 Purchase.objects.create(purchaser=request.user, tx=tx, credit_total=int(credit_amount),price= price)
-                print "just created a new purchase"
+                logger.debug("just created a new purchase")
                 # handle special feature processing
                 if feature_id == 1 and unique_id != '': # handling of lineup payment
                     try:
@@ -195,9 +198,9 @@ def paypal_pdt_purchase(request):
 @require_POST
 @csrf_exempt
 def paypal_ipn_listener(request,username,credit_amount):
-    print "  I P N    L I S T N E R    C A L L E D !!!!"
-    print "username: " + username
-    print "credit amount: " + str(credit_amount)
+    logger.debug("  I P N    L I S T N E R    C A L L E D !!!!")
+    logger.debug( "username: " + username )
+    logger.debug("credit amount: " + str(credit_amount))
     method_dict=request.POST
     price=method_dict.get('payment_gross',9)
         
@@ -205,22 +208,22 @@ def paypal_ipn_listener(request,username,credit_amount):
         txn_id = request.REQUEST['txn_id']
         try:
             facebook_user = FacebookUser.objects.get(username=username)
-            print "facebook user found with first name: " + facebook_user.first_name
+            logger.debug( "facebook user found with first name: " + facebook_user.first_name )
             
         except FacebookUser.DoesNotExist:
             # evetually Log and error tell PAYPAL that something went wrong and step sending ipn messages
             pass
         try:
             Purchase.objects.get( tx=txn_id )
-            print "existing purchase found. transaction id: " + txn_id
+            logger.debug( "existing purchase found. transaction id: " + txn_id )
             pass
         except Purchase.DoesNotExist:
-            print "verify paypal IPN"
+            logger.debug( "verify paypal IPN" )
             result = paypal.Verify_IPN(method_dict)
-            print "paypal IPN verified"
+            logger.debug( "paypal IPN verified" )
             if result.success(): # valid
                 Purchase.objects.create(purchaser=facebook_user, tx=txn_id, credit_total=int(credit_amount),price=price)   
-                print "payment made with credit_amount: " + str(credit_amount) + " price: " + str(price)
+                logger.debug( "payment made with credit_amount: " + str(credit_amount) + " price: " + str(price) )
             else:
-                print "paypal IPN was a failure"
+                logger.error ("paypal IPN was a failure")
     return HttpResponse("OKAY")

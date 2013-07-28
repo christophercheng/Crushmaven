@@ -3,14 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.notification_settings_form import NotificationSettingsForm
 from crush.profile_settings_form import ProfileSettingsForm
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # -- Profile Settings Page --
 @login_required
 def settings_profile(request):
-    print "Settings Profile Form!"
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
-        print "METHOD IS POST"
         data=request.POST
         if 'cancel' in data:
             return redirect('/settings_profile/')
@@ -43,7 +45,6 @@ def settings_profile(request):
                 return render(request,'settings_profile.html',
                               { 'form': form,'updated':True})
     else:
-        print "instantiating profile form"
         form=ProfileSettingsForm(instance=request.user)
     return render(request,'settings_profile.html',
                               { 'form': form})
@@ -51,10 +52,8 @@ def settings_profile(request):
 # -- Notification settings --
 @login_required
 def settings_notifications(request):
-    print "Settings Notification Form!"
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
-        print "METHOD IS POST"
         data=request.POST
         if 'cancel' in data:
             return redirect('/settings_notifications/')
@@ -78,7 +77,6 @@ def settings_notifications(request):
                 return render(request,'settings_notifications.html',
                               { 'form': form,'updated':True})
     else:
-        print "instantiating notifications form"
         form=NotificationSettingsForm(instance=request.user, initial={'email':request.user.email})
     return render(request,'settings_notifications.html',
                               { 'form': form})

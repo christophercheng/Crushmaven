@@ -2,7 +2,11 @@ from django.http import HttpResponse,HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from urllib2 import HTTPError
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # -- Friends with Admirers Page --
 @login_required
@@ -12,7 +16,7 @@ def friends_with_admirers(request):
 # -- Friends with Admirers Section (Ajax Content) --
 @login_required
 def ajax_friends_with_admirers_content(request,remove_username=None):
-    print " called ajax friends-with-admirers-section with remove_username == " + str(remove_username)
+    logger.debug (" called ajax friends-with-admirers-section with remove_username == " + str(remove_username))
     me=request.user
 
     try:

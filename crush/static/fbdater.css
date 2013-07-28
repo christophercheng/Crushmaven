@@ -387,6 +387,13 @@ a.button {
 	#box-shadow: 1px 2px 2px rgba(0,0,0,.5);
 }
 
+/* for small screens, don't fix anything */
+@media screen and (max-width:830px) {
+    .header, .left_sidebar, .right_sidebar {
+        postion:static;
+    }
+}
+
 /* ===========================   Overlays & Loading Animation ========================= */
 
 #site-loading {

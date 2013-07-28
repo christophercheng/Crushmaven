@@ -6,6 +6,11 @@ from django.db.models import Q
 from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
 import datetime
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # for initialization routine
 #import thread
 #from crush.models.globals import g_init_dict
@@ -156,7 +161,6 @@ def ajax_get_recommendee_exclude_ids(request, setup_target):
 def setup_create_form(request,target_person_username=""):
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
-        print "METHOD IS POST"
         setup_target_username = request.POST['target_username']
         setup_target_user = FacebookUser.objects.find_or_create_user(setup_target_username, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)
         if setup_target_user == None:
@@ -190,15 +194,14 @@ def setup_create_form(request,target_person_username=""):
                 outstanding_request.delete()
             except SetupRequestRelationship.DoesNotExist:
                 pass
-
-        print "success and redirecting"                
+              
         return redirect('/setups_by_me')
     else:
         return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})
     
 @login_required    
 def ajax_create_setup_request(request,setup_request_target):
-    print "AJAX CREATE SETUP REQUEST"
+    logger.debug( "AJAX CREATE SETUP REQUEST" )
     # look for the target by username
         # if doesn't already exist then create the user
     setup_request_target_user = FacebookUser.objects.find_or_create_user(setup_request_target, fb_access_token=request.user.access_token, is_this_for_me=False,fb_profile=None)

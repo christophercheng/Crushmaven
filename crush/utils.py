@@ -1,6 +1,11 @@
 from django.conf import settings
 # imports for testing
 import urllib2,json,urllib
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # if the access_token is invalid, then returns HTTPError (subclass of URLError) with code 400
 # if the query string is invalid, then returns HTTPError with code 404
@@ -38,12 +43,12 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             return results  
     except Exception as e: 
         if num_tries == 0:
-            print "graph api fetch failed, trying again with access_token: " + str(access_token)
+            logger.warning( "graph api fetch failed, trying again with access_token: " + str(access_token) )
             # retry once more
             return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
             
         else:
-            print "passing on exception"
+            logger.error("failed graph api fetch exception: " + str(e))
             raise e # pass on the exception for the caller to handle
         
 def fb_fetch(fb_user_id,start_index):
