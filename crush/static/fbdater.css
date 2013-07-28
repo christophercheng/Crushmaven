@@ -340,6 +340,11 @@ a.button {
 }
 
 .header_container{
+	background-color:#000;
+	background: -moz-linear-gradient(top, #000, #000 40%,#000032);
+	background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
+	background: -0-linear-gradient(top, #000, #000 40%,#000032);
+	background: linear-gradient(top, #000, #000 40%,#000032);
 	width:985px;
 	margin-left: auto;
 	margin-right:auto;
@@ -353,6 +358,7 @@ a.button {
 	position:fixed;
 	margin-left:0px;
 	margin-top:-3px;
+	float:left;
 	#background-color:rgba(255,0,0,.1);
 }
 .left_sidebar_container {
@@ -363,7 +369,7 @@ a.button {
 .center_panel {
 	width:575px;
 	margin-left:205px;
-	#background-color:blue;
+	float:left;
 }
 .center_panel_container {
 	margin-left:15px;
@@ -376,7 +382,7 @@ a.button {
 .right_sidebar {
 	width:200px;
 	position:fixed;
-	float:right;
+	float:left;
 	margin-top:0px;
 	margin-left:785px;
 	border:1px;
@@ -390,8 +396,15 @@ a.button {
 /* for small screens, don't fix anything */
 @media screen and (max-width:830px) {
     .header, .left_sidebar, .right_sidebar {
-        postion:static;
+        position:static;
     }
+    .main_container{
+    margin-top:0px;
+    }
+    .left_sidebar,.center_panel,.right_sidebar {
+    margin-left:0px;
+    }
+	
 }
 
 /* ===========================   Overlays & Loading Animation ========================= */

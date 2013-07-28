@@ -633,15 +633,15 @@ $('.show_less').click(function(){
 	<div class="left_sidebar">
 		<div class="left_sidebar_container">{% include "navigation_left.html" %}</div>
 	</div> <!-- close off left_sidebar -->
-	<div class="right_sidebar">
-		<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
-	</div> <!-- close off right_sidebar -->
 	<div class="center_panel">
 		<div class="center_panel_container">
 			{% block content %}
 			{% endblock %}
 		</div> <!-- close off center_content_container -->
 	</div> <!-- close off center_panel -->
+	<div class="right_sidebar">
+	<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
+</div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">Please Wait</div>
