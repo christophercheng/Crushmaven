@@ -711,19 +711,39 @@ a.logo img{
 	#z-index:1;
 }
 
-.left_sidebar_container .navbar li {
-	position:relative;
-	height:50px;
-}
-
 .left_sidebar_container .navbar{
 	border-radius:0px;
 	border-bottom:1px solid #595983;
 	border-left: 0px;
 	border-right: 0px;
 }
-.left_sidebar_container .navbar li{
+
+.left_sidebar_container .navbar li {
+	position:relative;
+	height:50px;
 	width:195px;
+}
+
+.left_sidebar_container .navbar li .nav_arrow {
+	position:absolute;
+	top:0px;
+	right:-13px;	
+}
+.left_sidebar_container .navbar li .nav_arrow_inactive{
+	position:absolute;
+	top:0px;
+	right:-13px;
+	display:none;
+}
+
+.left_sidebar_container .navbar li.inactive .nav_arrow {
+	display:none;
+	}
+
+.left_sidebar_container .navbar li.inactive:hover .nav_arrow_inactive{
+	display:block;
+}
+.left_sidebar_container .navbar li.inactive:hover .nav_arrow{
 }
 
 .navbar li a .menu_icon{
