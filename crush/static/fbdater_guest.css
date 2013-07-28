@@ -412,6 +412,13 @@ h2#tagline2 #safe_text{
 	left:116px;
 }
 
+.guest_page.how_it_works .how_to_slide #dotted_line {
+	top:-18px;
+}
+.guest_page.how_it_works .how_to_slide #dotted_line2 {
+	top:48px;
+}
+
 .singles_step{
 	display:inline-block;
 	width:310px;
