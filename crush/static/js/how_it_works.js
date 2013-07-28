@@ -18,7 +18,7 @@ $('.how_to_link').click(function(event){
         if ($(this).hasClass('for_singles')){
                 active_slide=$('#how_to_slide_setup');
                 inactive_slide=$('#how_to_slide_singles');
-                var new_height='360';
+                var new_height='410';
         }
         else{
                 active_slide=$('#how_to_slide_singles');

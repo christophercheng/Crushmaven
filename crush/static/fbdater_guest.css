@@ -288,7 +288,7 @@ h2#tagline2 #safe_text{
 
 .how_to_slide_container{
 	
-	min-height:370px;
+	min-height:410px;
 	display:inline-block;
 	position:relative;
 	margin-left:-10px;
@@ -302,8 +302,6 @@ h2#tagline2 #safe_text{
 	width:1000px;
 	position:relative;
 	display:inline-block;
-	top:0px;
-	left:0px;
 }
 
 .inactive_how_to_slide{
@@ -402,6 +400,23 @@ h2#tagline2 #safe_text{
 #how_to_slide_singles{
 	padding-top:50px;
 	padding-bottom:30px;
+}
+.how_to_slide #dotted_line {
+	position:absolute;
+	top:18px;
+	left:56px;
+}
+.how_to_slide #dotted_line2 {
+	position:absolute;
+	top:98px;
+	left:116px;
+}
+
+.guest_page.how_it_works .how_to_slide #dotted_line {
+	top:-18px;
+}
+.guest_page.how_it_works .how_to_slide #dotted_line2 {
+	top:48px;
 }
 
 .singles_step{

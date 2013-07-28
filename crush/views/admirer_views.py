@@ -218,7 +218,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     lineup_member = lineup_member_set.get(position=lineup_position)
     # find or create a new user for the lineup member
     lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
-    if lineup_member.user==None:
+    if lineup_member.user==None: # need better handling for this case. like remove this lineup member, and change the positions of all future lineup members
         lineup_member.user=lineup_member_user
         lineup_member.save(update_fields=['user'])
     

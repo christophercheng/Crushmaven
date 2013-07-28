@@ -317,11 +317,12 @@ a.button {
 
 .header {
 	height:50px;
-	background:#262626;
-	background: -moz-linear-gradient(top, #454545, #262626);
-	background: -webkit-linear-gradient(top, #454545, #262626);
-	background: -0-linear-gradient(top, #454545, #262626);
-	background: linear-gradient(top, #454545, #262626);
+	background-color:#000;
+	background: -moz-linear-gradient(top, #000, #000 40%,#000038);
+	background: -webkit-linear-gradient(top, #000, #000 40%,#000038);
+	background: -0-linear-gradient(top, #000, #000 40%,#000038);
+	background: linear-gradient(top, #000, #000 40%,#000038);
+	
 	box-shadow: 0 2px 0px #6e6e6e;
 	box-shadow: 0 2px 0px #324AB2;
 	color: white;
@@ -710,19 +711,39 @@ a.logo img{
 	#z-index:1;
 }
 
-.left_sidebar_container .navbar li {
-	position:relative;
-	height:50px;
-}
-
 .left_sidebar_container .navbar{
 	border-radius:0px;
 	border-bottom:1px solid #595983;
 	border-left: 0px;
 	border-right: 0px;
 }
-.left_sidebar_container .navbar li{
+
+.left_sidebar_container .navbar li {
+	position:relative;
+	height:50px;
 	width:195px;
+}
+
+.left_sidebar_container .navbar li .nav_arrow {
+	position:absolute;
+	top:0px;
+	right:-13px;	
+}
+.left_sidebar_container .navbar li .nav_arrow_inactive{
+	position:absolute;
+	top:0px;
+	right:-13px;
+	display:none;
+}
+
+.left_sidebar_container .navbar li.inactive .nav_arrow {
+	display:none;
+	}
+
+.left_sidebar_container .navbar li.inactive:hover .nav_arrow_inactive{
+	display:block;
+}
+.left_sidebar_container .navbar li.inactive:hover .nav_arrow{
 }
 
 .navbar li a .menu_icon{
