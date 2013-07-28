@@ -1466,10 +1466,10 @@ ul.title_bar li .title_bar_page_link .page_link_pointer{
 	width:0px;
 	height:0px;
 	text-align:center;
-	margin-left:-7px;
-	margin-top:0px;
-	border-left:35px solid transparent;
-	border-right:35px solid transparent;
+	margin-left:-6px;
+	margin-top:1px;
+	border-left:66px solid transparent;
+	border-right:66px solid transparent;
 	border-top:10px solid #00001E;	
 	vertical-align:top;
 }
@@ -1494,7 +1494,7 @@ ul.title_bar li.title_bar_page_links .title_bar_count{
 }
 
 ul.title_bar li.title_bar_page_links a:hover {
-	background-color:#4A4A4A;
+	background-color:#00001E;
 }
 
 ul.title_bar li.title_bar_option {
