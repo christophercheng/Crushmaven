@@ -394,7 +394,58 @@ a.button {
 }
 
 /* for small screens, don't fix anything */
-@media only screen (max-device-width:800px),@media only screen and (-webkit-min-device-pixel-ratio: 2),@media only screen and (-webkit-device-pixel-ratio:1.5),@media only screen and (-webkit-device-pixel-ratio:1),@media only screen and (-webkit-device-pixel-ratio:.75)
+@media (max-device-width:800px)
+ {
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px;
+    }
+    .left_sidebar,.center_panel,.right_sidebar {
+    margin-left:0px;
+    }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    /* Put your iPhone 4g styles in here */ 
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px;
+    }
+    .left_sidebar,.center_panel,.right_sidebar {
+    margin-left:0px;
+    }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+    /* Put your iPhone 4g styles in here */ 
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px;
+    }
+    .left_sidebar,.center_panel,.right_sidebar {
+    margin-left:0px;
+    }
+}
+
+/* if screen is too short, then don't fix the sidebars */
+@media (max-height:530px)
+ {
+    .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .left_sidebar,.center_panel,.right_sidebar {
+    margin-left:0px;
+    }
+	
+}
+
+@media (max-width:900px)
  {
     .header, .left_sidebar, .right_sidebar {
         position:static;
@@ -407,6 +458,7 @@ a.button {
     }
 	
 }
+
 
 /* ===========================   Overlays & Loading Animation ========================= */
 
