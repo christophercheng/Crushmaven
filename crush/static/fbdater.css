@@ -394,7 +394,7 @@ a.button {
 }
 
 /* for small screens, don't fix anything */
-@media screen and (max-width:830px) {
+@media screen and (max-width:480px) {
     .header, .left_sidebar, .right_sidebar {
         position:static;
     }
