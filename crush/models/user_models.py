@@ -191,6 +191,7 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
+    is_single_test = models.BooleanField(default=True)
     is_underage = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
