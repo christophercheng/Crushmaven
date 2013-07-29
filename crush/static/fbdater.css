@@ -370,6 +370,7 @@ a.button {
 	width:575px;
 	margin-left:205px;
 	float:left;
+	margin-top:2px;
 }
 .center_panel_container {
 	margin-left:15px;
@@ -490,24 +491,21 @@ a.button {
 }
 
 /* ===========================   Header Container ========================= */
-a.logo{
-	font-size:32px;
-	color:white;
-	display:inline-block;
-	height:100%;
-	font-weight:bold;
-}
-
-a.logo #to {
-	color:#DC143C;
-	font-size:30px;
-}
 
 a.logo img{
 	margin-top:6px;
 	height:38px;
 }
-
+.beta{
+	position:absolute;
+	bottom:1px;
+	left:68px;
+	color:#a6fa62;
+	color:#8A8AE6;
+	font-size:9px;
+	font-weight:bold;
+	letter-spacing:2px;
+}
 #notification_menu {	
 	display:inline-block;
 	list-style:none;
@@ -648,6 +646,7 @@ a.logo img{
 	border-left:1px solid #242434;
 	border-right:1px solid #242434;
 	border-bottom:2px solid #242434;
+	border-top:1px solid #242434;
 	white-space:nowrap;
 	overflow:hidden;
 	padding-top:1px;
