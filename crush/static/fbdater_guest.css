@@ -142,7 +142,7 @@ h2#tagline2 #safe_text{
 	#background: url('https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png') 0 0 no-repeat;
 	background:url(images/facebook_btn.png)  0 0 no-repeat;;
 	left:325px;
-	top:353px;
+	top:355px;
 }
 #facebookbtn {
   width: 218px;
@@ -161,8 +161,8 @@ h2#tagline2 #safe_text{
 #authentication_wait {
 	display:none;
 	position:absolute;
-	left:280px!important;
-	top:340px!important;
+	left:275px!important;
+	top:350px!important;
 	width: 218px!important;
   	height: 46px!important;
   	padding-top:12px;
