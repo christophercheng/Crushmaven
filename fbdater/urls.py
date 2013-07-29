@@ -28,9 +28,9 @@ urlpatterns += patterns('',
 #urlpatterns += patterns('crush.views.infrastructure_views',    
 #    (r'', 'under_construction'),
 #)
-#urlpatterns += patterns('',
-#    (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
-#)
+urlpatterns += patterns('',
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
+)
 
 #    url(r'^accounts/login/$','django.contrib.auth.views.login'),
 
