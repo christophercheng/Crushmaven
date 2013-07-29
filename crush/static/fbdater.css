@@ -317,13 +317,13 @@ a.button {
 
 .header {
 	height:50px;
-	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 40%,#000032);
-	background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
-	background: -0-linear-gradient(top, #000, #000 40%,#000032);
-	background: linear-gradient(top, #000, #000 40%,#000032);
+	background-color:#242434;
+	background: -moz-linear-gradient(top,#191924,#242434);
+	background: -webkit-linear-gradient(top,#191924,#242434);
+	background: -0-linear-gradient(top,#191924,#242434);
+	background: linear-gradient(top, #191924,#242434);
 	#box-shadow: 0 2px 0px #6e6e6e;
-	#box-shadow: 0 2px 0px #324AB2;
+	box-shadow: 0 1px 0px #000;
 	color: white;
 	width:100%;
   	position: fixed;
@@ -340,11 +340,11 @@ a.button {
 }
 
 .header_container{
-	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 40%,#000032);
-	background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
-	background: -0-linear-gradient(top, #000, #000 40%,#000032);
-	background: linear-gradient(top, #000, #000 40%,#000032);
+	background-color:#242434;
+	background: -moz-linear-gradient(top,#191924,#242434);
+	background: -webkit-linear-gradient(top,#191924,#242434);
+	background: -0-linear-gradient(top,#191924,#242434);
+	background: linear-gradient(top,#191924,#242434);
 	width:985px;
 	margin-left: auto;
 	margin-right:auto;
@@ -645,14 +645,14 @@ a.logo img{
 	right:0px;
 	display:none;
 	border-radius: 0 0 8px 8px;
-	border-left:2px solid #000;
-	border-right:2px solid #000;
-	border-bottom:1px solid #000;
+	border-left:1px solid #242434;
+	border-right:1px solid #242434;
+	border-bottom:2px solid #242434;
 	white-space:nowrap;
 	overflow:hidden;
 	padding-top:1px;
 	padding-bottom:5px;
-	background-color:#00001E;
+	background-color:#404054;
 	
 }
 #get_started_menu{
@@ -717,7 +717,7 @@ a.logo img{
 .settings_menu a:hover {
 	#background-color:#4E5A65;
 	background:#B01030;
-	#background:#E02B50;
+	background:#1D1D2A;
 }
 
 #right_header_menu li a .pic{
@@ -757,8 +757,7 @@ a.logo img{
 }
 .right_sidebar_container .nav_header{
 	color:white;
-	background-color:rgb(51,51,51);
-	background-color:#33334B;
+	background-color:#404054;
 	letter-spacing:1px;
 	font-size:13px;
 	font-weight:bold;
@@ -942,8 +941,7 @@ a.logo img{
 
 .navbar li.active a {
 	color:white;
- 	background-color: rgb(51,51,51);
- 	background:#33334B;
+ 	background:#404054;
  	height:100%;
  	border-left:1px solid rgb(51,51,51);
  	border-right:1px solid rgb(51,51,51);
@@ -1042,6 +1040,7 @@ a.logo img{
 .left_sidebar_container #combo_singles_button a{
 	display:inline-block;
 	background-color:#00001E;
+	background-color:#242434;
 	font-size:11px;
 	border:0px;
 	color:#B2C2E0;
@@ -1070,6 +1069,7 @@ a.logo img{
 	width:113px;
 	padding-left:9px;
 	background-color:#00001E!important;
+	background-color:#242434!important;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
@@ -1094,6 +1094,7 @@ a.logo img{
 	background-color:#595983;
 	background-color:#3E3E5C;
 	background-color:#00001E;
+	background-color:#242434;
 	height:37px;
 	border-radius:0px 0px 6px 6px;
 	color:white;
@@ -1445,6 +1446,7 @@ ul.title_bar {
 	list-style:none;
 	margin-bottom:25px;
 	background:#33334B;
+	background:#242434;
 	border:1px solid #474747;
 	border-radius:15px;
 	display:inline-block;
@@ -1492,7 +1494,7 @@ ul.title_bar li .title_bar_page_link {
 }
 
 ul.title_bar li .active_title_bar_page_link {
-	background:#242434;
+	background:#404054;
 	border-left:1px solid #373737;
 	border-right:1px solid #373737;
 	margin-left:-3px!important;
@@ -1524,7 +1526,7 @@ ul.title_bar li .title_bar_page_link .page_link_pointer{
 	margin-top:1px;
 	border-left:66px solid transparent;
 	border-right:66px solid transparent;
-	border-top:10px solid #242434;	
+	border-top:10px solid #404054;	
 	vertical-align:top;
 }
 
@@ -1548,7 +1550,13 @@ ul.title_bar li.title_bar_page_links .title_bar_count{
 }
 
 ul.title_bar li.title_bar_page_links a:hover {
-	background-color:#00001E;
+	background-color:#39394A;
+	border-left:1px solid #242434;
+	border-right:1px solid #242434;
+		transition-property:background-color;
+	transition-duration:400ms;
+-webkit-transition-duration:400ms;
+-webkit-transition-property:background-color;
 }
 
 ul.title_bar li.title_bar_option {
@@ -1979,6 +1987,10 @@ ul.nav_bar li#nav_bar_options{
 .center_panel_container #no_content .no_content_action{
 	display:block;
 	margin-top:23px;
+
+}
+.no_content_action a{
+		font-size:14px;
 }
 
 #responses{
