@@ -1402,6 +1402,7 @@ a.logo img{
 	text-decoration:none;
 	font-family:arial;
 	text-shadow:1px 1px 0px #000;
+	letter-spacing:1px;
 }
 
 .new_user_instructions a.instruction_block_button:hover{
