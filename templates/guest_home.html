@@ -6,14 +6,14 @@
   <meta name="robots" content="all,index" />
   <meta name="Revisit-After" content="30 Days" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-  <link type="text/css" href="{{ CDN_URL }}fbdater_guest.css" rel="stylesheet"/>
+  <link type="text/css" href="{{ STATIC_URL }}fbdater_guest.css" rel="stylesheet"/>
 	<title>Flirtally | Discover relationship potential safely & anonymously</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ CDN_URL }}images/favicon.png" />
-    <link rel="icon" type="image/x-icon" href="{{ CDN_URL }}images/favicon.png" /> 
+    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon.png" /> 
 </head>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-<script src="{{CDN_URL}}js/how_it_works.js?t={% now "U" %}"></script>
+<script src="{{STATIC_URL}}js/how_it_works.js?t={% now "U" %}"></script>
 
 <script type="text/javascript">
 
@@ -128,7 +128,7 @@ jQuery(document).ready(function($) {
 <body id="guest_home_page">
 <div id="logo_section">
 	<div class="center_container">
-		<img id="guest_logo" src="{{ CDN_URL }}images/flirtally_logo_blue_semi_circle.png">
+		<img id="guest_logo" src="{{ STATIC_URL }}images/flirtally_logo_blue_semi_circle.png">
 		<span class="beta">beta</span>
 		<span id="top_links"><a href="/contact">Contact</a></span>
 		<div class="tagline_slide_container">
