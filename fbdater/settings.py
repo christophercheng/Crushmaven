@@ -61,17 +61,17 @@ MEDIA_URL = ''
 #STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 STATIC_ROOT = 'staticfiles'
 
-# HEROKU ADD-ON SUMO CDN:
-#STATIC_ROOT = 'http://' + os.environ['CDN_SUMO_URL'] + '/staticfiles'
+
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+# HEROKU ADD-ON SUMO CDN:
+#STATIC_URL = 'http://' + os.environ['CDN_SUMO_URL'] + '/static/'
 
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
