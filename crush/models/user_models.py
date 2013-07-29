@@ -181,8 +181,8 @@ class FacebookUser(AbstractUser):
                       (u'M', u'male'),
                       (u'F', u'female'),
                       )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False)
-    
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,default=u'M')
+
     GENDER_PREF_CHOICES = (
                            (u'M',u'male'),
                            (u'F',u'female'),
@@ -191,7 +191,6 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
-    is_single_test = models.BooleanField(default=True)
     is_underage = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
