@@ -147,11 +147,26 @@ INSTALLED_APPS = (
     'south'
 )
 
-CACHES={
-        'default' : {
-          'BACKEND':'django.core.cache.backends.locmem.LocMemCache',         
-                     }
-        }
+# using heroku MEMCACHIER ADD-ON
+os.environ['MEMCACHE_SERVERS'] = os.environ.get('MEMCACHIER_SERVERS', '').replace(',', ';')
+os.environ['MEMCACHE_USERNAME'] = os.environ.get('MEMCACHIER_USERNAME', '')
+os.environ['MEMCACHE_PASSWORD'] = os.environ.get('MEMCACHIER_PASSWORD', '')
+
+CACHES = {
+  'default': {
+    'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+    'TIMEOUT': 500,
+    'BINARY': True,
+    'OPTIONS': { 'tcp_nodelay': True }
+  }
+}
+# old cache for local memory - will not likely work on Heroku because a dyno may be dynamically run on separate instances - which would invalidate cache
+#CACHES={
+#        'default' : {
+#          'BACKEND':'django.core.cache.backends.locmem.LocMemCache',         
+#                     }
+#        }
+
 INACTIVE_USER_CACHE_KEY = 'all_inactive_user_list'
 DATE_NOTIFICATIONS_LAST_SENT_CACHE_KEY = 'date_notifiactions_last_sent'
 
