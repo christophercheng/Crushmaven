@@ -318,10 +318,10 @@ a.button {
 .header {
 	height:50px;
 	background-color:#242434;
-	background: -moz-linear-gradient(top,#191924,#242434);
-	background: -webkit-linear-gradient(top,#191924,#242434);
-	background: -0-linear-gradient(top,#191924,#242434);
-	background: linear-gradient(top, #191924,#242434);
+	background: -moz-linear-gradient(top,#000,#242434);
+	background: -webkit-linear-gradient(top,#000,#242434);
+	background: -0-linear-gradient(top,#000,#242434);
+	background: linear-gradient(top, #000,#242434);
 	#box-shadow: 0 2px 0px #6e6e6e;
 	box-shadow: 0 1px 0px #000;
 	color: white;
@@ -341,10 +341,10 @@ a.button {
 
 .header_container{
 	background-color:#242434;
-	background: -moz-linear-gradient(top,#191924,#242434);
-	background: -webkit-linear-gradient(top,#191924,#242434);
-	background: -0-linear-gradient(top,#191924,#242434);
-	background: linear-gradient(top,#191924,#242434);
+	background: -moz-linear-gradient(top,#000,#242434);
+	background: -webkit-linear-gradient(top,#000,#242434);
+	background: -0-linear-gradient(top,#000,#242434);
+	background: linear-gradient(top,#000,#242434);
 	width:985px;
 	margin-left: auto;
 	margin-right:auto;
