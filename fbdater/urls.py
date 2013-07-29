@@ -19,9 +19,9 @@ urlpatterns = patterns('facebook.views',
     (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
 )
 
-urlpatterns += patterns('',
-(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon.png')),
-)
+#urlpatterns += patterns('',
+#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon.png')),
+#)
 
 
 # in case something bad has happened enable this view so that all site requests go here
