@@ -68,7 +68,7 @@ a{
 
 .tagline_slide_container{
 	display:inline-block;
-	height:275px;
+	height:285px;
 	width:1000px;
 	margin-left:-10px;
 	overflow:hidden;
@@ -96,8 +96,8 @@ h2{
 
 h2#tagline1{
 	position:absolute;
-	top:65px;
-	left:165px;
+	top:72px;
+	left:168px;
 	color:#E8E8E8;
 	color:#d6d6d6;
 	color:#dcdcdc;
@@ -111,8 +111,8 @@ h2#tagline1{
 
 h2#tagline2{
 	position:absolute;
-	top:222px;
-	left:307px;
+	top:237px;
+	left:322px;
 	color:white;
 	font-size:20px;
 	font-weight:normal;
@@ -131,8 +131,8 @@ h2#tagline2 #safe_text{
 	position:absolute;
 	#background: url('https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png') 0 0 no-repeat;
 	background:url(images/facebook_btn.png)  0 0 no-repeat;;
-	left:310px;
-	top:340px;
+	left:325px;
+	top:353px;
 }
 #facebookbtn {
   width: 218px;
@@ -175,8 +175,8 @@ h2#tagline2 #safe_text{
 
 #slide_buttons{
 	position:absolute;
-	left:395px;
-	bottom:15px;
+	left:410px;
+	bottom:10px;
 }
 
 .slide_button{
