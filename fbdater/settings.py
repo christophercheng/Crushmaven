@@ -65,10 +65,9 @@ STATIC_ROOT = 'staticfiles'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-#STATIC_URL = '/static/'
 # HEROKU ADD-ON SUMO CDN:
-STATIC_URL = 'http://' + os.environ['CDN_SUMO_URL'] + '/static/'
-
+STATIC_URL = '/static/'
+CDN_URL = 'http://' + os.environ['CDN_SUMO_URL'] + '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
