@@ -89,7 +89,7 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if admirer_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v3.png">new<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link ">new<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">lineup finished<span class="title_bar_count"> {{past_admirers_count}}</span></a>
 		{% else %}
 			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">new<span class="title_bar_count"> {{progressing_admirers_count}}</span></a>
