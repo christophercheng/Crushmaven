@@ -65,6 +65,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 #STATIC_URL = '/static/'
 
 # HEROKU ADD-ON SUMO CDN:
+# had lots of problems concatenating environment variable with strings!!!! this finally worked
 CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
 

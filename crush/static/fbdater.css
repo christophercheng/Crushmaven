@@ -65,7 +65,7 @@ a.button {
 	display:inline-block;
 	position:absolute;
 	#background:#2E8AE6;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:18px;
@@ -129,7 +129,7 @@ a.button {
 .ui-icon{
 	display:inline-block!important;
 	position:absolute!important;
-	background-image:url(images/full_sprite.png)!important;	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;	
 	background-repeat:no-repeat;
 	background-size:auto!important;
 	width:30px!important;
@@ -146,13 +146,13 @@ a.button {
 
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
 	background:white!important;
-	background-image:url(images/full_sprite.png)!important;	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;	
 	background-position:-178px -27px!important;
 	border:none!important;
 }
 .blacktop .ui-state-hover .ui-icon, .blacktop .ui-state-focus .ui-icon {
 	background:#000033!important;
-	background-image:url(images/full_sprite.png)!important;	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;	
 	background-position:-178px -27px!important;
 	border:none!important;
 
@@ -531,7 +531,7 @@ a.logo img{
 }
 .notification_block{
 	display:inline-block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:25px;
@@ -693,7 +693,7 @@ a.logo img{
 #get_started_menu li a .get_started_menu_icon{
 	position:absolute;
 	display:block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	height:20px;
@@ -817,7 +817,7 @@ a.logo img{
 .navbar li a .menu_icon{
 	position:absolute;
 	display:block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	height:20px;
@@ -999,7 +999,7 @@ a.logo img{
 .left_sidebar_container .button_container a .add_icon{
 	position:absolute;
 	display:block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	background-position:-90px -305px;
@@ -1016,7 +1016,7 @@ a.logo img{
 .left_sidebar_container #combo_singles_button .small_add_icon{
 	position:absolute;
 	display:block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	background-position:-119px -312px;
@@ -1743,7 +1743,7 @@ ul.nav_bar li#nav_bar_options{
 .crush_status_4 .response_icon{
 	display:inline-block!important;
 	position:absolute!important;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:40px;
@@ -2316,7 +2316,7 @@ top:1px;
 }
 .view_facebook_icon{
 	display:inline-block;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:22px;
@@ -2423,7 +2423,7 @@ top:1px;
 	position:absolute;
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-position:-155px -120px;
 	background-size:auto;
@@ -2502,7 +2502,7 @@ top:1px;
 .lineup_block .lineup_block_line .lineup_block_lineup_pic span.admirer_picked{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2519,7 +2519,7 @@ top:1px;
 .lineup_block .lineup_block_line .lineup_block_lineup_pic span.admirer_not_picked{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2579,7 +2579,7 @@ top:1px;
 #bx-pager a span.decision_crush{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2594,7 +2594,7 @@ top:1px;
 #bx-pager a span.decision_platonic{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2935,7 +2935,7 @@ ul.bxslider{
 .attractor_name_block .decision_icon{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3231,7 +3231,7 @@ ul.bxslider{
 #response_container .decision_icon{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3833,7 +3833,7 @@ div.past_dialog_header {
 .setup_by_me_block .setup_response_section .setup_lineup_member_block .setup_responded{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3902,7 +3902,7 @@ div.past_dialog_header {
 .setup_by_me_block .setup_match_yes{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3915,7 +3915,7 @@ div.past_dialog_header {
 .setup_by_me_block .setup_match_no{
 	display:inline-block;
 	position:absolute;
-	background-image:url(images/full_sprite.png);	
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;

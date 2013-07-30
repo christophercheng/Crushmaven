@@ -22,7 +22,9 @@ urlpatterns = patterns('facebook.views',
 #urlpatterns += patterns('',
 #(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon.png')),
 #)
-
+#urlpatterns += patterns('',
+#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon.png')),
+#)
 
 # in case something bad has happened enable this view so that all site requests go here
 #urlpatterns += patterns('crush.views.infrastructure_views',    
@@ -31,6 +33,10 @@ urlpatterns = patterns('facebook.views',
 urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
 )
+urlpatterns += patterns('',
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
+)
+
 
 #    url(r'^accounts/login/$','django.contrib.auth.views.login'),
 
