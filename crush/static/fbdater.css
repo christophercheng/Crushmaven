@@ -796,14 +796,21 @@ a.logo img{
 	position:absolute;
 	height:56px;
 	top:-1px;
-	right:-13px;	
+	right:-14px;	
+}
+.left_sidebar_container .navbar li .nav_arrow_left_border {
+	height:55px;
+	width:2px;
+	position:absolute;
+	top:0px;
+	right:-2px;
+	background:#404054;
+	border-radius:0px 10px 10px 0px;
 }
 
-.left_sidebar_container .navbar li.inactive .nav_arrow {
+.left_sidebar_container .navbar li.inactive .nav_arrow_left_border,.left_sidebar_container .navbar li.inactive .nav_arrow {
 	display:none;
 	}
-
-
 
 .navbar li a .menu_icon{
 	position:absolute;
@@ -938,7 +945,6 @@ a.logo img{
  	border-bottom:1px solid black;
  	border-top:1px solid black;
  	text-shadow: 1px 1px 0px #000;
- 	border-radius:0px 0px 2px 0px;
 }
 .navbar li.active.attractions a,.navbar li.active.setups_by_me a {
 	border-top:0px;
