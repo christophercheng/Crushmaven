@@ -66,7 +66,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 #STATIC_URL = '/static/'
 
 STATIC_URL = 'http://' + 'dpnbuf1kuaw5.cloudfront.net' + '/static/'
-
+CDN_URL = os.getenv('CDN_SUMO_URL')
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
