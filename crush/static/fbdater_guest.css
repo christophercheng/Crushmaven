@@ -10,7 +10,7 @@ body {
   	color: #333333;  
  	overflow-x: hidden;	
  	overflow-y:scroll;
- 	background:#00002A;
+ 	background:#131323;
 }
 
 a{
@@ -46,11 +46,6 @@ a{
 }
 
 #logo_section{
-	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 50%,#303058);
-	background: -webkit-linear-gradient(top, #000, #000 50%,#303058);
-	background: -0-linear-gradient(top, #000, #000 50%,#303058);
-	background: linear-gradient(top, #000, #000 50%,#303058);
 	margin-top:0;	
 	-webkit-touch-callout: none !important;
 	-webkit-user-select: none !important;
@@ -58,15 +53,16 @@ a{
 	-moz-user-select: none !important;
 	-ms-user-select: none !important;
 	user-select: none !important;
+		background-color:#000;
+	background: -moz-linear-gradient(top, #000, #000 60%,#22223E);
+	background: -webkit-linear-gradient(top, #000, #000 60%,#22223E);
+	background: -0-linear-gradient(top, #000, #000 60%,#22223E);
+	background: linear-gradient(top, #000, #000 60%,#22223E);
 }
 
 #logo_section .center_container {
 	height:450px;
-	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 50%,#303058);
-	background: -webkit-linear-gradient(top, #000, #000 50%,#303058);
-	background: -0-linear-gradient(top, #000, #000 50%,#303058);
-	background: linear-gradient(top, #000, #000 50%,#303058);
+
 }
 
 #logo_section img#guest_logo{
