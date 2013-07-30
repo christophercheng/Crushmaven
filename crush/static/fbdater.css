@@ -464,7 +464,7 @@ a.button {
 /* ===========================   Overlays & Loading Animation ========================= */
 
 #site-loading {
-	background-image:url'http://dpnbuf1kuaw5.cloudfront.net/static/images/loading.gif');
+	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/loading.gif');
 	margin: auto; /* 0 0 -12px; */
 	height: 32px;
 	width: 32px;
