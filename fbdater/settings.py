@@ -63,9 +63,9 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 # HEROKU ADD-ON SUMO CDN:
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 
-CDN_URL = 'http://' + 'dpnbuf1kuaw5.cloudfront.net' + '/static/'
+STATIC_URL = 'http://' + 'dpnbuf1kuaw5.cloudfront.net' + '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
