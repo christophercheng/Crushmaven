@@ -66,7 +66,8 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 #STATIC_URL = '/static/'
 
 STATIC_URL = 'http://' + 'dpnbuf1kuaw5.cloudfront.net' + '/static/'
-CDN_URL = 'http://' + os.getenv('CDN_SUMO_URL') + '/static/'
+CDN_URL = os.getenv('CDN_SUMO_URL')
+
 
 # Additional locations of static files
 STATICFILES_DIRS = (
