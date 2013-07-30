@@ -83,11 +83,11 @@ $(document).ready(function()
 	</li>
 	<li class="title_bar_page_links">
 		{% if setup_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v2.png">started<span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v3.png">started<span class="title_bar_count">{{setup_relationships.count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/completed_setups_by_me/">finished<span class="title_bar_count">{{setups_completed_count}}</span></a>
 		{% else %}
 			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/setups_by_me/">started<span class="title_bar_count">{{setups_incomplete_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v2.png">finished<span class="title_bar_count">{{setup_relationships.count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link"><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v3.png">finished<span class="title_bar_count">{{setup_relationships.count}}</span></span>
 		{% endif %}
 	</li>
 </ul>

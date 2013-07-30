@@ -239,11 +239,11 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	<li class="title_bar_title">Attractions</li>
 	<li class="title_bar_page_links">
 		{% if crush_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v2.png">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link "><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v3.png">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
 			<a class="title_bar_page_link inactive_title_bar_page_link" href="/attractions_completed/">responded<span class="title_bar_count">{{crushes_completed_count}}</span></a>
 		{% else %}
 			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link " href="/attractions/">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v2.png">responded<span class="title_bar_count">{{crushes_completed_count}}</span></span>
+			<span class="title_bar_page_link active_title_bar_page_link"><img class="page_link_pointer" src="{{ STATIC_URL }}images/nav_arrow_down_v3.png">responded<span class="title_bar_count">{{crushes_completed_count}}</span></span>
 		{% endif %}
 	</li>
 		<li class="title_bar_option">
