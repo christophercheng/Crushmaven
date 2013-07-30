@@ -811,18 +811,19 @@ a.logo img{
 	background-size:auto;
 	height:20px;
 	width:20px;
-	top:12px;
+	top:9px;
 	left:5px;
 }
 
 .navbar li.inactive.attractions a .menu_icon{
 	background-position:-35px 0px;
+	top:6px;
 }
 .navbar li.inactive.admirers a .menu_icon{
-		background-position:-35px -32px;
+		background-position:-35px -31px;
 }
 .navbar li.inactive.messages a .menu_icon{
-	background-position:-35px -57px;	
+	background-position:-35px -56px;	
 }
 
 .navbar li.inactive.setups_for_me a .menu_icon{
@@ -837,12 +838,13 @@ a.logo img{
 
 .navbar li.active.attractions a .menu_icon{
 		background-position:-64px 0px;
+		top:6px;
 }
 .navbar li.active.admirers a .menu_icon{
-		background-position:-64px -32px;	
+		background-position:-64px -31px;	
 }
 .navbar li.active.messages a .menu_icon{
-	background-position:-64px -57px;
+	background-position:-64px -56px;
 }
 .navbar li.active.setups_for_me a .menu_icon{
 		background-position:-64px -279px;	
@@ -958,7 +960,7 @@ a.logo img{
 	font-size:11px;
 	font-weight:normal;
 	font-style:normal;
-	margin-top:3px;
+	margin-top:4px;
 	letter-spacing:0px;
 }
 
@@ -978,7 +980,7 @@ a.logo img{
 }
 
 .navbar li.inactive a:active {
-	background-color:#EEEEEE;
+	background-color:#B3B3BB;
 	transition-property:color,background-color,border-color;
 	transition-duration:0ms,0ms,0ms;
 	-webkit-transition-duration:0ms,0ms,0ms;
