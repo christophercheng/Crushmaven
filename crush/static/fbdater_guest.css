@@ -54,10 +54,10 @@ a{
 	-ms-user-select: none !important;
 	user-select: none !important;
 		background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 60%,#22223E);
-	background: -webkit-linear-gradient(top, #000, #000 60%,#22223E);
-	background: -0-linear-gradient(top, #000, #000 60%,#22223E);
-	background: linear-gradient(top, #000, #000 60%,#22223E);
+	background: -moz-linear-gradient(top, #000, #000 60%,#1D1D35);
+	background: -webkit-linear-gradient(top, #000,#1D1D35);
+	background: -0-linear-gradient(top, #000, #000 60%,#1D1D35);
+	background: linear-gradient(top, #000, #000 60%,#1D1D35);
 }
 
 #logo_section .center_container {
@@ -202,7 +202,8 @@ h2#tagline2 #safe_text{
 }
 
 .slide_button_inactive{
-	background:#1D1D35;
+	background:#18182C;
+	box-shadow:0px 0px 1px #83839B;
 }
 .slide_button_inactive:hover{
 	cursor:pointer;
