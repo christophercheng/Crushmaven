@@ -794,7 +794,8 @@ a.logo img{
 
 .left_sidebar_container .navbar li .nav_arrow {
 	position:absolute;
-	top:0px;
+	height:56px;
+	top:-1px;
 	right:-13px;	
 }
 
@@ -932,11 +933,16 @@ a.logo img{
 	color:white;
  	background:#404054;
  	height:100%;
- 	border-left:1px solid rgb(51,51,51);
- 	border-right:1px solid rgb(51,51,51);
+ 	#border-left:1px solid rgb(51,51,51);
+ 	#border-right:1px solid rgb(51,51,51);
  	border-bottom:1px solid black;
+ 	border-top:1px solid black;
  	text-shadow: 1px 1px 0px #000;
+ 	border-radius:0px 0px 2px 0px;
 }
+.navbar li.active.attractions a,.navbar li.active.setups_by_me a {
+	border-top:0px;
+	}
 
 .navbar li.inactive a {
 	color:#474747 ; 
@@ -1502,26 +1508,12 @@ ul.title_bar li .title_bar_page_first_link {
 #	margin-right:30px;
 }
 
-ul.title_bar li .title_bar_page_link .page_link_pointer_container{
-	position:absolute;
-	display:inline-block;
-	width:100%;
-	top:16px;
-	left:0px;
-	text-align:center;
-}
 
 ul.title_bar li .title_bar_page_link .page_link_pointer{
-	display:inline-block;
-	width:0px;
-	height:0px;
-	text-align:center;
-	margin-left:-6px;
-	margin-top:1px;
-	border-left:66px solid transparent;
-	border-right:66px solid transparent;
-	border-top:10px solid #404054;	
-	vertical-align:top;
+	position:absolute;
+	width:130px;
+	bottom:-31px;
+	left:-3px;
 }
 
 ul.title_bar li .title_bar_page_link .responded_pointer{
