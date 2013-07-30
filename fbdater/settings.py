@@ -65,9 +65,8 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 # HEROKU ADD-ON SUMO CDN:
 STATIC_URL = '/static/'
 
-CDN_URL = 'http://' + os.environ.get('CDN_SUMO_URL') + '/static/'
-
-
+#CDN_URL = 'http://' + str(os.environ.get('CDN_SUMO_URL','')) + '/static/'
+CDN_URL = 'fuck'
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
