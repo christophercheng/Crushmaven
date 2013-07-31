@@ -866,10 +866,10 @@ a.logo img{
 	-webkit-transition-duration:0ms,200ms,200ms;
 	-webkit-transition-property:color,background-color,border-color;
 	
-	-moz-transition: all .2s ease;
-    -webkit-transition: all .2s ease;
-    -o-transition: all .2s ease;
-    transition: all .2s ease;
+	-moz-transition: all .3s ease;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
 }
 
 .navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover  {
