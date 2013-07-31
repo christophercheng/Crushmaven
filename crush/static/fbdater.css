@@ -494,7 +494,7 @@ a.logo img{
 	right:0px;
 }
 #center_header_menu {
-	left:420px;
+	left:417px;
 }
 
 #right_header_menu li,#center_header_menu li {
@@ -507,8 +507,8 @@ a.logo img{
 	font-family:helvetica;
 	font-weight:bold;
 	text-align:right;
-	padding-left:20px;
-	padding-right:20px;
+	padding-left:15px;
+	padding-right:15px;
 }
 
 #right_header_menu .submenu > a,#center_header_menu .submenu > a{
@@ -646,8 +646,6 @@ a.logo img{
 .left_sidebar_container .nav_header{
 	letter-spacing:4px;
 	border-bottom:1px solid #00001E;
-	#border-bottom:2px solid #ABABAB;
-	#border-left:1px solid #E6E6E6;
 	border-right:1px solid #E6E6E6;
 	border-top:1px solid #E6E6E6;
 	word-spacing:-3px;
@@ -661,10 +659,10 @@ a.logo img{
 .right_sidebar_container .nav_header{
 	color:white;
 	background-color:#404054;
-	letter-spacing:1px;
-	font-size:13px;
+	letter-spacing:2px;
+	font-size:12px;
 	font-weight:bold;
-	border-radius:6px 6px 0px 0px;
+	border-radius:6px 6px 2px 2px;
 	text-shadow: 1px 1px 0px #000;
 	margin-bottom:3px;
 }
@@ -864,8 +862,8 @@ a.logo img{
 	color:#1F1F1F;
 	text-shadow:1px 1px 0 #D1D1D6;
 	transition-property:color,background-color,border-color;
-	transition-duration:300ms,300ms,300ms;
-	-webkit-transition-duration:300ms,300ms,300ms;
+	transition-duration:0ms,200ms,200ms;
+	-webkit-transition-duration:0ms,200ms,200ms;
 	-webkit-transition-property:color,background-color,border-color;
 }
 
@@ -997,9 +995,9 @@ a.logo img{
 /* ===========================   Right Sidebar ========================= */
 
 #friend_referral_bar_header {
-	height:31px;
+	height:30px;
 	padding-left:12px;
-	padding-top:3px;
+	padding-top:2px;
 }
 .header_subtext {
 	display:block;
@@ -1007,6 +1005,7 @@ a.logo img{
 	font-weight:normal;
 	font-style:italic;
 	margin-top:-3px;
+	letter-spacing:1px;
 }
 	
 #friend_referral_bar{
@@ -1016,29 +1015,32 @@ a.logo img{
 
  #friend_referral_bar li#no_friends {
  	color:#B8B8B8;
- 	height:45px;
- 	line-height:52px;
+ 	height:56px;
+ 	line-height:56px;
  	vertical-align:middle;
  	text-align:center;
  	font-style:italic;
  	font-size:12px;
- 	border-bottom:1px solid #C6C6CC;
- 	border-top:1px solid #F1F3F5;
+ 	border:1px solid #F1F3F5;
+	border-bottom:1px solid #C6C6CC;
+ 	border-radius:5px;
  }
+
  
  #friend_referral_bar li.friend_with_admirer {
 	position:relative;
-	height:54px;
+	height:56px;
 	border:1px solid #F1F3F5;
 	background:#fff;
 	margin-bottom:2px;
+	border-radius:5px;
 }
 
 #friend_referral_bar li.friend_with_admirer img {
  	position:absolute;
  	display:inline-block;
  	left:5px;
- 	top:6px;
+ 	top:7px;
  	height:40px;
  	width:40px;
  }
@@ -1046,7 +1048,7 @@ a.logo img{
 #friend_referral_bar li.friend_with_admirer ul {
 	display:inline-block;
 	position:absolute;
-	top:6px;
+	top:7px;
 	left:50px;
 	list-style:none;
 	font-size:11px;
@@ -1054,11 +1056,12 @@ a.logo img{
 	line-height:13px;
 	padding-left:5px;
 }
-
+#friend_referral_bar li.friend_with_admirer ul li {
+	margin-bottom:1px;
+}
 #friend_referral_bar li ul li.friend_name {
 	font-weight:bold;
 	color:#474747; 
-	margin-top:1px;
 }
 #friend_referral_bar li:hover ul li.friend_name {
 	color:black; 
@@ -1106,10 +1109,15 @@ a.logo img{
 }
 .company_info .subtext{
 	display:block;
+	margin-top:2px;
 }
 .company_info a{
 	font-size:12px;
 	color:#333366;
+}
+.company_info a:hover{
+	color:#0A0A14;
+	text-decoration:underline;
 }
 /* ===========================   Center Container ========================= */
 
@@ -1718,8 +1726,11 @@ ul.nav_bar li#nav_bar_options{
 }
 
 .crush_response_body .hint_anonymous{
+
+	position:absolute;
+	bottom:37px;
+	left:158px;
 	font-size:10px;
-	font-style:italic;
 	font-weight:normal;
 	color:#00297A;
 	letter-spacing:1px;
@@ -2038,17 +2049,6 @@ ul.attraction_status_bar li.past_status_animated{
 	top:1px;
 	width:125px;
 	height:28px;
-}
-
-.hint_anonymous {
-	position:absolute;
-	top:29px;
-	right:1px;
-	font-size:9px;
-	font-style:italic;
-	font-weight:normal;
-	color:#00297A;
-	letter-spacing:1px;
 }
 
 .view_facebook_widget{
