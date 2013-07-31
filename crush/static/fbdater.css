@@ -690,7 +690,7 @@ a.logo img{
 	position:absolute;
 	height:56px;
 	top:0px;
-	right:-12px;	
+	right:-13px;	
 }
 
 .left_sidebar_container .navbar li.inactive .nav_arrow_left_border,.left_sidebar_container .navbar li.inactive .nav_arrow {
@@ -825,9 +825,10 @@ a.logo img{
  	height:100%;
  	border-bottom:1px solid black;
  	border-left:1px solid #404054;
+ 	border-right:1px solid #404054;
  	border-top:1px solid black;
  	text-shadow: 1px 1px 0px #000;
- 	border-radius:0px 2px 2px 0px;
+ 	border-radius:2px 2px 2px 25px;
 }
 .navbar li.active.attractions a,.navbar li.active.setups_by_you a {
 	border-top:0px;
@@ -844,10 +845,6 @@ a.logo img{
 	
 }
 
-.navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover  {
-	border-bottom:1px solid #595983!important;	
-}
-
 .nav_subtext {
 	display:block;
 	font-size:11px;
@@ -858,22 +855,31 @@ a.logo img{
 }
 
 .navbar li.inactive a:hover {
-	background-color:#C6C6CA;
-	border:1px solid #C6C6CA;
-	border-radius:3px;
-	border-bottom:1px solid #A0A0AA;
+	background-color:#D9D9DD;
+	border:1px solid #D9D9DD;
+	border-radius:2px 2px 2px 25px;
+	border-bottom:1px solid #B3B3BB;
 	color:#1F1F1F;
 	text-shadow:1px 1px 0 #DDDDE0;
 	transition-property:color,background-color,border-color;
 	transition-duration:0ms,200ms,200ms;
 	-webkit-transition-duration:0ms,200ms,200ms;
 	-webkit-transition-property:color,background-color,border-color;
+	
+	-moz-transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+    -o-transition: all .2s ease;
+    transition: all .2s ease;
+}
+
+.navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover  {
+	border-bottom:1px solid #595983!important;	
 }
 
 .navbar li.inactive a:active {
-	border-bottom: 1px solid #909099;
-	border-right: 1px solid #A0A0AA;
-	border-left: 1px solid #A0A0AA;
+	border-bottom: 1px solid #B3B3BB;
+	border-right: 1px solid #B3B3BB;
+	border-left: 1px solid #B3B3BB;
 	transition-property:color,background-color,border-color;
 	transition-duration:0ms,0ms,0ms;
 	-webkit-transition-duration:0ms,0ms,0ms;
@@ -1008,7 +1014,6 @@ a.logo img{
 	display:block;
 	font-size:9px;
 	font-weight:normal;
-	font-style:italic;
 	margin-top:-3px;
 	letter-spacing:1px;
 }
@@ -3245,7 +3250,7 @@ ul.bxslider{
 }
 
 div.dialog_header, div.active_dialog_header {
-	background:#333333;
+	background:#242434;
 	color:white;
 	font-size:14px!important;
 	line-height:28px;
@@ -3274,6 +3279,7 @@ div.past_dialog_header {
 	opacity:1;
 	filter:alpha(opacity=100);
 	background:#EFEFEF;
+	text-shadow:1px 1px 0px #fff;
 }
 .header_2{
 	border-top:1px solid #000033;
@@ -4183,6 +4189,7 @@ div.past_dialog_header {
 	border:1px solid rgb(153,153,153);
 	font-size:14px;
 	box-shadow: 1px 2px 2px rgba(153,153,153,.5);
+	border-radius:5px;
 }
 
 .settings_container #settings_labels {
