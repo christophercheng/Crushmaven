@@ -70,7 +70,7 @@ def completed_setups_for_me(request):
                                })       
     
 @login_required
-def setups_by_me(request):
+def setups_by_you(request):
     
     me = request.user
     progressing_setups = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','target_person__first_name')
@@ -80,7 +80,7 @@ def setups_by_me(request):
         show_help_popup=True
     else: 
         show_help_popup=False
-    return render(request,'setups_by_me.html',
+    return render(request,'setups_by_you.html',
                               {
                                'setup_type': 0, # 0 is in progress, 1 is completed
                                'setup_relationships':progressing_setups,
@@ -91,13 +91,13 @@ def setups_by_me(request):
 
 # -- Crushes Completed Page --
 @login_required
-def completed_setups_by_me(request):
+def completed_setups_by_you(request):
     
     me = request.user
     completed_setups = me.crush_setuprelationship_set_from_source.exclude(Q(date_setup_completed=None) | Q(updated_flag=True)).order_by('-updated_flag','target_person__first_name')
     setups_incomplete_count = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
 
-    return render(request,'setups_by_me.html',
+    return render(request,'setups_by_you.html',
                               {
                                'setup_type': 1, # 0 is in progress, 1 is completed
                                'setup_relationships':completed_setups,
@@ -195,7 +195,7 @@ def setup_create_form(request,target_person_username=""):
             except SetupRequestRelationship.DoesNotExist:
                 pass
               
-        return redirect('/setups_by_me')
+        return redirect('/setups_by_you')
     else:
         return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})
     

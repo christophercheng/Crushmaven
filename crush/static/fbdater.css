@@ -645,13 +645,13 @@ a.logo img{
 }
 .left_sidebar_container .nav_header{
 	letter-spacing:4px;
-	border-bottom:1px solid #00001E;
+	border-bottom:1px solid #242434;
 	border-right:1px solid #E6E6E6;
 	border-top:1px solid #E6E6E6;
 	word-spacing:-3px;
 	font-style:italic;
 	font-weight:bold;
-	text-shadow: 0px 1px 0px #FFF!important;
+	text-shadow: 1px 1px 0px #FFF!important;
 	border-radius: 8px 8px 0px 0px;
 	color:#464854;
 	box-shadow: 0px 0px 2px #FFF;
@@ -722,7 +722,7 @@ a.logo img{
 .navbar li.inactive.setups_for_me a .menu_icon{
 	background-position:-35px -279px;
 }
-.navbar li.inactive.setups_by_me a .menu_icon{
+.navbar li.inactive.setups_by_you a .menu_icon{
 	background-position:-35px -123px;	
 }
 .navbar li.inactive.setup_requests_for_me a .menu_icon{
@@ -741,7 +741,7 @@ a.logo img{
 .navbar li.active.setups_for_me a .menu_icon{
 	background-position:-64px -279px;	
 }
-.navbar li.active.setups_by_me a .menu_icon{
+.navbar li.active.setups_by_you a .menu_icon{
 	background-position:-64px -122px;	
 }
 .navbar li.active.setup_requests_for_me a .menu_icon{
@@ -829,7 +829,7 @@ a.logo img{
  	text-shadow: 1px 1px 0px #000;
  	border-radius:0px 2px 2px 0px;
 }
-.navbar li.active.attractions a,.navbar li.active.setups_by_me a {
+.navbar li.active.attractions a,.navbar li.active.setups_by_you a {
 	border-top:0px;
 }
 
@@ -839,10 +839,13 @@ a.logo img{
 	background:white;
 	text-shadow:1px 1px 0 #F5F7F8;
 	border-radius:0px 0px 2px 2px;
+	border-left:1px solid #fff;
+	border-right:1px solid #fff;
+	
 }
 
 .navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover  {
-	border-bottom:1px solid white!important;	
+	border-bottom:1px solid #595983!important;	
 }
 
 .nav_subtext {
@@ -855,12 +858,12 @@ a.logo img{
 }
 
 .navbar li.inactive a:hover {
-	background-color:#C6C6CC;
-	border:1px solid #C6C6CC;
+	background-color:#C6C6CA;
+	border:1px solid #C6C6CA;
 	border-radius:3px;
 	border-bottom:1px solid #A0A0AA;
 	color:#1F1F1F;
-	text-shadow:1px 1px 0 #D1D1D6;
+	text-shadow:1px 1px 0 #DDDDE0;
 	transition-property:color,background-color,border-color;
 	transition-duration:0ms,200ms,200ms;
 	-webkit-transition-duration:0ms,200ms,200ms;
@@ -868,7 +871,9 @@ a.logo img{
 }
 
 .navbar li.inactive a:active {
-	background-color:#B3B3BB;
+	border-bottom: 1px solid #909099;
+	border-right: 1px solid #A0A0AA;
+	border-left: 1px solid #A0A0AA;
 	transition-property:color,background-color,border-color;
 	transition-duration:0ms,0ms,0ms;
 	-webkit-transition-duration:0ms,0ms,0ms;

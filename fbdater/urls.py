@@ -110,9 +110,9 @@ urlpatterns += patterns('crush.views.setup_views',
    
     (r'^completed_setups_for_me/$','completed_setups_for_me'),
     
-    (r'^setups_by_me/$','setups_by_me'),
+    (r'^setups_by_you/$','setups_by_you'),
     
-    (r'^completed_setups_by_me/$','completed_setups_by_me'),
+    (r'^completed_setups_by_you/$','completed_setups_by_you'),
     
     (r'^setup_requests_for_me/$','setup_requests_for_me'),
     

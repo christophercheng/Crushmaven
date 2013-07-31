@@ -58,11 +58,11 @@
 <ul id="setup_nav" class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'setups_by_me' %} setups_by_me">
-			<a href="{% url 'crush.views.setup_views.setups_by_me' %}">
+		<li class="{% navactive request 'setups_by_you' %} setups_by_you">
+			<a href="{% url 'crush.views.setup_views.setups_by_you' %}">
 				<span class="menu_icon"></span>				
 				<span class="menu_title">Setup <span class="shrink_text">by you</span></span> 
-				<span class="menu_count">{{num_setups_by_me_in_progress }}</span>
+				<span class="menu_count">{{num_setups_by_you_in_progress }}</span>
 				<span class="nav_subtext">See which friends matched</span>
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
