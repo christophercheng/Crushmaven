@@ -43,13 +43,15 @@ class FacebookUserManager(UserManager):
             facebook_user.email=fb_profile['email']
             new_fields.append('email')
         
-        if (facebook_user.gender== '' and 'gender' in fb_profile):
-            if fb_profile['gender']==u'male':
-                facebook_user.gender=u'M'
-            elif fb_profile['gender']==u'female':
-                facebook_user.gender=u'F'
+        if facebook_user.gender== 'U': #U is the default setting (for unknown)
+            if 'gender' in fb_profile:
+                if fb_profile['gender']==u'male':
+                    facebook_user.gender=u'M'
+                elif fb_profile['gender']==u'female':
+                    facebook_user.gender=u'F'
+            else:
+                facebook_user.gender=u'M' # if no facebook gender specified (unlikely) then guess male
             new_fields.append('gender')
-        
         if ('relationship_status' in fb_profile):            
             rel_stat = fb_profile['relationship_status']
             if ((rel_stat == u'Married') | (rel_stat==u'In a relationship') | (rel_stat==u'Engaged') | (rel_stat==u'In a civil union') | (rel_stat==u'In a domestic partnership')):
@@ -181,7 +183,7 @@ class FacebookUser(AbstractUser):
                       (u'M', u'male'),
                       (u'F', u'female'),
                       )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,default=u'M')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,default=u'U')
 
     GENDER_PREF_CHOICES = (
                            (u'M',u'male'),
