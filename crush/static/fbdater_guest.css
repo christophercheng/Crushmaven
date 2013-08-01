@@ -8,7 +8,7 @@ body {
 	font-family: helvetica,"lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
- 	overflow-x: hidden;	
+ 	overflow-x: auto;	
  	overflow-y:scroll;
  	background:#131323;
 }
@@ -19,11 +19,10 @@ a{
 }
 
 .center_container{	
-	width:1010px;
+	width:1000px;
 	margin:0 auto;
 	position:relative;
 	padding-left:15px;
-	padding-right:10px;
 }
 .guest_header .center_container {
 	padding-left:0px;
