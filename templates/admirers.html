@@ -14,7 +14,6 @@
 </script>
 
 <div id="lineup_modal" title="Admirer Lineup&trade;"></div>
-
 <script type="text/javascript">
 $(document).ready(function() 
 {
@@ -34,7 +33,9 @@ $(document).ready(function()
 				return false;
 				}
 			lineup_dialog.dialog("open");
-			window.startup_slider();
+			$.getScript('{{ STATIC_URL }}bxSlider/jquery.bxslider.js').done(function(script,scriptStatus){
+				window.startup_slider();
+			});
 			$(':focus').blur();
 					window.wait_modal_close();
 		});   
