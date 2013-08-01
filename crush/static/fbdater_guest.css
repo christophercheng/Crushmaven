@@ -19,7 +19,7 @@ a{
 }
 
 .center_container{	
-	width:1000px;
+	width:1010px;
 	margin:0 auto;
 	position:relative;
 	padding-left:15px;
@@ -477,6 +477,8 @@ h2#tagline2 #safe_text{
 }
 #singles_step_3{
 	margin-left:-5px;
+	padding-right:5px;
+	width:315px;
 }
 #singles_step_2 .singles_step_text_column{
 	width:215px;
