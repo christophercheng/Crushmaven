@@ -47,7 +47,7 @@ def ajax_submit_feedback(request):
     from_email= request.user.email
     if from_email == "":
         from_email = request.user.username + "_" + "noemail" + "@flirtally.com"
-    send_mailgun_email(from_email, 'feedback@flirtally.com', 'Flirtally User Feedback',message,message,request.user.email)
+    send_mailgun_email(from_email, 'feedback@flirtally.com', 'Flirtally User Feedback',message,message)
     return HttpResponse("")
 
 
