@@ -70,6 +70,7 @@ def verify_mailgun_post(token, timestamp, signature):
 @csrf_exempt
 def failed_email_send(request):
     post_data=request.POST
+    logger.debug("Bad email data:" + str(post_data))
     if not verify_mailgun_post(post_data['token'],post_data['timestamp'],post_data['signature']):
         return
     try:
