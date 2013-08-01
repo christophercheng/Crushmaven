@@ -71,8 +71,8 @@ def verify_mailgun_post(token, timestamp, signature):
 def failed_email_send(request):
     post_data=request.POST
     logger.debug("Bad email data:" + str(post_data))
-    if not verify_mailgun_post(post_data['token'],post_data['timestamp'],post_data['signature']):
-        return
+    if not 'token' in post_data or not verify_mailgun_post(post_data['token'],post_data['timestamp'],post_data['signature']):
+        return HttpResponse("")
     try:
         bad_email_address=post_data['recipient']
         logger.debug( "bad email: " + str(bad_email_address) + " from " + str(request.user) )

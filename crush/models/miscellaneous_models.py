@@ -72,7 +72,7 @@ class InviteEmail(models.Model):
         crush_full_name = crush_user.first_name + " " + crush_user.last_name
         crush_short_name = crush_user.first_name + " " + crush_user.last_name[0]
         crush_first_name = crush_user.first_name
-        if self.is_for_crush:
+        if self.is_for_crush and self.relationship.target_person.active==False:
             subject = crush_short_name + ", you have an admirer!"
             send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
 
