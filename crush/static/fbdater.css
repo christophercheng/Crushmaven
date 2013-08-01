@@ -24,8 +24,8 @@ body {
 	-ms-user-select: none;
 	user-select: none;
 	background:rgb(241,243,245);
-	background:rgba(241,243,245,.5);
-	background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
+	#background:rgba(241,243,245,.5);
+	#background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
 }
 
 a {
@@ -783,21 +783,22 @@ a.logo img{
 	display:inline-block;
 	font-size:9px!important;
 	line-height:9px;
-	text-align:right;
 	word-spacing:-1px;
 	font-style:normal!important;
 }
 
 .navbar .new_menu_count{
 	top:11px;
-	right:-6px;
+	right:-2px;
 	background-color:#CC0000;
 	color:white;
-	padding:2px;
-	border-radius:2px;
+	padding:1px 2px 0px 2px;
+	border-radius:3px;
 	word-spacing:-2px;
 	text-shadow:none;
 	z-index:10;
+	line-height:15px;
+	vertical-align:middle;
 }
 
 .navbar .new_menu_response_count{
@@ -818,7 +819,7 @@ a.logo img{
 	top:13px;
 }
 .navbar li.active .new_menu_count{
-	top:6px;
+	top:11px;
 }
 
 .navbar li.active a {
@@ -1237,7 +1238,6 @@ a.logo img{
 	border-radius:50%;
 	background:#9295A0;
 	text-align:center;
-	padding-left:1px;
 	color:#F1F1F3;
 	line-height:19px;
 	font-size:11px;

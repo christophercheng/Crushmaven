@@ -122,6 +122,7 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */		
 
 	var launch_slider_at = function(last_loaded_slide){
+		console.log("got here");
 		window.slider_control = $('.bxslider').bxSlider({
 			pagerCustom: '#bx-pager',
 			infiniteLoop: false,
@@ -134,6 +135,7 @@ $(document).ready(function() // handling for the slider
 			onLastSlideNext: window.handleLastSlideNext,
 			onSlideBefore:window.handleLineupMemberPointer,
 			});
+		console.log("really got here");
 		$('#lineup_container').find('.bxslider').show();
 		if (last_loaded_slide>0)
 			setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
