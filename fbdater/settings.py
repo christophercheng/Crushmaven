@@ -250,9 +250,9 @@ PLATONIC_RATINGS = {
                      }
 
 DELETION_ERROR = {
-                  0:'To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may not be removed during the first ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days after they are added.',
+                  0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
                   1:'Your attraction is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions can not be removed while the user is interacting with the associated admirer lineup.',
-                  2:"To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may not be removed for the first " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days after their response is first viewed.", 
+                  2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
                    }
 
 LINEUP_STATUS_CHOICES = {
