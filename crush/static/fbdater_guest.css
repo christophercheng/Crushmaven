@@ -62,7 +62,7 @@ a{
 
 #logo_section .center_container {
 	height:468px;
-	width:1005px;
+	width:100%;
 	background:red;
 }
 
@@ -221,7 +221,6 @@ h2#tagline2 #safe_text{
 #how_to_section .center_container {
 	position:relative;
 	background-color:white;
-	padding-right:5px;
 }
 
 #how_to_section .title_section{
