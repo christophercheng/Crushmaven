@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 class InviteEmailManager(models.Manager):
     def process(self,new_email,new_relationship,new_is_for_crush):
+        if new_is_for_crush and new_relationship.target_person.is_active:
+            logger.debug("Don't send invite email to " + new_relationship.target_person.get_name() + ", an active user.")
+            return True # don't do anything if the invite is to the crush who is already an active user
         try:  # make sure this email does not already exist, if it does, then don't save
             duplicate_relationship_email = self.get(email=new_email,relationship=new_relationship)
             if duplicate_relationship_email.is_for_crush!=new_is_for_crush:
@@ -28,7 +31,7 @@ class InviteEmailManager(models.Manager):
                 if abs(transpired_time.days) > settings.MINIMUM_INVITE_RESEND_DAYS:
                     duplicate_relationship_email.send()
                                 
-        except: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
+        except Exception as e: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
             invite_emails=self.filter(relationship=new_relationship,is_for_crush=new_is_for_crush).order_by('date_last_sent')
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
                 new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush)
@@ -78,17 +81,15 @@ class InviteEmail(models.Model):
         crush_short_name = crush_user.first_name + " " + crush_user.last_name[0]
         crush_first_name = crush_user.first_name
         if self.is_for_crush: # don't send this email to a user who is already an active user (flirtally takes care of that)
-            if self.relationship.target_person.active==False:
-                subject = crush_short_name + ", you have an admirer!"
-                send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
-            else:
-                logger.debug("Don't send invite email to " + crush_first_name + ", an active user.")
-            
+            subject = crush_short_name + ", you have an admirer!"
+            send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
             crush_pronoun_subject = crush_user.get_gender_pronoun_subject()
             crush_pronoun_possessive = crush_user.get_gender_pronoun_possessive()
             send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,crush_pronoun_subject, crush_pronoun_possessive,self.email)
+        self.date_last_sent=datetime.datetime.now()
+        self.save(update_fields=['date_last_sent'])
  
 class Purchase(models.Model):
 
