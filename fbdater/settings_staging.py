@@ -97,11 +97,6 @@ POSTMAN_SHOW_USER_AS='get_name'
 #MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
 MAILGUN_API_KEY = 'key-23q7lzko-uih79w3mkh573yl1r69r7u4'
 
-DATABASES = {}
-# Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
-
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

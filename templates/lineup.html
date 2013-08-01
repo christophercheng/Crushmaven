@@ -55,28 +55,30 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */		
 
 	var launch_slider_at = function(last_loaded_slide){
-		window.slider_control = $('.bxslider_element').bxSlider({
-			pagerCustom: '#bx-pager',
-			infiniteLoop: false,
-			hideControlOnEnd: false,
-			speed:800,
-			touchEnabled:false,
-			//adaptiveHeight:false,
-			startSlide: 0,
-			slideSelector:'li.preload',
-			onLastSlideNext: window.handleLastSlideNext,
-			onSlideBefore:window.handleLineupMemberPointer,
-			});
-		$('#lineup_container').find('.bxslider_element').show();
-		if (last_loaded_slide>0){
-			$('.bxslider_element li[lineup_position=0]').show();
-			setTimeout(function(){$('.bxslider_element li').show();window.slider_control.goToSlide(last_loaded_slide)},500);
-		}
-		else{
-			$('.bxslider_element li').show();
-			handleLineupMemberPointer();
-		}
-		updateFooterMsg();
+		$.getScript('{{ STATIC_URL }}bxSlider/jquery.bxslider.js').done(function(script,scriptStatus){
+			window.slider_control = $('.bxslider_element').bxSlider({
+				pagerCustom: '#bx-pager',
+				infiniteLoop: false,
+				hideControlOnEnd: false,
+				speed:800,
+				touchEnabled:false,
+				//adaptiveHeight:false,
+				startSlide: 0,
+				slideSelector:'li.preload',
+				onLastSlideNext: window.handleLastSlideNext,
+				onSlideBefore:window.handleLineupMemberPointer,
+				});
+			$('#lineup_container').find('.bxslider_element').show();
+			if (last_loaded_slide>0){
+				$('.bxslider_element li[lineup_position=0]').show();
+				setTimeout(function(){$('.bxslider_element li').show();window.slider_control.goToSlide(last_loaded_slide)},500);
+			}
+			else{
+				$('.bxslider_element li').show();
+				handleLineupMemberPointer();
+			}
+			updateFooterMsg();
+		}); // close off getScript
 	};	
 		
 	/* ----------------------------------------------------------------------
@@ -332,17 +334,17 @@ $(document).ready(function() // handling for the slider
 	* then call the slider launching function
 	*/
 	window.startup_slider = function(){
-	var next_loaded_slide=last_loaded_slide+1;
-	if (next_loaded_slide < {{member_set.count}}) { // we haven't decided on last member yet
-		if (last_loaded_slide < 0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
-				load_next_slide(next_loaded_slide,launch_slider_at);
-		else // don't load slide after last, just open slider at last loaded position
-				launch_slider_at(last_loaded_slide);		
-	} // lineup isn't paid so just open slider with whatever was already decided
-	else{
-		launch_slider_at(0);
-		process_completed_lineup(); // if lineup is finished then just process it
-	}
+		var next_loaded_slide=last_loaded_slide+1;
+		if (next_loaded_slide < {{member_set.count}}) { // we haven't decided on last member yet
+			if (last_loaded_slide < 0 || window.is_lineup_paid ) 	// we've only loaded 0 or 1 slide or lineup already paid, so load next automatically
+					load_next_slide(next_loaded_slide,launch_slider_at);
+			else // don't load slide after last, just open slider at last loaded position
+					launch_slider_at(last_loaded_slide);		
+		} // lineup isn't paid so just open slider with whatever was already decided
+		else{
+			launch_slider_at(0);
+			process_completed_lineup(); // if lineup is finished then just process it
+		}
 	};
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - LAUNCH_CREDIT_CHECK

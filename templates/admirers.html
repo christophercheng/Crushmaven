@@ -33,11 +33,9 @@ $(document).ready(function()
 				return false;
 				}
 			lineup_dialog.dialog("open");
-			$.getScript('{{ STATIC_URL }}bxSlider/jquery.bxslider.js').done(function(script,scriptStatus){
-				window.startup_slider();
-			});
+			window.startup_slider();
 			$(':focus').blur();
-					window.wait_modal_close();
+			window.wait_modal_close();
 		});   
 	    
 	});			
