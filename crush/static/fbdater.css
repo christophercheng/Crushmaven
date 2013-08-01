@@ -25,6 +25,7 @@ body {
 	user-select: none;
 	background:rgb(241,243,245);
 	background:rgba(241,243,245,.5);
+	background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
 }
 
 a {
@@ -789,13 +790,14 @@ a.logo img{
 
 .navbar .new_menu_count{
 	top:11px;
-	right:-2px;
+	right:-6px;
 	background-color:#CC0000;
 	color:white;
 	padding:2px;
-	border-radius:2px 0px 0px 2px;
+	border-radius:2px;
 	word-spacing:-2px;
 	text-shadow:none;
+	z-index:10;
 }
 
 .navbar .new_menu_response_count{
@@ -816,7 +818,7 @@ a.logo img{
 	top:13px;
 }
 .navbar li.active .new_menu_count{
-	top:11px;
+	top:6px;
 }
 
 .navbar li.active a {

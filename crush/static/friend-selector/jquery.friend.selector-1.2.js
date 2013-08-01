@@ -332,7 +332,7 @@
 		                      		//'<span id="nfs-help-pointer"></span>' +
 		                      		"<h3>What is a unique Facebook user id?</h3>" +
 		                      		'<p>In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar at the top of the browser.  ' +
-		                      		'The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id. Copy and paste it up above.  <strong>Exclude the \'?\' or \'/\' characters and anything after them.</strong></p>' +
+		                      		'<strong>The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.</strong> Copy and paste it up above.  <strong>Exclude the \'?\' or \'/\' characters and anything after them.</strong></p>' +
 		                      		'<img src=\'/static/images/friend_selector_help.png\'>' +
 		                      		'In the above example, the unique Facebook user id is \'JessicaAlba\'' +
 		                      		'<span class="delete_button"></span>' +
