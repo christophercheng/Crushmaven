@@ -63,7 +63,6 @@ a{
 
 #logo_section .center_container {
 	height:468px;
-	background:red;
 }
 
 #logo_section img#guest_logo{
@@ -394,6 +393,7 @@ h2#tagline2 #safe_text{
 #how_to_slide_singles{
 	padding-top:50px;
 	padding-bottom:30px;
+	padding-left:5px;
 }
 .how_to_slide #dotted_line {
 	position:absolute;
