@@ -475,7 +475,7 @@ a.logo img{
 }
 .beta{
 	position:absolute;
-	bottom:1px;
+	bottom:0px;
 	left:68px;
 	color:#8A8AE6;
 	font-size:9px;
