@@ -23,7 +23,7 @@ a{
 	margin:0 auto;
 	position:relative;
 	padding-left:15px;
-	padding-right:15px;
+	padding-right:10px;
 }
 .guest_header .center_container {
 	padding-left:0px;
@@ -75,7 +75,7 @@ a{
 .tagline_slide_container{
 	display:inline-block;
 	height:285px;
-	width:1000px;
+	width:985px;
 	margin-left:-10px;
 	overflow:hidden;
 	white-space:nowrap;
@@ -86,8 +86,8 @@ a{
 	height:100%;
 	top:0px;
 	left:0px;
-	padding-left:20px;
-	width:1000px;
+	#padding-left:20px;
+	width:100%;
 	display:inline-block;
 	position:absolute;
 	overflow:hidden;
@@ -290,7 +290,7 @@ h2#tagline2 #safe_text{
 	min-height:410px;
 	display:inline-block;
 	position:relative;
-	width:995px;
+	width:985px;
 	width:100%;
 	padding-bottom:10px;
 	background:white;
@@ -312,7 +312,7 @@ h2#tagline2 #safe_text{
 }
 .setup_step{
 	display:inline-block;
-	width:242px;
+	width:241px;
 	min-height:300px;
 	height:100%;
 	top:0px;
