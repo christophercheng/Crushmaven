@@ -22,22 +22,22 @@ class InviteEmailManager(models.Manager):
                 # the previous email invite was of a different type.  Assume this newer email is more accurate
                 # change and save the original's type
                 duplicate_relationship_email.is_for_crush=new_is_for_crush
-                duplicate_relationship_email.save(update_fields=['is_for_crush'])
+                duplicate_relationship_email.date_last_sent=datetime.datetime.now()
                 duplicate_relationship_email.send()
+                duplicate_relationship_email.save(update_fields=['is_for_crush','date_last_sent'])
                 #duplicate_relationship_email.send() # send email right away
             else:
                 # only resend if email if enough time has transpired
-                transpired_time = duplicate_relationship_email.date_last_sent - datetime.datetime.now() 
-                if abs(transpired_time.days) > settings.MINIMUM_INVITE_RESEND_DAYS:
+                transpired_time = datetime.datetime.now() - duplicate_relationship_email.date_last_sent 
+                if transpired_time.days > settings.MINIMUM_INVITE_RESEND_DAYS:
                     duplicate_relationship_email.send()
                                 
         except Exception as e: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
             invite_emails=self.filter(relationship=new_relationship,is_for_crush=new_is_for_crush).order_by('date_last_sent')
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
-                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush)
-                new_invite.send()
-            # for now just ignore user's request and don't send out an email - we don't want to overflood the database with random emails.
-                
+                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush,date_last_sent = datetime.datetime.now())
+                new_invite.send();
+            # for now just ignore user's request and don't send out an email - we don't want to overflood the database with random emails.   
             #else: # user has already created a maximum number of crush emails
                 # overwrite the oldest invite email
                     #oldest_invite_email=invite_emails[0]
@@ -88,8 +88,6 @@ class InviteEmail(models.Model):
             crush_pronoun_subject = crush_user.get_gender_pronoun_subject()
             crush_pronoun_possessive = crush_user.get_gender_pronoun_possessive()
             send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,crush_pronoun_subject, crush_pronoun_possessive,self.email)
-        self.date_last_sent=datetime.datetime.now()
-        self.save(update_fields=['date_last_sent'])
  
 class Purchase(models.Model):
 
