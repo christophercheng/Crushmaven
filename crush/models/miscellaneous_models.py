@@ -5,6 +5,11 @@ from crush.utils_email import send_mail_crush_invite,send_mail_mf_invite
 # for mail testing 
 #from django.core.mail import send_mail
 import datetime
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 class InviteEmailManager(models.Manager):
     def process(self,new_email,new_relationship,new_is_for_crush):
@@ -72,10 +77,13 @@ class InviteEmail(models.Model):
         crush_full_name = crush_user.first_name + " " + crush_user.last_name
         crush_short_name = crush_user.first_name + " " + crush_user.last_name[0]
         crush_first_name = crush_user.first_name
-        if self.is_for_crush and self.relationship.target_person.active==False:
-            subject = crush_short_name + ", you have an admirer!"
-            send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
-
+        if self.is_for_crush: # don't send this email to a user who is already an active user (flirtally takes care of that)
+            if self.relationship.target_person.active==False:
+                subject = crush_short_name + ", you have an admirer!"
+                send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
+            else:
+                logger.debug("Don't send invite email to " + crush_first_name + ", an active user.")
+            
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
             crush_pronoun_subject = crush_user.get_gender_pronoun_subject()
