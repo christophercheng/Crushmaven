@@ -9,7 +9,7 @@
 		<tbody><tr><td>
 		
 			<table width="100%" style="font-size:16px;color:#2B2B2B">
-				<tr style="background-color:black" width="100%" valign="middle" height="55px" >
+				<tr style="background-color:black;padding-top:7px" width="100%" valign="middle" height="60px">
 					<td width="100%" style="padding-left:25px">
 						<img height="50px" src="http://www.flirtally.com/static/images/flirtally_logo_white_semi_circle.png">
 					</td>
@@ -20,7 +20,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="500px" style="padding:0px 25px 15px 25px;line-height:30px;font-size:16px">
+					<td width="500px" style="padding:0px 25px 10px 25px;line-height:30px;font-size:16px">
 					{% if friendship_type == 0 %}
 						<b>One of our users, a Facebook friend of yours, is attracted to you.</B> 
 					{% elif friendship_type == 1 %}
@@ -28,8 +28,12 @@
 					{% else %}
 						<b>One of our users, someone you may know, is attracted to you.</B>  				
 				{% endif %}
-						Sign in to <a href="http://www.flirtally.com/">Flirtally.com</a> to find out whom.
 					</td>
+				<tr>
+					<td width="500px" style="padding:0px 25px 15px 25px;line-height:30px;font-size:16px">
+						Sign in to <a style="cursor:pointer;" href="http://www.flirtally.com/">Flirtally.com</a> to find out whom.
+					</td>
+				</tr>
 				</tr>
 				</tr>
 					<td width="500px" style="padding:15px 28px 15px 28px;line-height:30px;background-color:#E5E5E5;color:#595959;font-size:15px">

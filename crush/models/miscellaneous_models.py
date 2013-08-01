@@ -78,7 +78,9 @@ class InviteEmail(models.Model):
 
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
-            send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,self.email)
+            crush_pronoun_subject = crush_user.get_gender_pronoun_subject()
+            crush_pronoun_possessive = crush_user.get_gender_pronoun_possessive()
+            send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,crush_pronoun_subject, crush_pronoun_possessive,self.email)
  
 class Purchase(models.Model):
 

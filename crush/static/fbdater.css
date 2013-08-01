@@ -1235,6 +1235,7 @@ a.logo img{
 	border-radius:50%;
 	background:#9295A0;
 	text-align:center;
+	padding-left:1px;
 	color:#F1F1F3;
 	line-height:19px;
 	font-size:11px;
@@ -4116,13 +4117,14 @@ div.past_dialog_header {
 	text-align:center;
 	font-size:12px;
 	width:92px;
-	padding:1px 3px 1px 2px;
+	padding:0px 3px;
 	left:420px;
 	top:-1px;
 	color:white;
 	z-index:1001;
 	opacity:0;
-	line-height:14px;
+	line-height:17px;
+	height:17px;
 }
 
 

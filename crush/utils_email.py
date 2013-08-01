@@ -28,9 +28,9 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
     text=t.render(Context({'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name}))
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,short_name + ', you have an admirer!',html,text)
     
-def send_mail_mf_invite(full_name,short_name,first_name, email_address):
-    html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name})
-    text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name})
+def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address):
+    html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive})
+    text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive})
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,'Your friend ' + full_name + ' has an admirer!',html,text)
 
 def send_mail_new_admirer(friendship_type,full_name, short_name, first_name,email_address):
