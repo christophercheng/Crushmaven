@@ -62,6 +62,8 @@ a{
 
 #logo_section .center_container {
 	height:468px;
+	width:1005px;
+	background:red;
 }
 
 #logo_section img#guest_logo{
@@ -138,7 +140,7 @@ h2#tagline2 #safe_text{
 	#background:url(images/facebook_btn.png)  0 0 no-repeat;
 	background:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/facebook_btn.png') 0 0 no-repeat;
 	left:348px;
-	top:375px;
+	top:378px;
 	width: 218px;
 	height: 46px;
 	cursor: pointer;
