@@ -67,17 +67,20 @@ $(document).ready(function() // handling for the slider
 				slideSelector:'li.preload',
 				onLastSlideNext: window.handleLastSlideNext,
 				onSlideBefore:window.handleLineupMemberPointer,
-				});
-			$('#lineup_container').find('.bxslider_element').show();
+			});
+			
+			$('.bxslider_element').show();		
 			if (last_loaded_slide>0){
-				$('.bxslider_element li[lineup_position=0]').show();
-				setTimeout(function(){$('.bxslider_element li').show();window.slider_control.goToSlide(last_loaded_slide)},500);
+				setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
+				setTimeout(function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();},750);
+
 			}
 			else{
-				$('.bxslider_element li').show();
 				handleLineupMemberPointer();
+				$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();
 			}
 			updateFooterMsg();
+
 		}); // close off getScript
 	};	
 		
@@ -88,12 +91,11 @@ $(document).ready(function() // handling for the slider
 	var load_next_slide = function(next_position, callback){
 		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/{% if is_admirer_type == 0 %}0/{% endif %}';
 		
-		
+		// overlay and loading icons should be hidden by the callback functions
 		$('#lineup_container #slide_overlay').show();
 		$('#lineup_container #site-loading').show();
 		$('.bxslider_element li[lineup_position=' + next_position + ']').load(load_url, function(responseText, textStatus, xhr) {
-			$('#lineup_container #slide_overlay').hide();
-			$('#lineup_container #site-loading').hide();
+			
 			if (textStatus!='success'){
 				if (xhr.status==405){
 					reauthorize_user();
@@ -120,7 +122,9 @@ $(document).ready(function() // handling for the slider
   *		reset the slider (if # slides changed) and advance it to last slide
 	*  ---------------------------------------------------------------------- */		
 	var resetAndAdvanceSlider = function(just_loaded_slide){
-		window.slider_control.reInitialize();						
+		window.slider_control.reInitialize();	
+		$('#lineup_container #site-loading').hide();
+		$('#lineup_container #slide_overlay').hide();
 		window.slider_control.goToSlide(just_loaded_slide);
 		// use this commented about block if you want to add a delay after deciding on a lineup member and before advancing to next lineup member slide
 		//		setTimeout(function(){
@@ -417,7 +421,7 @@ $(document).ready(function() // handling for the slider
 </script>
 
 <div id="lineup_container">
-<span id="site-loading" style="display:none"></span>
+<span id="site-loading"></span>
 <div id="lineup-header">
 	{% if is_admirer_type == 1 %}
 		One of these line-up members is your admirer!  Add any as an attraction, and we'll notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with you in it!
@@ -442,12 +446,12 @@ $(document).ready(function() // handling for the slider
 
 <!-- Just a shell for the slideshow container -->
 
-<ul class="bxslider_element">
+<ul class="bxslider_element" style="display:none">
 <div id="slide_overlay" style="display:none"></div>
 {% for member in member_set %}
 	{% if member.decision != None %}
 		
-	<li class="preload" lineup_position = {{member.position}} style="display:none">
+	<li class="preload" lineup_position = "{{member.position}}" >
 		<div class="slide_container">
 			
 		 <span class="lineup_name">{{member.user.first_name}} {{member.user.last_name}}
