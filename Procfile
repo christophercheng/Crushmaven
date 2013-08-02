@@ -1,1 +1,1 @@
-web: newrelic-admin run-program gunicorn fbdater.wsgi:application
+web: gunicorn fbdater.wsgi:application

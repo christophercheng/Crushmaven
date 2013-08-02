@@ -167,7 +167,7 @@ class LineupMemberManager(models.Manager):
 
     def initialize_friend_of_friend_crush(self,relationship):
         global g_init_dict     
-        
+        logger.debug("Attempting to initialize an FOF crush lineup")
         admirer_id=relationship.source_person.username
         crush_id=relationship.target_person.username
         admirer_gender= u'male' if relationship.source_person.gender == u'M'  else u'female'
@@ -207,21 +207,28 @@ class LineupMemberManager(models.Manager):
         
         # METHOD 1: API MUTUAL APP FRIEND 
         if len(mutual_app_friend_array)>0:
+            logger.debug("Was ABLE to get more than 0 API APP mutual friends between admirer and attraction")
+
             acceptable_id_array = self.try_api_mf_initialization(relationship,mutual_app_friend_array)
             if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
                 self.create_lineup(relationship, acceptable_id_array)
                 return
+        else:
+            logger.error("Was not able to get more than 0 API APP mutual friends between admirer and attraction")
             
         # METHOD 2: API 9 Friends from 9 Crush App Friends     
         if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
             crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
             if len(crush_app_friend_array) >= settings.MINIMUM_LINEUP_MEMBERS:
+                logger.debug("Was ABLE to get more than minimum API APP crush friends between admirer and attraction")
                 random.shuffle(crush_app_friend_array)
                 acceptable_id_array = self.try_api_cf_initialization(relationship,crush_app_friend_array)
                 if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
                     self.create_lineup(relationship,acceptable_id_array)   
                     return
-        
+            else:
+                logger.debug("Was NOT ABLE to get more than minimum API APP crush friends between admirer and attraction")
+
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
         if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
             mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
@@ -244,6 +251,7 @@ class LineupMemberManager(models.Manager):
 
     def try_api_mf_initialization(self,relationship,mutual_app_friend_array):
         global g_init_dict
+        logger.debug("Attempting to initialize FOF lineup with METHOD 1: Graph API approach - 9 friends from single active MF")
         crush_id=relationship.target_person.username
         for mutual_friend in mutual_app_friend_array:
             if mutual_friend['friend_count'] <settings.MINIMUM_LINEUP_MEMBERS:
@@ -271,6 +279,7 @@ class LineupMemberManager(models.Manager):
             # else add to lineup id array and setup in lineup
             return acceptable_id_array
         # if for loop ended without returning, then return False cause no lineup was created
+        logger.debug("METHOD 1 FOF: FAIL - no lineup created")
         return []
 
     #================================================================    
@@ -280,6 +289,7 @@ class LineupMemberManager(models.Manager):
 
     def try_api_cf_initialization(self,relationship,crush_app_friend_array):
         global g_init_dict
+        logger.debug("ATTEMPTING METHOD 2: 9 friends from 9 separate friends of crush")
         crush_id=relationship.target_person.username
         exclude_id_string=g_init_dict[crush_id]['exclude_id_string']
         acceptable_id_array=[]
@@ -306,6 +316,7 @@ class LineupMemberManager(models.Manager):
                 g_init_dict[crush_id]['exclude_id_string'] += "," + str(accepted_id)
             return acceptable_id_array
         else:
+            logger.debug("METHOD 2 FAIL")
             return []
 
     #================================================================    
