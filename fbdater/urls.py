@@ -20,10 +20,10 @@ urlpatterns = patterns('facebook.views',
 )
 
 #urlpatterns += patterns('',
-#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v1.png')),
+#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v2.png')),
 #)
 #urlpatterns += patterns('',
-#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v1.png')),
+#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v2.png')),
 #)
 
 # in case something bad has happened enable this view so that all site requests go here
