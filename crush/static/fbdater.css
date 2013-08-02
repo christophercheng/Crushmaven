@@ -792,7 +792,7 @@ a.logo img{
 	right:-2px;
 	background-color:#CC0000;
 	color:white;
-	padding:1px 2px 0px 2px;
+	padding:1px 2px 0px 4px;
 	border-radius:3px;
 	word-spacing:-2px;
 	text-shadow:none;
@@ -1584,15 +1584,19 @@ ul.nav_bar li#nav_bar_options{
 }
 
 .updated{
-	padding:0px 2px;
+	padding:0px 4px;
 	background-color:#DC143C;
 	color:white;
 	position:absolute;
-	top:-5px;
-	left:-5px;
+	top:-3px;
+	left:-3px;
+	border-radius:1px 2px 2px 2px;
 	font-size:10px;
 	font-weight:bold;
 	line-height:18px;
+	height:18px;
+	vertical-align:middle;
+	letter-spacing:1px;	
 }
 
 .updated.mutual_attraction{
@@ -1712,7 +1716,7 @@ ul.nav_bar li#nav_bar_options{
 	display:inline-block!important;
 	padding:5px 12px;
 	background:#254AB8;
-	border-radius:5px;
+	border-radius:6px;
 	color:white!important;
 	font-weight:bold;
 	font-size:13px;
@@ -1727,7 +1731,7 @@ ul.nav_bar li#nav_bar_options{
 	background:#DC143C;
 }
 .crush_status_responded .crush_response_body .crush_block_button:hover{
-	background:#E34363;
+	background:#B01030;
 }
 .crush_status_responded .crush_response_body .crush_block_button:active{
 		border-color:#DC143C;
@@ -1762,7 +1766,7 @@ ul.nav_bar li#nav_bar_options{
 .crush_status_5 .right_half_block .crush_response_body span.as_of_date, .crush_status_4 .right_half_block .crush_response_body span.as_of_date {
 	font-size:11px;
 	color:gray;
-	margin-top:2px;
+	margin-top:5px;
 }
 
 .mutual_attraction_message{
@@ -1841,6 +1845,7 @@ ul.nav_bar li#nav_bar_options{
 	color:rgb(230,0,0);
 	font-weight:bold;
 	margin-bottom:15px;
+	font-size:16px;
 }
 
 .center_panel_container #no_content {
@@ -1866,11 +1871,6 @@ ul.nav_bar li#nav_bar_options{
 .crush_status_0{
 	#height:175px;
 }
-
-.crush_status_responded{
-	box-shadow: 1px 1px 10px #003399;/*#CC0000;*/
-}
-
 
 ul.attraction_status_bar{
 	list-style:none;
@@ -3062,6 +3062,7 @@ ul.bxslider_element #slide_overlay {
 #postman #id_body{
 	display:inline-block;
 	width:405px;
+	padding:5px;
 }
 #postman form #message_buttonset{	
 	margin-left:140px;
@@ -3084,7 +3085,7 @@ ul.bxslider_element #slide_overlay {
 #postman #delete_conversation {
 	position:absolute;
 	right:13px;
-	top:1px;
+	top:2px;
 	font-size:13px;
 	color:#5C93E6;
 }
@@ -3173,9 +3174,6 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	font-weight:bold;
 	}
-.conversation_row .second_column .attraction_name .message_thread_count{
-	font-size:11px;	
-}
 
 .conversation_row .second_column .last_activity_date{
 	float:right;

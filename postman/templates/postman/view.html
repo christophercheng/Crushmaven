@@ -3,47 +3,47 @@
 {% load i18n %}{% load postman_tags %}
 {% block content %}
 <div id="postman">
-<span class="title_line"></span>
-<ul class="title_bar">
-	<li class="title_bar_title conversation_title">Converse <span class="conversation_title_name">with {{ attraction_user.get_name }}</span></li>
-</ul>
+	<span class="title_line"></span>
+	<ul class="title_bar">
+		<li class="title_bar_title conversation_title">Converse <span class="conversation_title_name">with {{ attraction_user.get_name }}</span></li>
+	</ul>
 
 	{% if pm_messages%} 
-			<form id="delete_conversation_form" action="{% url 'postman_delete' %}?next=/messages/inbox/" method="post">{% csrf_token %}
+		<form id="delete_conversation_form" action="{% url 'postman_delete' %}?next=/messages/inbox/" method="post">{% csrf_token %}
 			{% with pm_messages|first as message %}
 			<input type="hidden" {% if pm_messages|length > 1 and message.thread_id %}name="tpks" value="{{ message.thread_id }}"{% else %}name="pks" value="{{ message.pk }}"{% endif %} />
 			{% endwith %}
 			<a id="delete_conversation" onclick="document.getElementById('delete_conversation_form').submit();">{% trans "delete conversation" %}</a>
-			</form>
+		</form>
 	{% endif %}
 
-{% for message in pm_messages %}
-<div class="pm_message{% if message.recipient == user and not message.read_at %} pm_unread{% endif %}">
- <div id="first_column">
-  <img src="{{ message.sender|user_pic:40}}"> 
- </div>
-	<div id="second_column">
-  	<div id="date">{% if message.read_at  %}<span class="MercuryRepliedIndicator seenByListener repliedLast seenByAll" title="viewed"></span>{% endif %}{{ message.sent_at|date:"DATETIME_FORMAT"}} </div>
-		{# {% if message.is_rejected %}  <div class="pm_status">{% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %} {{ message.moderation_reason }}{% endif %}</div>{% endif %} #}
+	{% for message in pm_messages %}
+		<div class="pm_message{% if message.recipient == user and not message.read_at %} pm_unread{% endif %}">
+			<div id="first_column">
+				<img src="{{ message.sender|user_pic:40}}"> 
+			</div>
+			<div id="second_column">
+				<div id="date">{% if message.read_at  %}<span class="MercuryRepliedIndicator seenByListener repliedLast seenByAll" title="viewed"></span>{% endif %}{{ message.sent_at|date:"DATETIME_FORMAT"}} </div>
+				{% comment %}
+					{% if message.is_rejected %}
+						<div class="pm_status">{% trans "Rejected" %}{% if message.moderation_reason %}{% trans ":" %} {{ message.moderation_reason }}{% endif %}</div>
+					{% endif %} 
+				{% endcomment %}
+				<div class="pm_body">{{ message.body|linebreaksbr }}</div>
+			</div> <!-- close off second column div --!>
+		</div> <! -- close off pm_message div --!>
+	{% endfor %}
 
- 
- 		<div class="pm_body">{{ message.body|linebreaksbr }}</div>
-	</div>
-</div>
-{% endfor %}
-
-<form action="{% url 'postman_reply' attraction_user.username %}" method="post" class="pm_message postman_reply_message">{% csrf_token %}
- <div id="first_column">
-  <img src="{{ request.user|user_pic:40}}"> 
- </div>
-	<div id="second_column">
-		<span id="pm_reply_label">{% if pm_messages %}Reply:{% else %}Message:{% endif %}</span>
-		<div id="pm_reply">{{ form.body }}</div>
-		<div id="pm_reply_buttonset"></div>
-			<button type="submit">send</button>
+	<form action="{% url 'postman_reply' attraction_user.username %}" method="post" class="pm_message postman_reply_message">{% csrf_token %}
+		<div id="first_column">
+			<img src="{{ request.user|user_pic:40}}"> 
 		</div>
-	</div> <!-- close off second-column -->
-</form>
-
+		<div id="second_column">
+			<span id="pm_reply_label">{% if pm_messages %}Reply:{% else %}Message:{% endif %}</span>
+			<div id="pm_reply">{{ form.body }}</div>
+			<div id="pm_reply_buttonset"></div>
+			<button type="submit">send</button>
+		</div>	<!-- close off second-column -->
+	</form>
 </div> <!--  close off postman -->
 {% endblock %}

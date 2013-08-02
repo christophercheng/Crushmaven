@@ -13,12 +13,12 @@
 {% block content %}
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-	$('#id_recipients').prop('placeholder',"Enter mutual attraction's name");
+	$('#id_recipients').prop('placeholder',"Enter mutual attraction's first or last name");
 
 
 var send_button = $('#send_button');
 var selected_user_text;
-$( "#id_recipients" ).on( "autocompleteselect", function( event, ui ) {send_button.removeProp('disabled');selected_user_text = ui.item.value;} );
+$( "#id_recipients" ).on( "autocompleteselect", function( event, ui ) {send_button.removeProp('disabled');send_button.removeAttr('disabled');selected_user_text = ui.item.value;} );
 $("#id_recipients").keypress(function() {
 	{send_button.prop('disabled',true);} 
 });

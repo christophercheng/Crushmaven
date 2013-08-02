@@ -15,61 +15,6 @@ logger = logging.getLogger(__name__)
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt 
 
-@login_required
-def ajax_update_num_credits(request):
-    ajax_response = str(request.user.site_credits)
-    return HttpResponse(ajax_response)
-
-# unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
-@login_required
-def ajax_deduct_credit(request, feature_id, unique_id):
-    logger.debug( "deducting credit" )
-    # called from lineup.html to add a member to either the crush list or the platonic friend list
-    me=request.user
-
-    if str(feature_id) == '1': # if feature is view lineup
-        try:
-            new_admirers=CrushRelationship.objects.all_admirers(me)
-            relationship = new_admirers.get(display_id=unique_id)
-        except CrushRelationship.DoesNotExist:
-            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
-        if relationship.handle_lineup_paid() == False:    
-            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
-        else:
-            return HttpResponse("")
-        
-    elif str(feature_id)=='2':
-        try:
-            relationship=(CrushRelationship.objects.visible_responded_crushes(me)).get(target_person__username=unique_id)
-        except CrushRelationship.DoesNotExist:
-            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
-        if relationship.handle_results_paid() == False:    
-            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
-        else:
-            return HttpResponse("")
-
-    elif str(feature_id)=='3':
-        try:
-            relationships=CrushRelationship.objects.completed_crushes(me)
-            relationship = relationships.get(target_person__username=str(unique_id))
-        except CrushRelationship.DoesNotExist:
-            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
-        if relationship.handle_rating_paid() == False:    
-            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
-        else:
-            return HttpResponse("")
-        
-    elif str(feature_id)=='4':
-        try:
-            relationships=CrushRelationship.objects.all_crushes(me)
-            relationship = relationships.get(target_person__username=str(unique_id))
-        except CrushRelationship.DoesNotExist:
-            return HttpResponseNotFound("Error: Could not find a matching completed crush relationship.")
-        if relationship.handle_messaging_paid() == False:    
-            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
-        else:
-            return HttpResponse("")
-        
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 # -- Credit Checker Page - acts as boarding gate before allowing premium feature access --
 @login_required
@@ -123,6 +68,62 @@ def credit_checker(request):
                        'credit_remaining': credit_remaining,
                        'unique_id':unique_id
                        })
+
+# unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
+@login_required
+def ajax_deduct_credit(request, feature_id, unique_id):
+    logger.debug( "deducting credit" )
+    # called from lineup.html to add a member to either the crush list or the platonic friend list
+    me=request.user
+
+    if str(feature_id) == '1': # if feature is view lineup
+        try:
+            new_admirers=CrushRelationship.objects.all_admirers(me)
+            relationship = new_admirers.get(display_id=unique_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_lineup_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse("")
+        
+    elif str(feature_id)=='2':
+        try:
+            relationship=(CrushRelationship.objects.visible_responded_crushes(me)).get(target_person__username=unique_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_results_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse("")
+
+    elif str(feature_id)=='3':
+        try:
+            relationships=CrushRelationship.objects.completed_crushes(me)
+            relationship = relationships.get(target_person__username=str(unique_id))
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching crush relationship.")
+        if relationship.handle_rating_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse("")
+        
+    elif str(feature_id)=='4':
+        try:
+            relationships=CrushRelationship.objects.all_crushes(me)
+            relationship = relationships.get(target_person__username=str(unique_id))
+        except CrushRelationship.DoesNotExist:
+            return HttpResponseNotFound("Error: Could not find a matching completed crush relationship.")
+        if relationship.handle_messaging_paid() == False:    
+            return HttpResponseForbidden("You do not have enough credits to purchase this feature.")
+        else:
+            return HttpResponse("")
+
+
+@login_required
+def ajax_update_num_credits(request):
+    ajax_response = str(request.user.site_credits)
+    return HttpResponse(ajax_response)  
         
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 

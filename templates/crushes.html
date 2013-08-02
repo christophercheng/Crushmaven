@@ -36,7 +36,7 @@ $(document).ready(function()
 		data['feature_id'] = $(this).attr('feature_id');
 		data['purchase_callback_name'] = 'window.display_response_modal(' + unique_id + ')';
 		data['ajax_error']='{{ajax_error}}';
-		purchase_feature(data);
+		window.purchase_feature(data);
 		
    }); 
 
@@ -51,7 +51,7 @@ $(document).ready(function()
 	   var crush_id = $(this).attr('crush_id');
 	   //$(this).parent().dialog("close"); 	 
 	   // ok to always purchase conversation cause if you're coming from the response dialog then you haven't paid yet
-	   purchase_conversation("{{csrf_token}}",crush_id);
+	   window.purchase_conversation("{{csrf_token}}",crush_id);
   });
   
   $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/attractions_completed/";}});
@@ -93,7 +93,7 @@ $(document).ready(function()
 			data['feature_id'] = '3';
 			data['purchase_callback_name'] = 'window.rating_purchased(' + unique_id + ')';
 			data['ajax_error']='{{ajax_error}}';
-			purchase_feature(data);
+			purchase_feature(data); // purchase_feature is a function in external js file
 	};
 
  	window.rating_purchased = function(unique_id){
