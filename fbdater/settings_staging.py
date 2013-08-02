@@ -50,7 +50,7 @@ FACEBOOK_APP_ID = '341035956028074' # Crush Discovery App on Facebook
 FACEBOOK_APP_SECRET = '66cb9c533b7b10798aa3daee3ec5c558'
 INITIALIZATION_THREADING=False
 
-MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself
+MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
 
 PAYPAL_RETURN_URL = 'http://www.flirtally-staging.herokuapp.com/paypal_pdt_purchase'
