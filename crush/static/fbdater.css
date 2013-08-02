@@ -529,6 +529,9 @@ a.logo img{
 	color:#E02B50;
 	font-size:14px;
 }
+#center_header_menu .submenu:hover a {
+	background:#242434;
+}
 
 #center_header_menu .submenu .settings_menu a {
 	font-size:13px;
