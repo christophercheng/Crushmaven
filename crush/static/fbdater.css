@@ -2234,6 +2234,7 @@ ul.attraction_status_bar li.past_status_animated{
 	font-family:arial;
 	font-size:14px;
 	background-color: #7094FF;
+	letter-spacing:1px;
 }
 .lineup_block a.button:hover{
 	background-color:#4775FF;
