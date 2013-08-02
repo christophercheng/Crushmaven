@@ -251,7 +251,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         
         try:
             friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + lineup_member.username)
-            ajax_response +='<div id="mutual_friends">connected through: '
+            ajax_response +='<div id="mutual_friends"><span id="mutual_friends_prefix">mutual friends:</span>'
             for friend in friend_profile:
                 ajax_response += '<a target="_blank" href="http://www.facebook.com/' + friend['id'] + '"><img src="http://graph.facebook.com/' + friend['id'] + '/picture?width=25&height=25" title="' + friend['name'] + '" style="height:25px;width:25px;"></a>'
             ajax_response += '</div>'

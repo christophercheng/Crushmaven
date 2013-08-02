@@ -2529,7 +2529,7 @@ ul.bxslider_element #slide_overlay {
 	position:absolute;
 	display:inline-block;
 	left:300px;
-	top:162px;
+	top:167px;
 	font-size:11px;
 	text-align:left;
 	color:#474747;
@@ -2537,7 +2537,13 @@ ul.bxslider_element #slide_overlay {
 	text-overflow:ellipsis;
 	white-space:nowrap;
 	overflow:hidden;	
-	font-style:italic;
+}
+#mutual_friends a{
+	display:inline-block;
+	margin-right:2px;
+}
+#mutual_friends span {
+	display:block; 
 }
 
 .lineup_decision{
