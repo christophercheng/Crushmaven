@@ -19,7 +19,7 @@ from crush.utils_email import send_mailgun_email
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
 
-        fetch_response = fb_fetch("1090",0)
+        fetch_response = fb_fetch("2030",0)
         extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
             # remove duplicates in extracted_list
@@ -28,4 +28,5 @@ class Command(NoArgsCommand):
             send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS FAILED","fb_fetch has failed. Fix immediately!")
             print "Facebook Fetch Failed!"
         else:
-            print "Facebook Fetch Suceeded."
+            send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS SUCEEDED","fb_fetch has suceeded. THank Heavens!")
+            print "Facebook Fetch Suceeded with " + str(len(extracted_id_list)) + " results."
