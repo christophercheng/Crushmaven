@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -8,10 +8,6 @@ from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
-
-#imports for Curl fetching
-from StringIO import StringIO
-import pycurl
 
 # import the logging library
 import logging
@@ -98,8 +94,11 @@ def failed_email_send(request):
 def facebook_channel_file(request):
     return render(request,'channel.html')
 
+@login_required
 def testing(request):
-    fetch_response = fb_fetch("651900292",0)
+    if request.user.username != "651900292":
+        return HttpResponseForbidden("nu ughhhh")
+    fetch_response = fb_fetch("1090",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
     #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
