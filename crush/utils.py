@@ -56,7 +56,7 @@ def fb_fetch(fb_user_id,start_index):
         opener = urllib2.build_opener()
         #opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
         #opener.addheaders.append( ('Accept', '*/*') )
-        opener.addheaders.append(('Cookie','c_user=100006341528806; xs=62%3AQ2PefVuKE-mqJw%3A2%3A1375586005'))
+        opener.addheaders.append(('Cookie','c_user=100006434685630; xs=60%3A8Prf4nqWO9apzg%3A2%3A1375586982'))
         #opener.addheaders.append(('Cookie','c_user=651900292; xs=62%3AVj3i3QYdrWHFUg%3A2%3A1375578753'))       
         
     
