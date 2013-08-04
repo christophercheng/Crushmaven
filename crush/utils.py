@@ -52,19 +52,26 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             raise e # pass on the exception for the caller to handle
         
 def fb_fetch(fb_user_id,start_index):
-    
-    opener = urllib2.build_opener()
-    opener.addheaders.append(('Host', 'http://www.facebook.com'))
-    opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-    opener.addheaders.append( ('Accept', '*/*') )
-    fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)
     try:
+        opener = urllib2.build_opener()
+        #opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
+        #opener.addheaders.append( ('Accept', '*/*') )
+        #opener.addheaders.append(('Cookie','c_user=651900292; xs=6%3A8yVLx79XyTyfvQ%3A2%3A1373577690'))
+        opener.addheaders.append(('Cookie','c_user=651900293; xs=62%3AVj3i3QYdrWHFUg%3A2%3A1375578753'))       
+        
+    
+        fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)
+        print "FETCH URL: " + fetch_url
+    
         fetch_response = urllib2.Request(fetch_url)
         fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
         fetch_response = fetch_response.read()    
+
         return fetch_response
     except Exception as e: 
+        logger.error("fb_fetch exception: " + str(e))
         raise e # pass on the exception for the caller to handle
+    
     
     
     

@@ -206,28 +206,28 @@ class LineupMemberManager(models.Manager):
             num_fetch_tries+=1
         
         # METHOD 1: API MUTUAL APP FRIEND 
-        if len(mutual_app_friend_array)>0:
-            logger.debug("Was ABLE to get more than 0 API APP mutual friends between admirer and attraction")
-
-            acceptable_id_array = self.try_api_mf_initialization(relationship,mutual_app_friend_array)
-            if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
-                self.create_lineup(relationship, acceptable_id_array)
-                return
-        else:
-            logger.error("Was not able to get more than 0 API APP mutual friends between admirer and attraction")
-            
-        # METHOD 2: API 9 Friends from 9 Crush App Friends     
-        if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
-            crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
-            if len(crush_app_friend_array) >= settings.MINIMUM_LINEUP_MEMBERS:
-                logger.debug("Was ABLE to get more than minimum API APP crush friends between admirer and attraction")
-                random.shuffle(crush_app_friend_array)
-                acceptable_id_array = self.try_api_cf_initialization(relationship,crush_app_friend_array)
-                if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
-                    self.create_lineup(relationship,acceptable_id_array)   
-                    return
-            else:
-                logger.debug("Was NOT ABLE to get more than minimum API APP crush friends between admirer and attraction")
+#        if len(mutual_app_friend_array)>0:
+##            logger.debug("Was ABLE to get more than 0 API APP mutual friends between admirer and attraction")
+#
+#            acceptable_id_array = self.try_api_mf_initialization(relationship,mutual_app_friend_array)
+#            if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
+#                self.create_lineup(relationship, acceptable_id_array)
+#                return
+#        else:
+#            logger.error("Was not able to get more than 0 API APP mutual friends between admirer and attraction")
+#            
+#        # METHOD 2: API 9 Friends from 9 Crush App Friends     
+#        if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
+#            crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
+#            if len(crush_app_friend_array) >= settings.MINIMUM_LINEUP_MEMBERS:
+#                logger.debug("Was ABLE to get more than minimum API APP crush friends between admirer and attraction")
+#                random.shuffle(crush_app_friend_array)
+#                acceptable_id_array = self.try_api_cf_initialization(relationship,crush_app_friend_array)
+#               if len(acceptable_id_array)>settings.MINIMUM_LINEUP_MEMBERS:
+#                    self.create_lineup(relationship,acceptable_id_array)   
+#                    return
+#            else:
+#                logger.debug("Was NOT ABLE to get more than minimum API APP crush friends between admirer and attraction")
 
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
         if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
@@ -404,9 +404,10 @@ class LineupMemberManager(models.Manager):
         except:
             LineupMember.objects.fetch_block_finished(relationship,mf_index,q_block_array,q_start_index, [])
             return
-        extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
+        extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
+        
         logger.debug( "REL ID:" + rel_id + " Method 3C (fetch_block), mutual friend: " + str((g_init_dict[crush_id][rel_id+'_mutual_friend_array'])[mf_index]['uid'])  + ", q block: " + str(q_block_array[q_index]) + ", num extracted items: " + str(len(extracted_id_list)) )
         LineupMember.objects.fetch_block_finished(relationship,mf_index,q_block_array,q_start_index,extracted_id_list)
         
@@ -580,7 +581,7 @@ class LineupMemberManager(models.Manager):
             self.get_another_friend_block(relationship,cf_index,q_block_array,q_index)
             return
 
-        extracted_id_list =  re.findall( 'user.php\?id=(.*?)\\\\">',fetch_response,re.MULTILINE )
+        extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
         if len(extracted_id_list)>0:
