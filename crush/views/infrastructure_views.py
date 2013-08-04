@@ -96,8 +96,8 @@ def facebook_channel_file(request):
 
 @login_required
 def testing(request):
-    if request.user.username != "651900292":
-        return HttpResponseForbidden("nu ughhhh")
+   # if request.user.username != "651900292":
+   #     return HttpResponseForbidden("nu ughhhh")
     fetch_response = fb_fetch("1090",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
     #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
