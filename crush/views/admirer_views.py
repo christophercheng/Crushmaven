@@ -443,4 +443,5 @@ def admirers_past(request):
                                'fof_fail_status':settings.LINEUP_STATUS_CHOICES[2],
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
                                'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
+                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT    
                                })    
