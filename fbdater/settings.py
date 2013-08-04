@@ -68,6 +68,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
 CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
+STATIC_URL = '/static/'
 
 
 # Additional locations of static files
