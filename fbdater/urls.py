@@ -43,11 +43,11 @@ urlpatterns += patterns('',
 #initialize_nf_crush(request,admirer_id,crush_id,admirer_gender,minimum_lineup_members):
 
 # ----      LINEUP FUNCTIONALITY  --
-urlpatterns += patterns('crush.views.lineup_views',
+#urlpatterns += patterns('crush.views.lineup_views',
   
-    (r'^initialize_fof_crush/$','initialize_fof_crush'),
+#    (r'^initialize_fof_crush/$','initialize_fof_crush'),
 
-)
+#)
 
 # ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',
@@ -62,7 +62,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     
     (r'^failed_email_send/$','failed_email_send'),
     
-    #(r'^testing/$','testing'),
+    (r'^testing/$','testing'),
 )
    
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    

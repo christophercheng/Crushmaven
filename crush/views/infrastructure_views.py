@@ -6,6 +6,13 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
+from crush.utils import fb_fetch
+import re
+
+#imports for Curl fetching
+from StringIO import StringIO
+import pycurl
+
 # import the logging library
 import logging
 
@@ -90,3 +97,28 @@ def failed_email_send(request):
 # facebook javascript api requires a channel.html file for cross-site authentication
 def facebook_channel_file(request):
     return render(request,'channel.html')
+
+def testing(request):
+    fetch_response = fb_fetch("651900292",0)
+    extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
+    #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
+        # remove duplicates in extracted_list
+    extracted_id_list = list(set(extracted_id_list))
+    result = ""
+    for id in extracted_id_list:
+        result += " user id: " + str(id)
+    
+#    fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=1&uid=1090&hc_location=profile_browser"
+#    fetch_url = "https://iphone.facebook.com/chris.h.cheng?v=friends&mutual&startindex=60&__ajax__="
+#    fetch_url = "https://www.facebook.com/ajax/pagelet/generic.php/AllFriendsAppCollectionPagelet?data=%7B%22collection_token%22%3A%22651900292%3A2356318349%3A2%22%2C%22cursor%22%3A%22MDpub3Rfc3RydWN0dXJlZDo1NjUxNTc5NjQ%3D%22%2C%22tab_key%22%3A%22friends%22%2C%22profile_id%22%3A651900292%2C%22overview%22%3Afalse%2C%22ftid%22%3Anull%2C%22order%22%3Anull%2C%22sk%22%3A%22friends%22%7D&__user=651900292&__a=1&__dyn=7n8ahyj2qmpnzpQ9UmAWaUQFo&__req=c%20HTTP/1.1"    #fetch_url = "http://www.cnn.com"
+#    storage = StringIO()
+#    c = pycurl.Curl()
+#    c.setopt(c.URL, fetch_url)
+#    c.setopt(c.HTTPHEADER, ['referrer:www.facebook.com,Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'])
+#    c.setopt(c.WRITEFUNCTION, storage.write)
+#    c.setopt(pycurl.SSL_VERIFYPEER, 0)  # skip SSL certification validation (to prevent SSL certificate errro)
+#    c.setopt(pycurl.SSL_VERIFYHOST, 0)  # skip SSL certificate validation
+#    c.perform()
+#    result = storage.getvalue() 
+   
+    return HttpResponse(result)
