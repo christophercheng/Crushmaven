@@ -98,7 +98,7 @@ def facebook_channel_file(request):
 def testing(request):
    # if request.user.username != "651900292":
    #     return HttpResponseForbidden("nu ughhhh")
-    fetch_response = fb_fetch("1090",0)
+    fetch_response = fb_fetch("1050",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
     #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
