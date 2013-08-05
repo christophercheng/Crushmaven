@@ -8,6 +8,7 @@ from threading import Lock
 from crush.models.globals import g_init_dict
 from crush.utils import graph_api_fetch,fb_fetch
 from django.utils.encoding import smart_text
+import datetime
 # import the logging library
 import logging
 
@@ -24,14 +25,33 @@ class LineupMemberManager(models.Manager):
     # this allows the models to be broken into separate model files
         app_label = 'crush'
 
+    def initialize_multiple_lineups(self,start_relationships):
+        global g_init_dict
+        
+        for index,relationship in enumerate(start_relationships):
+            crush_id=relationship.target_person.username
+            if index==0:
+                g_init_dict[crush_id]['exclude_id_string'] = comma_delimit_list(LineupMember.objects.get_exclude_id_array(relationship))
+            else: # just add the source person (admirer to the list)
+                g_init_dict[crush_id]['exclude_id_string'] += "," + relationship.source_person.username
+        
+        for relationship in start_relationships: 
+            relationship.lineup_initialization_status=0
+            relationship.lineup_initialization_date_started = datetime.datetime.now()
+            relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
+            logger.debug("starting lineup")
+            self.initialize_lineup(relationship)
+            #if not settings.INITIALIZATION_THREADING:
+            #    self.objects.initialize_lineup(relationship)
+            #else:
+            #    thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,)  
+  
     # returns true if successful, false otherwise
     def initialize_lineup(self,relationship):
         global g_init_dict
         
         crush_id=relationship.target_person.username
 
-        if 'exclude_id_string' not in g_init_dict[crush_id]:
-            g_init_dict[crush_id]['exclude_id_string'] = comma_delimit_list(LineupMember.objects.get_exclude_id_array(relationship))
         rel_id=str(relationship.id)
         g_init_dict[crush_id][rel_id + '_initialization_state']=0
         
@@ -76,7 +96,7 @@ class LineupMemberManager(models.Manager):
                 # filter id's of users with same gender as admirer   
                 query_string = "SELECT uid FROM user WHERE uid IN ("
                 query_string += ",".join(new_friend_array)
-                query_string += ") AND NOT (uid IN ('" + g_init_dict[crush_id]['exclude_id_string'] + "') ) AND sex='" + admirer_gender + "' LIMIT 3"
+                query_string += ") AND NOT (uid IN (" + g_init_dict[crush_id]['exclude_id_string'] + ") ) AND sex='" + admirer_gender + "' LIMIT 3"
         
                 new_friend_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
                 for new_friend in new_friend_array:
@@ -701,8 +721,8 @@ class LineupMemberManager(models.Manager):
             exclude_facebook_id_array.append(just_friend.username)
         for rel in crush_progressing_admirer_rels:
             crush_undecided_lineup_members = rel.lineupmember_set.filter(decision=None)    
-        for member in crush_undecided_lineup_members:
-            exclude_facebook_id_array.append(member.username)
+            for member in crush_undecided_lineup_members:
+                exclude_facebook_id_array.append(member.username)
         return exclude_facebook_id_array
 
     # ================================================================    
