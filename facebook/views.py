@@ -31,6 +31,6 @@ def authentication_callback(request,next_page=""):
         auth_login(request, user)
     #RETURN back to home directory
     if next_page =="":
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/home/')
     else:
         return HttpResponseRedirect(next_page)
