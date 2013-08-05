@@ -168,7 +168,7 @@ $(document).ready(function()
 {% endif %}
 
 {% if request_relationships %}
-		<span class="page_secondary_title">Outstanding Requests for Setups</span>
+		<span class="page_secondary_title">Outstanding Requests for matchmakers</span>
 	{% for request_rel in request_relationships %}
 		{% with request_rel as relationship %}
 				{% include "request_by_me_block.html" %}		
