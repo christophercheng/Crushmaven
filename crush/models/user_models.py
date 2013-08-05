@@ -10,6 +10,7 @@ from crush.models.miscellaneous_models import InviteEmail
 import thread
 from django.db.models import Q
 from django.core.cache import cache
+from django.utils.encoding import smart_text # convert strings into unicode
 
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
@@ -398,7 +399,7 @@ class FacebookUser(AbstractUser):
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
-        return self.first_name + ' ' + self.last_name + ' (' + self.username + ')'
+        return smart_text(self.first_name) + u' ' + smart_text(self.last_name) + u' (' + smart_text(self.username) + u')'
      
 # used for message-write: recipient auto lookup     
 class NamesLookup(object):

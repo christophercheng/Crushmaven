@@ -13,10 +13,6 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
-<div id="remove_crush_dialog" title="Remove Crush"></div>
-<div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
-<div id="privacy_check"></div>
-<div id="response_modal" title = "Your Attraction's Response"></div>
 <script type="text/javascript">
 $(document).ready(function() 
 {
@@ -56,19 +52,20 @@ $(document).ready(function()
   
   $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/attractions_completed/";}});
   
-  window.display_response_modal = function(crush_id) {
+  	window.display_response_modal = function(crush_id) {
    	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
     
-    $("#response_modal").html('<div id="site-loading"></div>');
-		$("#response_modal").dialog('option', 'buttons', {
-  		"Ok": function() {$(this).dialog("close");redirect_after_response_viewed();}
-  		});
-		$("#response_modal").load(load_url,function(responseText,textStatus,XHR){
-			if (textStatus!='success'){
-				$(this).html("{{ajax_error}}");
-				return false;
-			}
-		});   	
+    $("#response_modal").html('<span id="site-loading-fill"><div id="site-loading"></div></span>');
+	$("#response_modal").dialog('option', 'buttons', {
+		"Ok": function() {$(this).dialog("close");redirect_after_response_viewed();}
+	});
+	
+	 $("#response_modal").load(load_url,function(responseText,textStatus,XHR){
+		if (textStatus!='success'){
+			$(this).html("{{ajax_error}}");
+			return false;
+		}
+	});
     $("#response_modal").dialog("open");
     return false;
    };
@@ -294,4 +291,8 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	{% endif %}
 	</span>
 {% endif %}
+<div id="remove_crush_dialog" title="Remove Crush"></div>
+<div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
+<div id="privacy_check"></div>
+<div id="response_modal" title = "Your Attraction's Response"></div>
 {% endblock %}

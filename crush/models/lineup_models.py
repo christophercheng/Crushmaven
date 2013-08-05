@@ -7,6 +7,7 @@ import re,thread,time
 from threading import Lock
 from crush.models.globals import g_init_dict
 from crush.utils import graph_api_fetch,fb_fetch
+from django.utils.encoding import smart_text
 # import the logging library
 import logging
 
@@ -782,9 +783,9 @@ class BasicLineupMember(models.Model):
     
     def __unicode__(self):
         if self.user != None:
-            return '(' + str(self.relationship) + ') ' + self.username + ': ' + self.user.first_name + ' ' + self.user.last_name 
+            return u'(' + smart_text(self.relationship) + u') ' + smart_text(self.username) + u': ' + smart_text(self.user.first_name) + u' ' + smart_text(self.user.last_name)
         else:
-            return '(' + str(self.relationship) + ') ' + self.username   
+            return u'(' + smart_text(self.relationship) + u') ' + smart_text(self.username)   
             
 # details about each crush's secret admirer lineup (SAL)
 class LineupMember(BasicLineupMember):

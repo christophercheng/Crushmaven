@@ -166,6 +166,8 @@ $(document).ready(function() // handling for the slider
   platonic_dialog.on('click', function(e){e.stopPropagation();});
   
   $('#lineup_container ').on('click','a.decision,a.platonic_reconsider',function(e) {
+	  $('#lineup_container #site-loading').show();
+	  $('#lineup_container #slide_overlay').show();
 	  e.preventDefault();
 	  var this_element = $(this);
 	  var slide_number = this_element.closest('li.preload').attr('lineup_position'); // this is used to find the associated thumbnail to modify if a decision is made
@@ -212,6 +214,8 @@ $(document).ready(function() // handling for the slider
 	  decision_dialog.find('.attractor_image').html('<img src="http://graph.facebook.com/' + username + '/picture?width=60&height=60" />');
 	  decision_dialog.dialog({buttons: {
 				"Cancel": function() {	
+					$('#lineup_container #site-loading').hide();
+					$('#lineup_container #slide_overlay').hide();
 					$(this).dialog("close");
 				}, // end of cancel handler
 				"Confirm": function() {
@@ -355,6 +359,7 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */    
  	
  	window.launch_credit_check = function() {
+ 		
 		data = {};
 		data['csrfmiddlewaretoken']="{{csrf_token}}";
 		data['success_path'] = '/admirers/{{admirer_rel.display_id}}/';
@@ -364,6 +369,7 @@ $(document).ready(function() // handling for the slider
 		data['purchase_callback_name'] = 'window.lineup_purchased()';
 		data['ajax_error']='{{ajax_error}}';
 		purchase_feature(data);
+		$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();
    }; 
    
  	window.lineup_purchased = function(){

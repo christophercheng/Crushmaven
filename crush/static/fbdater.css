@@ -1833,6 +1833,13 @@ ul.nav_bar li#nav_bar_options{
 	font-weight:bold;
 	font-size:13px;
 }
+#site-loading-fill{
+	display:block;
+	height:60px;
+}
+#site-loading-fill #site-loading {
+	
+}
 #response_modal span.response_view_score{
 	font-weight:bold;
 	display:block;
