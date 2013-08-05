@@ -63,7 +63,7 @@ a.button {
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');	
+	#background-image:url('/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:18px;
@@ -122,7 +122,7 @@ a.button {
 	display:inline-block!important;
 	position:absolute!important;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;
-	background-image:url('/static/images/full_sprite.png')!important;	
+	#background-image:url('/static/images/full_sprite.png')!important;	
 	background-repeat:no-repeat;
 	background-size:auto!important;
 	width:30px!important;
@@ -140,14 +140,14 @@ a.button {
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
 	background:white!important;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;
-	background-image:url('/static/images/full_sprite.png')!important;	
+	#background-image:url('/static/images/full_sprite.png')!important;	
 	background-position:-178px -27px!important;
 	border:none!important;
 }
 .blacktop .ui-state-hover .ui-icon, .blacktop .ui-state-focus .ui-icon {
 	background:#000033!important;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png')!important;
-	background-image:url('/static/images/full_sprite.png')!important;		
+	#background-image:url('/static/images/full_sprite.png')!important;		
 	background-position:-178px -27px!important;
 	border:none!important;
 }
@@ -449,7 +449,7 @@ a.button {
 
 #site-loading {
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/loading.gif');
-	background-image:url('/static/images/loading.gif');
+	#background-image:url('/static/images/loading.gif');
 	margin: auto; /* 0 0 -12px; */
 	height: 32px;
 	width: 32px;
@@ -460,7 +460,7 @@ a.button {
 /* double check this one */
 #loading {
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/loader.gif');
-	background-image:url('/static/images/loader.gif');
+	#background-image:url('/static/images/loader.gif');
 	margin: 5px; /* 0 0 -12px; */
 	margin-left:5px;
 	height: 55px;
@@ -607,7 +607,7 @@ a.logo img{
 	position:absolute;
 	display:block;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');	
+	#background-image:url('/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	height:20px;
@@ -709,7 +709,7 @@ a.logo img{
 	position:absolute;
 	display:block;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
-	background-image:url('/static/images/full_sprite.png');
+	#background-image:url('/static/images/full_sprite.png');
 	background-repeat:no-repeat;
 	background-size:auto;
 	height:20px;
@@ -907,7 +907,7 @@ a.logo img{
 	position:absolute;
 	display:block;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');	
+	#background-image:url('/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	background-position:-90px -305px;
@@ -925,7 +925,7 @@ a.logo img{
 	position:absolute;
 	display:block;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');	
+	#background-image:url('/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
 	background-position:-119px -312px;
@@ -1627,7 +1627,7 @@ ul.nav_bar li#nav_bar_options{
 	display:inline-block!important;
 	position:absolute!important;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:40px;
@@ -2096,7 +2096,7 @@ ul.attraction_status_bar li.past_status_animated{
 .view_facebook_icon{
 	display:inline-block;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:22px;
@@ -2201,7 +2201,7 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-position:-155px -120px;
 	background-size:auto;
@@ -2282,7 +2282,7 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2300,7 +2300,7 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2361,7 +2361,7 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2377,7 +2377,7 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -2725,7 +2725,7 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3006,7 +3006,7 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');
-	background-image:url('/static/images/full_sprite.png');		
+	#background-image:url('/static/images/full_sprite.png');		
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
@@ -3063,10 +3063,10 @@ ul.bxslider_element #slide_overlay {
 .MercuryRepliedIndicator{background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-206px -520px;display:inline-block;height:10px;width:15px;}
 .MercuryReceivedIndicator{background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-180px -400px;display:inline-block;height:10px;width:10px;}
 
-.MercuryRepliedIndicator.repliedLast{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
-.MercuryRepliedIndicator.repliedLast.seenByAll{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-285px -395px;display:inline-block;height:10px;width:10px;}
-.MercuryRepliedIndicator{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-206px -520px;display:inline-block;height:10px;width:15px;}
-.MercuryReceivedIndicator{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-180px -400px;display:inline-block;height:10px;width:10px;}
+#.MercuryRepliedIndicator.repliedLast{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-299px -425px;display:inline-block;height:10px;width:11px;margin-right:4px;}
+#.MercuryRepliedIndicator.repliedLast.seenByAll{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-285px -395px;display:inline-block;height:10px;width:10px;}
+#.MercuryRepliedIndicator{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-206px -520px;display:inline-block;height:10px;width:15px;}
+#.MercuryReceivedIndicator{background-image:url('/static/images/fb_icons.png');background-repeat:no-repeat;background-size:auto;background-position:-180px -400px;display:inline-block;height:10px;width:10px;}
 
 
 /* ===========================  Compose New Message ========================= */
@@ -3577,7 +3577,7 @@ div.past_dialog_header {
 	display:inline-block;
 	position:absolute;
 	background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/full_sprite.png');	
-	background-image:url('/static/images/full_sprite.png');
+	#background-image:url('/static/images/full_sprite.png');
 	background-repeat:no-repeat;
 	background-size:auto;
 	width:20px;
