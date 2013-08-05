@@ -39,8 +39,7 @@ class SetupRelationshipAdmin(admin.ModelAdmin):
     #list_filter = ('target_status') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('source_person','date_notification_last_sent','date_lineup_started','date_lineup_finished','date_setup_completed','display_id','updated_flag')
-    
+    fields=('date_notification_last_sent','date_lineup_started','date_lineup_finished','date_setup_completed','display_id','updated_flag')
 
 class SetupRequestRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','date_added',) # what columns to display
