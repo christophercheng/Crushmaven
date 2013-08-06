@@ -16,11 +16,13 @@ $(document).ready(function() // handling for the slider
   *		enable finish button and add footer summary message
 	*  ---------------------------------------------------------------------- */
 	var process_completed_lineup = function(){
+		$('#lineup_container #site-loading').hide();
+		$('#lineup_container #slide_overlay').hide();
 		footer_element=$('.lineup-footer');
 		footer_element.find('#finish-btn').removeAttr('disabled');
 		footer_element.find('#finish-btn').show();
-	  footer_msg_element = footer_element.children('#footer-msg');
-	  footer_msg_element_html='Your lineup evaluation is complete!'
+		footer_msg_element = footer_element.children('#footer-msg');
+		footer_msg_element_html='Your lineup evaluation is complete!'
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 

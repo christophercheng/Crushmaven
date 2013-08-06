@@ -24,7 +24,11 @@
 <span class="help_icon" title="close help"></span>
 <span class="instructions_title">How Friend Setups Work <span class="instructions_subtitle">for matchmakers</span></span>
 <div class="first_instruction_section">
-	<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Your friends (listed below) may ask you to be their matchmaker.</span></div>
+	{% if request_relationships %}
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Your friends (listed below) asked you to be their matchmaker.</span></div>	
+	{% else %}
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Your friends may ask you to be their matchmaker.</span></div>	
+	{% endif %}
 	<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">For each asking friend, select up to ten potential matches.</span></div>
 	<a class="show_more">show more</a><a class="show_less">show less</a>
 </div>
@@ -37,9 +41,11 @@
 	<a href="javascript:{}" class="create_setup instruction_block_button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
 </div>
 </div>		<!-- close off instructional content -->
+{% if request_relationships.count = 0 %}
 <p class="new_user_sub_instructions">
 	Like how this sounds but prefer to be the one getting set up?<br><a href="javascript:{}" class="request_setup_link" setup_select="true" title="Request Setups from Friends">Request a setup from a friend</a>
 </p>
+{% endif %}
 {% endif %}
 
 {% if request_relationships %}

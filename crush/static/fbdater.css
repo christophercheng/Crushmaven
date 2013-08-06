@@ -3749,9 +3749,10 @@ div.past_dialog_header {
 	background-color: #6585E6;
 }
 
-.request_block .resend_request:hover{
-	background-color:#4E68B2;
+.request_block .resend_request:hover,.request_block .set_up_friend_link:hover{
+	background-color:#516AB8;
 }
+
 
 /* ===========================   App Invite Interstitial Dialog ========================= */
 
