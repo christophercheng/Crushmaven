@@ -125,36 +125,57 @@ $(document).ready(function()
 	$('#setup_lineup_section .site_dialog_select_button').addClass('selected');
   }
  
- $(".setup_create_dialog").on('click','#create_setup',function(){
+
+$(".setup_create_dialog").on('click','#create_setup',function(){
+
 	window.wait_modal_open();
-    source_person_last_name="{{request.user.last_name}}";
-    source_person_first_name = "{{request.user.first_name|capfirst}}"
-    source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
+	source_person_last_name="{{request.user.last_name}}";
+	source_person_first_name = "{{request.user.first_name|capfirst}}"
+	source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
    	
-   	FB.ui({
+  FB.ui({
    			method: 'send',
-   			app_id: 165610330293338,
-   			name:source_person_short_name + " recommended someone for you",
   			to: window.setup_target,
-  			link: 'http://www.flirtally.com',
-  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends. Log in to see who " + source_person_first_name + " recommended.",
+  			link: 'http://flirtally.com/yoursetup/',
   			picture:"{{ STATIC_URL}}images/favicon_v2.png"
-      },
-      function(response){
+	},function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
-    	  
     	  if (response != null){
 				  	$('#setup_form').submit();
   				}
   			else {
   				window.wait_modal_close();
-  				window.alert_modal('Friend Set Up', "We can only create this set up if you first notify your friend.",$('.setup_create_dialog') );
-  				//$('#setup_form').submit();
+  				window.alert_modal('Friend Set Up', "We'll create this set up once you notify your friend.",$('.setup_create_dialog') );
   			}
   		} // close off function (response)   
     );// close off fb.ui
-    
- });
+  }); // close off .setup_create_dialog on click '#create_setup' handler
+
+{% comment %}
+ 	// check if user has chat login permissions
+	FB.api({ method: 'fql.query', query: 'SELECT xmpp_login FROM permissions WHERE uid=me()' }, function(resp) {
+    for(var key in resp[0]) {
+        if(resp[0][key] === "1"){
+        		// yes, they're good to go!
+         		$('#setup_form').submit();
+        }
+        else{
+        		// no, ask them for permission and try again
+        		if (window.number_permission_attempts==0)
+             	FB.login(function(response){	
+             		window.number_permission_attempts+=1;
+      					window.handle_create_setup_button_click();
+             	},{scope:'xmpp_login'});
+            else {// user skipped the permission step
+      						// reset
+      					window.number_permission_attempts = 0;
+      					window.alert_modal("Facebook Permissions", "In order to complete this set up, we need your permission to send a message to your friend - to alert them of this setup. Rest assured - we'll never send messages to your friends without your permission.");
+      			}           
+         } // close off else user doesn't have xmpp_login permission
+    	} //close off for loop
+	}); // close off FB.api
+};// close off window.handle_create_setup_button_click
+{% endcomment %}
 
 {% if target_person_username != "" %}
 	var my_json={};
@@ -194,6 +215,6 @@ $(document).ready(function()
 <div class="ui-dialog-buttonpane">
 		<div class="ui-dialog-buttonset">
 			<button type='button' onclick="location.reload();" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
-			<button class="site_dialog_button" id="create_setup" disabled><span class="ui-button-text" >Create Setup</span></button> 
+			<button class="site_dialog_button" id="create_setup" disabled><span class="ui-button-text" >Create Setup & Notify Friend</span></button> 
 		</div>
 	</div><!-- close off button_bar -->

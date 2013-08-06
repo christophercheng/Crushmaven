@@ -24,7 +24,7 @@ import hashlib, hmac
 
 # -- Home Page --
 # handles both member and guest home page
-#@csrf_exempt
+
 def home(request):
 
     if request.user.is_authenticated():
@@ -121,3 +121,80 @@ def testing(request):
 #    result = storage.getvalue() 
    
     return HttpResponse(result)
+
+
+# fake page used to create custom content for fb send dialog (from setup create form)
+def your_setup(request):
+    
+    return render(request, 'guest_home.html',
+                              {
+                               'change_title': request.user.get_shortened_name() + ' recommended someone for you', 
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs. Log in to see who " + request.user.first_name + " recommended.",
+                               })    
+    return HttpResponse("")
+
+# fake page used to create custom content for fb send dialog (from friends-with-admirer sidebar)
+def your_admirer(request,first_name,last_initial):
+    return render(request, 'guest_home.html',
+                              {
+                               'change_title': first_name + " " + last_initial + '.has an admirer!', 
+                               'change_description': "Find out if someone you know and like feels the same at Flirtally.com.",
+                               })    
+    return HttpResponse("")
+
+import sleekxmpp
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+class SendMsgBot(sleekxmpp.ClientXMPP):
+    """
+    A basic SleekXMPP bot that will log in, send a message,
+    and then log out.
+    """
+    def __init__(self, jid, recipient, message):
+
+        sleekxmpp.ClientXMPP.__init__(self, jid, 'ignore')
+
+    
+        # The message we wish to send, and the JID that
+        # will receive it.
+        self.recipient = recipient
+        self.msg = message
+    
+        # The session_start event will be triggered when
+        # the bot establishes its connection with the server
+        # and the XML streams are ready for use. We want to
+        # listen for this event so that we we can initialize
+        # our roster.
+        self.add_event_handler("session_start", self.start, threaded=True)
+
+    def start(self, event):
+    
+        self.send_presence()
+    
+        self.get_roster()
+    
+        self.send_message(mto=self.recipient,
+                        mbody=self.msg,
+                        mtype='chat')
+    
+        # Using wait=True ensures that the send queue will be
+        # emptied before ending the session.
+        self.disconnect(wait=True)
+        
+
+def send_fb_chat_message(access_token,fb_from_id,fb_to_id,msg):
+
+    
+    xmpp = SendMsgBot(fb_from_id, fb_to_id, unicode(msg))
+    
+    xmpp.credentials['api_key'] = settings.FACEBOOK_APP_ID
+    xmpp.credentials['access_token'] = access_token
+    
+    if xmpp.connect(('chat.facebook.com', 5222)):
+        xmpp.process(block=True)
+        print("Done")
+    else:
+        print("Unable to connect.")
+        

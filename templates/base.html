@@ -19,7 +19,7 @@
 		<!--<link type="text/css" href="/static/fbdater.css?t={% now "U" %}" rel="stylesheet"  />    -->
 		<link type="text/css" href="/static/fbdater.css" rel="stylesheet"  />    
 	    
-	    <link type="text/css" href="{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+	    <link type="text/css" href="/static/friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
 	
 	    <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
 		
@@ -44,13 +44,14 @@ jQuery(document).ready(function($) {
   	  	// Additional init code here
 	}; // close window.fbAsyncINit
 	// Load the SDK Asynchronously
-	(function(d){
-		var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-		if (d.getElementById(id)) {return;}
-		js = d.createElement('script'); js.id = id; js.async = true;
-		js.src = "//connect.facebook.net/en_US/all.js";
-		ref.parentNode.insertBefore(js, ref);
-	}(document));
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 
 	function login(connect_callback) {
 	    FB.login(function(response) {

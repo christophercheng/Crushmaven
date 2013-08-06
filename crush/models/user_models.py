@@ -362,6 +362,10 @@ class FacebookUser(AbstractUser):
     def get_name(self):
         return self.first_name + " " + self.last_name
     
+    def get_shortened_name(self):
+        if self.first_name != "" and self.last_name!="":
+            return self.first_name + " " + self.last_name[0] + "."
+    
     # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_progressing_admirers(self):
         return crush.models.relationship_models.CrushRelationship.objects.progressing_admirers(self)

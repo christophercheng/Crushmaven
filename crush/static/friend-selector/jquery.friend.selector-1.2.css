@@ -664,10 +664,10 @@ li.checked .fs-anchor {
 /* @end of Modal Box and Overlay */
 
 #fs-loading {
-  background-image:url(friend-selector-loader.gif);
+  background-image:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/loading.gif');
   margin: -12px 0 0 -12px;
-  height: 24px;
-  width: 24px;
+  height: 32px;
+  width: 32px;
   position: absolute;
   top: 50%;
   left: 50%;

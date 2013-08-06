@@ -63,8 +63,13 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^failed_email_send/$','failed_email_send'),
     
     (r'^testing/$','testing'),
+    
+    (r'^your_setup/$','your_setup'),
+    
+    (r'^your_admirer/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','your_admirer')
 )
    
+
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
 urlpatterns += patterns('crush.views.crush_views',
  

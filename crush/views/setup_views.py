@@ -6,6 +6,7 @@ from django.db.models import Q
 from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
 import datetime
+from infrastructure_views import send_fb_chat_message
 # import the logging library
 import logging
 
@@ -183,8 +184,9 @@ def setup_create_form(request,target_person_username=""):
         for recommendee in recommendee_username_array:
             if recommendee not in previous_recommendee_list:
                 filtered_recommendee_username_array.append(recommendee)
+        num_recommendees = len(filtered_recommendee_username_array)
         # only create setup if at least one recommendee filtered through
-        if len(filtered_recommendee_username_array) > 0:      
+        if num_recommendees > 0:      
             setup = SetupRelationship.objects.create(target_person=setup_target_user,source_person=request.user,updated_flag=True,friendship_type=0)
             for (counter,recommendee) in enumerate(filtered_recommendee_username_array):
                 SetupLineupMember.objects.create(relationship=setup, username = recommendee, position=counter)
@@ -194,7 +196,12 @@ def setup_create_form(request,target_person_username=""):
                 outstanding_request.delete()
             except SetupRequestRelationship.DoesNotExist:
                 pass
-              
+            msg = ""
+            if num_recommendees > 1:
+                msg += "I used Flirtally to pick out (" + str(num_recommendees) + ") friends of mine who I'd like to help set you up with.  You can see who I selected at http://www.flirtally.com. -sent by Flirtally, on behalf of " + request.user.get_shortened_name()
+            else:
+                msg += "I used Flirtally to select a friend of mine that I'd like to help set you up with.  You can see who I picked at http://www.flirtally.com. -sent by Flirtally, on behalf of " + request.user.get_shortened_name()
+            send_fb_chat_message(request.user.access_token,request.user.username + "@chat.facebook.com","-" + setup_target_username + "@chat.facebook.com",msg)
         return redirect('/setups_by_you')
     else:
         return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})
