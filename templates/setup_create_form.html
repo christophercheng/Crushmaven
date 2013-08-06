@@ -135,7 +135,8 @@ $(document).ready(function()
    			name:source_person_short_name + " recommended someone for you",
   			to: window.setup_target,
   			link: 'http://www.flirtally.com',
-  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends. Log in to see who " + source_person_first_name + " recommended."
+  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends. Log in to see who " + source_person_first_name + " recommended.",
+  			picture:"{{ STATIC_URL}}images/favicon_v2.png"
       },
       function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page

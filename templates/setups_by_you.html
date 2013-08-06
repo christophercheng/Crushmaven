@@ -55,7 +55,7 @@ $(document).ready(function()
     } // close off if target is recommendee
 		else { // target person is not a recommendee - they are a client
 			FB.ui({method: 'send',
-  				name: "{{request.user.first_name|capfirst}}" + "{{request.user.last_name|slice:"1"|capfirst}}" + ".+ " recommended dates for you",
+  				name: "{{request.user.first_name|capfirst}}" + "{{request.user.last_name|slice:"1"|capfirst}}" + ". recommended dates for you",
   				to: recipient_id,
   				link:'http://www.flirtally.com',
   				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends.'
