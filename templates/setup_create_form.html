@@ -132,6 +132,7 @@ $(document).ready(function()
     source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
    	FB.ui({
    			method: 'send',
+   			app_id: 165610330293338
    			name:source_person_short_name + " recommended someone for you",
   			to: window.setup_target,
   			link: 'http://www.flirtally.com',
