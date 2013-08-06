@@ -8,6 +8,7 @@ import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
 from urllib2 import URLError, HTTPError
+import thread
 # import the logging library
 import logging
 
@@ -43,7 +44,7 @@ def ajax_add_crush_targets(request):
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
             CrushRelationship.objects.create(target_person=selected_user, source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
-    
+            thread.start_new_thread(adjust_associated_lineup_members,(request.user,selected_user,True))
     if counter > 0:
         return HttpResponse('')
     else:
@@ -81,20 +82,21 @@ def ajax_make_crush_target_platonic_friend(request, crush_username):
         crush_relationship.delete()
         PlatonicRelationship.objects.create(source_person=request.user, target_person=target_person)
         # ===== fix any associated lineup members
-        modify_members = LineupMember.objects.filter(relationship__target_person=request.user,user=target_person)
-        for member in modify_members:
-            member.decision = 3
-            member.save(update_fields=['decision'])
-        # 1) get every single admirer relationship (where target_person = current user (request.user)). 
-        # 2) then get the backwards query set of relationship' lineup members
-        # 3) look to see if the crush_username is in that lineup, if so, then change it's decision 
+        thread.start_new_thread(adjust_associated_lineup_members,(request.user,target_person,False))
         
         return HttpResponse()
-
-        
-        
+       
     except CrushRelationship.DoesNotExist:
         return HttpResponse()  # same thing as a successful deletion i guess?
+
+def adjust_associated_lineup_members(target_person,lineup_user,new_crush):
+        modify_members = LineupMember.objects.filter(relationship__target_person=target_person,user=lineup_user)
+        for member in modify_members:
+            if new_crush==True:
+                member.decision=0
+            else:
+                member.decision = 3
+            member.save(update_fields=['decision'])
     
 # -- Crush List Page --
 @login_required
