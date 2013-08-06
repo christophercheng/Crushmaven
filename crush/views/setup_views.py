@@ -6,7 +6,6 @@ from django.db.models import Q
 from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
 import datetime
-from infrastructure_views import send_fb_chat_message
 # import the logging library
 import logging
 
@@ -196,12 +195,6 @@ def setup_create_form(request,target_person_username=""):
                 outstanding_request.delete()
             except SetupRequestRelationship.DoesNotExist:
                 pass
-            msg = ""
-            if num_recommendees > 1:
-                msg += "I used Flirtally to pick out (" + str(num_recommendees) + ") friends of mine who I'd like to help set you up with.  You can see who I selected at http://www.flirtally.com. -sent by Flirtally, on behalf of " + request.user.get_shortened_name()
-            else:
-                msg += "I used Flirtally to select a friend of mine that I'd like to help set you up with.  You can see who I picked at http://www.flirtally.com. -sent by Flirtally, on behalf of " + request.user.get_shortened_name()
-            send_fb_chat_message(request.user.access_token,request.user.username + "@chat.facebook.com","-" + setup_target_username + "@chat.facebook.com",msg)
         return redirect('/setups_by_you')
     else:
         return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})
