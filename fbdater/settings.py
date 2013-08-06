@@ -209,9 +209,10 @@ LOGGING = {
 # define the custom user that inherits from Django's User model
 AUTH_USER_MODEL = 'crush.FacebookUser'
 
+
 # Facebook settings are set via environment variables
-FACEBOOK_APP_ID = '358333547626242' # Flirtally App on Facebook
-FACEBOOK_APP_SECRET = 'cfe93b827f7a4d6201dee209f0cc4159'
+FACEBOOK_APP_ID = '165610330293338' # Flirtally App on Facebook
+FACEBOOK_APP_SECRET = 'e16934ee8ee9bf0a61f120d9e2bb6c02'
 FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
 
 AUTHENTICATION_BACKENDS = (
