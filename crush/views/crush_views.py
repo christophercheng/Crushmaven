@@ -2,7 +2,7 @@ from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail  # ,LineupMember
+from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember
 import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
@@ -80,7 +80,19 @@ def ajax_make_crush_target_platonic_friend(request, crush_username):
         target_person = crush_relationship.target_person
         crush_relationship.delete()
         PlatonicRelationship.objects.create(source_person=request.user, target_person=target_person)
+        # ===== fix any associated lineup members
+        modify_members = LineupMember.objects.filter(relationship__target_person=request.user,user=target_person)
+        for member in modify_members:
+            member.decision = 3
+            member.save(update_fields=['decision'])
+        # 1) get every single admirer relationship (where target_person = current user (request.user)). 
+        # 2) then get the backwards query set of relationship' lineup members
+        # 3) look to see if the crush_username is in that lineup, if so, then change it's decision 
+        
         return HttpResponse()
+
+        
+        
     except CrushRelationship.DoesNotExist:
         return HttpResponse()  # same thing as a successful deletion i guess?
     
