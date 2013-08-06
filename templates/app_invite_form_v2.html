@@ -19,15 +19,16 @@ $(document).ready(function()
                     function(responseText, responseStatus,XHR) {
          				if (responseText=="_GOOD"){
                     		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
-                           window.update_invite_interstitial("{{crush_username}}");
-                				else
-                					location.href='/attractions';
-                			}
-               				else{
-               						$("#sendbutton").removeAttr('disabled')
-                          $("#sendbutton").attr('value','Send')
-               				}
-                		});
+                    			window.update_invite_interstitial("{{crush_username}}");
+                			else
+                				location.href='/attractions';
+                		}
+           				else{
+           					window.alert_modal("Email Validation Problem","One of your emails isn't jiving with our email validation process.  If you copy/pasted an email from somewhere else, try typing in that email directly.  Sorry for the trouble!")
+           					$("#sendbutton").removeAttr('disabled')
+           					$("#sendbutton").attr('value','Send')
+           				}
+            		});
                 
                e.preventDefault();
                });// close off submit function
