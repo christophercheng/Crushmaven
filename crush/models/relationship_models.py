@@ -10,6 +10,7 @@ import time
 from django.db import transaction
 import crush.models.lineup_models
 import crush.utils_email
+from django.utils.encoding import smart_text
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -39,7 +40,7 @@ class BasicRelationship(models.Model):
         return "" # if I don't return "" then for some reason None is actually returned
         
     def __unicode__(self):
-        return 'Basic relationship for:' + str(self.target_person.username)
+        return u'Basic relationship for:' + smart_text(self.target_person.username)
             
 class PlatonicRelationshipQuerySet(models.query.QuerySet):
     
@@ -111,7 +112,7 @@ class PlatonicRelationship(BasicRelationship):
 # consider putting in a delete function later
           
     def __unicode__(self):
-        return 'Platonic Relation:' + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return u'Platonic Relation:' + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
 
 class CrushRelationshipQuerySet(models.query.QuerySet):
     
@@ -525,7 +526,7 @@ class CrushRelationship(BasicRelationship):
         crush.utils_email.send_mail_delivery_problem(full_name, short_name, first_name, bad_email_address, self.source_person.email)
     
     def __unicode__(self):
-        return 'Crush: '  + str(self.source_person.first_name) + " " + str(self.source_person.last_name) + " -> " + str(self.target_person.first_name) + " " + str(self.target_person.last_name)
+        return u'Crush: '  + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
 
 class SetupRelationship(BasicRelationship):
     class Meta:

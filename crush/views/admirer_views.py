@@ -22,7 +22,7 @@ def admirers(request,show_lineup=None):
     global g_init_dict
     me = request.user 
 
-    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','-display_id')
+    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
     past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
@@ -58,17 +58,13 @@ def admirers(request,show_lineup=None):
             
         g_init_dict[me.username]={}    
         g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
-    
-        for relationship in start_relationships: 
-            relationship.lineup_initialization_status=0
-            relationship.lineup_initialization_date_started = datetime.datetime.now()
-            relationship.save(update_fields=['lineup_initialization_status','lineup_initialization_date_started'])
-            logger.debug("starting lineup")
-            if not settings.INITIALIZATION_THREADING:
-                LineupMember.objects.initialize_lineup(relationship)
-            else:
-                thread.start_new_thread(LineupMember.objects.initialize_lineup,(relationship,))
-   
+
+
+    if not settings.INITIALIZATION_THREADING:
+        LineupMember.objects.initialize_multiple_lineups(start_relationships)
+    else:
+        thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))
+     
     if past_admirers_count == 0 and progressing_admirer_relationships.count() > 0 and not settings.DEBUG:
         show_help_popup=True
     else:
@@ -85,6 +81,8 @@ def admirers(request,show_lineup=None):
                                'show_help_popup':show_help_popup,  
                                'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT                           
                                })    
+
+    
     
 @login_required
 def ajax_display_lineup_block(request, display_id):

@@ -16,7 +16,7 @@ $(document).ready(function()
 		}) 
 		.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
 			window.wait_modal_close();
-			window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
+			//window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
 			console.log("Ajax_deduct_credit fail called");
 		}); // end of .fail handler
 	}); // close off #credit_deduct_ok handler 

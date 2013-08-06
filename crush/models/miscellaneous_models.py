@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F
 from django.conf import settings
 from crush.utils_email import send_mail_crush_invite,send_mail_mf_invite
+from django.utils.encoding import smart_text
 # for mail testing 
 #from django.core.mail import send_mail
 import datetime
@@ -71,9 +72,9 @@ class InviteEmail(models.Model):
 
     def __unicode__(self):
         if self.is_for_crush == True:
-            return self.email + '(crush) : ' +  str(self.relationship) 
+            return smart_text(self.email) + u'(crush) : ' +  smart_text(self.relationship) 
         else:
-            return self.email + '(mutual_friend) : ' +  str(self.relationship) 
+            return smart_text(self.email) + u'(mutual_friend) : ' +  smart_text(self.relationship) 
 
     def send(self):
         crush_user= self.relationship.target_person
@@ -102,7 +103,7 @@ class Purchase(models.Model):
     tx = models.CharField( max_length=250,blank=True,null=True )
     
     def __unicode__(self):
-        return self.purchaser.first_name + ' ' + self.purchaser.last_name + ' (' + self.purchaser.username + '): $' + str(self.price) + ' (' + str(self.credit_total) + ' credits)' 
+        return smart_text(self.purchaser.first_name) + u' ' + smart_text(self.purchaser.last_name) + u' (' + smart_text(self.purchaser.username) + u'): $' + smart_text(self.price) + u' (' + smart_text(self.credit_total) + u' credits)' 
   
     def save(self,*args, **kwargs): 
         print "purchase save overridden function called" 

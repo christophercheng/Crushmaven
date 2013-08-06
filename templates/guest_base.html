@@ -9,7 +9,8 @@
 		<title>Flirtally - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
-	    <link type="text/css" href="{{ STATIC_URL }}fbdater_guest.css?t={% now "U" %}" rel="stylesheet" />  
+	    <!-- <link type="text/css" href="{{ STATIC_URL }}fbdater_guest.css?t={% now "U" %}" rel="stylesheet" />  -->
+	    <link type="text/css" href="/static/fbdater_guest.css" rel="stylesheet" />  
 	    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon_v2.png" />
 	    <link rel="icon" type="image/x-icon" href="{{STATIC_URL }}/images/favicon_v2.png" /> 
 	</head>

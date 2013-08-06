@@ -25,8 +25,8 @@ class Command(NoArgsCommand):
             # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
         if len(extracted_id_list) < 1:
-            send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS FAILED","fb_fetch has failed. Fix immediately!")
+            send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS FAILED","fb_fetch has failed. Fix immediately!","fb_fetch has failed. Fix immediately!")
             print "Facebook Fetch Failed!"
         else:
-            send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS SUCEEDED","fb_fetch has suceeded. THank Heavens!")
+            send_mailgun_email('admin@flirtally.com','chris@flirtally.com',"FB_FETCH HAS SUCEEDED","fb_fetch has succeeded. THank Heavens!","fb_fetch has succeeded. THank Heavens!")
             print "Facebook Fetch Suceeded with " + str(len(extracted_id_list)) + " results."

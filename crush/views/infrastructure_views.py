@@ -103,12 +103,7 @@ def testing(request):
     #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
     extracted_id_list = list(set(extracted_id_list))
-    result = ""
-    for id in extracted_id_list:
-        result += " user id: " + str(id)
-        
-    result +='------------'
-    result += fetch_response
+    result = "Number of results: " + str(len(extracted_id_list))
     
 #    fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=1&uid=1090&hc_location=profile_browser"
 #    fetch_url = "https://iphone.facebook.com/chris.h.cheng?v=friends&mutual&startindex=60&__ajax__="
