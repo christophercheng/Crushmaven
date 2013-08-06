@@ -89,7 +89,7 @@ class FacebookUserManager(UserManager):
 
     def find_or_create_user(self, fb_id, fb_access_token,is_this_for_me,fb_profile=None):
         
-        print "find_or_create_user called for id: " + str(fb_id)
+        #print "find_or_create_user called for id: " + str(fb_id)
         try:
         # Try and find existing user   
         
@@ -238,7 +238,7 @@ class FacebookUser(AbstractUser):
     # this is done whenever an active user is first created
         try:
 
-            print "attempting to load the json results"
+            #print "attempting to load the json results"
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
 
         except Exception as e:
@@ -247,13 +247,13 @@ class FacebookUser(AbstractUser):
 
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
-            print "updating cache with new all_inactive_user_list"
+            #print "updating cache with new all_inactive_user_list"
             all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
             print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
             
-        else:
-            print "using cache's all_inactive_user_list " + str(all_inactive_user_list)
+        #else:
+        #    print "using cache's all_inactive_user_list " + str(all_inactive_user_list)
     
         # clear out past data
         self.friends_with_admirers.clear()
@@ -290,9 +290,9 @@ class FacebookUser(AbstractUser):
         if ajax_reprocess_friends_with_admirers:
             ajax_response+='<span class="reprocess_friends_with_admirers_section" id="site-loading"></span>'
         else:
-            print "number of inactive friends: " + str(len(self.friends_with_admirers.all()))
+            #print "number of inactive friends: " + str(len(self.friends_with_admirers.all()))
             for inactive_crush_friend in self.friends_with_admirers.all().order_by('first_name'):
-                print "creating html for: " + inactive_crush_friend.username
+                #print "creating html for: " + inactive_crush_friend.username
                
                 all_admirers = crush.models.relationship_models.CrushRelationship.objects.all_admirers(inactive_crush_friend)
                 num_admirers = len(all_admirers)
@@ -356,7 +356,6 @@ class FacebookUser(AbstractUser):
     def get_facebook_pic(self,size):
         
         src =  'http://graph.facebook.com/' + self.username + '/picture?width=' + str(size) + '&height=' + str(size)
-        print src
         return src
     
     def get_name(self):

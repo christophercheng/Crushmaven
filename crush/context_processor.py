@@ -25,7 +25,7 @@ def context_processor(request):
         if  (me.processed_activated_friends_admirers):
             time_since_last_update = datetime.now() - me.processed_activated_friends_admirers 
             if time_since_last_update < timedelta(hours=settings.FRIENDS_WITH_ADMIRERS_SEARCH_DELAY):
-                print"don't re-process friends-with admirers - too soon: " + str(time_since_last_update)
+                #print "don't re-process friends-with admirers - too soon: " + str(time_since_last_update)
                 ajax_reprocess_friends_with_admirers=False
 
         inactive_friend_section_html = me.html_for_inactive_friend_section(ajax_reprocess_friends_with_admirers)

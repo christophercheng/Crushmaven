@@ -8,7 +8,7 @@ from django import forms
 from django.core.validators import email_re
 from django.forms import ValidationError,TextInput
 
-EMAIL_SEPARATOR=re.compile(r'[,; ]+')
+EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
 class MultiEmailField(forms.Field):
     widget=forms.TextInput(attrs={'placeholder':'Enter one or more email addresses'})
@@ -17,7 +17,14 @@ class MultiEmailField(forms.Field):
         #'normalize data to a list of strings'
         if not value:
             return []
-        return EMAIL_SEPARATOR.split(value)
+        email_list = EMAIL_SEPARATOR.split(value)
+        cleaned_email_list = []
+        for email in email_list:
+                email = email.replace('\u200b','') # replace any strange zero whitespace character that sometimes creeps up in copy/pasted emails
+                email = email.strip() #remove whitespace characters before and after
+                if email != '':
+                    cleaned_email_list.append(email)
+        return cleaned_email_list
     
     def validate(self,value):
         # check if value consists only of valid emails
@@ -26,7 +33,8 @@ class MultiEmailField(forms.Field):
         super(MultiEmailField,self).validate(value)
         print "----VALIDATION PROCESS: " + str(value) + "---------" 
         for email in value:
-            print "processing email: " + str(email)
+            if email == '':
+                raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
                 raise ValidationError(('%s is not a valid email address') % email)
 
@@ -55,13 +63,15 @@ class AppInviteForm2(forms.Form):
 
     def clean(self):
         print "clean called"
-        at_least_one_data=False
-        for name,value in self.data.items():
-            if value!="" and name!="csrfmiddlewaretoken" and name!="mutual_friend_json" and name!="crush_fullname":
-                at_least_one_data=True
-                break
-        if not at_least_one_data:
-            raise forms.ValidationError("Enter at least one valid email address")
+        if len(self._errors) == 0:
+            at_least_one_data=False
+            for name,value in self.cleaned_data.items():
+                if len(value) > 0:
+                    at_least_one_data=True
+                    break;
+            if not at_least_one_data:
+                raise forms.ValidationError("Enter at least one valid email address")
+        
         return super(AppInviteForm2,self).clean()
     
     # return all email addresses in an enumeration (treat output like an array)

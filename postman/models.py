@@ -138,15 +138,15 @@ class MessageManager(models.Manager):
         order_by=kwargs.pop('order_by',None)
         if order_by:
             qs = qs.order_by(order_by)
-        print "filtered messages 1 : " + str(qs)
+        #print "filtered messages 1 : " + str(qs)
         # get all valid readable emails
         qs = qs.filter(Q(Q(recipient=user) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |
                              Q(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True)) )
-        print "filtered messages 2 : " + str(qs)
+        #print "filtered messages 2 : " + str(qs)
         # separate out   
             # group messages into those between two users, then grab the last one
         qs = qs.filter(id__in=self._last_in_thread)
-        print "filtered messages 3 : " + str(qs)
+        #print "filtered messages 3 : " + str(qs)
         return qs
         # For single message, 'count' is returned as 0. Should be acceptable if known.
         # If not, replace "COUNT(*)" by "1+COUNT(*)" and add:
