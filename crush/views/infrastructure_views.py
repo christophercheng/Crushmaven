@@ -142,16 +142,18 @@ def your_admirer(request,first_name,last_initial):
                                })    
     return HttpResponse("")
 
-import sleekxmpp
-import logging
+#import sleekxmpp
+#import logging
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
-class SendMsgBot(sleekxmpp.ClientXMPP):
+#class SendMsgBot(sleekxmpp.ClientXMPP):
     """
     A basic SleekXMPP bot that will log in, send a message,
     and then log out.
     """
+"""
+    
     def __init__(self, jid, recipient, message):
 
         sleekxmpp.ClientXMPP.__init__(self, jid, 'ignore')
@@ -197,4 +199,4 @@ def send_fb_chat_message(access_token,fb_from_id,fb_to_id,msg):
         print("Done")
     else:
         print("Unable to connect.")
-        
+"""      
