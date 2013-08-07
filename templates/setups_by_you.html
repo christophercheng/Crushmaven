@@ -26,6 +26,11 @@ $(document).ready(function()
 	$('.send_setup_notification').click(function(){
 		var recommender_name = "{{request.user.get_name}}";
 		var recipient_id = $(this).attr('target_person_username');
+		
+		source_person_last_name="{{request.user.last_name|capfirst}}";
+		source_person_first_name = "{{request.user.first_name|capfirst}}"
+		source_person_last_initial = source_person_last_name[0];
+		
 		var notification_link = $(this);
 		if ((typeof $(this).attr('target_is_recommendee')) !== 'undefined')
 			var bTargetIsRecommendee = true;
@@ -33,11 +38,12 @@ $(document).ready(function()
 			var bTargetIsRecommendee = false;
 		
 		if (bTargetIsRecommendee) {
+			var recipient_first_name = $(this).attr('target_person_first_name');
+			var recipient_last_name = $(this).attr('target_person_last_name');
+			var recipient_last_initial = recipient_last_name[0];
 			FB.ui({method: 'send',
-  				name: "{{request.user.first_name|capfirst}}" + "{{request.user.last_name|slice:"1"|capfirst}}" + ". found someone you may like",
-  				to: recipient_id,
-  				link:'http://www.flirtally.com',
-  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends.'
+	  			to: recipient_id,
+	  			link: 'http://flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/',
       	},function(response){
       		if (response != null){ 
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
@@ -55,10 +61,8 @@ $(document).ready(function()
     } // close off if target is recommendee
 		else { // target person is not a recommendee - they are a client
 			FB.ui({method: 'send',
-  				name: "{{request.user.first_name|capfirst}}" + "{{request.user.last_name|slice:"1"|capfirst}}" + ". recommended dates for you",
-  				to: recipient_id,
-  				link:'http://www.flirtally.com',
-  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends.'
+  			to: recipient_id,
+  			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
 		      },function(response){
 		      	if (response != null){  		
 							// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 

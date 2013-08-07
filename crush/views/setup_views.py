@@ -28,7 +28,7 @@ def setups_for_me(request,requested_username=None):
     progressing_setups = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).order_by('-updated_flag','date_added')
     setups_completed_count = me.crush_setuprelationship_set_from_target.exclude(date_lineup_finished=None).count()
     
-    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-updated_flag','source_person__first_name')
+    requests_by_me = me.crush_setuprequestrelationship_set_from_source.filter().order_by('-date_added')
     if requested_username!=None:
         try:
             resent_request = requests_by_me.get(target_person__username=requested_username)

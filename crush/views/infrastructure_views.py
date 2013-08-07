@@ -164,7 +164,7 @@ def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
-                               'change_description': "Find out if someone you know and like feels the same at Flirtally.com.",
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at http://www.flirtally.com.",
                                })    
     return HttpResponse("")
 
