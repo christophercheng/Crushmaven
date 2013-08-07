@@ -25,7 +25,7 @@ class FacebookUserManager(UserManager):
         if ('access_token' in fb_profile and facebook_user.access_token!=fb_profile['access_token']):
             facebook_user.access_token = fb_profile['access_token']
             new_fields.append('access_token')
-        
+            
         if ('first_name' in fb_profile and facebook_user.first_name!=fb_profile['first_name']):
             facebook_user.first_name = fb_profile['first_name']
             new_fields.append('first_name')
@@ -179,7 +179,6 @@ class FacebookUser(AbstractUser):
         
     # ------- START OF REQUIRED FIELDS
     access_token = models.TextField(null=True,blank=True)
-    
     
     GENDER_CHOICES = (
                       (u'M', u'male'),
@@ -399,7 +398,7 @@ class FacebookUser(AbstractUser):
         if self.gender==u'M':
             return 'him'
         else:
-            return 'her'
+            return 'hers'
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):

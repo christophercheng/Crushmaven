@@ -132,7 +132,7 @@
         var link = userData.name;
 
         var link =  '<a class="fs-anchor"  href="javascript://">' +
-		        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+userData.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
+		        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+userData.name.replace(/\s/gi, "+")+'" />' +
 		        '<input class="fs-friends" type="checkbox" checked="checked" name="friend[]" value="' + userData.id+ userData.friend_type + '" />' +
 		        '<img class="fs-thumb" src="https://graph.facebook.com/'+userData.id+'/picture" />' +
 		        '<span class="fs-name">' + _charLimit(userData.name, 15) + '</span>' +
@@ -470,7 +470,7 @@
           item = $('<li/>');
           person = facebook_friends[j]
           link =  '<a class="fs-anchor" href="javascript://">' +
-                        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.toLowerCase().replace(/\s/gi, "+")+'" />' +
+                        '<input class="fs-fullname" type="hidden" name="fullname[]" value="'+person.name.replace(/\s/gi, "+")+'" />' +
                         '<input class="fs-friends" type="checkbox" name="friend[]" value="'+ person.uid+'0" />' +
                         '<img class="fs-thumb" src="https://graph.facebook.com/'+person.uid+'/picture" />' +
                         '<span class="fs-name">' + _charLimit(person.name, 15) + '</span>' +

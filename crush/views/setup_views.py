@@ -6,6 +6,7 @@ from django.db.models import Q
 from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
 import datetime
+from crush.utils_email import send_mailgun_email
 # import the logging library
 import logging
 
@@ -195,6 +196,11 @@ def setup_create_form(request,target_person_username=""):
                 outstanding_request.delete()
             except SetupRequestRelationship.DoesNotExist:
                 pass
+            if num_recommendees > 1:
+                message="I've picked out " + str(num_recommendees) + " friends of mine that I can help set you up with. Visit http://www.flirtally.com to see whom. (message sent on behalf of " + request.user.get_shortened_name() + ", by Flirtally, a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs.)"
+            else:
+                message="I've picked out a friend of mine that I can help set you up with. Visit http://www.flirtally.com to see whom. (message sent on behalf of " + request.user.get_shortened_name() + ", by Flirtally, a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs.)"
+            #send_mailgun_email(request.user.email, 'chris.h.cheng@facebook.com',request.user.get_shortened_name() + " wants to set you up with friends of " + request.user.get_gender_pronoun_possessive() + "!",message,message)
         return redirect('/setups_by_you')
     else:
         return render(request, 'setup_create_form.html',{'target_person_username':target_person_username})

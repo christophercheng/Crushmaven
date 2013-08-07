@@ -132,14 +132,15 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
 	source_person_last_name="{{request.user.last_name|capfirst}}";
 	source_person_first_name = "{{request.user.first_name|capfirst}}"
 	source_person_last_initial = source_person_last_name[0];
+	
   FB.ui({
    			method: 'send',
   			to: window.setup_target,
   			//link: 'http://www.flirtally.com/home/',
   			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
-  			picture:"{{ STATIC_URL}}images/favicon_v2.png",
-  			name: source_person_first_name + " " + source_person_last_initial + ". recommended someone for you",
-  			description: "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs. Log in to see who " + source_person_first_name + " recommended for you.",
+  			name: source_person_first_name + " " + source_person_last_initial + ". recommended someone for you!",
+  			description: "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs... Log in to see who " + source_person_first_name + " recommended for you.",
+				picture:"{{ STATIC_URL}}images/favicon_v2.png",
 	},function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
     	  if (response != null){
@@ -147,7 +148,7 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
   				}
   			else {
   				window.wait_modal_close();
-  				window.alert_modal('Friend Set Up', "We'll create this set up once you notify your friend.",$('.setup_create_dialog') );
+  				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
   			}
   		} // close off function (response)   
     );// close off fb.ui

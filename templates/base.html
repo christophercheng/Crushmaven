@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 	}// close function login
 
 	/* -------  HANDLERS for Friend Selector and Contactable Form -------- */
-	  $.getScript('{{ STATIC_URL }}friend-selector/jquery.friend.selector-1.2.js').done(function(script,scriptStatus){
+	  $.getScript('/static/friend-selector/jquery.friend.selector-1.2.js').done(function(script,scriptStatus){
 		  $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 			  accessToken: "{{request.user.access_token}}",
 			  facebookID: "{{request.user.username}}",
@@ -311,25 +311,24 @@ jQuery(document).ready(function($) {
 	
   function add_friends_to_db(response)
   //response is a json object of username:fullname with username having extra character at end representing friendship type
-  {	      
-  		window.wait_modal_open();
-		var result_dictionary = {};
-		var attraction_invites_json={};
-		result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
-		for (attraction in response){
-			result_dictionary[attraction.slice(0,-1)]=attraction.slice(-1);
-			attraction_invites_json[attraction.slice(0,-1)]=response[attraction];
-		};
-  	$.post('/ajax_add_crush_targets/',result_dictionary, function(){
-  		// on success redirect to the crush page
-  		window.wait_modal_close();
-  		window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
-  		//document.location.href='/attractions/'; // reload page
-  	}).fail(function(error){
-  		window.alert_modal("Add Attraction Problem", error.responseText,$('#fs-dialog-box-wrap') );
+  {           
+                window.wait_modal_open();
+                var result_dictionary = {};
+                var attraction_invites_json={};
+                result_dictionary["csrfmiddlewaretoken"]="{{csrf_token}}";
+                for (attraction in response){
+                        result_dictionary[attraction.slice(0,-1)]=attraction.slice(-1);
+                        attraction_invites_json[attraction.slice(0,-1)]=response[attraction];
+                };
+        $.post('/ajax_add_crush_targets/',result_dictionary, function(){
+                // on success redirect to the crush page
+                window.wait_modal_close();
+                window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
+                //document.location.href='/attractions/'; // reload page
+        }).fail(function(error){
+                window.alert_modal("Add Attraction Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });
   }
-
 	// -------------  CSS additions ------------------
 	// HANDLE SETTINGS MENU CLICK
 	function openSubMenu() {
