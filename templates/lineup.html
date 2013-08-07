@@ -140,7 +140,7 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */
 	window.added_lineup_attraction=null;// set whenever attraction is added - used to know when at least one attraction added
 	var attraction_dialog = $("#dialog_attraction_add");
-	attraction_dialog.dialog({modal: true, autoOpen: false,width:400, resizable:false,dialogClass:'decision_confirmation_dialog blacktop'});		
+	attraction_dialog.dialog({modal: true, autoOpen: false,width:400, resizable:false,dialogClass:'decision_confirmation_dialog blacktop',close: function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();}});		
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
@@ -150,7 +150,7 @@ $(document).ready(function() // handling for the slider
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
 	dialog_attraction_html += '</div>';
   var platonic_dialog = $("#dialog_platonic_add");
-	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog blacktop'});
+	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog blacktop',close: function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();}});
   var dialog_platonic_html = '<div class="dialog_content_wrapper">';
  		dialog_platonic_html += '<span class="attractor_text">Although you\'re not attracted to <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
 		dialog_platonic_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
@@ -216,8 +216,6 @@ $(document).ready(function() // handling for the slider
 	  decision_dialog.find('.attractor_image').html('<img src="http://graph.facebook.com/' + username + '/picture?width=60&height=60" />');
 	  decision_dialog.dialog({buttons: {
 				"Cancel": function() {	
-					$('#lineup_container #site-loading').hide();
-					$('#lineup_container #slide_overlay').hide();
 					$(this).dialog("close");
 				}, // end of cancel handler
 				"Confirm": function() {
