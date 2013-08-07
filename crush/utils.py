@@ -57,7 +57,7 @@ def fb_fetch(fb_user_id,start_index):
         #opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
         #opener.addheaders.append( ('Accept', '*/*') )
         #opener.addheaders.append(('Cookie','c_user=100006434685630; xs=60%3ASH4M7l8j3NATAg%3A2%3A1375587825'))
-        opener.addheaders.append(('Cookie','c_user=651900292; xs=8%3AkxvVxS-3m6ygqw%3A2%3A1375587737'))       
+        opener.addheaders.append(('Cookie','c_user=651900292; xs=8%3AS03gWg7PNRShRg%3A2%3A1375828901'))       
         
     
         fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)

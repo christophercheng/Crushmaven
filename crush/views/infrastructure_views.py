@@ -106,6 +106,8 @@ def testing(request):
         # remove duplicates in extracted_list
     extracted_id_list = list(set(extracted_id_list))
     result = "Number of results: " + str(len(extracted_id_list))
+    #result += "--------------"
+    #result +=fetch_response
     
 #    fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=1&uid=1090&hc_location=profile_browser"
 #    fetch_url = "https://iphone.facebook.com/chris.h.cheng?v=friends&mutual&startindex=60&__ajax__="
