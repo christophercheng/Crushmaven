@@ -16,7 +16,7 @@ class FacebookUserAdmin(admin.ModelAdmin):
     list_filter = ('date_joined','is_active','gender','is_single','gender_pref') # right column auto-filter links
     ordering = ('-is_active','-date_joined','-last_name')
     #fields=('first_name','last_name','email','gender','gender_pref','is_single','site_credits','bNotify_crush_signed_up','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','birthday_year','age_pref_min','age_pref_max','date_joined','is_active','is_staff','is_superuser','password')
-    fields=('first_name','last_name','email','gender','gender_pref','is_single','site_credits','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','birthday_year','age_pref_min','age_pref_max','date_joined','is_active','is_staff','is_superuser','password')
+    fields=('first_name','last_name','email','gender','gender_pref','is_single','site_credits','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','processed_activated_friends_admirers','birthday_year','age_pref_min','age_pref_max','date_joined','is_active','is_staff','is_superuser','password')
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','target_status','date_added',) # what columns to display
