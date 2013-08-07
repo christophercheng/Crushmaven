@@ -138,7 +138,7 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
   			//to: window.setup_target,
   			//link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
 				method:'apprequests',
-				message: source_person_first_name + " selected some friends that {{ request.user.get_gender_prounoun_subject }}'d like to set you up with.",
+				message: source_person_first_name + " has selected some friends that {{ request.user.get_gender_prounoun_subject }}'d like to set you up with.  Sign in at http://www.flirtally.com to see who {{ request.user.get_gender_pronoun_subject }} chose for you.  |  Flirtally is a new matchmaking service for people who already have someone in mind for themselves - or for friends of theirs.",
 				to: window.setup_target
 	},function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
