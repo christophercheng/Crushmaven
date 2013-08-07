@@ -516,12 +516,12 @@ $('body').on('click',".popup_link",function(e){
     window.wait_modal_open("processing message...");
     source_person_last_name="{{request.user.last_name}}";
     source_person_first_name = "{{request.user.first_name}}"
-    source_person_short_name = source_person_first_name + " " + source_person_last_name[0] + ".";
+    source_person_last_initial = source_person_last_name[0];
 		FB.ui({method: 'send',
-	  				name: source_person_short_name + " would like your help.",
+
 	  				to: attraction_array[0],
 	  				link:'http://www.flirtally.com',
-	  				description:"Flirtally is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
+	  				link: 'http://flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/',
 			      },
 			      function(response){
 			    	  		window.wait_modal_close();

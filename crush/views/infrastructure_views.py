@@ -142,6 +142,23 @@ def setup_by(request,first_name = "",last_initial = ""):
                                })    
     return HttpResponse("")
 
+# fake page used to create custom content for fb send dialog (from setup request)
+def setup_for(request,first_name = "",last_initial = ""):
+ 
+    if first_name == "" and last_initial=="":
+        return render(request, 'guest_home.html',
+                          {
+                           'change_title': 'Your friend desires your matchmaking help!', 
+                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at http://www.flirtally.com.",
+                           })    
+    else:
+            return render(request, 'guest_home.html',
+                              {
+                               'change_title': first_name + " " + last_initial  + '. desires your matchmaking help!', 
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at http://www.flirtally.com.",
+                               })    
+    return HttpResponse("")
+
 # fake page used to create custom content for fb send dialog (from friends-with-admirer sidebar)
 def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
