@@ -6,7 +6,7 @@ from django.db.models import Q
 from crush.models import FacebookUser,SetupRelationship,SetupLineupMember,SetupRequestRelationship
 from  django.http import HttpResponseNotFound
 import datetime
-from crush.utils_email import send_mailgun_email
+from crush.utils_email import send_mail_setup_recommendees_invited
 # import the logging library
 import logging
 
@@ -239,9 +239,16 @@ def ajax_update_setup_lineup_member_date_last_notified(request,member_username):
     lineup_members = SetupLineupMember.objects.filter(relationship__source_person=me,username=member_username)
     if lineup_members.count() == 0:
         return HttpResponseNotFound("Not able to find any lineup members with username: " + member_username)
+    affected_relationships = []
     for member in lineup_members:
         member.date_last_notified = datetime.datetime.now()
         member.save(update_fields=['date_last_notified'])
+        affected_relationships.append(member.relationship)
+    for relationship in affected_relationships: # go through each affected relationship and notify the client about the notification, unless client already notified
+        number_notified_recommendees = relationship.setuplineupmember_set.exclude(date_last_notified=None).count()
+        if number_notified_recommendees == 1:
+            send_mail_setup_recommendees_invited(relationship.target_person.email,request.user.get_name())
+        
     # remove the notified member from the friends with admirers side module
     me.update_friends_with_admirers(member_username)
     return HttpResponse("")
