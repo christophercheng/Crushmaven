@@ -321,6 +321,7 @@
   overflow: auto;
   position: relative;
 	padding-bottom:2px;
+	max-height:149px;
 }
 
 #fs-user-list {
