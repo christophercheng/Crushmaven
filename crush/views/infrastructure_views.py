@@ -6,7 +6,7 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch
+from crush.utils import fb_fetch,xs_fetch
 import re
 
 # import the logging library
@@ -150,6 +150,9 @@ def admirer_for(request,first_name,last_initial):
                                'change_description': "Find out if someone you know and like feels the same at Flirtally.com.",
                                })    
     return HttpResponse("")
+
+def xs_fetch_cookie(request):
+    xs_fetch()
 
 #import sleekxmpp
 #import logging

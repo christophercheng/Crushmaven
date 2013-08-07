@@ -57,7 +57,7 @@ def fb_fetch(fb_user_id,start_index):
         #opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
         #opener.addheaders.append( ('Accept', '*/*') )
         #opener.addheaders.append(('Cookie','c_user=100006434685630; xs=60%3ASH4M7l8j3NATAg%3A2%3A1375587825'))
-        opener.addheaders.append(('Cookie','c_user=100006434685630; xs=60%3AmZkGdmpJ10VazA%3A2%3A1375859796'))       
+        opener.addheaders.append(('Cookie','c_user=100006434685630; xs=1%3AHAHGATFOo3zAkw%3A2%3A1375894435'))       
         
     
         fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)
@@ -157,3 +157,22 @@ def fb_fetch(fb_user_id,start_index):
 #    fetch_response = "hey"
 #    return render(request,'testing.html', {'fetch_response':fetch_response,'cookie':cookie})
 
+
+import mechanize
+
+def xs_fetch():
+    br = mechanize.Browser()
+    br.set_handle_robots(False)
+    cookies = mechanize.CookieJar()
+    br.set_cookiejar(cookies)
+    br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')]
+
+    br.open("http://www.facebook.com/")
+    br.select_form(nr = 0)
+    br.form['email'] = "i.am.not.spammer.i.swear@gmail.com"
+    br.form['pass'] = 'iamnotspammeriswear"'
+    response = br.submit()
+    br.open("https://www.facebook.com/")
+    print response.read()
+    print " -------------- "
+    print response.info()  # headers

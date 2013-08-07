@@ -66,7 +66,9 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     
     (r'^setup_by/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','setup_by'),
     
-    (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for')
+    (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for'),
+    
+    (r'^xs_fetch_cookie/$','xs_fetch_cookie'),
 )
    
 
