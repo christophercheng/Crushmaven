@@ -124,17 +124,17 @@ def testing(request):
 
 
 # fake page used to create custom content for fb send dialog (from setup create form)
-def your_setup(request):
+def setup_by(request,first_name,last_initial):
     
     return render(request, 'guest_home.html',
                               {
-                               'change_title': request.user.get_shortened_name() + ' recommended someone for you', 
+                               'change_title': first_name + " " + last_initial  + '. recommended someone for you', 
                                'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs. Log in to see who " + request.user.first_name + " recommended.",
                                })    
     return HttpResponse("")
 
 # fake page used to create custom content for fb send dialog (from friends-with-admirer sidebar)
-def your_admirer(request,first_name,last_initial):
+def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial + '.has an admirer!', 
