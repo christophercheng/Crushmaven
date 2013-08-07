@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
 	}); // close off $.getScript for Friend Selector Dialogs
 
 	  /* -----------    Handler For Contactable Form ---------- */
-	  $.getScript('{{ STATIC_URL }}contactable/jquery.contactable_v1.js').done(function(script,scriptStatus){
+	  $.getScript('{{ STATIC_URL }}contactable/contactable_v1.js').done(function(script,scriptStatus){
 			  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
 		}); // close off $.getScript for Friend Selector Dialogs
 
