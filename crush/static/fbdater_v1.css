@@ -1085,6 +1085,10 @@ a.logo img{
 #friend_referral_bar li ul li.friend_name {
 	font-weight:bold;
 	color:#474747; 
+	width:133px;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	overflow:hidden;
 }
 #friend_referral_bar li:hover ul li.friend_name {
 	color:black; 
