@@ -130,13 +130,13 @@ def setup_by(request,first_name = "",last_initial = ""):
         return render(request, 'guest_home.html',
                           {
                            'change_title': 'Your friend recommended someone for you', 
-                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs. Log in to see who " + first_name + " recommended.",
+                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs. Log in to see who " + first_name + " is trying to set you up with.",
                            })    
     else:
             return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial  + '. recommended someone for you!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs... Log in to see who " + first_name + " recommended.",
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs... Log in to see who " + first_name + " is trying to set you up with.",
                                })    
     return HttpResponse("")
 
