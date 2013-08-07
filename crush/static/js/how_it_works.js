@@ -1,4 +1,4 @@
-
+<script>
 /* --------- HANDLE HOW TO SECTION CLICKS ----------------- */
 jQuery(document).ready(function($) {
 $('.how_to_link').click(function(event){
