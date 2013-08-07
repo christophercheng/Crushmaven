@@ -448,7 +448,7 @@ $(document).ready(function() // handling for the slider
 			{% if member.decision != None or forloop.counter0 == 0 %}
 				<a data-slide-index="{{forloop.counter0}}" href=""><img src="http://graph.facebook.com/{{member.username}}/picture?width=50&height=50" /><span {% if member.decision == 0 %}class="decision_crush"{% elif member.decision > 0 %}class="decision_platonic"{% endif %}></span></a>
 			{% else %}
-					<img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="/static/images/fb_unknown_user_pic.jpg"/>
+					<img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"/>
 			{% endif %}
 		{% endfor %}
 		<span id="lineup_member_board"></span><span id="lineup_member_pointer"></span>

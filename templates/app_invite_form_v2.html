@@ -110,7 +110,7 @@ $('.sent_from_us').css('opacity',0);
 	   {% for field in form %}
 	   		{% if field.label != "crush_field" %}
 		   		<div class="email_field_input mf_email_field_input">	   			
-							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.help_text %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "/static/images/fb_unknown_user_pic.jpg"> {% endif %}</label>
+							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.help_text %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
 							<div class="fieldWrapper">
 								{{ field }}
 								<div class="email_input_error_section">{{field.errors}}</div>

@@ -17,11 +17,11 @@
 	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 	    
 		<!--<link type="text/css" href="/static/fbdater.css?t={% now "U" %}" rel="stylesheet"  />    -->
-		<link type="text/css" href="/static/fbdater.css" rel="stylesheet"  />    
+		<link type="text/css" href="{{ STATIC_URL }}fbdater_v1.css" rel="stylesheet"  />    
 	    
-	    <link type="text/css" href="/static/friend-selector/jquery.friend.selector-1.2.css" rel="stylesheet" />
+	    <link type="text/css" href="{{ STATIC_URL }}friend-selector/friend_selector_v1.css" rel="stylesheet" />
 	
-	    <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_sw.css" type="text/css" />
+	    <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_v1.css" type="text/css" />
 		
     </head>
 <body>
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 	}// close function login
 
 	/* -------  HANDLERS for Friend Selector and Contactable Form -------- */
-	  $.getScript('/static/friend-selector/jquery.friend.selector-1.2.js').done(function(script,scriptStatus){
+	  $.getScript('{{ STATIC_URL }}friend-selector/friend_selector_v1.js').done(function(script,scriptStatus){
 		  $(".bt-fs-dialog").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
 			  accessToken: "{{request.user.access_token}}",
 			  facebookID: "{{request.user.username}}",
@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
 	}); // close off $.getScript for Friend Selector Dialogs
 
 	  /* -----------    Handler For Contactable Form ---------- */
-	  $.getScript('{{ STATIC_URL }}contactable/jquery.contactable_sw.js').done(function(script,scriptStatus){
+	  $.getScript('{{ STATIC_URL }}contactable/jquery.contactable_v1.js').done(function(script,scriptStatus){
 			  $(function(){$('#contactable').contactable({csrf_token: '{{csrf_token}}'});});
 		}); // close off $.getScript for Friend Selector Dialogs
 
