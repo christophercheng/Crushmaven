@@ -131,11 +131,13 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
 	window.wait_modal_open();
 	source_person_last_name="{{request.user.last_name|capfirst}}";
 	source_person_first_name = "{{request.user.first_name|capfirst}}"
-	source_person_last_initial = source_person_last_name[0] + ".";
-   	
+	source_person_last_initial = source_person_last_name[0];
+  new_link = 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/';
+  console.log(new_link);
   FB.ui({
    			method: 'send',
   			to: window.setup_target,
+  			//link: 'http://www.flirtally.com/home/',
   			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
   			picture:"{{ STATIC_URL}}images/favicon_v2.png"
 	},function(response){

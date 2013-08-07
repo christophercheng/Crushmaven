@@ -137,7 +137,7 @@ def setup_by(request,first_name,last_initial):
 def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
-                               'change_title': first_name + " " + last_initial + '.has an admirer!', 
+                               'change_title': first_name + " " + last_initial + '. has an admirer!', 
                                'change_description': "Find out if someone you know and like feels the same at Flirtally.com.",
                                })    
     return HttpResponse("")
