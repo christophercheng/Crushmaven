@@ -100,7 +100,7 @@ class Migration(SchemaMigration):
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'friends_that_invited_me': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'friends_that_invited_me_set'", 'blank': 'True', 'to': "orm['crush.FacebookUser']"}),
             'friends_with_admirers': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'friends_with_admirers_set'", 'blank': 'True', 'to': "orm['crush.FacebookUser']"}),
-            'gender': ('django.db.models.fields.CharField', [], {'default': "u'M'", 'max_length': '1'}),
+            'gender': ('django.db.models.fields.CharField', [], {'default': "u'U'", 'max_length': '1'}),
             'gender_pref': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
