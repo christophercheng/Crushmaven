@@ -43,7 +43,7 @@ $(document).ready(function()
 			var recipient_last_initial = recipient_last_name[0];
 			FB.ui({method: 'send',
 	  			to: recipient_id,
-	  			link: 'http://flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/',
+	  			link: 'http://www.flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/',
       	},function(response){
       		if (response != null){ 
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
