@@ -313,7 +313,7 @@ h2#tagline2 #safe_text{
 .setup_step{
 	display:inline-block;
 	width:241px;
-	min-height:300px;
+	min-height:360px!important;
 	height:100%;
 	top:0px;
 	margin-right:1px;
