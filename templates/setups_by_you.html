@@ -62,7 +62,7 @@ $(document).ready(function()
 		else { // target person is not a recommendee - they are a client
 			FB.ui({method: 'send',
   			to: recipient_id,
-  			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
+  			link: 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
 		      },function(response){
 		      	if (response != null){  		
 							// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 

@@ -520,8 +520,7 @@ $('body').on('click',".popup_link",function(e){
 		FB.ui({method: 'send',
 
 	  				to: attraction_array[0],
-	  				link:'http://www.flirtally.com',
-	  				link: 'http://flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/',
+	  				link: 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/',
 			      },
 			      function(response){
 			    	  		window.wait_modal_close();
