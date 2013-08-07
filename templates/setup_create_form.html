@@ -136,14 +136,7 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
   FB.ui({
    			method: 'send',
   			to: window.setup_target,
-  			//link: 'http://www.flirtally.com/home/',
   			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
-  			name: source_person_first_name + " " + source_person_last_initial + ". recommended someone for you!",
-  			description: "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for friends of theirs... Log in to see who " + source_person_first_name + " recommended for you.",
-				//picture:"flirtally.com/static/images/favicon_v2.png",
-				//picture:"https://profile-a-iad.xx.fbcdn.net/hprofile-ash3/s160x160/995144_1377730202454313_731551687_a.jpg"
-				picture:"http://www.flirtally.com/static/images/flirtally_logo_white_v3.png",
-				caption:"Flirtally Matchmaking",
 	},function(response){
          // regardless of whether user cancels or sends message, reload the appropriate attraction page
     	  if (response != null){
