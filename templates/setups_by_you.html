@@ -73,20 +73,24 @@ $(document).ready(function()
 	    	}).fail(function(){window.wait_modal_close(); }) // close off $.get
 	    } // close off if target is recommendee
 			else { // target person is not a recommendee - they are a client
-				FB.ui({
-					method: 'send',
-	  			to: recipient_id,
-	  			link: 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
-	  			name:source_person_first_name + ' ' + source_person_last_initial + '. desires your matchmaking help!',
-	  			description: 'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help ' + source_person_first_name + ' out at http://www.flirtally.com.',
-			      },function(response){
-			      	if (response != null){  		
-								// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 
-			     			notification_link.replaceWith('notification sent');     
-			     		  $.get('/ajax_update_date_notification_last_sent/' + recipient_id + '/');	
-			      	} // close off if (resposne != null)
-			      } // close off function(Resposne) - fb.ui response handler
-	  		);// close off fb.ui
+				window.wait_modal_open();
+				var share_link = 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/';
+				$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
+					FB.ui({
+						method: 'send',
+		  			to: recipient_id,
+		  			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
+		  			name:source_person_first_name + ' ' + source_person_last_initial + '. desires your matchmaking help!',
+		  			description: 'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help ' + source_person_first_name + ' out at http://www.flirtally.com.',
+				      },function(response){
+				      	if (response != null){  		
+									// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 
+				     			notification_link.replaceWith('notification sent');     
+				     		  $.get('/ajax_update_date_notification_last_sent/' + recipient_id + '/');	
+				      	} // close off if (resposne != null)
+				      } // close off function(Resposne) - fb.ui response handler
+		  		);// close off fb.ui
+		  }).fail(function(){window.wait_modal_close(); }) // close off $.get
 		}	// close off else target is not recommendee
 	}); // close off .send_setup_notification hanlder
 	
