@@ -128,7 +128,7 @@ def testing(request):
 def ajax_ping_fb_debugger(request):
     data=request.POST
     print "data object: " + str(data)
-    share_link_array=data['share_links[]']
+    share_link_array=data.getlist('share_links[]')
     print "length of share link array: " + str(len(share_link_array))
     for share_link in share_link_array:
         print "Share link: " + share_link
