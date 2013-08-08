@@ -49,7 +49,7 @@ $(document).ready(function()
 	  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at http://www.flirtally.com.",
 	  			name:recipient_first_name + ' ' + recipient_last_initial + '. has an admirer!', 
       	},function(response){
-      		if (response != null && response[error_code] == null){ 
+      		if (response != null && response['error_code'] == null){ 
       			console.log("fb_response: ",response);
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
      				notification_link.replaceWith('<span class="setup_responded setup_recommendee_responded setup_responded_notified" title="waiting for a response"></span>');
