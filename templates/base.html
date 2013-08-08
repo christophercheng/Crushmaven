@@ -440,8 +440,9 @@ jQuery(document).ready(function($) {
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 		window.wait_modal_open();
-		var share_link_json={recipient_id:share_link};
-    post_data={"csrfmiddlewaretoken":"{{csrf_token}}","share_links":share_link_json};
+		post_data={}
+    post_data[csrfmiddlewaretoken]="{{csrf_token}}";
+    post_data[share_link]=share_link;
 		$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
 		  	FB.ui({method: 'send',
 		  				name: crush_short_name + " has an admirer!",
