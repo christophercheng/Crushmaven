@@ -440,7 +440,7 @@ jQuery(document).ready(function($) {
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 		window.wait_modal_open();
-		FB.api('/id='+ share_link + '&scrape=true,'POST',{},function(response){ // trigger facebook scraper to examine this page
+		FB.api('/id='+ share_link + '&scrape=true','POST',{},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
 				console.log('response error: ', response);
 				window.wait_modal_close();
