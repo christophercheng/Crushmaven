@@ -75,7 +75,7 @@ $(document).ready(function()
 	  			name:source_person_first_name + ' ' + source_person_last_initial + '. desires your matchmaking help!',
 	  			description: 'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help ' + source_person_first_name + ' out at http://www.flirtally.com.',
 			      },function(response){
-			      	if (response != null){  		
+			      	if (response != null && response['error_code'] == null){  		
 								// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 
 			     			notification_link.replaceWith('notification sent');     
 			     		  $.get('/ajax_update_date_notification_last_sent/' + recipient_id + '/');	

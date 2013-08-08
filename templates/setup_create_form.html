@@ -134,7 +134,7 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
  			link: share_link,
 		},function(response){
         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-   	  if (response != null){
+   	  if (response != null && response['error_code'] == null){
 			  	$('#setup_form').submit();
  				}
  			else {

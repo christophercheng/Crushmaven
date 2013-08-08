@@ -529,8 +529,7 @@ $('body').on('click',".popup_link",function(e){
  				link: share_link,
 	      },
 	      function(response){
-	    	  		window.wait_modal_close();
-					if (response != null){
+					if (response != null && response['error_code'] == null){
 						$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
 							attraction_array.splice(0,1);
 							if (attraction_array.length)
