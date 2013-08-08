@@ -98,16 +98,16 @@ def facebook_channel_file(request):
 
 @login_required
 def testing(request):
-   # if request.user.username != "651900292":
-   #     return HttpResponseForbidden("nu ughhhh")
+
     fetch_response = fb_fetch("1050",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
-    #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
     extracted_id_list = list(set(extracted_id_list))
     result = "Number of results: " + str(len(extracted_id_list))
     #result += "--------------"
     #result +=fetch_response
+
+
     
 #    fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=1&uid=1090&hc_location=profile_browser"
 #    fetch_url = "https://iphone.facebook.com/chris.h.cheng?v=friends&mutual&startindex=60&__ajax__="
@@ -132,6 +132,7 @@ def ajax_ping_fb_debugger(request):
     print "length of share link array: " + str(len(share_link_array))
     for share_link in share_link_array:
         print "Share link: " + share_link
+        ping_fb_debugger(share_link)
     return HttpResponse("")
 
 # fake page used to create custom content for fb send dialog (from setup create form)
