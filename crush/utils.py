@@ -74,8 +74,10 @@ def fb_fetch(fb_user_id,start_index):
     
 # facebook debugger tool needs to be pinged before a link to a given url can be properly shared
 def ping_fb_debugger(share_link):
+    debug_link = 'https://developers.facebook.com/tools/debug/og/object?q=' + share_link
     opener = urllib2.build_opener()
-    urllib2.Request(share_link)                            
+    fetch_response = urllib2.Request(debug_link)     
+    fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)                      
     return True
     
 #def send_mailgun_email(from_string, email_address,subject,message,send_time=None):

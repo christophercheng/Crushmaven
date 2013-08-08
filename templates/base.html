@@ -437,6 +437,12 @@ jQuery(document).ready(function($) {
 	};
 	
 	var send_fb_invite = function(recipient_id,crush_short_name){
+  	
+ 		var recipient_first_name = $(this).attr('target_person_first_name');
+		var recipient_last_name = $(this).attr('target_person_last_name');
+		var recipient_last_initial = recipient_last_name[0];
+		var share_link = 'http://www.flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/';
+			
   	FB.ui({method: 'send',
   				name: crush_short_name + " has an admirer!",
   				to: recipient_id,
