@@ -149,6 +149,7 @@ def setup_by(request,first_name = "",last_initial = ""):
                               {
                                'change_title': first_name + " " + last_initial  + '. recommended someone for you!', 
                                'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
+                               'change_url':"http://www.flirtally.com/setup_by/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 
@@ -166,6 +167,7 @@ def setup_for(request,first_name = "",last_initial = ""):
                               {
                                'change_title': first_name + " " + last_initial  + '. desires your matchmaking help!', 
                                'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at http://www.flirtally.com.",
+                                'change_url':"http://www.flirtally.com/setup_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 
@@ -175,6 +177,7 @@ def admirer_for(request,first_name,last_initial):
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
                                'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at flirtally.com.",
+                               'change_url':"http://www.flirtally.com/admirer_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 
