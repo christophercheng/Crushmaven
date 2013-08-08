@@ -439,16 +439,13 @@ jQuery(document).ready(function($) {
 	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
-		console.log('share_link:',share_link);
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
-				console.log('response error: ', response);
 				window.wait_modal_close();
 				window.alert_modal("Facebook Messaging Problem","Sorry, but we're having difficulty cooking up a message through Facebook.  Please try again later");
 			}
 			else {
-				console.log('good response error: ', response);
 		  	FB.ui({method: 'send',
 		  				name: crush_short_name + " has an admirer!",
 		  				to: recipient_id,
@@ -534,31 +531,38 @@ $('body').on('click',".popup_link",function(e){
     source_person_first_name = "{{request.user.first_name}}"
     source_person_last_initial = source_person_last_name[0];
 		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
-
-			FB.ui({method: 'send',
-	 				to: attraction_array[0],
-	 				link: share_link,
-		      },
-		      function(response){
-		      	window.wait_modal_close();
-						if (response != null && response['error_code'] == null){
-							$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+		window.wait_modal_open();
+		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
+			if (!response || response.error){
+				window.wait_modal_close();
+				window.alert_modal("Facebook Messaging Problem","Sorry, but we're having difficulty cooking up a message through Facebook.  Please try again later");
+			}
+			else {
+				FB.ui({method: 'send',
+		 				to: attraction_array[0],
+		 				link: share_link,
+			      },
+			      function(response){
+			      	window.wait_modal_close();
+							if (response != null && response['error_code'] == null){
+								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+									attraction_array.splice(0,1);
+									if (attraction_array.length)
+										send_fb_requests(attraction_array);  	
+									else // reload page so that the new requests can be processed by base.html javascript
+										window.location.href="/setups_for_me/";
+								});
+							}
+							else {
 								attraction_array.splice(0,1);
 								if (attraction_array.length)
 									send_fb_requests(attraction_array);  	
 								else // reload page so that the new requests can be processed by base.html javascript
 									window.location.href="/setups_for_me/";
-							});
-						}
-						else {
-							attraction_array.splice(0,1);
-							if (attraction_array.length)
-								send_fb_requests(attraction_array);  	
-							else // reload page so that the new requests can be processed by base.html javascript
-								window.location.href="/setups_for_me/";
-						}
-		  		} // close off function (response)   
-	   	 	);// close off fb.ui  
+							}
+			  		} // close off function (response)   
+		   	 	);// close off fb.ui  
+		   }}); // close off FB.api
 	};
 /* ---------------------------------------------
  	
