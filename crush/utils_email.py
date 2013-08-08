@@ -2,8 +2,12 @@ from django.template.loader import render_to_string
 
 from django.conf import settings
 import requests
-
 import os
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
@@ -16,10 +20,10 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
 #                           "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
                 data_dict["o:deliverytime"]=str(send_time) 
-            print data_dict
-            print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message
+            logger.debug(str(data_dict))
+            logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message)
             result= requests.post("https://api.mailgun.net/v2/flirtally.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
-            print "MailGun Response: " + str(result)
+            logger.debug( "MailGun Response: " + str(result))
         
         except Exception as e:
             print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
