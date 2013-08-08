@@ -452,15 +452,18 @@ jQuery(document).ready(function($) {
 		      function(response){
 		      		window.wait_modal_close();
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-		         if (response != null){	
+		         if (response != null && response['error_code'] == null){	
 						  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
 								if (xhr.status==405)
 									reauthorize_user();
 				  			});
-		  		} 
+		  				} //close off if (response != null) 
 		      }      
 		    );// close off fb.ui
-		   }); // close off $.post
+		   }).fail(function(){
+		   	window.wait_modal();
+		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty getting a message ready to send via Facebook. Please try again later.");
+		   	}); // close off $.post
   }; // close off send_fb_message
    
   $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
