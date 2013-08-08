@@ -436,17 +436,14 @@ jQuery(document).ready(function($) {
 		setTimeout(function(){location.href="/facebook/login"},1000);
 	};
 	
-	var send_fb_invite = function(recipient_id,crush_short_name){
-  	
- 		var recipient_first_name = $(this).attr('target_person_first_name');
-		var recipient_last_name = $(this).attr('target_person_last_name');
-		var recipient_last_initial = recipient_last_name[0];
-		var share_link = 'http://www.flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/';
+	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
+
+		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 			
   	FB.ui({method: 'send',
   				name: crush_short_name + " has an admirer!",
   				to: recipient_id,
-  				link:'http://www.flirtally.com',
+  				link: share_link,
   				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at Flirtally.com.'
       },
       function(response){
@@ -464,7 +461,9 @@ jQuery(document).ready(function($) {
   $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
            var crush_id = $(this).attr('crush_username');
            var crush_name = $(this).attr('crush_name');
-           send_fb_invite(crush_id,crush_name);
+           var crush_first_name = $(this).attr('crush_first_name');
+           var crush_last_name = $(this).attr('crush_last_name');
+           send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name);
   });
   
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
@@ -529,6 +528,7 @@ $('body').on('click',".popup_link",function(e){
  				link: share_link,
 	      },
 	      function(response){
+	      	window.wait_modal_close();
 					if (response != null && response['error_code'] == null){
 						$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
 							attraction_array.splice(0,1);
