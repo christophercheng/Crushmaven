@@ -64,7 +64,7 @@ def send_mail_delivery_problem(full_name, short_name, first_name,invalid_email_a
     text=render_to_string('email_template_notify_delivery_problem_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'invalid_email_address':invalid_email_address,'STATIC_URL':STATIC_URL})
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,'Unsuccessful invite delivery to ' + invalid_email_address,html,text)
 
-def send_mail_setup_recommendees_invited(email_address,full_name, short_name="", first_name="",pronoun_subject="",pronoun_possessive="",send_time=None):    
+def send_mail_setup_recommendees_invited(email_address,full_name, short_name, first_name="",pronoun_subject="",pronoun_possessive="",send_time=None):    
     html=render_to_string('email_template_notify_setup_recommendees_invited.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_setup_recommendees_invited_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
     send_mailgun_email('Flirtally <notifications@flirtally.com>',email_address,short_name + ' notified your setup picks!',html,text,send_time)

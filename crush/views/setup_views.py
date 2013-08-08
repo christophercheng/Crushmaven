@@ -247,7 +247,7 @@ def ajax_update_setup_lineup_member_date_last_notified(request,member_username):
     for relationship in affected_relationships: # go through each affected relationship and notify the client about the notification, unless client already notified
         number_notified_recommendees = relationship.setuplineupmember_set.exclude(date_last_notified=None).count()
         if number_notified_recommendees == 1:
-            send_mail_setup_recommendees_invited(relationship.target_person.email,request.user.get_name())
+            send_mail_setup_recommendees_invited(relationship.target_person.email,request.user.get_name(),request.user.get_shortened_name())
         
     # remove the notified member from the friends with admirers side module
     me.update_friends_with_admirers(member_username)
