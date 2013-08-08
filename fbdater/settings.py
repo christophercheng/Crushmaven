@@ -236,7 +236,7 @@ CRUSH_RESPONSE_DELAY_END = 2160 # 2160 default = 36 hours x 60 minutes = 2160
 STARTING_CREDITS=1 # change to 1 in production
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
-FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=1# 0 # default is = 1 hours
+FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=0# 0 # default is = 1 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7# 7 is default
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=7#7 is default
 MAXIMUM_CRUSH_INVITE_EMAILS=7
