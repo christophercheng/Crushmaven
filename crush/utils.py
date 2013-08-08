@@ -76,9 +76,7 @@ def fb_fetch(fb_user_id,start_index):
 def ping_fb_debugger(share_link):
     debug_link = 'https://developers.facebook.com/tools/debug/og/object?' + urllib.urlencode({'q':share_link})
     print 'delink: ' + str(debug_link)
-    opener = urllib2.build_opener()
-    fetch_response = urllib2.Request(debug_link)     
-    fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)                      
+    urllib2.urlopen(debug_link)                          
     return True
     
 #def send_mailgun_email(from_string, email_address,subject,message,send_time=None):
