@@ -279,10 +279,11 @@ class FacebookUser(AbstractUser):
     def update_friends_with_admirers(self,remove_username=None): 
         try: 
             friend_user = self.friends_with_admirers.get(username=str(remove_username))
+            friend_user.friends_that_invited_me.add(self)
+            self.friends_with_admirers.remove(friend_user)
         except FacebookUser.DoesNotExist:
-            raise FacebookUser.DoesNotExist
-        friend_user.friends_that_invited_me.add(self)
-        self.friends_with_admirers.remove(friend_user)
+            pass # not really a bug, the user just isn't in the sidebar
+        
     
 
     def html_for_inactive_friend_section(self,ajax_reprocess_friends_with_admirers=False): 

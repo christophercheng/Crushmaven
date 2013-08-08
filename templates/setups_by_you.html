@@ -49,7 +49,7 @@ $(document).ready(function()
 	  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at http://www.flirtally.com.",
 	  			name:recipient_first_name + ' ' + recipient_last_initial + '. has an admirer!', 
       	},function(response){
-      		if (response != null){ 
+      		if (response != null && response[error_code] == null){ 
       			console.log("fb_response: ",response);
      				// if notification was sent to a recommendee then replace link with appropriate waiting icon
      				notification_link.replaceWith('<span class="setup_responded setup_recommendee_responded setup_responded_notified" title="waiting for a response"></span>');
@@ -61,6 +61,10 @@ $(document).ready(function()
      		 		// update the setup lineup members' date_last_notified 
      				$.get('/ajax_update_setup_lineup_member_date_last_notified/' + recipient_id + '/');
       		} // close off if (resposne != null)
+      		else {
+      			// problem with facebook send dialog
+      			console.log("fb fail response: ", response);
+      		}
      	 	} // close off function(Resposne) - fb.ui response handler
     	);// close off fb.ui
     } // close off if target is recommendee
