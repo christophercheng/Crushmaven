@@ -149,13 +149,13 @@ def setup_for(request,first_name = "",last_initial = ""):
         return render(request, 'guest_home.html',
                           {
                            'change_title': 'Your friend desires your matchmaking help!', 
-                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at http://www.flirtally.com.",
+                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at flirtally.com.",
                            })    
     else:
             return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial  + '. desires your matchmaking help!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at http://www.flirtally.com.",
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at flirtally.com.",
                                 'change_url':"http://www.flirtally.com/setup_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
@@ -165,7 +165,7 @@ def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at flirtally.com.",
+                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at flirtally.com. | Already in a relationship?  Help set your friends up - all at flirtally.com.",
                                'change_url':"http://www.flirtally.com/admirer_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
