@@ -461,10 +461,10 @@ jQuery(document).ready(function($) {
 		      }      
 		    );// close off fb.ui
 		   }).fail(function(){
-		   	window.wait_modal();
+		   	window.wait_modal_close();
 		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty getting a message ready to send via Facebook. Please try again later.");
 		   	}); // close off $.post
-  }; // close off send_fb_message
+  }; // close off send_fb_invite
    
   $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
            var crush_id = $(this).attr('crush_username');
