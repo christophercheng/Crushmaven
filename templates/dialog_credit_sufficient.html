@@ -9,7 +9,6 @@ $(document).ready(function()
 		$.post(post_url,post_dict,function(data) {
 			// if successful then load next slide and thumbnail and auto go to that slide
 			window.wait_modal_close();
-			console.log("Ajax_deduct_credit successfully ran");
 			{{ purchase_callback_name }};
 			// adjust the credits number on the main site
 			$("#num_credits").load("/ajax_update_num_credits/");
@@ -17,7 +16,6 @@ $(document).ready(function()
 		.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
 			window.wait_modal_close();
 			//window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
-			console.log("Ajax_deduct_credit fail called");
 		}); // end of .fail handler
 	}); // close off #credit_deduct_ok handler 
 });

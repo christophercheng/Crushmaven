@@ -527,7 +527,6 @@ $('body').on('click',".popup_link",function(e){
 	  				link: share_link,
 			      },
 			      function(response){
-			      		console.log("facebook response: ",response);
 			    	  		window.wait_modal_close();
 							if (response != null){
 								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
