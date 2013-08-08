@@ -42,6 +42,7 @@ $(document).ready(function()
 			var recipient_last_name = $(this).attr('target_person_last_name');
 			var recipient_last_initial = recipient_last_name[0];
 			var share_link = 'http://flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/';
+			window.wait_modal_open();
 			$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
 				FB.ui({
 						method: 'send',
@@ -50,6 +51,7 @@ $(document).ready(function()
 		  			description:"Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at http://www.flirtally.com.",
 		  			name:recipient_first_name + ' ' + recipient_last_initial + '. has an admirer!', 
 	      	},function(response){
+	      		window.wait_modal_close();
 	      		if (response != null && response['error_code'] == null){ 
 	      			console.log("fb_response: ",response);
 	     				// if notification was sent to a recommendee then replace link with appropriate waiting icon
@@ -68,7 +70,7 @@ $(document).ready(function()
 	      		}
 	     	 	} // close off function(Resposne) - fb.ui response handler
 	    	);// close off fb.ui
-	    	}); // close off $.get
+	    	}).fail(function(){window.wait_modal_close(); }) // close off $.get
 	    } // close off if target is recommendee
 			else { // target person is not a recommendee - they are a client
 				FB.ui({
