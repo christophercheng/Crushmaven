@@ -245,6 +245,10 @@ class CrushRelationship(BasicRelationship):
             except PlatonicRelationship.DoesNotExist:
                 pass # no duplicate platonic relationship found so continue on
             try:
+                # determine if the lineup should be free or not (if relationship is FOF or NF type)
+                if self.friendship_type > 0:
+                    self.is_lineup_paid=True
+                
                 # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
                 reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)
                 
