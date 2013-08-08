@@ -127,6 +127,7 @@ def testing(request):
 # called before a link is shared via fb send dialog - hack cause fb dialog is buggy
 def ajax_ping_fb_debugger(request):
     data=request.POST
+    print "data object: " + str(data)
     share_link_array=data['share_links[]']
     for share_link in share_link_array:
         ping_fb_debugger(share_link)
