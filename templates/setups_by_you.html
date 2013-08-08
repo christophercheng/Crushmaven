@@ -43,10 +43,6 @@ $(document).ready(function()
 			var recipient_last_name = $(this).attr('target_person_last_name');
 			var recipient_last_initial = recipient_last_name[0];
 			var share_link = 'http://www.flirtally.com/admirer_for/' + recipient_first_name + '/' + recipient_last_initial + '/';
-			share_link_array=[];
-			share_link_array.push(share_link);
-			post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
-			$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
 	    		FB.ui({
 						method: 'send',
 		  			to: recipient_id,
@@ -68,25 +64,14 @@ $(document).ready(function()
 	      			// problem with facebook send dialog
 	      		}
 	     	 	} // close off function(Resposne) - fb.ui response handler
-	    	);// close off fb.ui
-	     }).fail(function(){
-		   	window.wait_modal_close();
-		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
-		  }); // close off $.post 	 
+	    	);// close off fb.ui 
 	   } // close off if target is recommendee
 		else { // target person is not a recommendee - they are a client
-
 				var share_link = 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/'; 
-				share_link_array=[];
-				share_link_array.push(share_link);
-				post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
-				$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
 					FB.ui({
 						method: 'send',
 		  			to: recipient_id,
 		  			link: 'http://flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
-		  			name:source_person_first_name + ' ' + source_person_last_initial + '. desires your matchmaking help!',
-		  			description: 'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help ' + source_person_first_name + ' out at http://www.flirtally.com.',
 				    },function(response){
 				      	if (response != null && response['error_code'] == null){  		
 									// in case the invite was sent to the setup recommendee, then need to update the setup lineup members' date_notification_last_sent AND need to remove send notification next to target's name 
@@ -94,11 +79,7 @@ $(document).ready(function()
 				     		  $.get('/ajax_update_date_notification_last_sent/' + recipient_id + '/');	
 				      	} // close off if (resposne != null)
 				      } // close off function(Resposne) - fb.ui response handler
-		  		);// close off fb.ui		
-  			}).fail(function(){
-		   		window.wait_modal_close();
-		   		window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
-		  	}); // close off $.post 	   		
+		  		);// close off fb.ui		   		
 		}	// close off else target is not recommendee
 	}); // close off .send_setup_notification hanlder
 	

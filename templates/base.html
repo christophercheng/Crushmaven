@@ -440,10 +440,6 @@ jQuery(document).ready(function($) {
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 		window.wait_modal_open();
-		share_link_array=[];
-		share_link_array.push(share_link);
-		post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
-		//$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
 
 		  	FB.ui({method: 'send',
 		  				name: crush_short_name + " has an admirer!",
@@ -462,10 +458,6 @@ jQuery(document).ready(function($) {
 		  				} //close off if (response != null) 
 		      }      
 		    );// close off fb.ui
-//		   }).fail(function(){
-//		   	window.wait_modal_close();
-//		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
-//		   	}); // close off $.post
   }; // close off send_fb_invite
    
   $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
@@ -533,11 +525,7 @@ $('body').on('click',".popup_link",function(e){
     source_person_first_name = "{{request.user.first_name}}"
     source_person_last_initial = source_person_last_name[0];
 		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
-		share_link_array=[];
-		share_link_array.push(share_link);
-		post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
-		$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
-			
+
 			FB.ui({method: 'send',
 	 				to: attraction_array[0],
 	 				link: share_link,
@@ -562,10 +550,6 @@ $('body').on('click',".popup_link",function(e){
 						}
 		  		} // close off function (response)   
 	   	 	);// close off fb.ui  
-	   	}).fail(function(){
-		   	window.wait_modal_close();
-		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
-		  }); // close off $.post 	 
 	};
 /* ---------------------------------------------
  	

@@ -72,13 +72,6 @@ def fb_fetch(fb_user_id,start_index):
         logger.error("fb_fetch exception: " + str(e))
         raise e # pass on the exception for the caller to handle
     
-# facebook debugger tool needs to be pinged before a link to a given url can be properly shared
-def ping_fb_debugger(share_link):
-    debug_link = 'https://developers.facebook.com/tools/debug/og/object?' + urllib.urlencode({'q':share_link})
-    print 'delink: ' + str(debug_link)
-    urllib2.urlopen(debug_link)                          
-    return True
-    
 #def send_mailgun_email(from_string, email_address,subject,message,send_time=None):
 #        try:
 #            data_dict={"from": from_string,\
