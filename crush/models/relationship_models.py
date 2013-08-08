@@ -10,7 +10,6 @@ import time
 from django.db import transaction
 import crush.models.lineup_models
 import crush.utils_email
-from crush.utils import ping_fb_debugger
 import thread
 from django.utils.encoding import smart_text
 # details about each unique crush 
@@ -250,10 +249,6 @@ class CrushRelationship(BasicRelationship):
                 # determine if the lineup should be free or not (if relationship is FOF or NF type)
                 if self.friendship_type > 0:
                     self.is_lineup_paid=True
-                    
-                # ping facebook debug tool so that friends can send the target person a facebook message that is properly formatted
-                share_link = 'http://www.flirtally.com/admirer_for/' + self.target_person.first_name + '/' + self.target_person.last_name[0] + '/'
-                thread.start_new_thread(ping_fb_debugger,(share_link,))
                 
                 # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
                 reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)

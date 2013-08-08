@@ -11,7 +11,6 @@ import thread
 from django.db.models import Q
 from django.core.cache import cache
 from django.utils.encoding import smart_text # convert strings into unicode
-from crush.utils import ping_fb_debugger
 
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
@@ -135,11 +134,6 @@ class FacebookUserManager(UserManager):
     
     def handle_activated_user(self,user,fb_profile):
         # look for any admirers at this point so their relationships can get updated
-        # ping facebook debug tool so that friends can send the target person a facebook message that is properly formatted
-        share_link = 'http://www.flirtally.com/setup_for/' + self.first_name + '/' + self.last_name[0] + '/'
-        ping_fb_debugger(share_link)
-        share_link = 'http://www.flirtally.com/setup_by/' + self.first_name + '/' + self.last_name[0] + '/'
-        ping_fb_debugger(share_link)
         admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
         for relation in admirer_relationships:
             # for each admirer relationship, change their status to 2 (crush is member, not yet started line-up)
