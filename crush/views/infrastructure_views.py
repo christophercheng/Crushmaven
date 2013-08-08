@@ -6,7 +6,7 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch,xs_fetch
+from crush.utils import fb_fetch,xs_fetch,ping_fb_debugger
 import re
 
 # import the logging library
@@ -124,6 +124,13 @@ def testing(request):
    
     return HttpResponse(result)
 
+# called before a link is shared via fb send dialog - hack cause fb dialog is buggy
+def ajax_ping_fb_debugger(request):
+    data=request.POST
+    share_link_array=data['share_links']
+    for share_link in share_link_array:
+        ping_fb_debugger(share_link)
+    return HttpResponse("")
 
 # fake page used to create custom content for fb send dialog (from setup create form)
 def setup_by(request,first_name = "",last_initial = ""):

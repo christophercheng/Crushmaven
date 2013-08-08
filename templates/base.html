@@ -439,23 +439,26 @@ jQuery(document).ready(function($) {
 	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
-			
-  	FB.ui({method: 'send',
-  				name: crush_short_name + " has an admirer!",
-  				to: recipient_id,
-  				link: share_link,
-  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at Flirtally.com.'
-      },
-      function(response){
-         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-         if (response != null){	
-		  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
-				if (xhr.status==405)
-					reauthorize_user();
-  			});
-  		} 
-      }      
-    );// close off fb.ui
+		window.wait_modal_open();
+		$.post('/ajax_ping_fb_debugger',{'share_links':[share_link]},function(data) {
+		  	FB.ui({method: 'send',
+		  				name: crush_short_name + " has an admirer!",
+		  				to: recipient_id,
+		  				link: share_link,
+		  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at Flirtally.com.'
+		      },
+		      function(response){
+		      		window.wait_modal_close();
+		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
+		         if (response != null){	
+						  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
+								if (xhr.status==405)
+									reauthorize_user();
+				  			});
+		  		} 
+		      }      
+		    );// close off fb.ui
+		   }); // close off $.post
   }; // close off send_fb_message
    
   $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
