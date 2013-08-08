@@ -523,6 +523,7 @@ $('body').on('click',".popup_link",function(e){
 	  				link: 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/',
 			      },
 			      function(response){
+			      		console.log("facebook response: ",response);
 			    	  		window.wait_modal_close();
 							if (response != null){
 								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
