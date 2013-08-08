@@ -517,36 +517,31 @@ $('body').on('click',".popup_link",function(e){
     source_person_last_name="{{request.user.last_name}}";
     source_person_first_name = "{{request.user.first_name}}"
     source_person_last_initial = source_person_last_name[0];
-		window.wait_modal_open();
 		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
-		$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
-	   }).fail(function(){
-	   		window.wait_modal_close();
-				FB.ui({method: 'send',
-	  				to: attraction_array[0],
-	  				link: share_link,
-			      },
-			      function(response){
-			    	  		window.wait_modal_close();
-							if (response != null){
-								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
-									attraction_array.splice(0,1);
-									if (attraction_array.length)
-										send_fb_requests(attraction_array);  	
-									else // reload page so that the new requests can be processed by base.html javascript
-										window.location.href="/setups_for_me/";
-								});
-							}
-							else {
-								attraction_array.splice(0,1);
-								if (attraction_array.length)
-									send_fb_requests(attraction_array);  	
-								else // reload page so that the new requests can be processed by base.html javascript
-									window.location.href="/setups_for_me/";
-							}
-			  		} // close off function (response)   
-		   	 	);// close off fb.ui
-	    	}); // close off $.get fail		   	 
+		FB.ui({method: 'send',
+ 				to: attraction_array[0],
+ 				link: share_link,
+	      },
+	      function(response){
+	    	  		window.wait_modal_close();
+					if (response != null){
+						$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+							attraction_array.splice(0,1);
+							if (attraction_array.length)
+								send_fb_requests(attraction_array);  	
+							else // reload page so that the new requests can be processed by base.html javascript
+								window.location.href="/setups_for_me/";
+						});
+					}
+					else {
+						attraction_array.splice(0,1);
+						if (attraction_array.length)
+							send_fb_requests(attraction_array);  	
+						else // reload page so that the new requests can be processed by base.html javascript
+							window.location.href="/setups_for_me/";
+					}
+	  		} // close off function (response)   
+   	 	);// close off fb.ui   	 
 	};
 /* ---------------------------------------------
  	

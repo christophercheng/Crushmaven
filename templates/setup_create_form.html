@@ -124,31 +124,25 @@ $(document).ready(function()
 
 $(".setup_create_dialog").on('click','#create_setup',function(){
 
-	window.wait_modal_open();
 	source_person_last_name="{{request.user.last_name|capfirst}}";
 	source_person_first_name = "{{request.user.first_name|capfirst}}"
 	source_person_last_initial = source_person_last_name[0];
 	var share_link = 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/';
-	// wrapper ajax function knowingly fails, but it pings the facebook debugger function which allows the link to be shared nicely (with correct parameters)
-	$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
-	    	}).fail(function(){
-	    	window.wait_modal_close(); 
-  			FB.ui({
-		   			method: 'send',
-		  			to: window.setup_target,
-		  			link: share_link,
-					},function(response){
-		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-		    	  if (response != null){
-						  	$('#setup_form').submit();
-		  				}
-		  			else {
-		  				window.wait_modal_close();
-		  				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
-		  			}
-		  		} // close off function (response)   
-			  );// close off fb.ui
-		}); // close off $.get fail
+		FB.ui({
+  			method: 'send',
+ 			to: window.setup_target,
+ 			link: share_link,
+		},function(response){
+        // regardless of whether user cancels or sends message, reload the appropriate attraction page
+   	  if (response != null){
+			  	$('#setup_form').submit();
+ 				}
+ 			else {
+ 				window.wait_modal_close();
+ 				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
+ 			}
+ 		} // close off function (response)   
+  );// close off fb.ui
 }); // close off .setup_create_dialog on click '#create_setup' handler
 
 {% comment %}
