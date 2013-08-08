@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
+from crush.utils_email import send_mail_user_logged_in
+import thread
 
 #First step of process, redirects user to Facebook, which redirects back to authentication_callback.
 def login(request,next_page=""):
@@ -29,6 +31,8 @@ def authentication_callback(request,next_page=""):
     user = authenticate(token=code, request=request,next_page=next_page)
     if user!=None:
         auth_login(request, user)
+    thread.start_new_thread(send_mail_user_logged_in,(str(request.META),))
+
     #RETURN back to home directory
     if next_page =="":
         return HttpResponseRedirect('/home/')

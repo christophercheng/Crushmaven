@@ -23,6 +23,9 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
         
         except Exception as e:
             print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
+
+def send_mail_user_logged_in(full_name, header_string):
+    send_mailgun_email('Flirtally Admin <admin@flirtally.com>','chris_h_cheng@hotmail.com',full_name + ' logged in!',header_string,header_string)
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
