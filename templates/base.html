@@ -439,8 +439,9 @@ jQuery(document).ready(function($) {
 	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
 
 		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
+		console.log('share_link:',share_link);
 		window.wait_modal_open();
-		FB.api('/id='+ share_link + '&scrape=true','POST',{},function(response){ // trigger facebook scraper to examine this page
+		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
 				console.log('response error: ', response);
 				window.wait_modal_close();
