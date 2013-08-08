@@ -74,7 +74,7 @@ def fb_fetch(fb_user_id,start_index):
     
 # facebook debugger tool needs to be pinged before a link to a given url can be properly shared
 def ping_fb_debugger(share_link):
-    debug_link = 'https://developers.facebook.com/tools/debug/og/object?q=' + share_link
+    debug_link = 'https://developers.facebook.com/tools/debug/og/object?' + urllib.urlencode({'q':share_link})
     opener = urllib2.build_opener()
     fetch_response = urllib2.Request(debug_link)     
     fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)                      
