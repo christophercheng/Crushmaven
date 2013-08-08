@@ -128,26 +128,27 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
 	source_person_last_name="{{request.user.last_name|capfirst}}";
 	source_person_first_name = "{{request.user.first_name|capfirst}}"
 	source_person_last_initial = source_person_last_name[0];
-	
-  FB.ui({
-   			method: 'send',
-  			to: window.setup_target,
-  			link: 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/',
-				//method:'apprequests',
-				//message: source_person_first_name + " selected some friends that {{ request.user.get_gender_pronoun_subject }}'d like to set you up with.  Sign in at http://www.flirtally.com to find out who.",
-				//to: window.setup_target
-	},function(response){
-         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-    	  if (response != null){
-				  	$('#setup_form').submit();
-  				}
-  			else {
-  				window.wait_modal_close();
-  				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
-  			}
-  		} // close off function (response)   
-    );// close off fb.ui
-  }); // close off .setup_create_dialog on click '#create_setup' handler
+	var share_link = 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/';
+	$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
+	    	}).fail(function(){
+	    	window.wait_modal_close(); 
+  			FB.ui({
+		   			method: 'send',
+		  			to: window.setup_target,
+		  			link: share_link,
+					},function(response){
+		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
+		    	  if (response != null){
+						  	$('#setup_form').submit();
+		  				}
+		  			else {
+		  				window.wait_modal_close();
+		  				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
+		  			}
+		  		} // close off function (response)   
+			  );// close off fb.ui
+		}); // close off $.get fail
+}); // close off .setup_create_dialog on click '#create_setup' handler
 
 {% comment %}
  	// check if user has chat login permissions

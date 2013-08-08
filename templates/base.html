@@ -517,10 +517,14 @@ $('body').on('click',".popup_link",function(e){
     source_person_last_name="{{request.user.last_name}}";
     source_person_first_name = "{{request.user.first_name}}"
     source_person_last_initial = source_person_last_name[0];
-		FB.ui({method: 'send',
-
+		window.wait_modal_open();
+		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
+		$.get('https://developers.facebook.com/tools/debug/og/object?q=' + share_link,function(data){
+	   }).fail(function(){
+	   		window.wait_modal_close();
+				FB.ui({method: 'send',
 	  				to: attraction_array[0],
-	  				link: 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/',
+	  				link: share_link,
 			      },
 			      function(response){
 			      		console.log("facebook response: ",response);
@@ -543,6 +547,7 @@ $('body').on('click',".popup_link",function(e){
 							}
 			  		} // close off function (response)   
 		   	 	);// close off fb.ui
+	    	}); // close off $.get fail		   	 
 	};
 /* ---------------------------------------------
  	
