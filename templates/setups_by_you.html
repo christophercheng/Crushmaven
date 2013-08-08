@@ -68,6 +68,7 @@ $(document).ready(function()
 	      		}
 	     	 	} // close off function(Resposne) - fb.ui response handler
 	    	);// close off fb.ui
+	    	}); // close off $.get
 	    } // close off if target is recommendee
 			else { // target person is not a recommendee - they are a client
 				FB.ui({
@@ -84,7 +85,6 @@ $(document).ready(function()
 			      	} // close off if (resposne != null)
 			      } // close off function(Resposne) - fb.ui response handler
 	  		);// close off fb.ui
-	  	}); // close off $.get
 		}	// close off else target is not recommendee
 	}); // close off .send_setup_notification hanlder
 	
