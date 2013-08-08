@@ -444,6 +444,7 @@ jQuery(document).ready(function($) {
 		share_link_array.push(share_link);
 		post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
 		$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
+				/*
 		  	FB.ui({method: 'send',
 		  				name: crush_short_name + " has an admirer!",
 		  				to: recipient_id,
@@ -461,6 +462,7 @@ jQuery(document).ready(function($) {
 		  				} //close off if (response != null) 
 		      }      
 		    );// close off fb.ui
+		    */
 		   }).fail(function(){
 		   	window.wait_modal_close();
 		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");

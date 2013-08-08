@@ -129,8 +129,9 @@ def ajax_ping_fb_debugger(request):
     data=request.POST
     print "data object: " + str(data)
     share_link_array=data['share_links[]']
+    print "length of share link array: " + len(share_link_array)
     for share_link in share_link_array:
-        ping_fb_debugger(share_link)
+        print "Share link: " + share_link
     return HttpResponse("")
 
 # fake page used to create custom content for fb send dialog (from setup create form)
