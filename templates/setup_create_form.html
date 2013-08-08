@@ -128,21 +128,30 @@ $(".setup_create_dialog").on('click','#create_setup',function(){
 	source_person_first_name = "{{request.user.first_name|capfirst}}"
 	source_person_last_initial = source_person_last_name[0];
 	var share_link = 'http://www.flirtally.com/setup_by/' + source_person_first_name + '/' + source_person_last_initial + '/';
+	share_link_array=[];
+	share_link_array.push(share_link);
+	post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
+	window.wait_modal_open();
+	$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
 		FB.ui({
   			method: 'send',
  			to: window.setup_target,
  			link: share_link,
-		},function(response){
+			},function(response){
         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-   	  if (response != null && response['error_code'] == null){
+   	  	if (response != null && response['error_code'] == null){
 			  	$('#setup_form').submit();
  				}
- 			else {
- 				window.wait_modal_close();
- 				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
- 			}
- 		} // close off function (response)   
-  );// close off fb.ui
+	 			else {
+	 				window.wait_modal_close();
+	 				window.alert_modal('Friend Set Up', "We need to notify your friend in order to create a setup for them.",$('.setup_create_dialog') );
+	 			}
+ 			} // close off function (response)   
+  	);// close off fb.ui
+ 	}).fail(function(){
+		   	window.wait_modal_close();
+		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
+	}); // close off $.post 
 }); // close off .setup_create_dialog on click '#create_setup' handler
 
 {% comment %}

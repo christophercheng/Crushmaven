@@ -533,30 +533,39 @@ $('body').on('click',".popup_link",function(e){
     source_person_first_name = "{{request.user.first_name}}"
     source_person_last_initial = source_person_last_name[0];
 		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
-		FB.ui({method: 'send',
- 				to: attraction_array[0],
- 				link: share_link,
-	      },
-	      function(response){
-	      	window.wait_modal_close();
-					if (response != null && response['error_code'] == null){
-						$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+		share_link_array=[];
+		share_link_array.push(share_link);
+		post_data={csrfmiddlewaretoken:"{{csrf_token}}", share_links:share_link_array};
+		$.post('/ajax_ping_fb_debugger/',post_data,function(data) {
+			
+			FB.ui({method: 'send',
+	 				to: attraction_array[0],
+	 				link: share_link,
+		      },
+		      function(response){
+		      	window.wait_modal_close();
+						if (response != null && response['error_code'] == null){
+							$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
+								attraction_array.splice(0,1);
+								if (attraction_array.length)
+									send_fb_requests(attraction_array);  	
+								else // reload page so that the new requests can be processed by base.html javascript
+									window.location.href="/setups_for_me/";
+							});
+						}
+						else {
 							attraction_array.splice(0,1);
 							if (attraction_array.length)
 								send_fb_requests(attraction_array);  	
 							else // reload page so that the new requests can be processed by base.html javascript
 								window.location.href="/setups_for_me/";
-						});
-					}
-					else {
-						attraction_array.splice(0,1);
-						if (attraction_array.length)
-							send_fb_requests(attraction_array);  	
-						else // reload page so that the new requests can be processed by base.html javascript
-							window.location.href="/setups_for_me/";
-					}
-	  		} // close off function (response)   
-   	 	);// close off fb.ui   	 
+						}
+		  		} // close off function (response)   
+	   	 	);// close off fb.ui  
+	   	}).fail(function(){
+		   	window.wait_modal_close();
+		   	window.alert_modal("Facebook Message Problem","Sorry, we are having difficulty cooking up a message to send via Facebook. Please try again later.");
+		  }); // close off $.post 	 
 	};
 /* ---------------------------------------------
  	
