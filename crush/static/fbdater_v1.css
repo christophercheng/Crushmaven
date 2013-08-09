@@ -853,7 +853,6 @@ a.logo img{
 	border-radius:0px 0px 2px 2px;
 	border-left:1px solid #fff;
 	border-right:1px solid #fff;
-	
 }
 
 .nav_subtext {
@@ -880,10 +879,6 @@ a.logo img{
     -webkit-transition: all .3s ease;
     -o-transition: all .3s ease;
     transition: all .3s ease;
-}
-
-.navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover  {http://127.0.0.1:8000/setups_by_you/
-	border-bottom:1px solid #595983!important;	
 }
 
 .navbar li.inactive a:active {
@@ -1023,6 +1018,10 @@ a.logo img{
 	box-shadow: inset -1px 1px 4px #474747;
 	border-color:#ff0033;
 	color:#E02B50;
+}
+
+.navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover {
+	border-bottom:1px solid #595983;	
 }
 
 /* ===========================   Right Sidebar ========================= */
