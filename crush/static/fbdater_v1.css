@@ -932,8 +932,8 @@ a.logo img{
 	background-position:-119px -312px;
 	height:20px;
 	width:20px;
-	top:12px;
-	left:71px;
+	top:10px;
+	left:85px;
 	z-index:16;
 }
 .left_sidebar_container #combo_singles_button .small_add_icon_border{
@@ -941,8 +941,8 @@ a.logo img{
 	background:#242434;
 	height:19px;
 	width:3px;
-	top:11px;
-	left:80px;
+	top:9px;
+	left:94px;
 	z-index:15;
 }
 
@@ -953,34 +953,36 @@ a.logo img{
 	font-size:11px;
 	border:0px;
 	color:white;
-	height:40px;
-	padding-top:5px;
+	height:39px;
+	line-height:15px;
 	font-weight:normal;
 	cursor:pointer;
 	text-align:center;
 	overflow:hidden;
 	letter-spacing:1px;
+	padding-top:5px;
 }
 .left_sidebar_container #combo_singles_button a.bt-fs-dialog {
 	border-radius:2px 0px 0px 8px;
 	float:left;
-	width:82px;
-	padding-right:4px;
+	width:96px;
+	text-align: center;
 	border-right:1px solid #595983;
+	padding-right:1px;
 }
 .left_sidebar_container a.request_setup_link{
 	border-radius:0px 2px 8px 0px;	
 	float:left;
-	width:113px;
-	padding-left:9px;
+	width:99px;
+	text-align:center;
 	background-color:#242434;
+	padding-left:1px;
 }
 
 .left_sidebar_container #combo_singles_button a:hover{
 	#color:#DC143C!important;
 	#color:#E02B50!important;
 	background-color:rgb(66,66,82);
-
 	transition-property:background-color;
 	transition-duration:200ms;
 	-webkit-transition-duration:200ms;
@@ -1246,6 +1248,16 @@ a.logo img{
 	margin-bottom:12px;
 	display:block;
 	position:relative;
+}
+
+.new_user_instructions .instruction_sub_step{
+	margin-top:-6px;
+	line-height:19px;
+	margin-bottom:12px;
+	display:block;
+	position:relative;
+	#font-weight:bold;
+	font-size:11px;
 }
 .new_user_instructions .instruction_step_text{
 	display:inline-block;
