@@ -38,7 +38,7 @@ def setups_for_me(request,requested_username=None):
             pass
     show_help_popup=0 # do not show    
     # determine if help popup should show, and which one
-    if len(requests_by_me) == 0 and len(progressing_setups)==0 and setups_completed_count==0:
+    if setups_completed_count==0:
         show_help_popup=1 # show version 1 of popup
     elif len(progressing_setups)>0 and setups_completed_count==0:
         show_help_popup=2 #show version 2 of popup
