@@ -269,11 +269,11 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add an Attraction">Like Someone</a>
 	</div>
 	</div>		<!-- close off instructional content -->
-{% if crushes_in_progress_count == 0 %}
-<p class="new_user_sub_instructions">
-	<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or just more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_you/">Friend Setups</a>
-</p>
-{% endif %}
+	{% if crushes_in_progress_count == 0 %}
+		<p class="new_user_sub_instructions">
+			<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or just more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_you/">Friend Setups</a>
+		</p>
+	{% endif %}
 {% endif %} 
 
 {% if crush_relationships %}
