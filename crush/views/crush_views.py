@@ -122,7 +122,7 @@ def attractions(request, reveal_crush_id=None):
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
     # determine whether to show help popup
-    if len(crush_progressing_relationships) == 0 and len(responded_relationships) == 0 and crushes_completed_count == 0:
+    if crushes_completed_count == 0:
         show_help_popup=True
     else:
         show_help_popup=False
