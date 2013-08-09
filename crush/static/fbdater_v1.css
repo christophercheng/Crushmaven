@@ -1256,7 +1256,8 @@ a.logo img{
 	margin-bottom:12px;
 	display:block;
 	position:relative;
-	#font-weight:bold;
+	font-style:italic;
+	padding-left:2px;
 	font-size:11px;
 }
 .new_user_instructions .instruction_step_text{
