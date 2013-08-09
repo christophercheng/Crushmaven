@@ -3736,6 +3736,7 @@ div.past_dialog_header {
 .request_block .request_block_preposition, .request_block .request_block_name{
 	display:inline-block;
 	font-weight:bold;
+	line-height:18px;
 }
 .request_block .request_block_preposition{
 	font-weight:normal;
@@ -3748,7 +3749,6 @@ div.past_dialog_header {
 	white-space:nowrap;
 	overflow:hidden;
 	margin-top:5px;
-	line-height:15px;
 	vertical-align:bottom;
 }
 
