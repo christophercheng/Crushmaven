@@ -429,9 +429,6 @@ h2#tagline2 #safe_text{
 	white-space:normal;
 }
 
-#singles_step_3{
-	margin-right:0px;
-}
 .singles_step_text_column{
 	display:block;
 	position:absolute;
@@ -474,15 +471,17 @@ h2#tagline2 #safe_text{
 }
 
 #singles_step_2{
-	margin-left:-5px;
+	margin-left:-10px;
 	width:330px;
 }
 #singles_step_2 .singles_step_text_column{
 	width:205px;
 }
+
 #singles_step_3{
 	margin-left:-5px;
 	width:320px;
+	margin-right:0px;
 }
 #singles_step_3 .singles_step_text_column{
 	width:180px;
