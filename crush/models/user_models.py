@@ -193,7 +193,7 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
-    matchmaker_preference=models.BooleanField(default=False)# does the user prefer to be a matchmaker?
+    matchmaker_preference=models.BooleanField(blank=True,null=True,default=None)# does the user prefer to be a matchmaker?
     is_underage = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
