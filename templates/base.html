@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
 		    color: "default",
 		    showRandom:false,
 		    lang: {
-		      title: "Add Attractions",
+		      title: "Like Someone",
 		      searchText: "Enter a friend's name",
 		      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
 		      selectedCountResult: "You have choosen {0} people.",
@@ -325,7 +325,7 @@ jQuery(document).ready(function($) {
                 window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
                 //document.location.href='/attractions/'; // reload page
         }).fail(function(error){
-                window.alert_modal("Add Attraction Problem", error.responseText,$('#fs-dialog-box-wrap') );
+                window.alert_modal("Like Someone - Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });
   }
 	// -------------  CSS additions ------------------

@@ -169,7 +169,7 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title span').html("Add Attractions - Confirmation");
+      $('#fs-dialog-title span').html("Like Someone - Confirmation");
       $('#nfs-tab').hide();
       $('#fs-tab').hide();
       $('#fs-continue-button').hide();
