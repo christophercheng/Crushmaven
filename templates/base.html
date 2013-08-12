@@ -637,7 +637,6 @@ $('.show_less').click(function(){
 	setTimeout(function(){$('.new_user_instructions').removeClass('expanded');},100);
 });
 
-
 }); // close of jQuery(document).ready
 
 </script>
@@ -648,7 +647,13 @@ $('.show_less').click(function(){
 
 <div class="main_container">
 	<div class="left_sidebar">
-		<div class="left_sidebar_container">{% include "navigation_left.html" %}</div>
+		{% if matchmaker_preference %}
+			<div class="left_sidebar_container">{% include "navigation_left_matchmakers.html" %}</div>
+			<div class="left_sidebar_container">{% include "navigation_left_singles.html" %}</div>
+		{% else %}
+			<div class="left_sidebar_container">{% include "navigation_left_singles.html" %}</div>
+			<div class="left_sidebar_container">{% include "navigation_left_matchmakers.html" %}</div>
+		{% endif %}
 	</div> <!-- close off left_sidebar -->
 	<div class="center_panel">
 		<div class="center_panel_container">

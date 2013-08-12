@@ -29,6 +29,10 @@ def context_processor(request):
                 ajax_reprocess_friends_with_admirers=False
 
         inactive_friend_section_html = me.html_for_inactive_friend_section(ajax_reprocess_friends_with_admirers)
+        if me.matchmaker_preference != None:
+            my_matchmaker_preference = me.matchmaker_preference
+        else: # no matchmaker preference set (first time user going onto site, so default to relationship status)
+            my_matchmaker_preference = not me.is_single
            
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),
@@ -45,7 +49,8 @@ def context_processor(request):
             'num_setups_by_you_in_progress' : num_progressing_setups_by_you,
             'num_setups_for_me_in_progress': num_progressing_setups_for_me, 
             'num_setup_requests':num_setup_requests,
-            'inactive_friend_section_html':inactive_friend_section_html
+            'inactive_friend_section_html':inactive_friend_section_html,
+            'matchmaker_preference':my_matchmaker_preference 
             }
     else: # whenever a user is logged in, just use an empty dictionary
         return {}

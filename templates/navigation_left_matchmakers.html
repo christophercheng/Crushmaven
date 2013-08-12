@@ -1,0 +1,31 @@
+{% load base_extras %}
+<div class="nav_header">
+<span class="nav_header_preposition">For</span> Matchmakers
+</div>
+
+<ul id="setup_nav" class = "navbar">
+
+		<!-- Left Bar Links -->	
+		<li class="{% navactive request 'setups_by_you' %} setups_by_you">
+			<a href="{% url 'crush.views.setup_views.setups_by_you' %}">
+				<span class="menu_icon"></span>				
+				<span class="menu_title">Setup <span class="shrink_text">by you</span></span> 
+				<span class="menu_count">{{num_setups_by_you_in_progress }}</span>
+				<span class="nav_subtext">See which friends matched</span>
+			</a>
+			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
+		</li>		
+		<li class="{% navactive request 'setup_requests' %} setup_requests_for_me">
+			<a href="{% url 'crush.views.setup_views.setup_requests_for_me' %}">
+				<span class="menu_icon"></span>				
+				<span class="menu_title">Setup Requests</span> 
+				<span class="menu_count{% if num_setup_requests %} new_menu_count">{{num_setup_requests}} new{% else %}">0{% endif %}</span>
+				<span class="nav_subtext">Set up friends asking for help</span>
+			</a>
+			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
+		</li>
+</ul>
+
+<div class="button_container" id="create_setup">
+	<a href="javascript:{}" class="create_setup button set_up_friend_link"><span class="add_icon"></span>Set up a Friend</a>
+</div>

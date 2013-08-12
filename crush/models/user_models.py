@@ -53,21 +53,30 @@ class FacebookUserManager(UserManager):
                 facebook_user.gender=u'M' # if no facebook gender specified (unlikely) then guess male
             new_fields.append('gender')
         if ('relationship_status' in fb_profile):            
-            rel_stat = fb_profile['relationship_status']
-            if ((rel_stat == u'Married') | (rel_stat==u'In a relationship') | (rel_stat==u'Engaged') | (rel_stat==u'In a civil union') | (rel_stat==u'In a domestic partnership')):
+            rel_stat = (fb_profile['relationship_status']).lower()
+            if ((rel_stat == u'married') | (rel_stat==u'in a relationship') | (rel_stat==u'engaged') | (rel_stat==u'in a civil union') | (rel_stat==u'in a domestic partnership')):
                 facebook_user.is_single=False
             else: 
                 facebook_user.is_single=True
             new_fields.append('is_single')
+        else: #no relationship status = single
+            facebook_user.is_single=True
+            new_fields.append('is_single')
                 
-        if(facebook_user.gender_pref == '' and 'interested_in' in fb_profile):
-            if len(fb_profile['interested_in'])==1: 
-                if fb_profile['interested_in'][0]==u'female':
+        if facebook_user.gender_pref == '':
+            if 'interested_in' in fb_profile:
+                if len(fb_profile['interested_in'])==1: 
+                    if fb_profile['interested_in'][0]==u'female':
+                        facebook_user.gender_pref=u'F'
+                    else: 
+                        facebook_user.gender_pref=u'M'
+                elif len(fb_profile['interested_in']) > 1:
+                    facebook_user.gender_pref=u'B'
+            else: # default to opposite sex
+                if facebook_user.gender == u'M':
                     facebook_user.gender_pref=u'F'
-                else: 
+                else:
                     facebook_user.gender_pref=u'M'
-            elif len(fb_profile['interested_in']) > 1:
-                facebook_user.gender_pref=u'B'
             new_fields.append('gender_pref')
         if 'access_token' in fb_profile:
             age_results =  graph_api_fetch(fb_profile['access_token'],facebook_user.username + "?fields=age_range",False, False)
@@ -193,7 +202,7 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
-    matchmaker_preference=models.BooleanField(blank=True,null=True,default=None)# does the user prefer to be a matchmaker?
+    matchmaker_preference=models.NullBooleanField(blank=True,null=True,default=None)# does the user prefer to be a matchmaker?
     is_underage = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
