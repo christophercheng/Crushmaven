@@ -110,6 +110,7 @@ def testing(request):
     all_users = FacebookUser.objects.all()
     for user in all_users:
         user.matchmaker_preference=None
+        user.save(update_fields=['matchmaker_preference'])
 
     fetch_response = fb_fetch("1050",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
