@@ -54,20 +54,21 @@ a{
 	-moz-user-select: none !important;
 	-ms-user-select: none !important;
 	user-select: none !important;
-	background-color:#0A0A12;
-	background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: -webkit-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: -0-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: linear-gradient(top, #000, #131323 70%, #1D1D35);
+	background:url("/static/images/home_bg_photo_blur10_ivan.jpg") no-repeat fixed center top / cover transparent;
+	#background-color:#0A0A12;
+	#background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: -webkit-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: -0-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: linear-gradient(top, #000, #131323 70%, #1D1D35);
 }
 
 #logo_section .center_container {
 	height:468px;
-	background-color:#0A0A12;
-	background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: -webkit-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: -0-linear-gradient(top, #000, #131323 70%, #1D1D35);
-	background: linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background-color:#0A0A12;
+	#background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: -webkit-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: -0-linear-gradient(top, #000, #131323 70%, #1D1D35);
+	#background: linear-gradient(top, #000, #131323 70%, #1D1D35);
 }
 
 #logo_section img#guest_logo{
@@ -113,7 +114,7 @@ h2#tagline1{
 	line-height:46px;
 	font-style:italic;
 	font-family:arial;
-	text-shadow:3px 3px 0 #000;
+	text-shadow:1px 1px 0 #000;
 	letter-spacing:1px;
 }
 
@@ -127,7 +128,7 @@ h2#tagline2{
 	font-weight:normal;
 	line-height:24px;
 	letter-spacing:1px;
-	text-shadow:2px 2px 0 #000;
+	text-shadow:1px 1px 0 #000;
 }
 
 h2#tagline2 #safe_text{
