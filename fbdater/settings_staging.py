@@ -2,9 +2,7 @@ from settings import *
 import logging
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-
-ALLOWED_HOSTS = ['www.flirtally.com']#new for django 1.5
-
+ALLOWED_HOSTS = ['flirtally-staging.herokuapp.com']#new for django 1.5 
 logging.basicConfig(
     level = logging.DEBUG,
     format = '%(asctime)s %(levelname)s %(message)s',
