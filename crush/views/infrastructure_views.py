@@ -40,16 +40,16 @@ def home(request):
         elif request.user.crush_setuprequestrelationship_set_from_target.all().count() > 0:
             return HttpResponseRedirect('/setup_requests_for_me/')
         else:
-            if request.user.matchmaker_preference == None:
-                if request.user.is_single:
-                    return HttpResponseRedirect('/attractions/')
-                else:
-                    return HttpResponseRedirect('/setups_by_you/')
+            #if request.user.matchmaker_preference == None:
+            if request.user.is_single:
+                return HttpResponseRedirect('/attractions/')
             else:
-                if request.user.matchmaker_preference:
-                    return HttpResponseRedirect('/setups_by_you/')
-                else:
-                    return HttpResponseRedirect('/attractions/')
+                return HttpResponseRedirect('/setups_by_you/')
+            #else:
+            #    if request.user.matchmaker_preference:
+            #        return HttpResponseRedirect('/setups_by_you/')
+            #    else:
+            #        return HttpResponseRedirect('/attractions/')
     else:
         return render(request,'guest_home.html')
 

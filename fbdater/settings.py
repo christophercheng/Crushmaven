@@ -7,7 +7,7 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, PROJECT_PATH)
 ALLOWED_HOSTS = ['www.flirtally.com']#new for django 1.5 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 import logging
 
