@@ -11,7 +11,12 @@ import thread
 from django.db.models import Q
 from django.core.cache import cache
 from django.utils.encoding import smart_text # convert strings into unicode
+# import the logging library
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+# end imports for testing
 # a custom User Profile manager class to encapsulate common actions taken on a table level (not row-user level)
 class FacebookUserManager(UserManager):
 
@@ -103,6 +108,7 @@ class FacebookUserManager(UserManager):
         
             user = super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             # existing user was found!
+            logger.debug("user was found")
             
             if (is_this_for_me):    
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
@@ -113,11 +119,13 @@ class FacebookUserManager(UserManager):
 
         # No existing user, create one (happens when someone adds a crush but that crush is not already a user
         except FacebookUser.DoesNotExist:
+            logger.debug('user not found')
             
             if fb_profile == None:
                 try:
                     fb_profile=graph_api_fetch(fb_access_token,str(fb_id),expect_data=False)
                 except:
+                    logger.debug('could not fetch graph api data for new user. badness')
                     return None # bad error handling, couldn't fetch data for this user
             fb_id=fb_profile['id']
             fb_username = fb_profile.get('username', fb_id)# if no username then grab id
@@ -138,6 +146,7 @@ class FacebookUserManager(UserManager):
                 print fb_username + " unable to create a new user, probably cause it's already been created"
                 return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             #thread.start_new_thread(self.update_user,(user,fb_profile))     
+            logger.debug("calling update_user with user: " + str(user))
             self.update_user(user,fb_profile)     
         return user
     
