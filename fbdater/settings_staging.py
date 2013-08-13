@@ -1,6 +1,6 @@
 from settings import *
 import logging
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 logging.basicConfig(
