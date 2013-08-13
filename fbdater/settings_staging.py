@@ -1,6 +1,6 @@
 from settings import *
 import logging
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['flirtally-staging.herokuapp.com']#new for django 1.5 
 logging.basicConfig(
