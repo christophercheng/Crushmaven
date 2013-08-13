@@ -143,10 +143,9 @@ h2#tagline1{
 	font-size:34px;
 	font-weight:normal;
 	line-height:46px;
-	font-style:italic;
 	font-family:arial;
 	text-shadow:1px 1px 0 #000;
-	letter-spacing:1px;
+	letter-spacing:0px;
 }
 
 
