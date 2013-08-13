@@ -29,11 +29,10 @@ def context_processor(request):
                 ajax_reprocess_friends_with_admirers=False
 
         inactive_friend_section_html = me.html_for_inactive_friend_section(ajax_reprocess_friends_with_admirers)
-        #if me.matchmaker_preference != None:
-        #    my_matchmaker_preference = me.matchmaker_preference
-        #else: # no matchmaker preference set (first time user going onto site, so default to relationship status)
-        #    my_matchmaker_preference = not me.is_single
-        my_matchmaker_preference=False
+        if me.matchmaker_preference != None:
+            my_matchmaker_preference = me.matchmaker_preference
+        else: # no matchmaker preference set (first time user going onto site, so default to relationship status)
+            my_matchmaker_preference = not me.is_single
            
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),
