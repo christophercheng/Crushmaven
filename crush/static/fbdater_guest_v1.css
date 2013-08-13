@@ -623,9 +623,10 @@ div.guest_header.authenticated .center_container{
 }
 #guest_home_page #top_links a{
 		color:#82829B;
+		color:white;
 }
 #guest_home_page #top_links a:hover{
-		color:white;
+		color:#4A4AAB;
 		transition-property:color;
 		transition-duration:200ms;
 }
