@@ -69,21 +69,7 @@ a{
 	width:100%;
 	height:100%;
 	background:url("/static/images/home_bg_photo_blur10_ivan.jpg") no-repeat fixed center top / cover transparent;
-	-webkit-opacity:.45;
-	  /* IE 8 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=45)";
 
-  /* IE 5-7 */
-  filter: alpha(opacity=45);
-
-  /* Netscape */
-  -moz-opacity: 0.45;
-
-  /* Safari 1.x */
-  -khtml-opacity: 0.45;
-
-  /* Good browsers */
-  opacity: 0.45;
 }
 #logo_section .center_container {
 	height:468px;
