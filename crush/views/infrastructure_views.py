@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from crush.models import CrushRelationship, FacebookUser
+from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
@@ -107,11 +107,6 @@ def facebook_channel_file(request):
 @login_required
 def testing(request):
     
-    all_users = FacebookUser.objects.all()
-    for user in all_users:
-        user.matchmaker_preference=None
-        user.save(update_fields=['matchmaker_preference'])
-
     fetch_response = fb_fetch("1050",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
