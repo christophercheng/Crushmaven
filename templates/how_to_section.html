@@ -2,8 +2,10 @@
 	<div class="center_container">
 		<div class="title_section">
 			<h2 id="howto_title" class="section_title">How it Works</h2>
+			{% comment %}
 			<a href="javascript:;" class="how_to_link {% if help_type and help_type == 'matchmakers' %}how_to_link_inactive{% else %}how_to_link_active{% endif %} for_singles" id="for_singles">for singles</a>
 			<a href="javascript:;" class="how_to_link {% if help_type and help_type == 'matchmakers' %}how_to_link_active{% else %}how_to_link_inactive{% endif %} for_setup" id="for_matchmakers">for matchmakers</a>
+			{% endcomment %}
 		</div>
 		<div class="how_to_slide_container">
 			<div class="how_to_slide {% if help_type and help_type == 'matchmakers' %}inactive_how_to_slide{% else %}active_how_to_slide{% endif %}" id="how_to_slide_singles">
@@ -34,6 +36,7 @@
 					</span>
 				</div>
 			</div>
+			{% comment %}
 			<div class="how_to_slide {% if help_type and help_type == 'matchmakers' %}active_how_to_slide{% else %}inactive_how_to_slide{% endif %}" id="how_to_slide_setup">
 				<img src="{{ STATIC_URL }}images/dotted_line2.png" id="dotted_line2">
 				<div id="setup_step_1" class="setup_step">
@@ -69,6 +72,7 @@
 					</span>
 				</div>
 			</div> <!-- close off <div id="how_to_slide_setup"-->
+			{% endcomment %}
 		</div> <!-- close off how_to_slide_container -->
 	</div> <!--  close off center_container div -->
 </div> <!-- close off howto_section div -->

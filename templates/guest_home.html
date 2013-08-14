@@ -57,77 +57,10 @@ jQuery(document).ready(function($) {
 		dot_element.css('right',new_dot_x);
 	}
 	
-	/* --------- HANDLE SLIDER BUTTON CLICKS ----------------- */
+	$('#facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
 	
-	$('.slide_button').on('click',function(event){
-		if ($(this).hasClass('slide_button_active'))
-			return;
-		var inactive_toggle_delay=400;
-		var inactive_toggle_duration=4000;		
-		var active_toggle_duration=1000;
-		var active_slide=$('.active_tagline_slide');
-		var inactive_slide=$('.inactive_tagline_slide');
-		// stop the automatic timer if user clicked one of the slider buttons
-		if (event.originalEvent!==undefined){
-			
-			// stop and fast forward any ongoing animations
-			active_slide.finish();
-			
-			// make toggles quick!
-			inactive_toggle_duration=500;
-			active_toggle_duration=250;
-			if (window.slider_control!=null){
-				clearInterval(window.slider_control);
-				window.slider_control=null;
-			}
-		}
-		else{ // in case of automated slide - only allow two automatic changes
-			window.number_automatic_slides+=1;
-
-			if (window.number_automatic_slides ==1 ){
-				clearInterval(window.slider_control);
-				window.slider_control = setInterval(function(){
-					$('.slide_button_inactive').trigger('click');
-				},7000);
-			}
-		}
-			
-
-		var active_button=$('.slide_button_active');
-		var active_core=active_button.children('span');
-		var inactive_button=$(this);
-		var inactive_core=$(this).children('span');
-		
-		inactive_button.removeClass('slide_button_inactive').addClass('slide_button_active');
-		
-		inactive_core.removeClass('slide_button_core_inactive').addClass('slide_button_core_active');
-		
-		active_button.removeClass('slide_button_active').addClass('slide_button_inactive');
-		
-		active_core.removeClass('slide_button_core_active').addClass('slide_button_core_inactive');
-		
-
-	
-		//active_slide.animate({left:'-985px'},1000,function(){active_slide.css('left','925px');});//slide left out of view
-		//inactive_slide.animate({left:'0px'},1000);// slide left into view (from left 925 px)
-		//active_slide.fadeToggle('2000');
-		active_slide.fadeToggle(active_toggle_duration);
-		inactive_slide.delay(inactive_toggle_delay).fadeToggle(inactive_toggle_duration);
-		active_slide.removeClass('active_tagline_slide').addClass('inactive_tagline_slide');
-		inactive_slide.removeClass('inactive_tagline_slide').addClass('active_tagline_slide');
-		// put the slide slid out of view back into the right position:
-		
-	}); // close of $('.slide_button').click
-	
-	/* ----------  AUTOMATED SLIDE FLOW --------- */
-	// automatically slide in and out the tagline slides until a button is pressed
-	window.number_automatic_slides=0;	
-	window.slider_control = setInterval(function(){
-			$('.slide_button_inactive').trigger('click');
-		},4000);
-	// auto show the slide marked active (since it is default to display:none
-	$('.active_tagline_slide').fadeToggle(2000);
-	
+	setInterval(function(){$('#tagline1').fadeIn(2000);},400);
+		setInterval(function(){$('#tagline2').fadeIn(2000);},1500);
 }); // close of jQuery(document).ready
 
 
@@ -141,23 +74,11 @@ jQuery(document).ready(function($) {
 		<img id="guest_logo" src="{{ STATIC_URL }}images/flirtally_logo_white_v3.png">
 		<span class="beta">beta</span>
 		<span id="top_links"><a href="/contact">Contact</a></span>
-		
-		<div class="tagline_slide_container">
-			<div class="tagline_slide active_tagline_slide" id="tagline_slide1">
-				<h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
-				<h2 id="tagline2">Discover your relationship potential <span id="safe_text">easily and anonymously.</span></h3>
-			</div>
-			<div class="tagline_slide inactive_tagline_slide" id="tagline_slide2">
-				<h2 id="tagline1">Interested in being set up by friends<br>but not if it's troublesome...</h2>
-				<h2 id="tagline2">Make it easy for friends to set you up <span id="safe_text">without the hassle of introductions.</span></h3>
-			</div>
-		</div> <!-- close off div class=tagline_slide_container -->
+		<h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
+		<h2 id="tagline2">Discover your relationship potential<span>easily and anonymously.</span></h2>
 		<a id ="facebookbtn"></a>
 		<div id="authentication_wait">authenticating<span id="authentication_dot">.</span></div>
-		<div id="slide_buttons">
-			<span class="slide_button slide_button_active" id="slide_button1"></span>
-			<span class="slide_button slide_button_inactive" id="slide_button2"></span>
-		</div>
+		<h2 id="tagline3">Everything is private; we don't post to Facebook, shh...</h2>
 	</div> <!--  close off center_container div -->
 </div> <!-- close off logo_section div -->
 

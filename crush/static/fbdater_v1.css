@@ -24,6 +24,7 @@ body {
 	-ms-user-select: none;
 	user-select: none;
 	background:rgb(241,243,245);
+	background:url('/static/images/whitemaze_pattern.png');
 	#background:rgba(241,243,245,.5);
 	#background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
 }

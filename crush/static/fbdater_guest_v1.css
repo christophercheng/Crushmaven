@@ -125,7 +125,7 @@ a{
 	position:absolute;
 	overflow:hidden;
 	white-space:nowrap;
-	display:none;
+	#display:none;
 }
 
 
@@ -135,8 +135,8 @@ h2{
 
 h2#tagline1{
 	position:absolute;
-	top:54px;
-	left:184px;
+	top:184px;
+	left:194px;
 	color:#E8E8E8;
 	color:#d6d6d6;
 	color:#dcdcdc;
@@ -146,27 +146,27 @@ h2#tagline1{
 	font-family:arial;
 	text-shadow:1px 1px 0 #000;
 	letter-spacing:0px;
+	display:none;
 }
 
 
 h2#tagline2{
 	position:absolute;
-	top:200px;
-	left:343px;
+	top:330px;
+	left:351px;
 	color:#C2C2C2;
 	font-size:19px;
 	font-weight:normal;
 	line-height:24px;
 	letter-spacing:1px;
 	text-shadow:1px 1px 0 #000;
+	display:none;
 }
-
-h2#tagline2 #safe_text{
+h2#tagline2 span{
+	color:#9B9B9B;
+	font-size:16px;
 	display:block;
-	color:#747474;
-	font-size:15px;
-	letter-spacing:1px;
-	text-shadow:2px 2px 0 #000;
+	text-shadow:1px 1px 0 #000;
 }
 
 #facebookbtn {
@@ -175,7 +175,7 @@ h2#tagline2 #safe_text{
 	#background:url(images/facebook_btn.png)  0 0 no-repeat;
 	background:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/facebook_btn.png') 0 0 no-repeat;
 	left:348px;
-	top:378px;
+	top:384px;
 	width: 218px;
 	height: 46px;
 	cursor: pointer;
@@ -192,58 +192,36 @@ h2#tagline2 #safe_text{
 #authentication_wait {
 	display:none;
 	position:absolute;
-	left:301px!important;
-	top:370px!important;
+	left:298px!important;
+	top:377px!important;
 	width: 218px!important;
-  	height: 46px!important;
-  	padding-top:12px;
+  height: 46px!important;
+  padding-top:12px;
 	color:gray;
 	letter-spacing:1px;
 	text-align:center;
 	font-family:helvetica;
 	z-index:10;
+	color:#4A4AAB;
+	text-shadow:1px 1px 0px #252556;
 }
 #authentication_dot {
 	position:absolute;
-	right:45px;
-	bottom:15px;
-	color:gray;
+	right:44px;
+	bottom:13px;
+	color:white;
 	font-sytle:bold;
 	font-size:20px;
 }
 
-
-
-#slide_buttons{
+h2#tagline3{
 	position:absolute;
-	left:434px;
-	bottom:7px;
-}
-
-.slide_button{
-	display:inline-block;
-	border-radius:50%;
-	height:15px;
-	width:15px;
-	background:#474747;
-	margin-right:10px;
-}
-.slide_button_inactive:hover{
-	box-shadow:0px 0px 8px #FFFFFF;
-}
-.slide_button_active{
-	background:white;
-}
-
-.slide_button_inactive{
-	margin-top:-5px;
-	height:15px;
-	width:15px;
-	background:#2A2A3A;
-	box-shadow:0px 0px 1px #000;
-}
-.slide_button_inactive:hover{
-	cursor:pointer;
+	top:435px;
+	left:352px;
+	color:#747474;
+	font-size:14px;
+	font-weight:normal;
+	display:none;
 }
 
 /* -----------  HOW TO SECTION ----------- */
@@ -268,10 +246,11 @@ h2#tagline2 #safe_text{
 	z-index:20;
 }
 #how_to_section h2#howto_title{
-	font-family:arial,sans-serif;
+	#font-family:arial,sans-serif;
+	font-family:"OpenSans","Helvetica Neue","Helvetica",Arial,Verdana,sans-serif;
 	font-size:32px;
 	font-weight:normal;
-	color:#404040;
+	color:#4A4AAB;
 	margin-top:10px;
 }
 
