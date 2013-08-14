@@ -193,8 +193,10 @@ h2#tagline2 span{
 #authentication_wait {
 	display:none;
 	position:absolute;
-	left:298px!important;
-	top:377px!important;
+	#left:298px!important;
+	#top:377px!important;
+	left:331px!important;
+	top:386px!important;
 	width: 218px!important;
   height: 46px!important;
   padding-top:12px;
@@ -202,6 +204,7 @@ h2#tagline2 span{
 	letter-spacing:1px;
 	text-align:center;
 	font-family:helvetica;
+	font-size:15px;
 	z-index:10;
 	color:#4A4AAB;
 	text-shadow:1px 1px 0px #252556;
@@ -215,7 +218,7 @@ h2#tagline2 span{
 	font-size:20px;
 }
 
-h2#tagline3{
+h2#tagline3,h2#tagline3_copy{
 	position:absolute;
 	top:435px;
 	left:352px;
