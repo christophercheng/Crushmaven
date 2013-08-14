@@ -1232,7 +1232,7 @@ a.logo img{
 	font-weight:bold;
 	margin-bottom:14px;
 	text-shadow: 1px 1px 0 #FFFFFF;
-	
+	color:#4A4AAB;
 }
 .new_user_instructions span.instructions_subtitle{
 	font-weight:normal;
@@ -1272,6 +1272,7 @@ a.logo img{
 	width:18px;
 	border-radius:50%;
 	background:#9295A0;
+	background:#4A4AAB;
 	text-align:center;
 	color:#F1F1F3;
 	line-height:19px;
@@ -4372,7 +4373,7 @@ div.past_dialog_header {
 	font-weight:bold;
 	margin-left:5px;
 	display:inline-block;
-	background:gray;
+	background:#4A4AAB;
 	width:100%;
 	padding:7px 10px;
 	color:white;
