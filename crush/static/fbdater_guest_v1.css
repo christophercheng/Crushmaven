@@ -182,6 +182,7 @@ h2#tagline2 span{
 	display: block;
 	float: left;
 	padding: 0 !important;
+	display:none;
 }
 #facebookbtn:hover{
 	background-position: 0 -46px !important;
@@ -218,7 +219,7 @@ h2#tagline3{
 	position:absolute;
 	top:435px;
 	left:352px;
-	color:#747474;
+	color:#616161;
 	font-size:14px;
 	font-weight:normal;
 	display:none;

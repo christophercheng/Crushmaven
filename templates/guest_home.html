@@ -22,7 +22,6 @@
 </head>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-<script src="{{STATIC_URL}}js/how_it_works.js?t={% now "U" %}"></script>
 
 <script type="text/javascript">
 
@@ -60,7 +59,7 @@ jQuery(document).ready(function($) {
 	$('#facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
 	
 	setInterval(function(){$('#tagline1').fadeIn(2000);},400);
-		setInterval(function(){$('#tagline2').fadeIn(2000);},1500);
+		setInterval(function(){$('#tagline2,#facebookbtn').fadeIn(2000);},1500);
 }); // close of jQuery(document).ready
 
 
