@@ -2054,6 +2054,11 @@ ul.attraction_status_bar li.past_status_animated{
 	border-left: 5px solid #DC143C;	
 }
 
+.lineup_preview_label{
+	display:block;
+	margin-bottom:2px;
+	}
+
 .setup_lineup_block {
 	border-left: 5px solid #FF4719;	
 }
