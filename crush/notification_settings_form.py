@@ -16,7 +16,6 @@ class NotificationSettingsForm(ModelForm):
                   'bNotify_crush_signup_reminder',
                   'bNotify_crush_responded',
                   'bNotify_new_admirer',
-                  'bNotify_setup_response_received',
                   'email']
     
     email = EmailField()
@@ -27,9 +26,9 @@ class NotificationSettingsForm(ModelForm):
         self.fields['email'].label= ""
         #self.fields['bNotify_crush_signed_up'].label=" attraction signed up"
         self.fields['bNotify_crush_signup_reminder'].label="You still have not sent out an invitation."
-        self.fields['bNotify_crush_responded'].label=" Your attraction has responded."
+        self.fields['bNotify_crush_responded'].label=" One of your Likes has responded."
         self.fields['bNotify_new_admirer'].label=" You have a new admirer."
-        self.fields['bNotify_setup_response_received'].label=" One of your friends responded to your setup."
+        #self.fields['bNotify_setup_response_received'].label=" One of your friends responded to your setup."
     
 
         

@@ -16,7 +16,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 	
-		<link type="text/css" href="{{ STATIC_URL }}fbdater_v1.css?version=1" rel="stylesheet"  />    
+		<link type="text/css" href="/static/fbdater_v1.css?version=1" rel="stylesheet"  />    
 	    
 	    <link type="text/css" href="{{ STATIC_URL }}friend-selector/friend_selector_v1.css" rel="stylesheet" />
 	
@@ -106,54 +106,8 @@ jQuery(document).ready(function($) {
 		    	 window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
 		    	 //$('body').css('overflow-y','hidden !important');
 		    },
-		    });
-		  /* ---------------------------------------------
-		 	
-			REQUEST SETUP Handling
-		
-			* -------------------------------------------- */
-			
-			$(".request_setup_link").fSelector({ // call the .fSelector function and send it a massive dictionary of option values
-				  accessToken: "{{request.user.access_token}}",
-				  facebookID: "{{request.user.username}}",
-				  malePref:null,// {% if request.user.gender_pref = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
-			  maleGender: {% if request.user.gender = 'F' %} false {% elif request.user.gender_pref = 'M' %} true {% else %} null{% endif %},
-			  minimum_samegender_friends:"0",//"{{minimum_samegender_friends}}",
-			  minimum_crushgender_friends:"0",//"{{minimum_crushgender_friends}}",
-			  max:50,
-				  excludeIds: "{% for request_rel in request.user.crush_setuprequestrelationship_set_from_source.all %}{{request_rel.target_person.username}}{% if not forloop.last %},{% endif %}{% endfor %}",    
-			  closeOverlayClick: false,
-			  setupSelect:true,
-			  overlayOpacity: "0.5",
-			  overlayColor: '#000',
-			  closeOnSubmit: true,
-			  showSelectedCount: true,
-			  color: "default",
-			  showRandom:false,
-			  lang: {
-			  	buttonContinue:"Select",
-			    title: "Request Setups from Friends",
-			    searchText: "Enter a friend's name",
-			    fbConnectError: "You must be logged in to Facebook in order to use this feature.",
-			    selectedCountResult: "You have choosen {0} people.",
-			    selectedLimitResult: "Limit is {0} people.",
-			    ajaxError:"{{ajax_error}}",
-			  },
-			  onError: function(){
-			  	window.alert_modal('Attraction Selection Problem', "{{generic_error_message}}",$('#fs-dialog-box-wrap') );
-			  },
-			  onStart: function(){
-			  	 $("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title"});
-			  	 window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
-			  },
-			  onSubmit: function(response){
-						var attraction_array = [];
-						for (attraction in response)
-							attraction_array.push(attraction.slice(0,-1));
-						send_fb_requests(attraction_array);
-			  }, // close off onSubmit function handler
-			}); // close off .fSelector function handler
-	}); // close off $.getScript for Friend Selector Dialogs
+		    }); // close off .bt-fs-dialog.fSelector
+		   }); // close off getScript.done
 
 	  /* -----------    Handler For Contactable Form ---------- */
 	  $.getScript('{{ STATIC_URL }}contactable/contactable_v1.js').done(function(script,scriptStatus){
@@ -257,7 +211,7 @@ jQuery(document).ready(function($) {
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
-			modal_html += '<div class="modal_instructions">To get a response from your newly added attraction(s), please help us get them signed into the application.</div>';
+			modal_html += '<div class="modal_instructions">To get a response, please help us get your Like(s) signed into Flirtally.</div>';
 			modal_html += '<div class="modal_main_content">';
 				
 			
@@ -329,19 +283,6 @@ jQuery(document).ready(function($) {
   });
   }
 	// -------------  CSS additions ------------------
-	// HANDLE SETTINGS MENU CLICK
-	function openSubMenu() {
-		clearTimeout(window.submenu_toggle);
-		var show_me = $(this).find('ul');
-		$(this).find('a').css('color','white');
-		window.submenu_show=setTimeout(function(){
-			if (show_me.parent().is(":hover")){
-				$('.popup').hide();
-				show_me.show(100);
-			}
-		},100); 
-	};
-
 
 	$.maxZIndex = $.fn.maxZIndex = function(opt) {
 	    /// <summary>
@@ -480,27 +421,35 @@ $(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_w
   }); 
 // INITIALIZE FEEDBACK FORM 
  
+ 
+// HANDLE SETTINGS MENU CLICK
+function openSubMenu() {
+	var show_me = $(this).find('ul');
+	$(this).find('a').css('color','white');
+			show_me.show(0);
+}; 
 function closeSubMenu() {
-	clearTimeout(window.submenu_toggle);
 	var hide_me = $(this).find('ul');
-	$(this).find('a').css('color','');
-	window.submenu_toggle=setTimeout(function(){$(hide_me).hide(200);},100);
+			$(this).find('a').css('color','');
+			$(hide_me).hide(0);
 };
 $('.drop_down_menu_link > li.submenu').hover(openSubMenu,closeSubMenu);
-$('#center_header_menu > li.submenu').hover(function(){$('#get_started_link').css('color','white')},function(){$('#get_started_link').css('color','#E02B50')});
+
+$('#center_header_menu #get_started_link').hover(function(){$(this).css('color','white')},function(){$(this).css('color','#E02B50')});
 
 //HANDLE clicking of drop down menu links
 $('.header_container .drop_down_menu_link li.submenu').click(function(e){
 	e.stopPropagation();
 	var menu_element = $(this).find('ul');
 	var menu_element_id=menu_element.attr('id');
-	$('.popup:not(#' + menu_element_id + ')').hide();
+
 	if ($(menu_element).is(":visible")){
-		$(menu_element).hide(200);
+		$(menu_element).hide(0);
 	}
 	else{
-		$(menu_element).show(200);
+		$(menu_element).show(0);
 	}
+		$('.popup:not(#' + menu_element_id + ')').hide();
 });
 
 // HANDLE TITLE BAR OPTIONS SUBMENU CLICK
@@ -516,53 +465,6 @@ $('body').on('click',".popup_link",function(e){
   e.stopPropagation();
 });
 
-//$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=3',left:'+=3'},100);},function(event){event.stopPropagation();$(this).animate({top:'-=3',left:'-=3'},50);});
-//$('a.bt-fs-dialog').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2',height:'-=2',width:'-=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2',height:'+=2',width:'+=2'},50);});
-//$('a.block_button').hover(function(){$(this).delay(40).animate({top:'+=2',left:'+=2'},10);},function(event){event.stopPropagation();$(this).animate({top:'-=2',left:'-=2'},50);});
- 
-//$('.navbar li.inactive a').hover(function(){$(this).animate({borderTopWidth:'4px',borderLeftWidth:'3px'},100);},function(event){event.stopPropagation();$(this).animate({borderTopWidth:'0px',borderLeftWidth:'0px'},100);});
-
-	function send_fb_requests(attraction_array){
-	  var csrf_data={};
-    csrf_data["csrfmiddlewaretoken"]="{{csrf_token}}";
-    window.wait_modal_open("processing message...");
-    source_person_last_name="{{request.user.last_name}}";
-    source_person_first_name = "{{request.user.first_name}}"
-    source_person_last_initial = source_person_last_name[0];
-		var share_link = 'http://www.flirtally.com/setup_for/' + source_person_first_name + '/' + source_person_last_initial + '/';
-		window.wait_modal_open();
-		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
-			if (!response || response.error){
-				window.wait_modal_close();
-				window.alert_modal("Facebook Messaging Problem","Sorry, but we're having difficulty cooking up a message through Facebook.  Please try again later");
-			}
-			else {
-				FB.ui({method: 'send',
-		 				to: attraction_array[0],
-		 				link: share_link,
-			      },
-			      function(response){
-			      	window.wait_modal_close();
-							if (response != null && response['error_code'] == null){
-								$.post('/ajax_create_setup_request/' + attraction_array[0] + '/',csrf_data, function(){
-									attraction_array.splice(0,1);
-									if (attraction_array.length)
-										send_fb_requests(attraction_array);  	
-									else // reload page so that the new requests can be processed by base.html javascript
-										window.location.href="/setups_for_me/";
-								});
-							}
-							else {
-								attraction_array.splice(0,1);
-								if (attraction_array.length)
-									send_fb_requests(attraction_array);  	
-								else // reload page so that the new requests can be processed by base.html javascript
-									window.location.href="/setups_for_me/";
-							}
-			  		} // close off function (response)   
-		   	 	);// close off fb.ui  
-		   }}); // close off FB.api
-	};
 /* ---------------------------------------------
  	
 		Help Popup Animation
@@ -576,34 +478,6 @@ $('body').on('click',".popup_link",function(e){
 		$(this).parent().hide(500);
 		$('.new_user_sub_instructions').hide(500);
 	});
- /* ---------------------------------------------
- 	
- 		SETUP CREATION MODAL
- 	
- * -------------------------------------------- */
-
-	window.setup_create_modal=null;
-	$("a.set_up_friend_link").click(function(e) {
-		e.preventDefault();
-		// only initialize jquery modal dialog once per page load
-
-	//if (!window.setup_create_modal)
-		window.setup_create_modal = $("#setup_create_modal").dialog({
-		dialogClass:"setup_create_dialog",resizable:false, modal: true,show:'fade',autoOpen: false,close:function(){location.reload();},width:500});
-		window.setup_create_modal.html('<div id="site-loading"></div>');
-		var target_person_username = $(this).attr('target_person_username');
-		var load_url="/setup_create_form/";
-		if (target_person_username)
-			load_url = load_url + target_person_username + '/';
-		window.setup_create_modal.load(load_url,function(responseText,textStatus,XHR){
-			if (textStatus!="success"){
-				if (!window.access_token_error(responseText))
-					$(this).html("{{ajax_error}}");
-			}
-			window.setup_create_modal.dialog('open');
-			$(':focus').blur();
-		});	
-	}); // close off .click(function(e){
 
 window.handle_window_resize=function(){
 	$('.ui-dialog-content:visible').each(function(){
@@ -647,13 +521,7 @@ $('.show_less').click(function(){
 
 <div class="main_container">
 	<div class="left_sidebar">
-		{% if matchmaker_preference %}
-			<div class="left_sidebar_container">{% include "navigation_left_matchmakers.html" %}</div>
 			<div class="left_sidebar_container">{% include "navigation_left_singles.html" %}</div>
-		{% else %}
-			<div class="left_sidebar_container">{% include "navigation_left_singles.html" %}</div>
-			<div class="left_sidebar_container">{% include "navigation_left_matchmakers.html" %}</div>
-		{% endif %}
 	</div> <!-- close off left_sidebar -->
 	<div class="center_panel">
 		<div class="center_panel_container">
@@ -670,7 +538,6 @@ $('.show_less').click(function(){
 <div id="app_invite_modal" title="Send Anonymous Invites"></div>
 <div id="invite_interstitial_modal" title = "One Last Thing!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
-<div id="setup_create_modal" title="Set up a Friend"></div>
 <div id="contactable"></div><!-- contactable html placeholder -->
 </body>
 </html>

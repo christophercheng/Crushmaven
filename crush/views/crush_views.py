@@ -48,7 +48,7 @@ def ajax_add_crush_targets(request):
     if counter > 0:
         return HttpResponse('')
     else:
-        return HttpResponseNotFound("Sorry, we were not able to add any new attractions.  Please try again.")
+        return HttpResponseNotFound("Sorry, we were not able to add your Likes.  Please try again.")
 
 @login_required
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):
@@ -122,7 +122,7 @@ def attractions(request, reveal_crush_id=None):
     crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
 
     # determine whether to show help popup
-    if crushes_completed_count == 0:
+    if crush_progressing_relationships.count() == 0:
         show_help_popup=True
     else:
         show_help_popup=False
@@ -314,7 +314,7 @@ def ajax_find_fb_user(request):
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
         try:
             me.crush_targets.get(username=fb_profile['id'])
-            response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' as an attraction.'
+            response_data['error_message'] = 'You already added ' + fb_profile['name'] + ' to your Likes.'
         except FacebookUser.DoesNotExist:
             
             try:

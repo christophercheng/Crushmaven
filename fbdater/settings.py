@@ -270,9 +270,9 @@ PLATONIC_RATINGS = {
                      }
 
 DELETION_ERROR = {
-                  0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
-                  1:'Your attraction is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions can not be removed while the user is interacting with the associated admirer lineup.',
-                  2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, attractions may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
+                  0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
+                  1:'Your Like is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes can not be removed while the user is interacting with the associated admirer lineup.',
+                  2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
                    }
 
 LINEUP_STATUS_CHOICES = {
@@ -290,15 +290,15 @@ FEATURES = {
         'COST': 1,      
     },
     '2': {
-        'NAME':'View your attraction\'s response for 1 credit',
+        'NAME':'View your Like\'s response for 1 credit',
         'COST': 1,
     },
     '3': {
-        'NAME':"View your attraction's assessment of you for 1 credit",
+        'NAME':"View your Like's assessment of you for 1 credit",
         'COST': 1,
     },
     '4': {
-        'NAME':"Converse with this attraction over the next 2 weeks for 2 credits",
+        'NAME':"Converse with your Like over the next 2 weeks for 2 credits",
         'COST': 2,
     },
 }

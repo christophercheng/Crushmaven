@@ -4,51 +4,22 @@
 
 <a class="logo" href="{% url 'crush.views.infrastructure_views.home' %}"><img src="{{ STATIC_URL }}images/flirtally_logo_white_v3.png"></a>
 <span class="beta">beta</span>
-<!-- ============ NOTIFICATIONS ============= -->	
-	<!--  
-<ul id="notification_menu">
-	<li>
-		<a id = "notification_icon_responses" href="/attractions/" class="notification_block"></a>
-		{% if num_new_responses %}<a id="num_new_responses" class="header_notification_count" href="/attractions/">{{num_new_responses}}</a>{% endif %}
-	</li>
-	<li>
-		<a id = "notification_icon_admirers"href="/admirers/" class="notification_block"></a>
-		{% if num_new_admirers %}<a id="num_new_admirers" class="header_notification_count""href="/admirers/">{{num_new_admirers}}</a>{% endif %}
-	</li>
-	<li>
-	<a id = "notification_icon_messages" href="/messages/inbox/" class="notification_block"></a>
-		{% if num_new_messages %}<a id="num_new_messages" class="header_notification_count" href="/messages/inbox/">{{num_new_messages}}</a>{% endif %}
-	</li>
-</ul>
--->
 
 <!-- ============ MIDDLE BUTTON(S) ============= -->	
-<ul id="center_header_menu" class="drop_down_menu_link">
-	<li class="submenu">
-		<a href="#" id="get_started_link">Get Started<i class="icon down-dir">&#x25BC;</i></a>
-		<ul id="get_started_menu" class="settings_menu popup">
-			<li>
-				<a href="#" class="bt-fs-dialog add_attraction_link">Like Someone<span class="get_started_menu_icon"></span></a>
-			</li>
-			<li>
-				<a class="set_up_friend_link">Set up a Friend<span class="get_started_menu_icon"></span></a>
-			</li>
-			<li>
-				<a class="request_setup_link" setup_select="true">Request a Setup<span class="get_started_menu_icon"></span></a>	
-			</li>
-		</ul><!-- close off settings_menu div -->
-	</li>
-</ul>
+<div id="center_header_menu" class="drop_down_menu_link">
+
+		<a href="#" id="get_started_link" class="bt-fs-dialog"><span class="add_icon"></span>Like Someone</a>
+</div>
 <!-- ============ RIGHT HEADER ITEMS ============= -->	
 <ul id="right_header_menu" class="drop_down_menu_link">
 	<li class="submenu">
 		<a href="#">How it Works<i class="icon down-dir">&#x25BC;</i></a>	
 		<ul id="help_menu" class="settings_menu popup">
 			<li>
-				<a href="{% url 'crush.views.static_file_views.help_how_it_works' "singles" %}">for Singles</a>
+				<a href="{% url 'crush.views.static_file_views.help_how_it_works' %}">The Basics</a>
 			</li>
 			<li>
-				<a href="{% url 'crush.views.static_file_views.help_how_it_works' "matchmakers" %}">for matchmakers</a>	
+				<a href="{% url 'crush.views.static_file_views.help_privacy' %}">Your Privacy</a>	
 			</li>
 		</ul><!-- close off settings_menu div -->
 	</li>

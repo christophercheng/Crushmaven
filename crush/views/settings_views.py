@@ -70,9 +70,9 @@ def settings_notifications(request):
                 #me.bNotify_crush_started_lineup=data.get('bNotify_crush_started_lineup',False)
                 me.bNotify_crush_responded=data.get('bNotify_crush_responded',False)  
                 me.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
-                me.bNotify_setup_response_received=data.get('bNotify_setup_response_received',False)
+    
                 #me.save(update_fields=['email','bNotify_crush_signed_up','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','bNotify_setup_response_received'])                            
-                me.save(update_fields=['email','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','bNotify_setup_response_received'])                            
+                me.save(update_fields=['email','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer'])                            
                
                 return render(request,'settings_notifications.html',
                               { 'form': form,'updated':True})

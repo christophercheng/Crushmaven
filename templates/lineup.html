@@ -26,7 +26,7 @@ $(document).ready(function() // handling for the slider
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
-	 		footer_msg_element_html += '<span id="added_attractions_info">Added as attractions (' + total_crushes + '):';
+	 		footer_msg_element_html += '<span id="added_attractions_info">Added to your Likes (' + total_crushes + '):';
 		  crush_li_elements.each(function(index,item){
 				footer_msg_element_html += ' ' +$(item).parent().children('.lineup_name').html();
 				if (index < (total_crushes - 1))
@@ -144,7 +144,7 @@ $(document).ready(function() // handling for the slider
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
-		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding  <span class="attractor_first_name"></span>, we\'ll try to get <span class="attractor_pronoun_object"></span> signed up so <span class="attractor_pronoun_subject"></span> can take a similar lineup. We\'ll notify you when she responds.<span class="ahelp_icon"></span></p>';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After liking  <span class="attractor_first_name"></span>, we\'ll try to get <span class="attractor_pronoun_object"></span> signed up so <span class="attractor_pronoun_subject"></span> can take a similar lineup. We\'ll notify you when she responds.<span class="ahelp_icon"></span></p>';
 		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		//dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
@@ -433,9 +433,9 @@ $(document).ready(function() // handling for the slider
 <span id="site-loading"></span>
 <div id="lineup-header">
 	{% if is_admirer_type == 1 %}
-		One of these line-up members is your admirer!  Add any as an attraction, and we'll notify you if we determine the feeling is mutual.  If not, your identity remains protected.  Your attractions receive a similar lineup - with you in it!
+		One of these line-up members is your admirer!  (We reveal them one-at-a-time.) Pick any you like, and we'll send them a similar type of lineup - with you in it! We'll let you know if they like you back <i>or not</i>.  If not, your identity remains protected.
 	{% else %}
-		Your friend recommended these lineup members.  Add any as an attraction, and we'll notify you if we determine the feeling is mutual or not.  Your attractions receive a similar lineup of other potential admirers - with you randomly inserted in it.  Your identity remains protected if you're not picked.  
+		Your friend recommended these lineup members.  Pick the ones you like, and we'll send them a similar type of lineup - with you in it! If they like you back, we'll let you know.  If not, your identity remains protected.
 	{% endif %}
 </div>
 
@@ -471,7 +471,7 @@ $(document).ready(function() // handling for the slider
 	   <span class="lineup_facebook_link"><a href="http://www.facebook.com/{{member.username}}" target="_blank">view facebook profile<span class="view_facebook_icon"></span></a></span>
 	   <span class="lineup_decision" username="{{member.username}}">
 			{% if member.decision == 0 %}
-	       <span class="choice crush">Added as Attraction<!--<span class="date_lineup_member_added">  ({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span>--></span>
+	       <span class="choice crush">Added to your Likes!<span class="date_lineup_member_added">  ({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
 			{% else %}
 	       <span class="choice platonic">Not Interested<!--<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span>--></span>
 	    	<a href="#" class="platonic_reconsider" add_type="crush" username="{{member.username}}" name="{{member.user.first_name}} {{member.user.last_name}}" member_gender= "{{member.user.gender}}" lineup_position="{{member.position}}">change your mind?</a>
@@ -493,7 +493,7 @@ $(document).ready(function() // handling for the slider
 				<button id="finish-btn" class="site_dialog_button" type="button" disabled>Finish</button>
 	</div><!-- close off buttonset -->
 </div><!-- close off buttonpane -->
-<div id="dialog_attraction_add" title="Attraction Confirmation "></div>
+<div id="dialog_attraction_add" title="Like Confirmation "></div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation"></div>
 
 

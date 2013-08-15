@@ -274,7 +274,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
         lineup_member.save(update_fields=['decision'])
     else:    
         if lineup_member.decision == None:
-            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">Like</a>' 
+            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">I\'m<BR> Attracted</a>' 
             ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
        
         elif lineup_member.decision == 0:
@@ -320,7 +320,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             # something is wrong, this person was already decided upon, so just return an error message
             # check to see if they haven't already been added as a crush
             if lineup_member.decision == 0:
-                ajax_response = "<span id=\"choice\" class='crush choice existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " as a an attraction.</span>"
+                ajax_response = "<span id=\"choice\" class='crush choice existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " to your Likes.</span>"
                 return HttpResponse(ajax_response)
             # else:
                 # user changed their mind about platonic lineup member so exit out of here
@@ -363,7 +363,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
                 # CHC Correct 7/13: i think it's better to have redundancy cause recommender won't see his recommendees unless he goes to setups by me page.
                 # target_user.friends_that_invited_me.add(admirer_rel.source_person)
                         
-            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as Attraction</span>'
+            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added to your Likes</span>'
             lineup_member.decision=0
         else:
             PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)

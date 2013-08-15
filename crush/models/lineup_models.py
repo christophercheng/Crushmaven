@@ -790,6 +790,7 @@ class BasicLineupMember(models.Model):
     
     user=models.ForeignKey('FacebookUser', null=True,blank=True,default=None)
     username = models.CharField(max_length=60) 
+    #fb_pic=models.ImageField(upload_to="{{ STATIC_URL}}/images/lineup_members/",blank=True,null=True,default=None)
     position = models.IntegerField() # example x.y where x is id of lineup and y is position in lineup (0 through 9)
     DECISION_CHOICES = ( # platonic levels represent crush's rating of member's attractiveness
                            (0,'Crush'),
