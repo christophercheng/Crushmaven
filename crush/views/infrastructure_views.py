@@ -6,7 +6,7 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch,xs_fetch
+from crush.utils import fb_fetch#,xs_fetch
 import re
 
 # import the logging library

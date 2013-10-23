@@ -196,7 +196,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'facebook',
     'crush',
-    'postman',
+    #'postman',
     'ajax_select',
     'south'
 )

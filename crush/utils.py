@@ -155,21 +155,21 @@ def fb_fetch(fb_user_id,start_index):
 #    return render(request,'testing.html', {'fetch_response':fetch_response,'cookie':cookie})
 
 
-import mechanize
+#import mechanize
 
-def xs_fetch():
-    br = mechanize.Browser()
-    br.set_handle_robots(False)
-    cookies = mechanize.CookieJar()
-    br.set_cookiejar(cookies)
-    br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')]
-
-    br.open("http://www.facebook.com/")
-    br.select_form(nr = 0)
-    br.form['email'] = "i.am.not.spammer.i.swear@gmail.com"
-    br.form['pass'] = 'iamnotspammeriswear"'
-    response = br.submit()
-    br.open("https://www.facebook.com/")
-    print response.read()
-    print " -------------- "
-    print response.info()  # headers
+# def xs_fetch():
+#     br = mechanize.Browser()
+#     br.set_handle_robots(False)
+#     cookies = mechanize.CookieJar()
+#     br.set_cookiejar(cookies)
+#     br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')]
+# 
+#     br.open("http://www.facebook.com/")
+#     br.select_form(nr = 0)
+#     br.form['email'] = "i.am.not.spammer.i.swear@gmail.com"
+#     br.form['pass'] = 'iamnotspammeriswear"'
+#     response = br.submit()
+#     br.open("https://www.facebook.com/")
+#     print response.read()
+#     print " -------------- "
+#     print response.info()  # headers
