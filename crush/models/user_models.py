@@ -211,7 +211,7 @@ class FacebookUser(AbstractUser):
     gender_pref=models.CharField(max_length=1,choices=GENDER_PREF_CHOICES)
 
     is_single = models.BooleanField(default=True)
-    matchmaker_preference=models.NullBooleanField(blank=True,null=True,default=None)# does the user prefer to be a matchmaker?
+
     is_underage = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
@@ -247,7 +247,6 @@ class FacebookUser(AbstractUser):
     #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
     bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
-    bNotify_setup_response_received= models.BooleanField(default=True)
     
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.
@@ -387,9 +386,7 @@ class FacebookUser(AbstractUser):
     # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_progressing_admirers(self):
         return crush.models.relationship_models.CrushRelationship.objects.progressing_admirers(self)
-    # called by lineup.html to determine what to do after jquery lineup slider closes
-    def get_progressing_setups_for_me(self):
-        return self.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None)
+
     def get_fb_gender(self):
         if self.gender==u'M':
             return 'male'

@@ -17,8 +17,6 @@ from crush_views import attractions_completed
 from crush_views import app_invite_form_v2
 from crush_views import ajax_find_fb_user
 
-from setup_views import setup_create_form
-
 from platonic_friend_views import ajax_reconsider
 from platonic_friend_views import just_friends
 

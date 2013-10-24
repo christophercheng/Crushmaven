@@ -16,10 +16,6 @@ def context_processor(request):
         progressing_crushes = CrushRelationship.objects.progressing_crushes(me)
         left_menu_crush_count = progressing_crushes.count() + visible_responded_crushes.count()
         new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
-           
-        num_progressing_setups_for_me = me.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count()
-        num_progressing_setups_by_you = me.crush_setuprelationship_set_from_source.filter(Q(date_setup_completed=None) | Q(updated_flag=True)).count()
-        num_setup_requests = me.crush_setuprequestrelationship_set_from_target.all().count()
         
         ajax_reprocess_friends_with_admirers=True
         if  (me.processed_activated_friends_admirers):
@@ -29,10 +25,6 @@ def context_processor(request):
                 ajax_reprocess_friends_with_admirers=False
 
         inactive_friend_section_html = me.html_for_inactive_friend_section(ajax_reprocess_friends_with_admirers)
-        if me.matchmaker_preference != None:
-            my_matchmaker_preference = me.matchmaker_preference
-        else: # no matchmaker preference set (first time user going onto site, so default to relationship status)
-            my_matchmaker_preference = not me.is_single
            
         return {
             'num_admirers_in_progress' : progressing_admirer_relationships.count(),
@@ -46,11 +38,7 @@ def context_processor(request):
             'generic_error_message':settings.GENERIC_ERROR,
             'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
-            'num_setups_by_you_in_progress' : num_progressing_setups_by_you,
-            'num_setups_for_me_in_progress': num_progressing_setups_for_me, 
-            'num_setup_requests':num_setup_requests,
             'inactive_friend_section_html':inactive_friend_section_html,
-            'matchmaker_preference':my_matchmaker_preference 
             }
     else: # whenever a user is logged in, just use an empty dictionary
         return {}

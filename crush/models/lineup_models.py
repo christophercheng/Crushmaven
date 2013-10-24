@@ -200,11 +200,7 @@ class LineupMemberManager(models.Manager):
         crush_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + '))) AND is_app_user"}'
         mutual_friend_id_dict='{"method":"GET","name":"mutual-friends","relative_url":"' + crush_id +'/mutualfriends/' + relationship.source_person.username + '"}'
         mutual_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + '))"}'
-        if relationship.recommender_person_id == None or relationship.recommender_person_id == "":
-            mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
-        else:
-            mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count FROM user WHERE uid IN (' + relationship.recommender_person_id + ') AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
-
+        mutual_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count FROM user WHERE uid IN ({result=mutual-friends:$.data.*.id}) AND NOT (uid IN (' + exclude_id_string + ')) AND is_app_user"}'
         # set up the post data
         post_dict = {}
         post_dict['access_token'] = relationship.target_person.access_token
@@ -821,29 +817,3 @@ class LineupMember(BasicLineupMember):
     # each lineup has many lineup members (10 by default) and each lineup member has only one lineup it belongs to (similar to blog entry)
     relationship = models.ForeignKey('CrushRelationship',null=True,blank=True,default=None)
     
-
-# details about each crush's secret admirer lineup (SAL)
-class SetupLineupMember(BasicLineupMember):
-    
-    class Meta:
-        # this allows the models to be broken into separate model files
-        app_label = 'crush'
-        ordering = ['position']
-
-    # if relationship is not a typical crush relationship , then it is a setup relationship
-    relationship = models.ForeignKey('SetupRelationship',null=True,blank=True,default=None)
-    date_last_notified = models.DateTimeField(null=True,default=None,blank=True);
-    lineup_member_attraction = models.NullBooleanField(null=True,blank=True,default=None)
-    
-    # return None if unknown
-    # return True if match
-    # return False if no match
-    def is_attraction_mutual(self):
-        if self.lineup_member_attraction == True:
-            return True
-        elif self.lineup_member_attraction == False:
-            return False
-        elif self.decision > 0:
-            return False
-        else:
-            return None

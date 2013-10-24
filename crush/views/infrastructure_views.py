@@ -33,23 +33,8 @@ def home(request):
             return HttpResponseRedirect('/attractions/') 
         elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
             return HttpResponseRedirect('/admirers/')
-        elif request.user.crush_setuprelationship_set_from_target.filter(date_lineup_finished=None).count() >0:
-            return HttpResponseRedirect('/setups_for_me/')
-        elif request.user.crush_setuprelationship_set_from_source.filter(date_setup_completed=None).count() > 0:
-            return HttpResponseRedirect('/setups_for_me/')
-        elif request.user.crush_setuprequestrelationship_set_from_target.all().count() > 0:
-            return HttpResponseRedirect('/setup_requests_for_me/')
         else:
-            if request.user.matchmaker_preference == None:
-                if request.user.is_single:
-                    return HttpResponseRedirect('/attractions/')
-                else:
-                    return HttpResponseRedirect('/setups_by_you/')
-            else:
-                if request.user.matchmaker_preference:
-                    return HttpResponseRedirect('/setups_by_you/')
-                else:
-                    return HttpResponseRedirect('/attractions/')
+            return HttpResponseRedirect('/attractions/')
     else:
         return render(request,'guest_home.html')
 

@@ -106,36 +106,6 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_user_can_message/(?P<crush_id>\w+)/$','ajax_user_can_message'),
 )
 
-# ----      setup: DISPLAY AND HANDLING PAGES      ----    
-urlpatterns += patterns('crush.views.setup_views',
-                        
-    (r'^setup_create_form/$','setup_create_form'),
-
-    (r'^setup_create_form/(?P<target_person_username>\w+)/$','setup_create_form'),    
-    
-    (r'^setups_for_me/$','setups_for_me'),
-    
-    (r'^setups_for_me/(?P<requested_username>\w+)/$','setups_for_me'),
-   
-    (r'^completed_setups_for_me/$','completed_setups_for_me'),
-    
-    (r'^setups_by_you/$','setups_by_you'),
-    
-    (r'^completed_setups_by_you/$','completed_setups_by_you'),
-    
-    (r'^setup_requests_for_me/$','setup_requests_for_me'),
-    
-    (r'^setup_requests_by_me/$','setup_requests_by_me'),
-    
-    (r'^ajax_get_recommendee_exclude_ids/(?P<setup_target>\w+)/$','ajax_get_recommendee_exclude_ids'),
-    
-    (r'^ajax_create_setup_request/(?P<setup_request_target>\w+)/$','ajax_create_setup_request'),
-    
-    (r'^ajax_update_date_notification_last_sent/(?P<target_username>\w+)/$','ajax_update_date_notification_last_sent'),
-    
-    (r'^ajax_update_setup_lineup_member_date_last_notified/(?P<member_username>\w+)/$','ajax_update_setup_lineup_member_date_last_notified'),
-    
-)
                         
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.admirer_views',
@@ -150,19 +120,13 @@ urlpatterns += patterns('crush.views.admirer_views',
     
     (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/$','ajax_show_lineup_slider'), 
     
-    (r'^ajax_show_lineup_slider/(?P<admirer_id>\d+)/(?P<is_admirer_type>\d)/$','ajax_show_lineup_slider'), 
-    
     (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/$','ajax_get_lineup_slide'),
-    
-    (r'^ajax_get_lineup_slide/(?P<display_id>\d+)/(?P<lineup_position>\d+)/(?P<is_admirer_type>\d)/$','ajax_get_lineup_slide'),
     
     (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
     
     (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<rating>\d)/$','ajax_add_lineup_member'),
     
-    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<is_admirer_type>\d)/$','ajax_add_lineup_member'),
-    
-    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/(?P<rating>\d)/(?P<is_admirer_type>\d)/$','ajax_add_lineup_member'),
+    (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
     
     (r'^ajax_update_num_crushes_in_progress/$','ajax_update_num_crushes_in_progress'),
     

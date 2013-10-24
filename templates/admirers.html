@@ -125,9 +125,7 @@ $(document).ready(function()
 			<div class="lineup_title">
 				<span class="lineup_block_from">From:</span>
 				<span class="lineup_block_source_name">Admirer #{{admirer_rel.display_id}}</span>
-				{% if admirer_rel.recommender_person_id != None and admirer_rel.recommender_person_id != "" %}
-					<span class="lineup_subtitle">a mutual friend recommended you to your admirer</span> 
-				{% elif admirer_rel.friendship_type == 0 %} 
+				{% if admirer_rel.friendship_type == 0 %} 
 					<span class="lineup_subtitle">a friend of yours!</span> 
 				{% elif admirer_rel.friendship_type == 1 %}
 					<span class="lineup_subtitle">has mutual Facebook friend(s)</span>

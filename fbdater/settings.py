@@ -52,10 +52,6 @@ LOGGING = {
     }
 }
 
-
-
-
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -196,7 +192,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'facebook',
     'crush',
-    #'postman',
+    'postman',
     'ajax_select',
     'south'
 )

@@ -2,7 +2,7 @@ from django.http import HttpResponse,HttpResponseNotAllowed,HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship,PlatonicRelationship,SetupRelationship,LineupMember,FacebookUser
+from crush.models import CrushRelationship,PlatonicRelationship,LineupMember,FacebookUser
 from crush.models.globals import g_init_dict
 import datetime
 from datetime import timedelta
@@ -150,23 +150,15 @@ def ajax_initialization_failed(request, display_id):
 
 # -- Single Lineup (Ajax Content) Page --
 @login_required
-def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
+def ajax_show_lineup_slider(request,admirer_id):
     me = request.user
-    
-    if is_admirer_type==1:
-        try:
-            admirer_rel = CrushRelationship.objects.all_admirers(me).get(display_id=admirer_id)
-        except CrushRelationship.DoesNotExist:
-            return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
-        member_set = admirer_rel.lineupmember_set.all()
-        is_admirer_type=True
-    else:
-        try:
-            admirer_rel = me.crush_setuprelationship_set_from_target.get(display_id=admirer_id)
-        except SetupRelationship.DoesNotExist:
-            return HttpResponse("Error: Could not find the setup.")
-        member_set = admirer_rel.setuplineupmember_set.all()
-        is_admirer_type=False
+
+    try:
+        admirer_rel = CrushRelationship.objects.all_admirers(me).get(display_id=admirer_id)
+    except CrushRelationship.DoesNotExist:
+        return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
+    member_set = admirer_rel.lineupmember_set.all()
+
     # need to cleanse the lineup members each time the lineup is run 
     # reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
         
@@ -180,40 +172,27 @@ def ajax_show_lineup_slider(request,admirer_id,is_admirer_type=1):
                                'rating3': settings.PLATONIC_RATINGS[3],
                                'rating4': settings.PLATONIC_RATINGS[4],
                                'rating5': settings.PLATONIC_RATINGS[5],
-                               'is_admirer_type':is_admirer_type
                                })
 
 # called by lineup lightbox slider to show an individual lineup member - and allow user to rate them
 @login_required
 #@csrf_exempt
-def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1):
+def ajax_get_lineup_slide(request, display_id,lineup_position):
     logger.debug("ajax get admirer: " + str(display_id) + " lineup position: " + lineup_position)
     ajax_response = ""
     me=request.user
     # obtain the admirer relationship
-    if is_admirer_type == 1:
-        is_admirer_type=True;
-        try:
-            admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
-            # if lineup is not paid for, then don't show any content beyond slide 2
-            if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
-            #     print "lineup_position just before forbidden error: " + lineup_position
-                return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
-        except CrushRelationship.DoesNotExist:
-            logger.warning( "Error: Could not find the admirer relationship.")
-            return HttpResponseNotFound("Error: Could not find the admirer relationship.")
-    else:
-        is_admirer_type=False;
-        try:
-            admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
-        except SetupRelationship.DoesNotExist:
-            logger.warning("Error: Could not find the setup relationship.")
-            return HttpResponseNotFound("Error: Could not find the setup.")
-        
-    if (is_admirer_type):
-        lineup_member_set = admirer_rel.lineupmember_set 
-    else:
-        lineup_member_set = admirer_rel.setuplineupmember_set
+    try:
+        admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
+        # if lineup is not paid for, then don't show any content beyond slide 2
+        if admirer_rel.is_lineup_paid == False and int(lineup_position) > 1:
+        #     print "lineup_position just before forbidden error: " + lineup_position
+            return HttpResponseForbidden("Error: You cannot access this content until the lineup is paid for.")
+    except CrushRelationship.DoesNotExist:
+        logger.warning( "Error: Could not find the admirer relationship.")
+        return HttpResponseNotFound("Error: Could not find the admirer relationship.")
+
+    lineup_member_set = admirer_rel.lineupmember_set 
     
     # obtain the actual user:
     lineup_member = lineup_member_set.get(position=lineup_position)
@@ -290,32 +269,22 @@ def ajax_get_lineup_slide(request, display_id,lineup_position, is_admirer_type=1
     return HttpResponse(ajax_response)
 
 @login_required
-def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_admirer_type=1):
+def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
     logger.debug("adding member to a list")
     me=request.user
     # called from lineup.html to add a member to either the crush list or the platonic friend list
     try:
         target_user=FacebookUser.objects.get(username=facebook_id) # user is created when lineup slide loaded (if user wasn't already active)
-        if is_admirer_type == 1:
-            try:
-                admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
-            except CrushRelationship.DoesNotExist:
-                return HttpResponse("Server Error: Could not add given lineup user")
-            try:
-                lineup_member=admirer_rel.lineupmember_set.get(username=target_user.username)
-            except LineupMember.DoesNotExist:
-                logger.error("could not find lineup member")
-                return HttpResponse("Server Error: Could not add given lineup user")
-        else:
-            try:
-                admirer_rel=me.crush_setuprelationship_set_from_target.get(display_id=display_id)
-            except SetupRelationship.DoesNotExist:
-                return HttpResponse("Server Error: Could not add given lineup user")
-            try:
-                lineup_member=admirer_rel.setuplineupmember_set.get(username=target_user.username)
-            except LineupMember.DoesNotExist:
-                logger.error("could not find lineup member")
-                return HttpResponse("Server Error: Could not add given lineup user")
+        try:
+            admirer_rel=CrushRelationship.objects.all_admirers(me).get(display_id=display_id)
+        except CrushRelationship.DoesNotExist:
+            return HttpResponse("Server Error: Could not add given lineup user")
+        try:
+            lineup_member=admirer_rel.lineupmember_set.get(username=target_user.username)
+        except LineupMember.DoesNotExist:
+            logger.error("could not find lineup member")
+            return HttpResponse("Server Error: Could not add given lineup user")
+       
         if lineup_member.decision!=None:
             # something is wrong, this person was already decided upon, so just return an error message
             # check to see if they haven't already been added as a crush
@@ -329,39 +298,23 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
            
         if add_type=='crush':
             # need to determine their friendship type
-            if is_admirer_type==1:
-                if admirer_rel.friendship_type==0:
-                    new_relationship_friendship_type=0;
-                elif admirer_rel.friendship_type== 2: # admirer has no mutual friends, and his friends will be lineup members so they will not be friends or have mutual friends with target person
-                    new_relationship_friendship_type=2;
-                else: # admirer has mutual friends, so new relationship friendship type will likely be FOF (1) or no F (2).  there is a chance the lineup member is a friend, but not likely
-                    # test if there are mutual friends
-                    try:
-                        friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + facebook_id)
-                        if len(friend_profile) > 0:
-                            new_relationship_friendship_type=1
-                        else:
-                            new_relationship_friendship_type=2
-                    except:
-                        # some error, so just assume not friends
-                        new_relationship_friendship_type=2
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,friendship_type=new_relationship_friendship_type)
-            else:  
-                # the added lineup member will either be a friend or a friend of friend (recommender is mutual friend)
-                fql_query = "SELECT uid2 FROM friend WHERE uid1 = " + me.username + " AND uid2 = " + facebook_id
+
+            if admirer_rel.friendship_type==0:
+                new_relationship_friendship_type=0;
+            elif admirer_rel.friendship_type== 2: # admirer has no mutual friends, and his friends will be lineup members so they will not be friends or have mutual friends with target person
+                new_relationship_friendship_type=2;
+            else: # admirer has mutual friends, so new relationship friendship type will likely be FOF (1) or no F (2).  there is a chance the lineup member is a friend, but not likely
+                # test if there are mutual friends
                 try:
-                    data = graph_api_fetch(me.access_token,fql_query,expect_data=True,fql_query=True)
-                    if len(data)>0:
-                        new_relationship_friendship_type=0
-                    else:
+                    friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + facebook_id)
+                    if len(friend_profile) > 0:
                         new_relationship_friendship_type=1
+                    else:
+                        new_relationship_friendship_type=2
                 except:
-                    # in case of failure just assume that they are not friends
+                    # some error, so just assume not friends
                     new_relationship_friendship_type=2
-                CrushRelationship.objects.create(source_person=request.user, target_person=target_user,recommender_person_id=admirer_rel.source_person.username, friendship_type=new_relationship_friendship_type)    
-                # to prevent the target person from showing up in the friends_with_admirers module of the recommender, then add the recommender to the target person's friends_that_invited_me list
-                # CHC Correct 7/13: i think it's better to have redundancy cause recommender won't see his recommendees unless he goes to setups by me page.
-                # target_user.friends_that_invited_me.add(admirer_rel.source_person)
+            CrushRelationship.objects.create(source_person=request.user, target_person=target_user,friendship_type=new_relationship_friendship_type)
                         
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added to your Likes</span>'
             lineup_member.decision=0
@@ -371,32 +324,12 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3,is_a
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])
-        if is_admirer_type==1:
-            lineup_member_set = admirer_rel.lineupmember_set
-        else:
-            lineup_member_set = admirer_rel.setuplineupmember_set
-        # if lineup is from a setup and this is the first decision made, then set the relationship's date_lineup_started property
-        if is_admirer_type != 1 and len(lineup_member_set.exclude(decision=None)) ==  1:
-            admirer_rel.date_lineup_started = datetime.datetime.now()
-            admirer_rel.updated_flag=True
-            admirer_rel.save(update_fields=['date_lineup_started','updated_flag'])
+        lineup_member_set = admirer_rel.lineupmember_set
         
         # handle processing when last lineup member decided upon
         if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
-            if is_admirer_type != 1:
-                admirer_rel.updated_flag=True
-                # if this is a setup lineup, then also check to see if the setup is complete
-                # ?CHC0527 - how could the setup ever be complete if the lineup ws just completed? answer: if the lineup was all NO's!
-                if admirer_rel.is_setup_complete():
-                    admirer_rel.date_setup_completed = datetime.datetime.now()
-                    admirer_rel.save(update_fields=['date_lineup_finished','date_setup_completed','updated_flag'])
-                else:
-                    admirer_rel.save(update_fields=['date_lineup_finished','updated_flag'])
-                    # notify recommender that the client completed the setup lineup
-                    admirer_rel.notify_source_person() # CHC 0701 no longer doing this
-            else:
-                admirer_rel.save(update_fields=['date_lineup_finished'])
+            admirer_rel.save(update_fields=['date_lineup_finished'])
 
     except FacebookUser.DoesNotExist:
         logger.error( "failed to add lineup member: " + facebook_id )

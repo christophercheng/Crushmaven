@@ -226,9 +226,6 @@ class CrushRelationship(BasicRelationship):
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
-    # if the attraction stemmed from a setup recommendation (admirer chose the target person from a set up lineup
-    #is_from_setup = models.BooleanField(default=False)
-    recommender_person_id = models.CharField(max_length=30,null=True,blank=True,default=None)
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
         print "calling save on crush relationship"
@@ -404,23 +401,6 @@ class CrushRelationship(BasicRelationship):
         self.save(update_fields=['is_results_paid','updated_flag','date_results_paid'])
         self.source_person.save(update_fields=['site_credits'])
        
-        # now check to see if the attraction target was a recommendee for any setups, note:recommenders only get to see recommendee decisions after the client's pay to see them.
-        related_setup_lineup_members = crush.models.lineup_models.SetupLineupMember.objects.filter(relationship__target_person=self.source_person,username=self.target_person.username)
-        for lineup_member in related_setup_lineup_members:
-            if self.target_status==4:
-                lineup_member.lineup_member_attraction=True
-            else:
-                lineup_member.lineup_member_attraction=False
-            lineup_member.save(update_fields=['lineup_member_attraction'])
-            # check to see if the associated setup relationship is completed
-            lineup_member.relationship.updated_flag=True
-            if lineup_member.relationship.is_setup_complete():
-                lineup_member.relationship.date_setup_completed=datetime.now()  
-                lineup_member.relationship.save(update_fields=['date_setup_completed','updated_flag'])
-            else:
-                lineup_member.relationship.save(update_fields=['updated_flag'])
-            lineup_member.relationship.notify_source_person(lineup_member)
-        
         return True #must return True or else caller thinks payment failed
     
     def handle_rating_paid(self):
@@ -532,133 +512,3 @@ class CrushRelationship(BasicRelationship):
     
     def __unicode__(self):
         return u'Crush: '  + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
-
-class SetupRelationship(BasicRelationship):
-    class Meta:
-        # this allows the models to be broken into separate model files
-        app_label = 'crush' 
-        # ordering handled by view function 
-    # source person is the recommender
-    # target person is the recommendee
-    # recommended friends are instances of class setupLineupMember which has a Foreign Key to this class
-    #objects = SetupRelationshipManager()
-    
-    # date notification last sent to the target person - not any recommendee
-    date_notification_last_sent = models.DateTimeField(default=None, null=True,blank=True)  
-
-    date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
-    
-    date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
-    # primarily calculated and used to determine if the setup should belong in the progressing or completed page
-    date_setup_completed = models.DateTimeField(default=None,null=True,blank=True)
-    # keeps track of how many setups the source person has done for the target person
-    display_id = models.IntegerField(default=0, max_length=60)
-   
-    def is_setup_complete(self):
-        all_lineup_members = self.setuplineupmember_set.all()
-        # check to see that all lineup members have been decided upon, if at least one not decided then return False
-        if len(all_lineup_members.filter(decision=None)) > 0:
-            return False
-        # check to see if any lineup members with attraction decisions have an unset lineup_member_attraction
-        if len(all_lineup_members.filter(decision=0,lineup_member_attraction=None))>0:
-            return False
-        return True
-    
-    # true if target has responded to at least one added attraction
-        # used for displaying status in the setup block
-    def has_target_responded(self):
-        if self.setuplineupmember_set.exclude(decision=None).count() > 0:
-            return True
-        return False
-    
-    # used by setup_by_me block to order the lineup members
-    # filter out lineup members picked by target but recommendee hasn't reponded
-    def get_lineup_members_picked_yes(self):
-        return self.setuplineupmember_set.filter(decision=0,lineup_member_attraction=None)
-    # used by setup_by_me block to order the lineup members
-    # filter out any recommendees who the target has not decided upon
-    def get_lineup_members_picked_unknown(self):
-        return self.setuplineupmember_set.filter(decision=None)
-    # filter out any recommendees picked by attraction and recommendee liked them
-    # used by setup_by_me block to order the lineup members
-    def get_lineup_members_responded_yes(self):
-        return self.setuplineupmember_set.filter(lineup_member_attraction=1)
-        # used by setup_by_me block to order the lineup members
-        # filter out any recommendees picked by attraction and recommendee DID NOT like them
-    def get_lineup_members_responded_no(self):
-        return self.setuplineupmember_set.filter(lineup_member_attraction = 0)
-    # used by setup_by_me block to order the lineup members
-    def get_lineup_members_picked_no(self):
-        return self.setuplineupmember_set.filter(decision__gt = 0)
-    
-    #used by setup_by_me block to deterine if vertical divider should be shown between target person's non-attracted lineup members and the rest of lineup
-    def show_vertical_divider_a(self):
-        if self.setuplineupmember_set.filter(decision=0,lineup_member_attraction=None).count()>0 or self.setuplineupmember_set.filter(decision=None).count()>0:
-            if self.setuplineupmember_set.exclude(lineup_member_attraction=None).count()>0:
-                return True
-            else:
-                return False
-        else:
-            return False
-    #used by setup_by_me block to deterine if vertical divider should be shown between target person's non-attracted lineup members and the rest of lineup
-    def show_vertical_divider_b(self):
-        num_elements_to_right=self.setuplineupmember_set.filter(decision__gt = 0).count()
-        num_total_elements = self.setuplineupmember_set.count()
-        if num_elements_to_right  and num_elements_to_right < num_total_elements:
-            return True
-        else:
-            return False
-
-    
-    @transaction.commit_on_success # rollback entire function if something fails
-    def save(self,*args,**kwargs):
-        print "calling save on crush relationship"
-        if (not self.pk): # this is a newly created crush relationship
-            # give the setup a display id.  this is the unique  identifier
-                # get total previous setups(past and present)made from source to target and add 1
-            self.display_id = self.source_person.crush_setuprelationship_set_from_source.all().count() + 1
-            self.date_notification_last_sent = datetime.now()
-        super(SetupRelationship,self).save(*args,**kwargs)
-  
-    # notify the creator of setup whenenver:
-        # lineup is completed by target
-        # an individual recommendee responds
-    def notify_source_person(self,setup_lineup_member=None):
-
-        source_person=self.source_person
-        if source_person.bNotify_setup_response_received== False:
-            return
-        source_person_email=source_person.email
-        if (not source_person_email):
-                return
-        
-        if setup_lineup_member != None:      
-            target_person=self.target_person
-            recommendee_person = setup_lineup_member.user
-            full_name=recommendee_person.get_name()
-            short_name=recommendee_person.first_name + ' ' + recommendee_person.last_name[0]
-            first_name = recommendee_person.first_name
-            pronoun_subject = recommendee_person.get_gender_pronoun_subject()
-            pronoun_possessive = recommendee_person.get_gender_pronoun_possessive()
-            crush.utils_email.send_mail_setup_recommendee_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, target_person.get_name(),setup_lineup_member.lineup_member_attraction, source_person_email)
-        else:
-            target_person=self.target_person
-            full_name=target_person.get_name()
-            short_name=target_person.first_name + ' ' + target_person.last_name[0]
-            first_name=target_person.first_name
-            pronoun_subject = target_person.get_gender_pronoun_subject()
-            pronoun_possessive = target_person.get_gender_pronoun_possessive()
-            crush.utils_email.send_mail_setup_target_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
-
-# when
-class SetupRequestRelationship(BasicRelationship):
-    class Meta:
-        app_label = 'crush' 
-        #default handling done by view function
-    # source person is the one requesting a setup
-    # target person is the person who will eventually create the setup
-    def can_resend(self):
-        if (datetime.now() - self.date_added).days < 7:
-            return False
-        else:
-            return True;

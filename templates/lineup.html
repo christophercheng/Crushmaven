@@ -8,7 +8,7 @@ $(document).ready(function() // handling for the slider
 	/** PROCEDURAL CODE - CREATE IS_LINEUP_PAID GLOBAL
 	* create global bool variable for lineup's is_lineup_paid setting
 	*/
-	window.is_lineup_paid = {% if admirer_rel.is_lineup_paid or is_admirer_type == False %}true{% else %}false{% endif %};
+	window.is_lineup_paid = {% if admirer_rel.is_lineup_paid %}true{% else %}false{% endif %};
 		
 			
 	/* ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ $(document).ready(function() // handling for the slider
   *		Ajax load the next slide into the DOM
 	*  ---------------------------------------------------------------------- */			
 	var load_next_slide = function(next_position, callback){
-		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/{% if is_admirer_type == 0 %}0/{% endif %}';
+		var load_url = '/ajax_get_lineup_slide/{{admirer_rel.display_id}}/' + next_position + '/';
 		
 		// overlay and loading icons should be hidden by the callback functions
 		$('#lineup_container #slide_overlay').show();
@@ -193,7 +193,7 @@ $(document).ready(function() // handling for the slider
 	  }
 	  	  	
 	  if (this_element.attr('add_type')=="crush") {
-	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/{% if is_admirer_type == 0 %}3/0/{% endif %}"; 
+	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
 	  	decision_dialog.html(dialog_attraction_html);
 	  	if (window.added_lineup_attraction){
@@ -228,9 +228,6 @@ $(document).ready(function() // handling for the slider
 					}
 					else {
 						url += decision_dialog.find('input:radio[name="rating"]:checked').val();
-						{% if is_admirer_type == 0 %}
-							url += "/0/";
-						{% endif %}
 					}	
 					decision_div.prev().show();decision_div.hide();
 					decision_div.load(url, function(responseText,textStatus,XHR){
@@ -432,11 +429,7 @@ $(document).ready(function() // handling for the slider
 <div id="lineup_container">
 <span id="site-loading"></span>
 <div id="lineup-header">
-	{% if is_admirer_type == 1 %}
 		One of these line-up members is your admirer!  (We reveal them one-at-a-time.) Pick any you like, and we'll send them a similar type of lineup - with you in it! We'll let you know if they like you back <i>or not</i>.  If not, your identity remains protected.
-	{% else %}
-		Your friend recommended these lineup members.  Pick the ones you like, and we'll send them a similar type of lineup - with you in it! If they like you back, we'll let you know.  If not, your identity remains protected.
-	{% endif %}
 </div>
 
 <div id="bx-pager-container">
