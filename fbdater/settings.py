@@ -111,7 +111,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
 CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
-#STATIC_URL = '/static/'
+
 
 
 # Additional locations of static files
@@ -267,7 +267,7 @@ PLATONIC_RATINGS = {
 
 DELETION_ERROR = {
                   0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
-                  1:'Your Like is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes can not be removed while the user is interacting with the associated admirer lineup.',
+                  1:'Your crush is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes can not be removed while the user is interacting with the associated admirer lineup.',
                   2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
                    }
 
@@ -286,15 +286,15 @@ FEATURES = {
         'COST': 1,      
     },
     '2': {
-        'NAME':'View your Like\'s response for 1 credit',
+        'NAME':'View your crush\'s response for 1 credit',
         'COST': 1,
     },
     '3': {
-        'NAME':"View your Like's assessment of you for 1 credit",
+        'NAME':"View your crush's assessment of you for 1 credit",
         'COST': 1,
     },
     '4': {
-        'NAME':"Converse with your Like over the next 2 weeks for 2 credits",
+        'NAME':"Converse with your crush over the next 2 weeks for 2 credits",
         'COST': 2,
     },
 }
@@ -354,16 +354,16 @@ POSTMAN_AUTOCOMPLETER_APP={
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
 
-DATABASES = {}
+#DATABASES = {}
 # Parse database configuration from $DATABASE_URL
-try:
-    import dj_database_url
-    DATABASES['default'] =  dj_database_url.config()
+#try:
+#    import dj_database_url
+#    DATABASES['default'] =  dj_database_url.config()
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-except:
-    pass
+#    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#except:
+#    pass
 try:
     from settings_local import *
 except ImportError, e:

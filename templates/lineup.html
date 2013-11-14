@@ -26,7 +26,7 @@ $(document).ready(function() // handling for the slider
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
 	 	total_crushes=crush_li_elements.length;
 	 	if (total_crushes > 0){ 
-	 		footer_msg_element_html += '<span id="added_attractions_info">Added to your Likes (' + total_crushes + '):';
+	 		footer_msg_element_html += '<span id="added_attractions_info">Added to your Crushes (' + total_crushes + '):';
 		  crush_li_elements.each(function(index,item){
 				footer_msg_element_html += ' ' +$(item).parent().children('.lineup_name').html();
 				if (index < (total_crushes - 1))
@@ -464,7 +464,7 @@ $(document).ready(function() // handling for the slider
 	   <span class="lineup_facebook_link"><a href="http://www.facebook.com/{{member.username}}" target="_blank">view facebook profile<span class="view_facebook_icon"></span></a></span>
 	   <span class="lineup_decision" username="{{member.username}}">
 			{% if member.decision == 0 %}
-	       <span class="choice crush">Added to your Likes!<span class="date_lineup_member_added">  ({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
+	       <span class="choice crush">Added as a Crush!<span class="date_lineup_member_added">  ({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span></span>
 			{% else %}
 	       <span class="choice platonic">Not Interested<!--<span class="date_lineup_member_added">({{member.relationship.date_added|date:"SHORT_DATE_FORMAT"}})</span>--></span>
 	    	<a href="#" class="platonic_reconsider" add_type="crush" username="{{member.username}}" name="{{member.user.first_name}} {{member.user.last_name}}" member_gender= "{{member.user.gender}}" lineup_position="{{member.position}}">change your mind?</a>

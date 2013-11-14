@@ -289,7 +289,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
             # something is wrong, this person was already decided upon, so just return an error message
             # check to see if they haven't already been added as a crush
             if lineup_member.decision == 0:
-                ajax_response = "<span id=\"choice\" class='crush choice existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " to your Likes.</span>"
+                ajax_response = "<span id=\"choice\" class='crush choice existing_choice'>You already added " + target_user.first_name + " " + target_user.last_name + " as a crush.</span>"
                 return HttpResponse(ajax_response)
             # else:
                 # user changed their mind about platonic lineup member so exit out of here
@@ -316,7 +316,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
                     new_relationship_friendship_type=2
             CrushRelationship.objects.create(source_person=request.user, target_person=target_user,friendship_type=new_relationship_friendship_type)
                         
-            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added to your Likes</span>'
+            ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as a crush</span>'
             lineup_member.decision=0
         else:
             PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)

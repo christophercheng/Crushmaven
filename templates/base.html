@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
 		    color: "default",
 		    showRandom:false,
 		    lang: {
-		      title: "Like Someone",
+		      title: "Add a Crush",
 		      searchText: "Enter a friend's name",
 		      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
 		      selectedCountResult: "You have choosen {0} people.",
@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
-			modal_html += '<div class="modal_instructions">To get a response, please help us get your Like(s) signed into Flirtally.</div>';
+			modal_html += '<div class="modal_instructions">To get a response, please help us get your crushes signed into Flirtally.</div>';
 			modal_html += '<div class="modal_main_content">';
 				
 			
@@ -279,7 +279,7 @@ jQuery(document).ready(function($) {
                 window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
                 //document.location.href='/attractions/'; // reload page
         }).fail(function(error){
-                window.alert_modal("Like Someone - Problem", error.responseText,$('#fs-dialog-box-wrap') );
+                window.alert_modal("Add a Crush - Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });
   }
 	// -------------  CSS additions ------------------

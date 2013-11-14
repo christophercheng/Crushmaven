@@ -90,7 +90,7 @@ $('.sent_from_us').css('opacity',0);
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">Enter the email address(s) of the person you like.  We'll send them an invitation, sent <strong><i>anonymously</i></strong> from our Flirtally.com email address.</div>
+   <div class="modal_instructions">Enter the email address(s) of your crush.  We'll send them an invitation, sent <strong><i>anonymously</i></strong> from our Flirtally.com email address.</div>
 
    {% csrf_token %}
 
@@ -134,7 +134,7 @@ $('.sent_from_us').css('opacity',0);
 	           </div>
 	           <div class="email_content_header_content">
 	                   <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>Flirtally.com</span><BR>
-	                   <span class="email_address_holder">{Your Like's email address}</span><BR>
+	                   <span class="email_address_holder">{Your crush's email address}</span><BR>
 	                   <span class="subject_text">You have an admirer!</span>
 	           </div>
            </div>

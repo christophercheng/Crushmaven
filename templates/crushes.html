@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Your Likes{% endblock %}
+{% block title %}Your Crushes{% endblock %}
 {% block content %}
 {% load fbdater_extras %}
 <script type="text/javascript">
@@ -130,12 +130,12 @@ $(document).ready(function()
     		window.remove_crush_dialog.dialog("open");
     	      $(':focus').blur();
     	}).fail(function(response){
- 				window.alert_modal('Removing Your Like', response.responseText );
+ 				window.alert_modal('Removing Your Crush', response.responseText );
  				return false;
 		});  
     
       e.preventDefault();
-      window.remove_crush_dialog.text("Are you sure you want to remove " + name + " from your Likes?  Maybe you should give it a bit more time?");
+      window.remove_crush_dialog.text("Are you sure you want to remove " + name + " as a crush?  Maybe you should give it a bit more time?");
       window.remove_crush_dialog.dialog('option', 'buttons', {
     		"Cancel": function() {$("#remove_crush_dialog").dialog("close");
       		},
@@ -144,7 +144,7 @@ $(document).ready(function()
  					document.location.href='/attractions/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
- 				 	window.alert_modal('Removing Your Like', "{{generic_error_message}}" );
+ 				 	window.alert_modal('Removing Your Crush', "{{generic_error_message}}" );
  				});
  			}
   		});
@@ -176,7 +176,7 @@ $('.crush_name_link').click(function(){
   $("#privacy_check_modal").dialog({modal: true,resizable:false, autoOpen: false});
   $("#privacy_check").click(function(e) {
     e.preventDefault();
-    $("#privacy_check_modal").html("Your Facebook privacy setting for this app's visibility is currently NOT set to <i>Only Me</i>. <BR><BR>In order to conceal your identity from your Likes, we strongly urge you to change your settings immediately. <BR><BR> <a href='/help_fb_privacy_setting/' target='_blank'>Learn how here.</a> <BR><BR>");
+    $("#privacy_check_modal").html("Your Facebook privacy setting for this app's visibility is currently NOT set to <i>Only Me</i>. <BR><BR>In order to conceal your identity from your crushes, we strongly urge you to change your settings immediately. <BR><BR> <a href='/help_fb_privacy_setting/' target='_blank'>Learn how here.</a> <BR><BR>");
 		$('#privacy_check_modal').dialog("open");
   	return false;
   });
@@ -231,9 +231,10 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 </div>
 {% endif %} 
 
-<!-- Display the crush type navigation widget -->  
+<!-- Display the crush type navigation widget -->
+
 <ul class="title_bar" id="title_bar_attractions">
-	<li class="title_bar_title">Your Likes</li>
+	<li class="title_bar_title">Your Crushes</li>
 	<li class="title_bar_page_links">
 		{% if crush_type == 0  %}
 			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link ">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
@@ -255,19 +256,19 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	<span class="help_icon" title="close help"></span>
 	<span class="instructions_title">How Liking Someone Works</span>
 	<div class="first_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">'Like' any Facebook friend <i>(or anyone on Facebook)</i> that you're attracted to.</span></div>
-		<div class="instruction_sub_step"><span class="instruction_step_text">Your likes are completely private.  Not even your friends will know.</span></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your Likes an <i>anonymous</i> invite to sign into Flirtally.</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add any Facebook friend <i>(or anyone on Facebook)</i> that you're attracted to as a crush.</span></div>
+		<div class="instruction_sub_step"><span class="instruction_step_text">Your crushes are completely private.  Not even your friends will know.</span></div>
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into Flirtally.</span></div>
 		<a class="show_more">show more</a><a class="show_less">show less</a> 
 		 
 	</div>
 	<div class="second_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Once signed in, your Likes receive a carefully constructed lineup of potential admirers, including you.  They'll pick out the ones they're attracted to.</span></div>
+		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Once signed in, your crush receives a carefully constructed lineup of potential admirers, including you.  They'll pick out the ones they're attracted to.</span></div>
 		<div class="instruction_sub_step"><span class="instruction_step_text">Because the lineup is randomly ordered, your identity as the actual admirer is anonymous.</span></div>
-		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know whether you're picked (or not). Your Likes may not even realize that you liked them first!</span></div>
+		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know whether you're picked (or not). Your crush may not even realize that you liked them first!</span></div>
 	</div>
 	<div class="instruction_block_button_line">
-		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Like Someone">Like Someone</a>
+		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add a Crush">Add a Crush</a>
 	</div>
 	</div>		<!-- close off instructional content -->
 	{% if crushes_in_progress_count == 0 %}
@@ -289,14 +290,14 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <span id="no_content">
 
 	{% if crush_type == 0 %}
-		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}attractions.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
+		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% else %}
-		You have no <i>responded</i> attractions.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
+		You have no crushes with responses.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% endif %}
 	</span>
 {% endif %}
-<div id="remove_crush_dialog" title="Remove From Your Likes"></div>
+<div id="remove_crush_dialog" title="Remove From Your Crushes"></div>
 <div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
 <div id="privacy_check"></div>
-<div id="response_modal" title = "Your Like's Response"></div>
+<div id="response_modal" title = "Your Crush's Response"></div>
 {% endblock %}

@@ -169,7 +169,7 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title span').html("Like Someone - Confirmation");
+      $('#fs-dialog-title span').html("Add a Crush - Review Selections");
       $('#nfs-tab').hide();
       $('#fs-tab').hide();
       $('#fs-continue-button').hide();
@@ -289,7 +289,7 @@
 		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class=" site_dialog_button site_dialog_back_button" href="javascript://"><span>&#60; Back</span></a>' +
 		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button site_dialog_go_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Like</span></a>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Confirm</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
@@ -1066,7 +1066,7 @@
     lang: {
       title: "Friend Selector",
       buttonSubmit: "Send",
-      buttonContinue: "Confirm",
+      buttonContinue: "Review Selections",
       buttonCancel: "Cancel",
       buttonSelectAll: "Select All",
       buttonDeselectAll: "Deselect All",
