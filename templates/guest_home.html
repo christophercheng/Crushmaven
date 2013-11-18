@@ -3,22 +3,22 @@
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
 	<meta property="fb:app_id" content="165610330293338" /> 
   <meta property="og:type"  content="website" /> 
-  <meta property="og:description" content="{% if change_description %}{{ change_description }}{% else %}Flirtally is a new matchmaking service for people who already have someone in mind - either for themselves or for friends of theirs.  Anonymously find out if someone you like feels the same. Or ask friends to help set you up. |  Already in a relationship?  Play matchmaker - it's easy and fun!.{% endif %}" />
-  <meta property="og:title" content="{% if change_title%}{{ change_title }}{% else %}Flirtally | Matchmaking Through Friends{% endif %}" />
+  <meta property="og:description" content="{% if change_description %}{{ change_description }}{% else %}CrushMaven | Anonymously discover if someone you like feels the same.{% endif %}" />
+  <meta property="og:title" content="{% if change_title%}{{ change_title }}{% else %}CrushMaven | Anonymously find out if someone you like feels the same.{% endif %}" />
   <meta property="og:image" content="{{ STATIC_URL }}images/flirtally_fb_logo2.png"/>
   <meta property="og:image:width" content="259" />
 	<meta property="og:image:height" content="230" />
-  <meta property="og:site_name" content="Flirtally Matchmaking"/>
-  <meta property="og:url" content="{% if change_url %}{{ change_url }}{% else %}http://www.flirtally.com{% endif %}" />
+  <meta property="og:site_name" content="CrushMaven"/>
+  <meta property="og:url" content="{% if change_url %}{{ change_url }}{% else %}http://www.crushmaven.com{% endif %}" />
   <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
-  <meta name="description" content="{% if change_description %}{{ change_description }}{% else %}Flirtally is a new matchmaking service for people who already have someone in mind - either for themselves or for friends of theirs.  Anonymously find out if someone you like feels the same. Or ask friends to help set you up. |  Already in a relationship?  Play matchmaker - it's easy and fun!{% endif %}" />
+  <meta name="description" content="{% if change_description %}{{ change_description }}{% else %}Anonymously discover if someone you like feels the same at CrushMaven.com{% endif %}" />
   <meta name="robots" content="all,index" />
   <meta name="Revisit-After" content="30 Days" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
   <link type="text/css" href="{{ STATIC_URL }}fbdater_guest_v1.css" rel="stylesheet"/>
-	<title>{% if change_title%}{{ change_title }}{% else %}Flirtally | Matchmaking Through Friends{% endif %}</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon_v2.png" />
-    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon_v2.png" /> 
+	<title>{% if change_title%}{{ change_title }}{% else %}CrushMaven | Anonymously Discover If Someone You Like Feels The Same{% endif %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
+    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
 </head>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
@@ -67,25 +67,101 @@ jQuery(document).ready(function($) {
 
 <body id="guest_home_page">
 <div id="logo_section">	
-	<div id="logo_section_background"></div>
-	<div class="center_container">
-		<img id="guest_logo" src="{{ STATIC_URL }}images/flirtally_logo_white_v3.png">
-		<span class="beta">beta</span>
-		<span id="top_links"><a href="/contact">Contact</a></span>
-		<h2 id="tagline1">Attracted to someone you know<br> but not sure they feel the same?</h2>
-		<h2 id="tagline2">Discover your relationship potential<span>easily and anonymously.</span></h2>
-		<a id ="facebookbtn"></a>
-		<div id="authentication_wait">authenticating<span id="authentication_dot">.</span></div>
-		<h2 id="tagline3">Everything is private; we don't post to Facebook, shh...</h2>
-		<h2 id="tagline3_copy">Everything is private; we don't post to Facebook, shh...</h2>
-	</div> <!--  close off center_container div -->
+	<img id="logo_section_background" src="{{ STATIC_URL }}images/cm_image.jpg">
+	<div id="logo_bar"></div>	
+	<div id="center_content">
+		<div class="center_container">
+			<img id="guest_logo" src="{{ STATIC_URL }}images/cm_logo_sm.png">
+			<a id="how_it_works_link" class="logo_bar_links" href="#how_it_works">how it works</a>
+			<a id="who_it_works_on_link" class="logo_bar_links" href="#who_it_works_on">who it works on</a>
+			<a id="who_will_know_link" class="logo_bar_links" href="#who_will_know">who will know</a>
+			
+			<h2 id="tagline1">Discover anonymously if the person you're attracted to feels the same</h2>
+			
+			<a id ="facebookbtn"><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
+			<div id="authentication_wait">authenticating<span id="authentication_dot">.</span></div>
+			<h2 id="tagline3">We never post to Facebook</h2>
+		</div>
+	</div>
+
 </div> <!-- close off logo_section div -->
 
-{% include "how_to_section.html" %}
+<div id="qa_section" class="info_section">
+	<div class="info_section_content">
+		<div class="info_column info_column1">
+			<div>You're attracted to someone you know but...</div>
+			<div>You're not sure they feel the same.</div>
+			<div>More than just friends?</div>
+			<div>Are they a classmate or co-worker?</div>
+			<div>Are they in a relationship?</div>
+			<div>Are you?</div>
+			<div>Do they even know you exist?</div>
+		</div> <!-- end of info_column1 -->
+		<div class="info_column info_column2">
+			<div>Should you ask them out?</div>
+			<div>If they reject you, things will be mighty awkward - with your mutual friends as well.  Are you willing to jeopardize your friendship?  On the other hand, wait too long and opportunity will pass you by.</div>
+		</div> <!-- end of info_column2 -->
+		<div class="info_column info_column3">
+			<div>Don't take unnecessary risk!</div>
+			<div>CrushMaven makes it safe and easy to find out if the person you're attracted to feels the same, without having to reveal your crush to anyone.  If the feeling is not mutual, then keep your friendhship, and move on!</div>
+		</div> <!-- end of info_column3 -->
+	</div> <!-- end of info_section_content -->
+</div><!-- end of qa_section div -->
+
+<div id="how_it_works_section"class="info_section">
+	<div class="info_section_content">
+		<div class="info_section_title">How It Works</div>
+		<div class="info_column info_column1">
+			<div class="info_section_subtitle">(1) Crush Selection</div>
+			<div class="info_section_text">Select a Facebook friend - or any Facebook user - that you're attracted to.  We send them an anonymous invitation to sign in.</div>
+		</div> <!-- end of info_column1 -->
+		<div class="info_column info_column2">
+			<div class="info_section_subtitle">(2) Crush Lineup</div>
+			<div class="info_section_text">Once signed in, we present your crush with a lineup of potential admirers - similar to a police lineup - with you and nine carefully selected others.  Because it is randomly ordered, your crush won't know who their actual admirer is.</div>
+		</div> <!-- end of info_column2 -->
+		<div class="info_column info_column3">
+			<div class="info_section_subtitle">(3) Match Alert</div>
+			<div class="info_section_text">Your crush selects lineup members they're attracted to.  If you're picked, we notify both parties.  Your attraction may actually think they chose you first!  Even if you're not picked, we let you know, and your identity remains safe.</div>
+		</div> <!-- end of info_column3 -->
+	</div> <!-- end of info_section_content -->
+</div><!-- end of how_it_works div -->
+
+<div id="who_it_works_on_section"class="info_section">
+	<div class="info_section_content">
+		<div class="info_section_title">Who It Works On</div>
+		<div class="info_row info_row1">
+			<div class="info_section_subtitle">Facebook Friends</div>
+			<div class="info_section_text">Your crush's lineup will consist of Facebook users who are also Facebook friends with your crush.  Soon CrushMaven will work on your LinkedIn and Twitter contacts as well!</div>
+		</div> <!-- end of info_column1 -->
+		<div class="info_row info_row2">
+			<div class="info_section_subtitle">Friends of Friends</div>
+			<div class="info_section_text">Not friends with your crush on Facebook but share mutual Facebook friends?  No Problem.  Your crush's lineup will consist of Facebook users who are also Facebook friends-of-friends with your crush.</div>
+		</div> <!-- end of info_column2 -->
+		<div class="info_row info_row3">
+			<div class="info_section_subtitle">Anyone on Facebook</div>
+			<div class="info_section_text">Not friends with your crush on Facebook?  Share no mutual Facebook friends either?  Maybe you just saw them in a picture?  No Problem.  Just don't send them a Facebook friend request.  That would be creepy!</div>
+		</div> <!-- end of info_column3 -->
+	</div> <!-- end of info_section_content -->
+</div><!-- end of who_it_works_on div -->
+
+<div id="who_will_know_section"class="info_section">
+	<div class="info_section_content">
+		<div class="info_section_title">Who Will Know</div>
+		<div class="info_column info_column1">
+			<div class="info_section_text"><span class="info_section_subtitle">Not your crush!</span>They'll only know you're attracted to them if the feeling is mutual.  And we make it so they think they had the crush on you first!</div>
+		</div> <!-- end of info_column1 -->
+		<div class="info_column info_column2">
+			<div class="info_section_text"><span class="info_section_subtitle">Not your friends!</span>We don't post any activity to your Facebook feed.  We don't share your crushes with your friends.  In fact, they won't even know you're using us.</div>
+		</div> <!-- end of info_column2 -->
+		<div class="info_column info_column3">
+			<div class="info_section_text"><span class="info_section_subtitle">Not anyone!</span>We keep all your data private.  We highly doublt the NSA will care either.  Want to learn more?  Check out our <a href="/privacy">Privacy Policy</a>.</div>
+		</div> <!-- end of info_column3 -->
+	</div> <!-- end of info_section_content -->
+</div><!-- end of who_will_know div -->
 
 <div class="footer_section">
 	<div class="center_container">
-		<span class="first_footer_line">Flirtally © 2013</span><span id="bottom_links"><a href="/terms">Terms</a> <a href="/privacy">Privacy</a><a href="/contact/">Contact</a></span>
+		<span class="first_footer_line">CrushMaven © 2013</span><span id="bottom_links"><a href="/terms">Terms</a> <a href="/privacy">Privacy</a><a href="/contact/">Contact</a></span>
 	</div>
 </div>
 </body>

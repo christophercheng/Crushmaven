@@ -11,6 +11,7 @@ body {
  	overflow-x: auto;	
  	overflow-y:scroll;
  	background:#131323;
+ 	background:#21073D;
 }
 
 a{
@@ -48,6 +49,9 @@ a{
 
 #logo_section{
 	margin-top:0;	
+	width:100%;
+	height:570px;
+	overflow:hidden;
 	-webkit-touch-callout: none !important;
 	-webkit-user-select: none !important;
 	-khtml-user-select: none !important;
@@ -62,38 +66,43 @@ a{
 	#background: linear-gradient(top, #000, #131323 70%, #1D1D35);
 	position:relative;
 }
+
+div#tagline{
+	margin:0 auto;
+	margin-top: 70%;
+}
+
 #logo_section_background{
-	position:absolute;
-	top:0px;
-	left:0px;
 	width:100%;
-	height:100%;
-	background:url("/static/images/home_bg_photo_blur10_doris.jpg") no-repeat center top;
+	min-width:1024px;
+	position:relative;
+	vertical-align:middle;
 	background-size:cover;
 	background-attachment:fixed;
 	-webkit-background-size:cover;
 	-o-background-size:cover;
 	-moz-background-size:cover;
 	
-	-webkit-opacity:.50;
+	-webkit-opacity:.80;
 	  /* IE 8 */
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-
-  /* IE 5-7 */
-  filter: alpha(opacity=50);
-
-  /* Netscape */
-  -moz-opacity: 0.5;
-
-  /* Safari 1.x */
-  -khtml-opacity: 0.5;
-
-  /* Good browsers */
-  opacity: 0.5;
-  
+	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	  /* IE 5-7 */
+	  filter: alpha(opacity=80);
+	  /* Netscape */
+	  -moz-opacity: 0.8;
+	  /* Safari 1.x */
+	  -khtml-opacity: 0.8;
+	  /* Good browsers */
+	  opacity: 0.8;
+}
+#logo_section #center_content {
+	position:absolute;
+	top:40px;
+	width:100%;
 }
 #logo_section .center_container {
-	height:468px;
+	width:1000px;
+	margin:0 auto;
 	#background-color:#0A0A12;
 	#background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
 	#background: -webkit-linear-gradient(top, #000, #131323 70%, #1D1D35);
@@ -101,87 +110,87 @@ a{
 	#background: linear-gradient(top, #000, #131323 70%, #1D1D35);
 }
 
-#logo_section img#guest_logo{
-	margin-top:10px;
-	height:110px;	
-	opacity:1;
-}
-
-.tagline_slide_container{
-	display:inline-block;
-	height:285px;
-	width:100%;
-	overflow:hidden;
-	white-space:nowrap;
-	position:relative;
-}
-
-.tagline_slide{
-	height:100%;
-	top:0px;
+#logo_section #logo_bar {
+	position:absolute;
+	top:70px;
 	left:0px;
 	width:100%;
-	display:inline-block;
-	position:absolute;
-	overflow:hidden;
-	white-space:nowrap;
-	#display:none;
+	height:100px;
+	background:white;
+		opacity:20;
+		-webkit-opacity:.20;
+	  /* IE 8 */
+	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+	  /* IE 5-7 */
+	  filter: alpha(opacity=20);
+	  /* Netscape */
+	  -moz-opacity: 0.20;
+	  /* Safari 1.x */
+	  -khtml-opacity: 0.20;
+	  /* Good browsers */
+	  opacity: 0.20;
 }
 
+#logo_section img#guest_logo{
+	position:absolute;
+	top:50px;
+	left:15px;
+	height:55px;	
+}
+
+#logo_section a.logo_bar_links{
+	color:#fff;
+	font-size:18px;
+	position:absolute;
+	top:90px;
+	width:140px;
+}
+#logo_section a#how_it_works_link{
+	left:520px;
+}
+#logo_section a#who_it_works_on_link{
+	left:650px;
+}
+#logo_section a#who_will_know_link{
+	left:810px;
+}
 
 h2{
 	display:inline-block;
 }
-
 h2#tagline1{
 	position:absolute;
-	top:184px;
-	left:194px;
+	top:355px;
+	left:333px;
+	width:550px;
 	color:#E8E8E8;
 	color:#d6d6d6;
 	color:#dcdcdc;
-	font-size:34px;
+	font-size:30px;
 	font-weight:normal;
-	line-height:46px;
+	line-height:40px;
 	font-family:arial;
 	text-shadow:1px 1px 0 #000;
 	letter-spacing:0px;
 	display:none;
 }
 
-
-h2#tagline2{
-	position:absolute;
-	top:330px;
-	left:351px;
-	color:#C2C2C2;
-	font-size:19px;
-	font-weight:normal;
-	line-height:24px;
-	letter-spacing:1px;
-	text-shadow:1px 1px 0 #000;
-	display:none;
-}
-h2#tagline2 span{
-	color:#9B9B9B;
-	font-size:16px;
-	display:block;
-	text-shadow:1px 1px 0 #000;
-}
-
 #facebookbtn {
 	position:absolute;
-	#background: url('https://s3.amazonaws.com/static.turntable.fm/images/indexlogin/facebook_btn.png') 0 0 no-repeat;
-	#background:url(images/facebook_btn.png)  0 0 no-repeat;
-	background:url('http://dpnbuf1kuaw5.cloudfront.net/static/images/facebook_btn.png') 0 0 no-repeat;
-	left:348px;
-	top:384px;
-	width: 218px;
-	height: 46px;
+	left:331px;
+	top:453px;
+	width:231px;
+	height:44px;
 	cursor: pointer;
-	display: block;
-	float: left;
-	padding: 0 !important;
+}
+
+h2#tagline3{
+	position:absolute;
+	left:385px;
+	top:505px;
+	color:#ffffff;
+	font-size:13px;
+	font-weight:normal;
 	display:none;
 }
 #facebookbtn:hover{
@@ -198,8 +207,8 @@ h2#tagline2 span{
 	left:331px!important;
 	top:386px!important;
 	width: 218px!important;
-  height: 46px!important;
-  padding-top:12px;
+  	height: 46px!important;
+  	padding-top:12px;
 	color:gray;
 	letter-spacing:1px;
 	text-align:center;
@@ -218,16 +227,45 @@ h2#tagline2 span{
 	font-size:20px;
 }
 
-h2#tagline3,h2#tagline3_copy{
-	position:absolute;
-	top:435px;
-	left:352px;
-	color:#616161;
-	font-size:14px;
-	font-weight:normal;
-	display:none;
+/* -----------  INFO SECTIONS ------------  */
+
+div.info_section {
+	display:block;
+}
+div.info_section_content {
+	margin: 0 auto;
+	width:1000px;
+	display:block;
+	min-height:200px;
+}
+ 
+div.info_column{
+	width:333px;
+	float:left;
+	border:1px solid blue;
+	min-height:100px;
+}
+div.info_row{
+	width:100%;
+	display:block;
+	border:1px solid blue;
+	min-height:50px;
 }
 
+div#qa_section{
+	background-color:#fff;
+}
+
+div#how_it_works_section {
+	background:#532f83;
+		color:#fff!important;
+}
+div#who_it_works_on_section {
+	background:#F2F2F2;
+}
+div#who_will_know_section {
+	background:#fff;
+}
 /* -----------  HOW TO SECTION ----------- */
 
 #how_to_section {
