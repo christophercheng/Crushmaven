@@ -19,7 +19,9 @@
 	<title>{% if change_title%}{{ change_title }}{% else %}CrushMaven | Anonymously Discover If Someone You Like Feels The Same{% endif %}</title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
     <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
-</head>
+   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela+Round">
+
+  </head>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 
@@ -38,27 +40,67 @@
 jQuery(document).ready(function($) {
 	/*-- ------ HANDLE FACEBOOK LOGIN BUTTON CLICK  -------- */
 	$('#facebookbtn').click(function(e){
-		$(this).fadeTo(1,.1,function(){$('#authentication_wait').show();});
-		$('#tagline3_copy').show();
+		$('#tagline3').css('opacity',0);
+		$(this).fadeTo(0,.1,function(){$('#authentication_wait').show();$('#tagline3').hide();});
+		
 		window.location.href="/facebook/login{{request.GET.next}}";
 		setInterval(function(){shift_dot();},200); // animate the elipses
 	});
-	
+	 
 	var shift_dot = function(){
 		var dot_element = $('#authentication_dot');
 		var dot_x = dot_element.css('right');
-		var new_dot_x = '45px';
-		if (dot_x == '45px')
-			new_dot_x = '35px';
-		else if (dot_x == '35px')
-			new_dot_x = '25px'
+		var new_dot_x = '29px';
+		if (dot_x == '29px')
+			new_dot_x = '19px';
+		else if (dot_x == '19px')
+			new_dot_x = '9px'
 		dot_element.css('right',new_dot_x);
 	}
 	
 	$('#facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
 	
-	setInterval(function(){$('#tagline1').fadeIn(2000);},400);
-		setInterval(function(){$('#tagline2,#facebookbtn').fadeIn(2000);},1500);
+	setInterval(function(){$('#tagline1').fadeIn(1800);},0);
+	setInterval(function(){$('#tagline2,#facebookbtn').fadeIn(1500);},500);
+
+		// hide .scrolltop first
+		$('.scrolltop').hide();
+		
+		// fade in .scrolltop
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() > 405) {
+					
+					$('.scrolltop').fadeIn(0);
+				} else {
+					$('.scrolltop').fadeOut(0);
+				}
+			});
+
+			// scroll body to 0px on click
+			$('.scrolltop').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				}, 800);
+				return false;
+			});
+		});
+		
+		$(function() {
+			  $('a[href*=#]:not([href=#])').click(function() {
+			    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+			      var target = $(this.hash);
+			      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+			      if (target.length) {
+			        $('html,body').animate({
+			          scrollTop: target.offset().top
+			        }, 1000);
+			        return false;
+			      }
+			    }
+			  });
+			});
+
 }); // close of jQuery(document).ready
 
 
@@ -72,9 +114,9 @@ jQuery(document).ready(function($) {
 	<div id="center_content">
 		<div class="center_container">
 			<img id="guest_logo" src="{{ STATIC_URL }}images/cm_logo_sm.png">
-			<a id="how_it_works_link" class="logo_bar_links" href="#how_it_works">how it works</a>
-			<a id="who_it_works_on_link" class="logo_bar_links" href="#who_it_works_on">who it works on</a>
-			<a id="who_will_know_link" class="logo_bar_links" href="#who_will_know">who will know</a>
+			<a id="how_it_works_link" class="logo_bar_links" href="#how_it_works_section">how it works</a>
+			<a id="who_it_works_on_link" class="logo_bar_links" href="#who_it_works_on_section">who it works on</a>
+			<a id="who_will_know_link" class="logo_bar_links" href="#who_will_know_section">who will know</a>
 			
 			<h2 id="tagline1">Discover anonymously if the person you're attracted to feels the same</h2>
 			
@@ -85,25 +127,27 @@ jQuery(document).ready(function($) {
 	</div>
 
 </div> <!-- close off logo_section div -->
-
+<a href="#" class="scrolltop"><span id="up">up</a>
 <div id="qa_section" class="info_section">
 	<div class="info_section_content">
 		<div class="info_column info_column1">
-			<div>You're attracted to someone you know but...</div>
-			<div>You're not sure they feel the same.</div>
-			<div>More than just friends?</div>
-			<div>Are they a classmate or co-worker?</div>
-			<div>Are they in a relationship?</div>
-			<div>Are you?</div>
-			<div>Do they even know you exist?</div>
+			<div class="info_section_title">You're attracted to someone you know but...</div>
+			<div class="info_section_text">You're not sure they feel the same.</br>
+			More than just friends?</br>
+			A classmate or co-worker?</br>
+			Are they in a relationship? </br>
+			Are you?</br>
+			Do they even know you exist?</div>
 		</div> <!-- end of info_column1 -->
 		<div class="info_column info_column2">
-			<div>Should you ask them out?</div>
-			<div>If they reject you, things will be mighty awkward - with your mutual friends as well.  Are you willing to jeopardize your friendship?  On the other hand, wait too long and opportunity will pass you by.</div>
+			<img class="icon" src="{{ STATIC_URL }}/images/question.png">
+			<div class="info_section_subtitle">Should you ask them out?</div>
+			<div class="info_section_text">If they reject you, things will be awkward - with your mutual friends as well.  Are you willing to jeopardize your friendship?  On the other hand, wait too long and opportunity will pass you by.</div>
 		</div> <!-- end of info_column2 -->
 		<div class="info_column info_column3">
-			<div>Don't take unnecessary risk!</div>
-			<div>CrushMaven makes it safe and easy to find out if the person you're attracted to feels the same, without having to reveal your crush to anyone.  If the feeling is not mutual, then keep your friendhship, and move on!</div>
+			<img class="icon" src="{{ STATIC_URL }}/images/answer.png">
+			<div class="info_section_subtitle">Don't take <span class="purple">unnecessary</span> risk!</div>
+			<div class="info_section_text">CrushMaven makes it safe and easy to find out if someone you're attracted to feels the same, without having to reveal your crush.  If the feeling isn't mutual, keep your friendship and move on!</div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of qa_section div -->
@@ -112,16 +156,19 @@ jQuery(document).ready(function($) {
 	<div class="info_section_content">
 		<div class="info_section_title">How It Works</div>
 		<div class="info_column info_column1">
-			<div class="info_section_subtitle">(1) Crush Selection</div>
-			<div class="info_section_text">Select a Facebook friend - or any Facebook user - that you're attracted to.  We send them an anonymous invitation to sign in.</div>
+		<img class="icon" src="{{ STATIC_URL }}/images/crush_selection.png">
+			<div class="info_section_subtitle"><span class="step_number">1</span> Crush Selection</div>
+			<div class="info_section_text">Select a Facebook friend - or any Facebook user - that you're attracted to.  We'll then send them an anonymous invitation to sign in to CrushMaven.</div>
 		</div> <!-- end of info_column1 -->
 		<div class="info_column info_column2">
-			<div class="info_section_subtitle">(2) Crush Lineup</div>
+			<img class="icon" src="{{ STATIC_URL }}/images/crush_lineup.png">
+			<div class="info_section_subtitle"><span class="step_number">2</span> Crush Lineup</div>
 			<div class="info_section_text">Once signed in, we present your crush with a lineup of potential admirers - similar to a police lineup - with you and nine carefully selected others.  Because it is randomly ordered, your crush won't know who their actual admirer is.</div>
 		</div> <!-- end of info_column2 -->
 		<div class="info_column info_column3">
-			<div class="info_section_subtitle">(3) Match Alert</div>
-			<div class="info_section_text">Your crush selects lineup members they're attracted to.  If you're picked, we notify both parties.  Your attraction may actually think they chose you first!  Even if you're not picked, we let you know, and your identity remains safe.</div>
+			<img class="icon" src="{{ STATIC_URL }}/images/match_alert.png">
+			<div class="info_section_subtitle"><span class="step_number">3</span> Match Alert</div>
+			<div class="info_section_text">Your crush selects lineup members they're attracted to.  If you're picked, we notify both parties.  Your attraction may actually think they chose you first!  Even if you're not picked, we let you know and your identity remains safe.</div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of how_it_works div -->
@@ -130,16 +177,19 @@ jQuery(document).ready(function($) {
 	<div class="info_section_content">
 		<div class="info_section_title">Who It Works On</div>
 		<div class="info_row info_row1">
+			<img class="icon" src="{{ STATIC_URL }}/images/works_friends.png">
 			<div class="info_section_subtitle">Facebook Friends</div>
-			<div class="info_section_text">Your crush's lineup will consist of Facebook users who are also Facebook friends with your crush.  Soon CrushMaven will work on your LinkedIn and Twitter contacts as well!</div>
+			<div class="info_section_text">Your crush's lineup will only consist of Facebook users who are also friends with your crush on Facebook.  Soon CrushMaven will work on your LinkedIn and Twitter contacts as well!</div>
 		</div> <!-- end of info_column1 -->
 		<div class="info_row info_row2">
+			<img class="icon" src="{{ STATIC_URL }}/images/works_fof.png">
 			<div class="info_section_subtitle">Friends of Friends</div>
-			<div class="info_section_text">Not friends with your crush on Facebook but share mutual Facebook friends?  No Problem.  Your crush's lineup will consist of Facebook users who are also Facebook friends-of-friends with your crush.</div>
+			<div class="info_section_text">Not friends with your crush on Facebook but share mutual Facebook friends?  No Problem.  Your crush's lineup will only consist of Facebook users who are also friends-of-friends with your crush on Facebook.</div>
 		</div> <!-- end of info_column2 -->
 		<div class="info_row info_row3">
+			<img class="icon" src="{{ STATIC_URL }}/images/works_anyone.png">
 			<div class="info_section_subtitle">Anyone on Facebook</div>
-			<div class="info_section_text">Not friends with your crush on Facebook?  Share no mutual Facebook friends either?  Maybe you just saw them in a picture?  No Problem.  Just don't send them a Facebook friend request.  That would be creepy!</div>
+			<div class="info_section_text">Not friends with your crush on Facebook? Share no mutual friends either?  Maybe you saw them in some photo and thought they were cute.  No Problem.  Just don't send a random Facebook friend request.  That's creepy!</div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of who_it_works_on div -->
@@ -151,17 +201,17 @@ jQuery(document).ready(function($) {
 			<div class="info_section_text"><span class="info_section_subtitle">Not your crush!</span>They'll only know you're attracted to them if the feeling is mutual.  And we make it so they think they had the crush on you first!</div>
 		</div> <!-- end of info_column1 -->
 		<div class="info_column info_column2">
-			<div class="info_section_text"><span class="info_section_subtitle">Not your friends!</span>We don't post any activity to your Facebook feed.  We don't share your crushes with your friends.  In fact, they won't even know you're using us.</div>
+			<div class="info_section_text"><span class="info_section_subtitle">Not your friends!</span>We don't post anything to your Facebook feed.  We don't share your crushes with your friends.  In fact, they won't even know you're using us.</div>
 		</div> <!-- end of info_column2 -->
 		<div class="info_column info_column3">
-			<div class="info_section_text"><span class="info_section_subtitle">Not anyone!</span>We keep all your data private.  We highly doublt the NSA will care either.  Want to learn more?  Check out our <a href="/privacy">Privacy Policy</a>.</div>
+			<div class="info_section_text"><span class="info_section_subtitle">Not anyone!</span>We keep all your data private.  We highly doubt the NSA will care either.  Want to learn more?  Check out our <a href="/privacy">Privacy Policy</a>.</div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of who_will_know div -->
 
 <div class="footer_section">
 	<div class="center_container">
-		<span class="first_footer_line">CrushMaven © 2013</span><span id="bottom_links"><a href="/terms">Terms</a> <a href="/privacy">Privacy</a><a href="/contact/">Contact</a></span>
+		<span class="first_footer_line">CrushMaven © 2013</span><span id="bottom_links"><a href="/terms">Terms</a> <a href="/privacy">Privacy</a><a href="/contact/">Contact Us</a></span>
 	</div>
 </div>
 </body>
