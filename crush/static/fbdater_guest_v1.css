@@ -35,20 +35,10 @@ a{
 	padding-left:8px;
 }
 
-.beta{
-	position:absolute;
-	top:98px;
-	left:229px;
-	color:#4A4AAB;
-	font-size:16px;
-	font-weight:bold;
-	letter-spacing:4px;
-}
-
 #logo_section{
 	margin-top:0;	
 	#width:100%;
-	height:570px;
+	height:585px;
 	overflow:hidden;
 	-webkit-touch-callout: none !important;
 	-webkit-user-select: none !important;
@@ -72,7 +62,7 @@ div#tagline{
 
 #logo_section_background{
 	width:100%;
-	min-width:1100px;
+	min-width:1150px;
 	position:relative;
 	vertical-align:middle;
 	background-size:cover;
@@ -88,7 +78,7 @@ div#tagline{
 	width:100%;
 }
 #logo_section .center_container {
-	width:1000px;
+	width:1024px;
 	margin:0 auto;
 	#background-color:#0A0A12;
 	#background: -moz-linear-gradient(top, #000, #131323 70%, #1D1D35);
@@ -152,7 +142,7 @@ h2#tagline1{
 	width:550px;
 	font-size:30px;
 	font-weight:normal;
-	line-height:40px;
+	line-height:38px;
 	text-shadow:1px 1px 0 #000;
 	letter-spacing:0px;
 	color:#fff;
@@ -162,7 +152,7 @@ h2#tagline1{
 #facebookbtn {
 	position:absolute;
 	left:343px;
-	top:453px;
+	top:450px;
 	width:231px;
 	height:44px;
 	cursor: pointer;
@@ -172,7 +162,7 @@ h2#tagline1{
 h2#tagline3{
 	position:absolute;
 	left:396px;
-	top:500px;
+	top:495px;
 	color:darkGray;
 	font-size:13px;
 	font-weight:normal;
@@ -188,8 +178,8 @@ h2#tagline3{
 #authentication_wait {
 	display:none;
 	position:absolute;
-	left:356px!important;
-	top:453px!important;
+	left:351px!important;
+	top:455px!important;
 	width: 218px!important;
   	height: 46px!important;
   	padding-top:12px;
@@ -270,13 +260,13 @@ div.info_section {
 div.info_section_content {
 	margin: 0 auto;
 	padding-left:16px;
-	width:1000px;
+	width:1024px;
 	display:block;
 	height:100%;
 }
  
 div.info_column{
-	width:328px;
+	width:336px;
 	float:left;
 	#border:1px solid blue;
 	padding-right:25px;
@@ -284,6 +274,7 @@ div.info_column{
 div.info_row{
 	width:100%;
 	display:block;
+	padding-right:25px;
 	#border:1px solid blue;
 }
 
@@ -385,14 +376,16 @@ div#who_will_know_section {
 }
 div#who_will_know_section .info_section_title {
 	color:#ff0000;
+	#color:#09abe8;
 }
 div#who_will_know_section .info_section_subtitle {
 	color:#ff0000;
+	#color:#09abe8;
 	margin-right:8px;
 	font-size:22px;
 }
 div#who_will_know_section a {
-	color:#9b4293;
+	color:#09abe8;
 }
 /* -----------  HOW TO SECTION ----------- */
 
