@@ -134,11 +134,13 @@ h2{
 h2#tagline1{
 	position:absolute;
 	top:355px;
+	top:350px;
 	left:345px;
-	width:550px;
-	font-size:30px;
+	#width:580px;
+	#width:600px;
+	font-size:35px;
 	font-weight:normal;
-	line-height:39px;
+	line-height:42px;
 	text-shadow:1px 1px 0 #000;
 	letter-spacing:0px;
 	color:#fff;
@@ -148,7 +150,7 @@ h2#tagline1{
 #facebookbtn {
 	position:absolute;
 	left:343px;
-	top:450px;
+	top:453px;
 	width:231px;
 	height:44px;
 	cursor: pointer;
@@ -158,7 +160,7 @@ h2#tagline1{
 h2#tagline3{
 	position:absolute;
 	left:396px;
-	top:495px;
+	top:498px;
 	color:darkGray;
 	font-size:13px;
 	font-weight:normal;
@@ -264,14 +266,12 @@ div.info_section_content {
 div.info_column{
 	width:336px;
 	float:left;
-	#border:1px solid blue;
-	padding-right:25px;
+	padding-right:27px;
 }
 div.info_row{
 	width:100%;
 	display:block;
 	padding-right:25px;
-	#border:1px solid blue;
 }
 
 div.info_section_title {
@@ -317,11 +317,19 @@ div#qa_section .info_section_title{
 
 div#how_it_works_section {
 	background:#532f83;
+	background:#9b4293;
+	background:#8C3B84;
 	color:#fff!important;
-	margin-top:-3px;
-	margin-bottom:2px;
+	margin-top:-4px;
+	margin-bottom:1px;
 }
 
+div#how_it_works_section .icon {
+	margin-bottom:25px;
+}
+div#how_it_works_section .info_column2 .icon,div#how_it_works_section .info_column3 .icon  {
+	opacity:.7;
+}
 div#how_it_works_section .info_section_title{
 	color:#fff;
 }
@@ -337,14 +345,17 @@ div#how_it_works_section .step_number{
 div#how_it_works_section .info_section_subtitle{
 	#color:#9b4293;
 	color:#fff;
-	border-bottom:1px solid #9b4293;
-	padding-bottom:14px;
-}
+	#border-bottom:1px solid #9b4293;
+	#border-bottom:1px solid white;
+	#border-color:#532f83;
+	#border-color:darkGray;
+	#padding-bottom:14px;
+	}
 
 div#how_it_works_section .info_section_text {
 	margin-top:10px;
 	color:white;
-	color:#F5F5F5;
+	color:#E9E9E9;
 	padding-bottom:11px;
 }
 
@@ -378,8 +389,8 @@ div#who_it_works_on_section .info_section_title {
 	#color:#09abe8;
 }
 div#who_it_works_on_section .info_section_text{
-	margin-bottom:34px;
-	margin-top:6px;
+	margin-bottom:36px;
+	margin-top:8px;
 }
 div#who_it_works_on_section .info_row3 .info_section_text {
 	margin-bottom:0px;
