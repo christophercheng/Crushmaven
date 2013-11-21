@@ -14,8 +14,8 @@ import logging
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-# initialize_fof_crush receives a (post) request from flirtally.com to create a lineup from the provided information
-# it perform it's task to completion and then when it is done it will call a view function on flirtally.com with the relationship id and a valid array of user ids or an error code
+# initialize_fof_crush receives a (post) request from crushmaven.com to create a lineup from the provided information
+# it perform it's task to completion and then when it is done it will call a view function on crushmaven.com with the relationship id and a valid array of user ids or an error code
 # if initialize_fof_crush is already being worked on by a previous request, it should just do nothin
 # there needs to be a way to prevent getting stuck... some sort of timeout 
 

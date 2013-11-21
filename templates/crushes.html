@@ -50,7 +50,7 @@ $(document).ready(function()
 	   window.purchase_conversation("{{csrf_token}}",crush_id);
   });
   
-  $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/attractions_completed/";}});
+  $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/completed_crushes/";}});
   
   	window.display_response_modal = function(crush_id) {
    	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
@@ -84,8 +84,8 @@ $(document).ready(function()
 	var purchase_rating = function(unique_id){
    		data = {};
 			data['csrfmiddlewaretoken']="{{csrf_token}}";
-			data['success_path'] = '/attractions_completed/' +  '/' + unique_id + '/';
-			data['cancel_url'] = 'http://{{request.get_host}}/attractions_completed/' +  '/' + unique_id + '/';
+			data['success_path'] = '/completed_crushes/' +  '/' + unique_id + '/';
+			data['cancel_url'] = 'http://{{request.get_host}}/completed_crushes/' +  '/' + unique_id + '/';
 			data['unique_id'] = unique_id;
 			data['feature_id'] = '3';
 			data['purchase_callback_name'] = 'window.rating_purchased(' + unique_id + ')';
@@ -141,7 +141,7 @@ $(document).ready(function()
       		},
       		"Delete": function() {
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
- 					document.location.href='/attractions/'; // reload page
+ 					document.location.href='/new_crushes/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
  				 	window.alert_modal('Removing Your Crush', "{{generic_error_message}}" );
@@ -234,16 +234,17 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <!-- Display the crush type navigation widget -->
 
 <ul class="title_bar" id="title_bar_attractions">
-	<li class="title_bar_title">Your Crushes</li>
-	<li class="title_bar_page_links">
+
 		{% if crush_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link ">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/attractions_completed/">responded<span class="title_bar_count">{{crushes_completed_count}}</span></a>
+			<li class="title_bar_title">Crushes</li>
+			<li class="title_bar_page_links">
+				<a class="title_bar_page_link" href="/completed_crushes/">view past crush responses<span class="title_bar_count">({{completed_crushes_count}})</span></a>
+			</li>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link " href="/attractions/">not responded<span class="title_bar_count">{{crushes_in_progress_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link">responded<span class="title_bar_count">{{crushes_completed_count}}</span></span>
+			<li class="title_bar_title">Past Crush Responses ({{completed_crushes_count}})
+			</li>
 		{% endif %}
-	</li>
+	
 		<li class="title_bar_option">
 		sort:
 		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
@@ -254,11 +255,11 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 {% if show_help_popup == True %}
 <div class="new_user_instructions">
 	<span class="help_icon" title="close help"></span>
-	<span class="instructions_title">How Liking Someone Works</span>
+	<span class="instructions_title">How Crushes Work</span>
 	<div class="first_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add any Facebook friend <i>(or anyone on Facebook)</i> that you're attracted to as a crush.</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add a Facebook friend <i>(or anyone on Facebook)</i> that you're attracted to as a crush.</span></div>
 		<div class="instruction_sub_step"><span class="instruction_step_text">Your crushes are completely private.  Not even your friends will know.</span></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into Flirtally.</span></div>
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into CrushMaven.</span></div>
 		<a class="show_more">show more</a><a class="show_less">show less</a> 
 		 
 	</div>
@@ -268,14 +269,16 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know whether you're picked (or not). Your crush may not even realize that you liked them first!</span></div>
 	</div>
 	<div class="instruction_block_button_line">
-		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add a Crush">Add a Crush</a>
+		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush</a>
 	</div>
 	</div>		<!-- close off instructional content -->
-	{% if crushes_in_progress_count == 0 %}
-		<p class="new_user_sub_instructions">
-			<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or just more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_you/">sister site.</a>
-		</p>
-	{% endif %}
+	{% comment %}
+		{% if crushes_in_progress_count == 0 %}
+			<p class="new_user_sub_instructions">
+				<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or just more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_you/">sister site.</a>
+			</p>
+		{% endif %}
+	{% endcomment %}
 {% endif %} 
 
 {% if crush_relationships %}
@@ -292,7 +295,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	{% if crush_type == 0 %}
 		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% else %}
-		You have no crushes with responses.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
+		You have no past crush responses.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add a crush</a> to get started.</span>
 	{% endif %}
 	</span>
 {% endif %}

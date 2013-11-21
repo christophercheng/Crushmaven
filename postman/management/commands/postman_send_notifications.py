@@ -40,9 +40,9 @@ class Command(NoArgsCommand):
   
         new_recipient_emails = Message.objects.filter(Q(moderation_status=settings.STATUS_ACCEPTED),Q(read_at=None),Q(sent_at__gt=date_last_sent))\
                                         .values_list('recipient__email',flat=True).order_by('recipient__email').distinct()
-        subject = "New message(s) from your attractions"
+        subject = "New message(s) from your crushes"
         message = "Sign in to view and respond to your new message(s)."
-        data_dict={"from": "Flirtally <notifications@flirtally.com>",\
+        data_dict={"from": "CrushMaven <notifications@crushmaven.com>",\
                         "subject": subject,"text": message}  
         for email in new_recipient_emails:
             # send them a notification email

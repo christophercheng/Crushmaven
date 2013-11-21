@@ -169,7 +169,7 @@
 	  
 	  // change title to 'confirm your crush additions step 2 of 2'
 
-      $('#fs-dialog-title span').html("Add a Crush - Review Selections");
+      $('#fs-dialog-title span').html("Add Crush - Review Selections");
       $('#nfs-tab').hide();
       $('#fs-tab').hide();
       $('#fs-continue-button').hide();
@@ -289,14 +289,14 @@
 		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class=" site_dialog_button site_dialog_back_button" href="javascript://"><span>&#60; Back</span></a>' +
 		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button site_dialog_go_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Confirm</span></a>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
     if (!fsOptions.setupSelect){
 	    title_bar = title_bar + 
-	    	'<a href="javascript:{}" id="fs-tab" >friends</a>' +
-	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">others</a>';
+	    	'<a href="javascript:{}" id="fs-tab" >Friends</a>' +
+	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">Friends-of-Friends | Anyone Else</a>';
 	  }
     //title_bar = title_bar + 
     //	'</h2><span class="close_dialog"></span>';
@@ -331,10 +331,10 @@
 		                       '<div id="nfs-help" class="popup">' +
 		                      		//'<span id="nfs-help-pointer"></span>' +
 		                      		"<h3>What is a unique Facebook user id?</h3>" +
-		                      		'<p>In your web browser, navigate to your attraction\'s Facebook page (on facebook.com).  Locate and examine the address bar at the top of the browser.  ' +
-		                      		'<strong>The text that follows \'www.facebook.com/\' is your attraction\'s facebook user id.</strong> Copy and paste it up above.  <strong>Exclude the \'?\' or \'/\' characters and anything after them.</strong></p>' +
+		                      		'<p>In your web browser, navigate to your crush\'s Facebook page (on facebook.com).  Locate and examine the address bar at the top of the browser.  ' +
+		                      		'<strong>The text that follows \'www.facebook.com/\' is your crush\'s facebook user id.</strong> Copy and paste it up above.  <strong>Exclude the \'?\' or \'/\' characters and anything after them.</strong></p>' +
 		                      		'<img src=\'/static/images/friend_selector_help.png\'>' +
-		                      		'In the above example, the unique Facebook user id is \'JessicaAlba\'' +
+		                      		'In the above pic, the unique Facebook user id is \'JessicaAlba\'' +
 		                      		'<span class="delete_button"></span>' +
 		                      '</div></span>' +
 	                        

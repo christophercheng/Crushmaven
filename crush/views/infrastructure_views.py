@@ -30,11 +30,11 @@ def home(request):
     if request.user.is_authenticated():
 
         if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
-            return HttpResponseRedirect('/attractions/') 
+            return HttpResponseRedirect('/new_crushes/') 
         elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
-            return HttpResponseRedirect('/admirers/')
+            return HttpResponseRedirect('/new_admirers/')
         else:
-            return HttpResponseRedirect('/attractions/')
+            return HttpResponseRedirect('/new_crushes/')
     else:
         return render(request,'guest_home.html')
 
@@ -44,8 +44,8 @@ def ajax_submit_feedback(request):
     message=request.POST['message']
     from_email= request.user.email
     if from_email == "":
-        from_email = request.user.username + "_" + "noemail" + "@flirtally.com"
-    send_mailgun_email(from_email, 'feedback@flirtally.com', 'Flirtally User Feedback',message,message)
+        from_email = request.user.username + "_" + "noemail" + "@crushmaven.com"
+    send_mailgun_email(from_email, 'feedback@crushmaven.com', 'CrushMaven User Feedback',message,message)
     return HttpResponse("")
 
 
@@ -124,14 +124,14 @@ def setup_by(request,first_name = "",last_initial = ""):
         return render(request, 'guest_home.html',
                           {
                            'change_title': 'Your friend recommended someone for you', 
-                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
+                           'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
                            })    
     else:
             return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial  + '. recommended someone for you!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
-                               'change_url':"http://www.flirtally.com/setup_by/" + first_name + "/" + last_initial + "/"
+                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
+                               'change_url':"http://www.crushmaven.com/setup_by/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 
@@ -142,14 +142,14 @@ def setup_for(request,first_name = "",last_initial = ""):
         return render(request, 'guest_home.html',
                           {
                            'change_title': 'Your friend desires your matchmaking help!', 
-                           'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at flirtally.com.",
+                           'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at crushmaven.com.",
                            })    
     else:
             return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial  + '. desires your matchmaking help!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at flirtally.com.",
-                                'change_url':"http://www.flirtally.com/setup_for/" + first_name + "/" + last_initial + "/"
+                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at crushmaven.com.",
+                                'change_url':"http://www.crushmaven.com/setup_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 
@@ -158,8 +158,8 @@ def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
-                               'change_description': "Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at flirtally.com. | Already in a relationship?  Help set your friends up - all at flirtally.com.",
-                               'change_url':"http://www.flirtally.com/admirer_for/" + first_name + "/" + last_initial + "/"
+                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at crushmaven.com. | Already in a relationship?  Help set your friends up - all at crushmaven.com.",
+                               'change_url':"http://www.crushmaven.com/admirer_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
 

@@ -81,7 +81,7 @@ class InviteEmail(models.Model):
         crush_full_name = crush_user.first_name + " " + crush_user.last_name
         crush_short_name = crush_user.first_name + " " + crush_user.last_name[0]
         crush_first_name = crush_user.first_name
-        if self.is_for_crush: # don't send this email to a user who is already an active user (flirtally takes care of that)
+        if self.is_for_crush: # don't send this email to a user who is already an active user (CrushMaven takes care of that)
             subject = crush_short_name + ", you have an admirer!"
             send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
         else:

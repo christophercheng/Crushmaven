@@ -17,17 +17,17 @@ $(document).ready(function()
                     form.attr('action') + ' #ajaxwrapper',
                     form.serializeArray(),
                     function(responseText, responseStatus,XHR) {
-         				if (responseText=="_GOOD"){
-                    		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
-                    			window.update_invite_interstitial("{{crush_username}}");
-                			else
-                				location.href='/attractions';
-                		}
-           				else{
+                    	if (responseStatus!='success'){
            					window.alert_modal("Email Validation Problem","One of your emails isn't jiving with our email validation process.  If you copy/pasted an email from somewhere else, try typing in that email directly.  Sorry for the trouble!")
            					$("#sendbutton").removeAttr('disabled')
            					$("#sendbutton").attr('value','Send')
-           				}
+                    	}
+                    	else if (responseText=="_GOOD"){
+                    		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
+                    			window.update_invite_interstitial("{{crush_username}}");
+                			else
+                				location.href='/new_crushes';
+                		}
             		});
                 
                e.preventDefault();
@@ -37,13 +37,21 @@ $(document).ready(function()
 
 // calculate height of the preview section container
 
+		
+$('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
+	$('#app_invite_form #mutual_friend_input_section').toggle();
+	$(this).children('.arrow').toggle(); 
+	//$(this).children('#down_arrow').toggle();
+});
+
+		
 /* ---------------- PREVIEW INVITE HANDLING ---------------- */
 
 $('#app_invite_form').on('click','#preview_invite_button',function(){
 	var preview_element = $('#preview_section');
 	if ( preview_element.is(':visible') ){
 			
-			$(this).children('.ui-button-text').html('Preview Invites');
+			$(this).children('.ui-button-text').html('Preview Invites<span class="arrow">&#x25B2;</span>');
 			preview_element.slideToggle(250);
 			$(this).removeClass('preview_close');
 			$('.sent_from_us').fadeTo(0,0).css('left',420);
@@ -56,7 +64,7 @@ $('#app_invite_form').on('click','#preview_invite_button',function(){
 		preview_element.css('bottom',buttonpane_height + 24 + 'px');
 		preview_element.height(form_height - buttonpane_height -20);
 		$(this).addClass('preview_close');
-		$(this).children('.ui-button-text').html('Close Preview');
+		$(this).children('.ui-button-text').html('Close Preview<span class="arrow">&#x25BC;</span>');
 		$('.email_preview_content').height(form_height - buttonpane_height - 75);
 		$('.email_content_body').height(form_height - buttonpane_height - 165);
 		preview_element.slideToggle(750);
@@ -90,7 +98,7 @@ $('.sent_from_us').css('opacity',0);
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">Enter the email address(s) of your crush.  We'll send them an invitation, sent <strong><i>anonymously</i></strong> from our Flirtally.com email address.</div>
+   <div class="modal_instructions">Email invitations are sent <strong><i>anonymously</i></strong> from our CrushMaven.com email address.</div>
 
    {% csrf_token %}
 
@@ -105,9 +113,16 @@ $('.sent_from_us').css('opacity',0);
       </div>
    </div><!-- close attraction_email_input -->
 	
-<span id="mutual_friend_input_section_subtitle"><span class="strong_subtitle">Enlist the help of your mutual friends as well: </span> We'll let them know what's up and ask them to forward our invitation on to their admired friend - without revealing your identity!</span>
+{% comment %}
+	<span id="mutual_friend_input_section_subtitle"><span class="strong_subtitle">Enlist the help of your mutual friends as well: </span> We'll let them know what's up and ask them to forward our invitation on to their admired friend - without revealing your identity!</span>
+{% endcomment %}
+<div id="mutual_friend_help_section">
+	<span id="mf_help_section_problem">Don't know your crush's email address?  Or want to increase your chances of getting a response?</span>  
+	<span id="mf_help_section_explanation">We'll tell them what's up, and ask them to forward our invitation to {{crush_firstname}}.</span>
+	<div id="mutual_friend_input_section_show"><a>Anonymously invite {{ crush_firstname }}'s friends</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
+</div><!-- close of mutual friend help section -->
 <div id="mutual_friend_input_section">
-	   {% for field in form %}
+	{% for field in form %}
 	   		{% if field.label != "crush_field" %}
 		   		<div class="email_field_input mf_email_field_input">	   			
 							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.help_text %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
@@ -133,14 +148,14 @@ $('.sent_from_us').css('opacity',0);
 	                   Subject:
 	           </div>
 	           <div class="email_content_header_content">
-	                   <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>Flirtally.com</span><BR>
-	                   <span class="email_address_holder">{Your crush's email address}</span><BR>
+	                   <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>CrushMaven.com</span><BR>
+	                   <span class="email_address_holder">{{crush_firstname}}'s email address</span><BR>
 	                   <span class="subject_text">You have an admirer!</span>
 	           </div>
            </div>
            <span class="email_content_body">
-		<p>One of our users is attracted to you.  Sign in to Flirtally.com to find out whom. </p>
-		<p><b>What is Flirtally?</b> It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at Flirtally.com.
+		<p>One of our users is attracted to you.  Sign in to CrushMaven.com to find out whom. </p>
+		<p><b>What is CrushMaven?</b> It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at CrushMaven.com.
 		</p>				
            </span>
             </div>  <!-- close off attraction_email_preview_content -->
@@ -152,19 +167,19 @@ $('.sent_from_us').css('opacity',0);
 	                Subject:<BR><BR>
 	        </div>
 	        <div class="email_content_header_content">
-	                <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>Flirtally.com</span><BR>
-	                <span class="email_address_holder">{mutual friend's email address}</span><BR>
+	                <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>CrushMaven.com</span><BR>
+	                <span class="email_address_holder">mutual's friend email address}</span><BR>
 	                <span class="subject_text">Your friend has an admirer!</span>
 	        </div>
         </div> <!--  close off .email_header -->
         <div class="email_content_body">
-        		<p>Someone at Flirtally.com is attracted to {attraction name} and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  {attraction name}'s admirer wishes to remain anonymous.
+        		<p>Someone at CrushMaven.com is attracted to {attraction name} and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  {attraction name}'s admirer wishes to remain anonymous.
         		</p>
         		<p>
         		Would you please take a second to forward this message to {attraction name}?     
         		</p>
         		<p>
-        		<b>What is Flirtally?</b>  It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at Flirtally.com.
+        		<b>What is CrushMaven?</b>  It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at CrushMaven.com.
         		</p>
         		<p>And in case you're wondering: {attraction name}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once they sign up.
         		</p>
@@ -175,7 +190,7 @@ $('.sent_from_us').css('opacity',0);
 
   <div class="ui-dialog-buttonpane">
           <div class="ui-dialog-buttonset">
-          	<button type='button' class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites</span></button>
+          	<button type='button' class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>
           	<button type='button' onclick="window.app_invite_modal.dialog('close');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
           	<input id="sendbutton" class="site_dialog_button" type="submit" value="Send"/>
           </div><!-- close off buttonset -->

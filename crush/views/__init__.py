@@ -2,18 +2,18 @@ from infrastructure_views import home
 from infrastructure_views import logout_view
 
 # admirer view and process views
-from admirer_views import admirers
+from admirer_views import new_admirers
 from admirer_views import ajax_display_lineup_block
 from admirer_views import ajax_show_lineup_slider
 from admirer_views import ajax_get_lineup_slide
 from admirer_views import ajax_add_lineup_member
 from admirer_views import ajax_update_num_platonic_friends
 from admirer_views import ajax_update_num_crushes_in_progress
-from admirer_views import admirers_past
+from admirer_views import past_admirers
 
 # crush view and creation views
-from crush_views import attractions
-from crush_views import attractions_completed
+from crush_views import new_crushes
+from crush_views import completed_crushes
 from crush_views import app_invite_form_v2
 from crush_views import ajax_find_fb_user
 

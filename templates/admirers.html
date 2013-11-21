@@ -79,19 +79,19 @@ $(document).ready(function()
 
 <!-- Display the title widget -->  
 <ul class="title_bar" id="title_bar_admirers">
-	<li class="title_bar_title">Admirers</li>
-	<li class="title_bar_option">
-		sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-	<li class="title_bar_page_links">
+	
 		{% if admirer_type == 0  %}
-			<span class="title_bar_page_link active_title_bar_page_link title_bar_page_first_link ">new<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
-			<a class="title_bar_page_link inactive_title_bar_page_link" href="/admirers_past/">lineup finished<span class="title_bar_count"> {{past_admirers_count}}</span></a>
+			<li class="title_bar_title">Admirers</li>
+			<li class="title_bar_page_links">
+				<a class="title_bar_page_link" href="/past_admirers/">view past admirers<span class="title_bar_count">({{past_admirers_count}})</span></a>
+			</li>
 		{% else %}
-			<a class = "title_bar_page_link inactive_title_bar_page_link title_bar_page_first_link" href="/admirers/">new<span class="title_bar_count"> {{progressing_admirers_count}}</span></a>
-			<span class="title_bar_page_link active_title_bar_page_link"><span class="page_link_pointer_container"><span class="page_link_pointer page_link_second_pointer"></span></span>lineup finished<span class="title_bar_count"> {{admirer_relationships.count}}</span></span>
+			<li class="title_bar_title">Past Admirers ({{ admirer_relationships.count }})</li>	
 		{% endif %}
+	
+		<li class="title_bar_option">
+			sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
 	</li>
 </ul>
 <! -- End of crush type navigation widget -->  
@@ -160,7 +160,7 @@ $(document).ready(function()
 	{% if admirer_type == 0 %}
 		<span id="no_content">You have no <i>new</i> admirers.</span>
 	{% else %}
-		<span id="no_content">You have no admirers <i>with finished lineups</i>.</span>
+		<span id="no_content">You have no past admirers <i>(with finished lineups)</i>.</span>
 	{% endif %}
 {% endif %}
 

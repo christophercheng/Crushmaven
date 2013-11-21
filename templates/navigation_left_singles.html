@@ -3,8 +3,8 @@
 <ul class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'attractions' %} attractions">
-			<a href="{% url 'crush.views.crush_views.attractions' %}">
+		<li class="{% navactive request 'new_crushes' %} new_crushes">
+			<a href="{% url 'crush.views.crush_views.new_crushes' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Your Crushes</span></span>
 				<span class="menu_count{% if num_new_responses %} new_menu_count">{{ num_new_responses }} response{% if num_new_responses > 1 %}s{% endif %}{% else %}">{{ num_crushes_in_progress }}{% endif %}</span>
@@ -12,8 +12,8 @@
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
 		</li>
-		<li class="{% navactive request 'admirers'%} admirers">
-			<a href="{% url 'crush.views.admirer_views.admirers' %}">
+		<li class="{% navactive request 'new_admirers'%} new_admirers">
+			<a href="{% url 'crush.views.admirer_views.new_admirers' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
 				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count">{{num_admirers_in_progress}} new {% else %}">0{% endif %}</span>
@@ -33,6 +33,6 @@
 </ul>
 {% comment %}
 <div class="button_container" id="combo_singles_button">
-	<a href="#" class="bt-fs-dialog " title="Add a Crush"><span class="add_icon"></span>Like Someone</a>
+	<a href="#" class="bt-fs-dialog " title="Add Crush"><span class="add_icon"></span>Like Someone</a>
 </div>
 {% endcomment %}

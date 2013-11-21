@@ -6,7 +6,7 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, PROJECT_PATH)
-ALLOWED_HOSTS = ['www.flirtally.com']#new for django 1.5 
+ALLOWED_HOSTS = ['www.crushmaven.com']#new for django 1.5 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 import logging
@@ -225,7 +225,7 @@ AUTH_USER_MODEL = 'crush.FacebookUser'
 
 
 # Facebook settings are set via environment variables
-FACEBOOK_APP_ID = '165610330293338' # Flirtally App on Facebook
+FACEBOOK_APP_ID = '165610330293338' # CrushMaven App on Facebook
 FACEBOOK_APP_SECRET = 'e16934ee8ee9bf0a61f120d9e2bb6c02'
 FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
 
@@ -256,7 +256,7 @@ MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=7#7 is default
 MAXIMUM_CRUSH_INVITE_EMAILS=7
 MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=7 # DEFAULT = 7 (days)
-MAXIMUM_ATTRACTIONS=50
+MAXIMUM_CRUSHES=50
 PLATONIC_RATINGS = {
                     5:'very attractive - just not for me',
                     4:'somewhat attractive - just not for me', 
@@ -308,13 +308,13 @@ GENERIC_ERROR = "Sorry, we are experiencing difficulty with our servers.  We are
 PAYPAL_PDT_TOKEN = 'S_u0oAhiSDSQpdeppy9KqYANhD2dhH5pm5prcrCcHH0QSIoXLfrMn5-AD0e'
 #PAYPAL_EMAIL = 'buyer1_1344811410_per@gmail.com'
 #PAYPAL_EMAIL =  'seller_1344811486_biz@gmail.com'
-PAYPAL_EMAIL = 'admin@flirtally.com'
+PAYPAL_EMAIL = 'admin@crushmaven.com'
 
 #PAYPAL_RETURN_URL = 'http://142.255.66.205:443/paypal_pdt_purchase'
 #PAYPAL_NOTIFY_URL = 'http://142.255.66.205:443/paypal_ipn_listener/'
 
-PAYPAL_RETURN_URL = 'http://www.flirtally.com/paypal_pdt_purchase'
-PAYPAL_NOTIFY_URL = 'http://www.flirtally.com/paypal_ipn_listener/'
+PAYPAL_RETURN_URL = 'http://www.crushmaven.com/paypal_pdt_purchase'
+PAYPAL_NOTIFY_URL = 'http://www.crushmaven.com/paypal_ipn_listener/'
 
 # sandbox
 #PAYPAL_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'

@@ -60,8 +60,8 @@ $(document).ready(function()
  		FB.ui({method: 'send',
 	  				name: "{{request.user.first_name}} {{request.user.last_name}} would like your help.",
 	  				to: target_person_username,
-	  				link:'http://www.flirtally.com',
-	  				description:"Flirtally is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
+	  				link:'http://www.crushmaven.com',
+	  				description:"CrushMaven is a new matchmaking service that makes it easy to set your friends up with one another. Let us know who'd make a good match for " + source_person_first_name + "!"
 			      },
 			      function(response){
 							if (response != null)
@@ -129,7 +129,7 @@ $(document).ready(function()
 	{% comment %}
 	<span class="help_icon" title="close help"></span>
 	<span class="instructions_title">How Friend Setups Work:</span>
-	<div class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup for your consideration.  Add any of them as an 'attraction' and we'll try to get them signed into Flirtally (through anonymous invites) to determine if they are mutually attracted to you.<a class="show_more">show more</a><a class="show_less">show less</a>
+	<div class="first_instruction_section">Your friend has recommended some of their friends for you to consider.  We have placed them in a lineup for your consideration.  Add any of them as an 'attraction' and we'll try to get them signed into CrushMaven (through anonymous invites) to determine if they are mutually attracted to you.<a class="show_more">show more</a><a class="show_less">show less</a>
 	</div>
 	<div class="second_instruction_section">From here on out, everything works much like it does in the <a href="/how_it_works/singles/">standard attraction / admirer lineup process</a>.  The one difference is that your recommender will help us get your chosen recommendations signed in, and <i>your recommender can see exactly who is attracted to whom.</i></div>
 	{% endcomment %}

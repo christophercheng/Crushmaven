@@ -56,9 +56,9 @@ class AppInviteForm2(forms.Form):
             self.fields['mutual_friend_%s' % i] = MF_MultiEmailField(required=False,label=friend['name'],help_text=friend['id'])
             mutual_friend_count+=1
         if mutual_friend_count == 0:
-            self.fields['mutual_friend_%s' % mutual_friend_count] = MultiEmailField(required=False,label='mutual friends:',help_text='')
+            self.fields['mutual_friend_%s' % mutual_friend_count] = MultiEmailField(required=False,label='',help_text='')
         else:
-            self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailField(required=False,label='any other contacts:',help_text='')
+            self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailField(required=False,label='Other Contacts:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
 
     def clean(self):

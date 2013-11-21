@@ -77,13 +77,13 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
 urlpatterns += patterns('crush.views.crush_views',
  
-    (r'^attractions/$', 'attractions'),
+    (r'^new_crushes/$', 'new_crushes'),
     
-    (r'^attractions/(?P<reveal_crush_id>\w+)/$','attractions'),
+    (r'^new_crushes/(?P<reveal_crush_id>\w+)/$','new_crushes'),
     
-    (r'^attractions_completed/(?P<reveal_crush_id>\w+)/$','attractions_completed'),
+    (r'^completed_crushes/(?P<reveal_crush_id>\w+)/$','completed_crushes'),
     
-    (r'^attractions_completed/$','attractions_completed'),
+    (r'^completed_crushes/$','completed_crushes'),
 
     (r'^app_invite_form_v2/(?P<crush_username>\w+)/','app_invite_form_v2'),
         
@@ -110,9 +110,9 @@ urlpatterns += patterns('crush.views.crush_views',
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.admirer_views',
                         
-    url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirers',name="admirers_show_lineup"),
+    url(r'^new_admirers/(?P<show_lineup>\d+)/$', 'new_admirers',name="new_admirers_show_lineup"),
     
-    url(r'^admirers/$', 'admirers',name="admirers_show_all"),
+    url(r'^new_admirers/$', 'new_admirers',name="new_admirers_show_all"),
 
     (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     
@@ -138,7 +138,7 @@ urlpatterns += patterns('crush.views.admirer_views',
     
     (r'^ajax_update_num_new_responses/$','ajax_update_num_new_responses'),
     
-    (r'^admirers_past/$','admirers_past'),
+    (r'^past_admirers/$','past_admirers'),
 )
 
 # ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --

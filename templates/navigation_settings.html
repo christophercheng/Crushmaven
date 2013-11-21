@@ -9,8 +9,8 @@
 				href="{% url 'crush.views.home' %}"><font color=red>Crush</font><font><i>Discovery</i></font></a>
 <!-- NOTIFICATIONS (variables are processed in a custom context processor -->
 
-		new responses(<a href="/attractions/">{{num_new_responses}}</a>)
-		new admirers(<a href="/admirers/">{{num_new_admirers}}</a>)
+		new responses(<a href="/new_crushes/">{{num_new_responses}}</a>)
+		new admirers(<a href="/new_admirers/">{{num_new_admirers}}</a>)
 		
  <!-- END NOTIFICAIONS -->
 			&nbsp;&nbsp;<a href="#" class="bt-fs-dialog">Add a Crush</a>&nbsp;&nbsp;
@@ -39,8 +39,8 @@
 			<a class="{% navactive request 'settings_credits' %}"
 				href="{% url 'crush.views.settings_credits' %}">Credits ({{request.user.site_credits}})</a>		
 				
-			<a class="{% navactive request 'attractions' %}"
-				href="{% url 'crush.views.attractions' %}"> Back to Crushes</a>
+			<a class="{% navactive request 'new_crushes' %}"
+				href="{% url 'crush.views.new_crushes' %}"> Back to Crushes</a>
 				
 			
 		</div>	

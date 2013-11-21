@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # -- Admirer List Page --
 @login_required
-def admirers(request,show_lineup=None):
+def new_admirers(request,show_lineup=None):
     global g_init_dict
     me = request.user 
 
@@ -203,7 +203,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         logger.error (" facebook lineup user not found")
         ajax_response += '<div class="slide_container">'
         ajax_response +='<span class="lineup_name">user not available</span>'
-        ajax_response +='<span class="lineup_mugshot"><img src="http://www.flirtally.com/static/images/fb_unknown_user_pic.jpg"></span>'
+        ajax_response +='<span class="lineup_mugshot"><img src="http://www.crushmaven.com/static/images/fb_unknown_user_pic.jpg"></span>'
         ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + str(lineup_member.username) + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
         ajax_response +='<span class="lineup_decision" username="' + str(lineup_member.username) + '" style="margin-top:5px">'
         ajax_response += "<span class=' choice crush existing_choice'>Sorry, this lineup member is no longer available...</span>"
@@ -360,7 +360,7 @@ def ajax_update_num_new_admirers(request):
 
 # -- Past Admirers Page --
 @login_required
-def admirers_past(request):
+def past_admirers(request):
     me = request.user 
    
     admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')

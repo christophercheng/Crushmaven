@@ -24,8 +24,8 @@ def ajax_add_crush_targets(request):
     global g_init_dict
     post_data = request.POST
     # ensure that user has not exceeded beta limits:
-    if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_ATTRACTIONS:
-        return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_ATTRACTIONS) + " ongoing attractions at a time.")
+    if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_CRUSHES:
+        return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_CRUSHES) + " ongoing crushes at a time.")
     # this is just for testing, remove later
     counter = 0
     for key in post_data:
@@ -100,7 +100,7 @@ def adjust_associated_lineup_members(target_person,lineup_user,new_crush):
     
 # -- Crush List Page --
 @login_required
-def attractions(request, reveal_crush_id=None):
+def new_crushes(request, reveal_crush_id=None):
     
     me = request.user
   
@@ -119,7 +119,7 @@ def attractions(request, reveal_crush_id=None):
             reveal_crush_id = None
             
     responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
-    crushes_completed_count = CrushRelationship.objects.completed_crushes(me).count()
+    completed_crushes_count = CrushRelationship.objects.completed_crushes(me).count()
 
     # determine whether to show help popup
     if crush_progressing_relationships.count() == 0:
@@ -133,7 +133,7 @@ def attractions(request, reveal_crush_id=None):
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crush_progressing_relationships,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'crushes_completed_count':crushes_completed_count,
+                               'completed_crushes_count':completed_crushes_count,
                                'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
                                'check_fb_privacy_setting':check_fb_privacy,
@@ -205,7 +205,7 @@ def ajax_get_platonic_rating(request, crush_id):
 
 # -- Crushes Completed Page --
 @login_required
-def attractions_completed(request, reveal_crush_id=None):
+def completed_crushes(request, reveal_crush_id=None):
     me = request.user
     crush_relationships = request.user.crush_crushrelationship_set_from_source 
     if reveal_crush_id:
@@ -216,16 +216,16 @@ def attractions_completed(request, reveal_crush_id=None):
         except CrushRelationship.DoesNotExist:
             reveal_crush_id = None
     responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
-    crushes_completed_relationships = CrushRelationship.objects.completed_crushes(me).order_by('-updated_flag','target_person__first_name')
+    completed_crushes_relationships = CrushRelationship.objects.completed_crushes(me).order_by('-updated_flag','target_person__first_name')
     crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
     
     return render(request, 'crushes.html',
                               {
                                'crush_type': 1,  # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
-                               'crush_relationships':crushes_completed_relationships,
+                               'crush_relationships':completed_crushes_relationships,
                                'crushes_in_progress_count': crushes_in_progress_count,
-                               'crushes_completed_count' : crushes_completed_relationships.count,
+                               'completed_crushes_count' : completed_crushes_relationships.count,
                                'reveal_crush_id':reveal_crush_id,
                                'show_help_popup':False # never show help popup for this subpage
                                })   

@@ -362,8 +362,8 @@ $(document).ready(function() // handling for the slider
  		
 		data = {};
 		data['csrfmiddlewaretoken']="{{csrf_token}}";
-		data['success_path'] = '/admirers/{{admirer_rel.display_id}}/';
-		data['cancel_url'] = 'http://{{request.get_host}}/admirers/{{admirer_rel.display_id}}';
+		data['success_path'] = '/new_admirers/{{admirer_rel.display_id}}/';
+		data['cancel_url'] = 'http://{{request.get_host}}/new_admirers/{{admirer_rel.display_id}}';
 		data['unique_id'] = '{{admirer_rel.display_id}}';
 		data['feature_id'] = '1';
 		data['purchase_callback_name'] = 'window.lineup_purchased()';
@@ -396,10 +396,10 @@ $(document).ready(function() // handling for the slider
 			num_new_attractions++;
 			});
 
-		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
+		if (current_href.indexOf("/new_admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
-					redirect_url='/attractions/';
+					redirect_url='/new_crushes/';
 				if (num_new_attractions){
 					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 					window.launch_invite_interstitial(attraction_json,redirect_url);
@@ -409,7 +409,7 @@ $(document).ready(function() // handling for the slider
 		if (current_href.indexOf("/setups_for_me/") != -1) {
 				// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_setups_for_me.count }} == 1)	
-					redirect_url='/attractions/';
+					redirect_url='/new_crushes/';
 				if (num_new_attractions){
 					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 					window.launch_invite_interstitial(attraction_json,redirect_url);

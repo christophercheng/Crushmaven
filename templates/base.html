@@ -6,11 +6,11 @@
 	    <meta name="robots" content="all,index" />
 	    <meta name="Revisit-After" content="30 Days" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-		<title>Flirtally - {% block title %}{% endblock %}</title>    	
+		<title>CrushMaven - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
-	    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon_v2.png" />
-	    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/favicon_v2.png" /> 
+	    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
+	    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
 
 	    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
@@ -27,6 +27,11 @@
 <script> 
 jQuery(document).ready(function($) {
 
+	function toTitleCase(str)
+	{
+	    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	}
+	
 	<!-- AJAX CALL INITIALIZATION -->
 	// default to 60 seconds for all ajax calls: (lineup initialization will require longer wait time)
 	$.ajaxSetup({timeout: '60000'});
@@ -84,7 +89,7 @@ jQuery(document).ready(function($) {
 		    color: "default",
 		    showRandom:false,
 		    lang: {
-		      title: "Add a Crush",
+		      title: "Add Crush(s)",
 		      searchText: "Enter a friend's name",
 		      fbConnectError: "You must be logged in to Facebook in order to use this feature.",
 		      selectedCountResult: "You have choosen {0} people.",
@@ -178,6 +183,10 @@ jQuery(document).ready(function($) {
 		window.wait_modal_open();
 		var crush_username=$(this).attr('crush_username');	
 		var crush_fullname=$(this).attr('crush_fullname');
+		var crush_firstname = crush_fullname;
+		var space_index = crush_fullname.indexOf(' ');
+		if (space_index > 0)
+			crush_firstname=crush_firstname.substr(0,space_index);
 		var load_url="/app_invite_form_v2/" + crush_username + "/";
 		window.app_invite_modal.load(load_url,{'crush_fullname':crush_fullname,'csrfmiddlewaretoken':'{{csrf_token}}' },function(responseText,textStatus,XHR){
 			window.wait_modal_close();
@@ -186,6 +195,7 @@ jQuery(document).ready(function($) {
 					$(this).html("{{ajax_error}}");
 			}
 			else{
+				window.app_invite_modal.dialog("option","title", "Anonymously Invite " + crush_firstname);
 				window.app_invite_modal.dialog('open');
 				$(':focus').blur();
 			}
@@ -207,11 +217,10 @@ jQuery(document).ready(function($) {
 			// only initialize jquery modal dialog once per page load
 			
 			if (!window.invite_insterstitial_modal)
-				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '450px',modal: true, close: function(){location.href=redirect_url;},autoOpen: false});
+				window.invite_interstitial_modal = $("#invite_interstitial_modal").dialog({dialogClass:"invite_interstitial_dialog",resizable:false, width: '460px',modal: true, close: function(){location.href=redirect_url;},autoOpen: false});
 			else
 				window.invite_interstitial_modal.dialog({close: function(){if (redirect_url!="") location.href=redirect_url;}})
 			var modal_html ="";
-			modal_html += '<div class="modal_instructions">To get a response, please help us get your crushes signed into Flirtally.</div>';
 			modal_html += '<div class="modal_main_content">';
 				
 			
@@ -225,9 +234,10 @@ jQuery(document).ready(function($) {
 					// picture
 					modal_html +='<img src="http://graph.facebook.com/' + username + '/picture?width=30&height=30">';
 					// full name
-					modal_html +='<span class="attraction_invite_full_name">' + attraction_json[username] + '</span>';
+					var fullname = 	toTitleCase(attraction_json[username]);
+					modal_html +='<span class="attraction_invite_full_name">' + fullname + '</span>';
 					// invite button (or invite sent text)
-					modal_html +='<div class="attraction_invite_button" username="' + username + '"><button class="app_invite" crush_username="' + username + '" crush_fullname="' + attraction_json[username] + '">Send Anonymous Invite</button></div>';
+					modal_html +='<div class="attraction_invite_button" username="' + username + '"><button class="app_invite" crush_username="' + username + '" crush_fullname="' + fullname + '">Anonymously Invite</button></div>';
 				modal_html += '</div>'; //close off attraction_invite_row div
 			}
 				
@@ -276,10 +286,10 @@ jQuery(document).ready(function($) {
         $.post('/ajax_add_crush_targets/',result_dictionary, function(){
                 // on success redirect to the crush page
                 window.wait_modal_close();
-                window.launch_invite_interstitial(attraction_invites_json,'/attractions'); 
-                //document.location.href='/attractions/'; // reload page
+                window.launch_invite_interstitial(attraction_invites_json,'/new_crushes/'); 
+                //document.location.href='/new_crushes/'; // reload page
         }).fail(function(error){
-                window.alert_modal("Add a Crush - Problem", error.responseText,$('#fs-dialog-box-wrap') );
+                window.alert_modal("Add Crush(s) - Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });
   }
 	// -------------  CSS additions ------------------
@@ -378,7 +388,7 @@ jQuery(document).ready(function($) {
 	
 	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
 
-		var share_link = 'http://www.flirtally.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
+		var share_link = 'http://www.crushmaven.com/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
@@ -390,7 +400,7 @@ jQuery(document).ready(function($) {
 		  				name: crush_short_name + " has an admirer!",
 		  				to: recipient_id,
 		  				link: share_link,
-		  				description:'Flirtally is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at Flirtally.com.'
+		  				description:'CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or for a friend.  Find out if someone you know and like feels the same at CrushMaven.com.'
 		      },
 		      function(response){
 		      		window.wait_modal_close();
@@ -535,8 +545,8 @@ $('.show_less').click(function(){
 </div> <!-- close off main_container -->
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">Please Wait</div>
-<div id="app_invite_modal" title="Send Anonymous Invites"></div>
-<div id="invite_interstitial_modal" title = "One Last Thing!"></div>
+<div id="app_invite_modal" title="Anonymously Invite"></div>
+<div id="invite_interstitial_modal" title = "Want a response? Invite them to CrushMaven!"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="contactable"></div><!-- contactable html placeholder -->
 </body>
