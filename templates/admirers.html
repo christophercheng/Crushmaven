@@ -118,15 +118,10 @@ $(document).ready(function()
 {% for admirer_rel in admirer_relationships %}
 	<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
 		<div class="lineup_block_line lineup_block_first_line">
-			<div class="from_pic_div" >
-				<img class="from_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg">
-				<span class="admirer_question"></span>
-			</div>
 			<div class="lineup_title">
-				<span class="lineup_block_from">From:</span>
-				<span class="lineup_block_source_name">Admirer #{{admirer_rel.display_id}}</span>
+				<span class="lineup_block_source_name">Secret Admirer #{{admirer_rel.display_id}}:</span>
 				{% if admirer_rel.friendship_type == 0 %} 
-					<span class="lineup_subtitle">a friend of yours!</span> 
+					<span class="lineup_subtitle">a friend of yours</span> 
 				{% elif admirer_rel.friendship_type == 1 %}
 					<span class="lineup_subtitle">has mutual Facebook friend(s)</span>
 				{% else %}
@@ -136,7 +131,6 @@ $(document).ready(function()
 		</div><!-- close off lineup_block line -->
 
 		<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">
-			<span class="lineup_preview_label">Lineup Preview:</span>
 			{% if admirer_rel.lineup_initialization_status == 1 %}
 					{% with admirer_rel as relationship %}
 					 	{% include "lineup_block.html" %}

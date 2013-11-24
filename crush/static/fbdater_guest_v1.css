@@ -6,7 +6,7 @@ margin: 0; padding: 0; border: 0;
 }
 
 body {
-	font-family: "Varela Round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
+	font-family:"Varela Round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: auto;	
@@ -14,6 +14,7 @@ body {
  	background:#131323;
  	background:#21073D;
  	width:100%;
+
 }
 
 a{
@@ -117,7 +118,12 @@ div#tagline{
 	position:absolute;
 	top:90px;
 	width:140px;
+	-webkit-font-smoothing: antialiased;
 }
+#logo_section a.logo_bar_links:hover{
+	-webkit-font-smoothing:auto;
+}
+
 #logo_section a#how_it_works_link{
 	left:530px;
 }
@@ -141,10 +147,12 @@ h2#tagline1{
 	font-size:35px;
 	font-weight:normal;
 	line-height:42px;
-	text-shadow:1px 1px 0 #000;
+	text-shadow:1px 1px 1px #21073D;
 	letter-spacing:0px;
 	color:#fff;
 	display:none;
+	font-style:normal;
+	font-family:"Varela Round"
 }
 
 #facebookbtn {
@@ -254,6 +262,7 @@ div.info_section {
 	padding-top:54px;
 	padding-bottom:64px;
 	width:100%;	
+	#text-align: justify;
 }
 div.info_section_content {
 	margin: 0 auto;
@@ -261,6 +270,7 @@ div.info_section_content {
 	width:1024px;
 	display:block;
 	height:100%;
+	text-rendering: optimizeLegibility;
 }
  
 div.info_column{
@@ -275,6 +285,7 @@ div.info_row{
 }
 
 div.info_section_title {
+	font-weight:600;
 	font-size:30px;
 	margin-bottom:30px;
 }	
@@ -286,7 +297,7 @@ div.info_section_subtitle{
 div.info_section_text {
 	font-size:16px;
 	line-height:28px;
-	color:#000;
+	color:#333333;
 }
 div#qa_section{
 	background-color:#fff;
@@ -315,6 +326,10 @@ div#qa_section .info_section_title{
 	margin-top:7px;
 }
 
+#qa_section .info_column1 .info_section_text {
+	font-weight:700;
+}
+
 div#how_it_works_section {
 	background:#532f83;
 	background:#9b4293;
@@ -322,6 +337,7 @@ div#how_it_works_section {
 	color:#fff!important;
 	margin-top:-4px;
 	margin-bottom:1px;
+	-webkit-font-smoothing: antialiased;
 }
 
 div#how_it_works_section .icon {
@@ -332,6 +348,7 @@ div#how_it_works_section .info_column2 .icon,div#how_it_works_section .info_colu
 }
 div#how_it_works_section .info_section_title{
 	color:#fff;
+	text-shadow:1px 1px 0 #21073D;
 }
 
 div#how_it_works_section .step_number{
@@ -350,6 +367,8 @@ div#how_it_works_section .info_section_subtitle{
 	#border-color:#532f83;
 	#border-color:darkGray;
 	#padding-bottom:14px;
+	text-shadow:1px 1px 0 #21073D;
+		font-weight:600;
 	}
 
 div#how_it_works_section .info_section_text {
@@ -357,6 +376,7 @@ div#how_it_works_section .info_section_text {
 	color:white;
 	color:#E9E9E9;
 	padding-bottom:11px;
+	-webkit-font-smoothing: antialiased;
 }
 
 div#how_it_works_section .info_column2 .icon {
@@ -368,7 +388,6 @@ div#who_it_works_on_section {
 	background:#F2F2F2;
 	background:white;
 	border-top:1px solid rgb(212,212,212);
-	
 }
 
 div#who_it_works_on_section .icon{
@@ -391,6 +410,7 @@ div#who_it_works_on_section .info_section_title {
 div#who_it_works_on_section .info_section_text{
 	margin-bottom:36px;
 	margin-top:8px;
+	-webkit-font-smoothing: antialiased;
 }
 div#who_it_works_on_section .info_row3 .info_section_text {
 	margin-bottom:0px;
@@ -415,6 +435,12 @@ div#who_will_know_section .info_section_subtitle {
 }
 div#who_will_know_section a {
 	color:#09abe8;
+}
+div#who_will_know_section .info_section_text {
+-webkit-font-smoothing: antialiased;
+font-size:15px;
+color:#000;
+	
 }
 /* -----------  HOW TO SECTION ----------- */
 
