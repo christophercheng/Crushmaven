@@ -386,7 +386,7 @@ div#how_it_works_section .info_column2 .icon {
 
 div#who_it_works_on_section {
 	background:#F2F2F2;
-	background:white;
+	#background:white;
 	border-top:1px solid rgb(212,212,212);
 }
 
@@ -418,7 +418,7 @@ div#who_it_works_on_section .info_row3 .info_section_text {
 
 div#who_will_know_section {
 	background:#fff;
-	background:#F2F2F2;
+	#background:#F2F2F2;
 	border-top:1px solid rgb(212,212,212);
 	border-bottom:1px solid rgb(212,212,212);
 	
@@ -426,10 +426,12 @@ div#who_will_know_section {
 div#who_will_know_section .info_section_title {
 	color:#ff0000;
 	#color:#09abe8;
+	color:#9B4293;
 }
 div#who_will_know_section .info_section_subtitle {
 	color:#ff0000;
 	#color:#09abe8;
+	color:#9B4293;
 	margin-right:8px;
 	font-size:20px;
 }

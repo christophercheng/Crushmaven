@@ -111,6 +111,13 @@ def get_range( value ):
 
 # called by setups_by_you.html to display number of responses for target and all recommendees
 @register.filter
+def lineup_statistics (relationship):
+    lineup_count =  relationship.lineupmember_set.count();
+    assessed_count = relationship.lineupmember_set.exclude(decision=None).count()
+    return str(assessed_count) + ' out of ' + str(lineup_count)
+
+# called by setups_by_you.html to display number of responses for target and all recommendees
+@register.filter
 def setup_target_responses_length (setup_relationship):
     return len(setup_relationship.setuplineupmember_set.exclude(decision=None))
     # called by setups_by_you.html to display number of responses for target and all recommendees

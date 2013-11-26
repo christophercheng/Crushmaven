@@ -258,11 +258,11 @@ MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=7 # DEFAULT = 7 (days)
 MAXIMUM_CRUSHES=50
 PLATONIC_RATINGS = {
-                    5:'very attractive - just not for me',
-                    4:'somewhat attractive - just not for me', 
+                    5:'Very attractive - just not for me',
+                    4:'Somewhat attractive - just not for me', 
                     3:"I'm indifferent",
-                    2:'slightly unattractive',
-                    1:'very unattractive',
+                    2:'Slightly unattractive',
+                    1:'Very unattractive',
                      }
 
 DELETION_ERROR = {

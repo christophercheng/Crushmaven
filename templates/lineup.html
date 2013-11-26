@@ -144,7 +144,7 @@ $(document).ready(function() // handling for the slider
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
-		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After liking  <span class="attractor_first_name"></span>, we\'ll try to get <span class="attractor_pronoun_object"></span> signed up so <span class="attractor_pronoun_subject"></span> can take a similar lineup. We\'ll notify you when she responds.<span class="ahelp_icon"></span></p>';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding <span class="attractor_first_name"></span> as a crush, we\'ll try to get <span class="attractor_pronoun_object"></span> signed up, so <span class="attractor_pronoun_subject"></span> can take a similar lineup with you in it. We\'ll notify you when <span class="attractor_pronoun_subject"></span> responds.</p>';
 		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		//dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
@@ -312,7 +312,7 @@ $(document).ready(function() // handling for the slider
 	};
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - HANDLE LINEUP MEMBER POINTER
-  *		move it when slide is about to move
+	*		move it when slide is about to move
 	*  ---------------------------------------------------------------------- */
 
 	window.handleLineupMemberPointer = function(activeSlideElement,activeIndex){
@@ -377,12 +377,12 @@ $(document).ready(function() // handling for the slider
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;
-		}; 
-	 
+ 	};
+
 
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - HANDLE FINISH BUTTON 
-  *		
+	*		
 	*  ---------------------------------------------------------------------- */
 
 	window.handle_lineup_dialog_close = function(){
@@ -404,24 +404,17 @@ $(document).ready(function() // handling for the slider
 					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 					window.launch_invite_interstitial(attraction_json,redirect_url);
 					return;
-			}
+				}
 		}
-		if (current_href.indexOf("/setups_for_me/") != -1) {
-				// redirect user to crushes in progress if there is only one progressing lineup and it is done
-				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_setups_for_me.count }} == 1)	
-					redirect_url='/new_crushes/';
-				if (num_new_attractions){
-					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
-					window.launch_invite_interstitial(attraction_json,redirect_url);
-					return;
-			}
-		}
+		
 		$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 		window.location.href=redirect_url;
 	};
+	
 	$('#lineup_modal').on('click','#finish-btn',function(e) {
 		window.handle_lineup_dialog_close();
 	});
+	
 }); // close off jquery document ready
 
 </script>
@@ -429,7 +422,7 @@ $(document).ready(function() // handling for the slider
 <div id="lineup_container">
 <span id="site-loading"></span>
 <div id="lineup-header">
-		One of these line-up members is your admirer!  (We reveal them one-at-a-time.) Pick any you like, and we'll send them a similar type of lineup - with you in it! We'll let you know if they like you back <i>or not</i>.  If not, your identity remains protected.
+		One of these line-up members is your admirer! Pick any you like, and we'll send them a similar lineup - with you in it! We'll let you know if they like you back <i>or not</i>.  If not, your identity remains protected.
 </div>
 
 <div id="bx-pager-container">
@@ -486,7 +479,7 @@ $(document).ready(function() // handling for the slider
 				<button id="finish-btn" class="site_dialog_button" type="button" disabled>Finish</button>
 	</div><!-- close off buttonset -->
 </div><!-- close off buttonpane -->
-<div id="dialog_attraction_add" title="Like Confirmation "></div>
+<div id="dialog_attraction_add" title="Crush Confirmation "></div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation"></div>
 
 
