@@ -18,7 +18,7 @@ $(document).ready(function()
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
-    var lineup_dialog = $("#lineup_modal").dialog({dialogClass:'lineup_modal_dialog',modal: true, show: 'fade',width:575,height:454,resizable:false,autoOpen: false,close:function(event,ui){window.handle_lineup_dialog_close();}});
+    var lineup_dialog = $("#lineup_modal").dialog({dialogClass:'lineup_modal_dialog',modal: true, show: 'fade',width:575,height:416,resizable:false,autoOpen: false,close:function(event,ui){window.handle_lineup_dialog_close();}});
     $('.lineup_block').on('click', '.view_lineup', function(e) {
 		var display_id=$(this).attr('display_id');		
 		window.wait_modal_open();

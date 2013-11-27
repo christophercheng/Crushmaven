@@ -311,6 +311,7 @@ div#qa_section .icon {
 }
 div#qa_section .info_section_title{
 	color:red;
+	color:#3b5998;
 	font-size:28px;
 	width:280px;
 	line-height:33px;
@@ -319,6 +320,7 @@ div#qa_section .info_section_title{
 
 #qa_section .info_section_subtitle {
 	color:red;
+	color:#3b5998;
 	font-size:22px;
 }
 
@@ -328,6 +330,7 @@ div#qa_section .info_section_title{
 
 #qa_section .info_column1 .info_section_text {
 	font-weight:700;
+	color:black;
 }
 
 div#how_it_works_section {
