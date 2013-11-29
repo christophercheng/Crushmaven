@@ -227,7 +227,9 @@ AUTH_USER_MODEL = 'crush.FacebookUser'
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '165610330293338' # CrushMaven App on Facebook
 FACEBOOK_APP_SECRET = 'e16934ee8ee9bf0a61f120d9e2bb6c02'
-FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
+#FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
+FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email'
+
 
 AUTHENTICATION_BACKENDS = (
     'facebook.backend.FacebookBackend',

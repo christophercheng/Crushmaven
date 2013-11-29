@@ -211,7 +211,7 @@ class CrushRelationship(BasicRelationship):
     lineup_initialization_status = models.IntegerField(default=None, choices=LINEUP_INITIALIZATION_STATUS_CHOICES,null=True,blank=True)
     lineup_initialization_date_started = models.DateTimeField(default=None,null=True,blank=True)
     # lineup initialized and paid can be combined into a single state variable 
-    is_lineup_paid=models.BooleanField(default=False)
+    is_lineup_paid=models.BooleanField(default=True)
 
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     

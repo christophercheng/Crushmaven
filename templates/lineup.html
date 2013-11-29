@@ -108,8 +108,8 @@ $(document).ready(function() // handling for the slider
 				return false;
 			}
 			// load the next thumbnail as well
-			var next_username =$(this).find('.lineup_decision').attr("username");
-			var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
+			//var next_username =$(this).find('.lineup_decision').attr("username");
+			//var new_src = 'http://graph.facebook.com/' + next_username + '/picture?type=large';
 			var new_src = '{{ STATIC_URL }}images/lineup_character_male.png';
 			var img_element = $('#bx-pager div img[lineup_position=' + next_position + ']')
 
@@ -238,18 +238,17 @@ $(document).ready(function() // handling for the slider
 							window.alert_modal('Lineup Decision', "{{generic_error_message}}", decision_dialog);
 							return false;
 						};
-						var lineup_member = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"]');
-						var lineup_member_board = lineup_member.find('span.lineup_member_board');
+						var lineup_member = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] span');
 						if (crush_decision==true){
 							window.added_lineup_attraction=true;
 							// show crush icon in the associated thumbnail
-							lineup_member.append('<span class="decision_crush"></span>');
-							lineup_member_board.remove();
+							lineup_member.addClass('decision_crush');
+							lineup_member.html('YES');
 						}
 						else{
 							// show platonic icon in the associated thumbnail
-							lineup_member.append('<span class="decision_platonic"></span>');
-							lineup_member_board.remove();
+							lineup_member.addClass('decision_platonic');
+							lineup_member.html('NO');
 						}
 						if (this_element.attr('class') != 'platonic_reconsider')
 							goto_next_slide(decision_div.parents('li').attr('lineup_position'));
@@ -435,8 +434,8 @@ $(document).ready(function() // handling for the slider
 	<div id="bx-pager">
 		{% for member in member_set %}
 		
-			{% if member.decision != None or forloop.counter0 == 0 %}
-					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male.png" /><span {% if member.decision == 0 %}class="decision_crush"{% elif member.decision > 0 %}class="decision_platonic"{% endif %}></span></a></div>
+			{% if member.decision != None %}
+					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male.png" /><span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span></a></div>
 			{% else %}
 					<div class="locked_lineup_member"><img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/lineup_character_male.png"/><span class="lineup_member_board">{{ forloop.counter}}</span></div>
 			{% endif %}

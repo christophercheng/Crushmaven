@@ -5,7 +5,7 @@
 		{% endfor %}
 	{% else %}
 		{% for member in relationship.lineupmember_set.all %}
-			<span class="lineup_block_lineup_pic_anonymous"><img src="{{ STATIC_URL }}images/lineup_character_{% if relationship.source_person.gender == 'F' %}fe{% endif %}male.png?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% elif member.decision > 0 %}admirer_not_picked{% elif member.decision == None %}no_decision{% endif %}">{% if member.decision == None %}{{ forloop.counter }}{% endif %}</span></span>
+			<span class="lineup_block_lineup_pic_anonymous"><img src="{{ STATIC_URL }}images/lineup_character_male.png?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% elif member.decision > 0 %}admirer_not_picked{% elif member.decision == None %}no_decision{% endif %}">{% if member.decision == 0 %}YES{% elif member.decision > 0 %}NO{% elif member.decision == None %}{{ forloop.counter }}{% endif %}</span></span>
 		{% endfor %}
 	{% endif %}
 	{% if relationship.is_lineup_paid == True %}
