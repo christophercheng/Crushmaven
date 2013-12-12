@@ -183,6 +183,8 @@ jQuery(document).ready(function($) {
 			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false});
 		window.app_invite_modal.html('<div id="site-loading"></div>');
 		
+		$(".app_invite_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");
+		
 		window.wait_modal_open();
 		var crush_username=$(this).attr('crush_username');	
 		var crush_fullname=$(this).attr('crush_fullname');
@@ -227,12 +229,12 @@ jQuery(document).ready(function($) {
 			var modal_html ="";
 			modal_html += '<div class="modal_main_content">';
 			
-			$(".invite_interstitial_dialog").children(".ui-dialog-titlebar").append("<span id='invite_dialog1_help' data-hasqtip='invite_dialog1_help' aria-describeby='qtip-titlebutton' class='help_icon'></span>");
+			$(".invite_interstitial_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");
 
 
 			$(".invite_interstitial_dialog .help_icon").qtip({
 				content:{
-					text:$('#invite_dialog1_help_content'),
+					text:$('#invite_dialog_one_help_content'),
 					title:'Why do we send anonymous invites?'
 				},
 				show:{
@@ -243,7 +245,10 @@ jQuery(document).ready(function($) {
 					fixed:true,
 				},
 				style:{
-					classes: 'qtip-blue qtip-rounded qtip-shadow'
+					classes: 'qtip-blue qtip-rounded qtip-shadow',
+					tip:{
+						corner:true
+					}
 				}
 			});	
 			
@@ -591,41 +596,12 @@ $('.show_less').click(function(){
 
 <script type="text/javascript" src="{{ STATIC_URL }}qtip/jquery.qtip.min.js"></script>
 </body>
-	<span class="help_dialog_content"><span id="invite_dialog1_help_content">
-			<span class="tooltip_content tooltip_maincontent">
-				To determine if your crush feels the same as you, we need to first get them signed into our app.
-				We do this by sending them an anonymous email notifying them of their secret admirer.
-			</span>
-		<span class="related_subsections">related questions:</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				Why don't we just send an anonymous message to my crush through Facebook?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-			We could send your crush a Facebook message from you, but that would obviously reveal your identity.  
-			We could also send a Facebook invite directly from us. Unfortunately, Facebook makes this useless.  
-			If your crush is not an existing CrushMaven user, then our Facebook invite will only show up in their 'other' inbox. Hardly anyone knows where that is. 
-			Sorry, email is the only way to go.
-			</span>
-		</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				What if I don't know my Crush's email address?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-			 If you don't know your crush's email, but you know the email address of any friends of your crush, 
-			 we can send our anonymous invite to them and ask them to forward it on to your crush. 
-			 You can also just wait and hope that your crush signs up on their own, but we don't recommend that.
-			</span>
-		</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				Will you use my crush's email address for anything else?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-				Absolutely not!
-			</span>
-		</span>
-		<span class="tooltip_close">close</span>
-	</span></span>
+
+<span class="help_dialog_content"><span id="invite_dialog_one_help_content">
+	<span class="tooltip_content tooltip_maincontent">
+	To determine if your crush feels the same as you, we need to first get them signed into our app.
+	We do this by sending them an anonymous email notifying them of their secret admirer.
+	</span>
+	<span class="tooltip_close">close</span>
+</span></span>
 </html>

@@ -114,9 +114,11 @@ $(document).ready(function() // handling for the slider
 			var img_element = $('#bx-pager div img[lineup_position=' + next_position + ']')
 
 			img_element.attr('src', new_src).attr('title','');	
+			img_element.qtip('destroy',true);//don't show a tooltip for the current lineup member
 			img_element.parents('div.locked_lineup_member').removeClass('locked_lineup_member');
 			img_element.next('.lineup_member_board').andSelf().wrapAll('<a data-slide-index="' + next_position + '" href="#">');
 			callback(next_position);
+
 				// add the fake next button if we're not at the last slide
 			}).attr("class", "preload"); // close off ajax load of next slide
 	}; // close off of helper function: load_next_slide
@@ -311,7 +313,11 @@ $(document).ready(function() // handling for the slider
 				goto_next_slide(activeIndex);
 			else { 
 				var member_name = activeSlideElement.find('.lineup_name').html();
-				window.alert_modal('Lineup Enforcement', "Please make a decision on " + member_name + " before jumping ahead.", $('.lineup_modal_dialog'));
+				activeIndex=activeIndex + 1;
+				var img_element = $('#bx-pager div img[lineup_position=' + activeIndex + ']');
+				img_element.trigger('click');
+				setTimeout(function(){img_element.qtip('hide',true)},2000);
+				//window.alert_modal('Lineup Enforcement', "Please make a decision on " + member_name + " before jumping ahead.", $('.lineup_modal_dialog'));
 			}
 		}
 	};
@@ -321,6 +327,7 @@ $(document).ready(function() // handling for the slider
 	*  ---------------------------------------------------------------------- */
 
 	window.handleLineupMemberPointer = function(activeSlideElement,activeIndex){
+	
 		var data_slide_index = $(activeSlideElement).attr('lineup_position');
 		if (!data_slide_index)
 			data_slide_index=0;
@@ -417,6 +424,27 @@ $(document).ready(function() // handling for the slider
 		window.handle_lineup_dialog_close();
 	});
 	
+	// tooltip handling
+
+	$('.locked_lineup_pic[title!=" "]').qtip({
+		show:{
+			event:'click',
+			delay:0
+		},
+		hide:{
+			delay:250
+		},
+		style:{
+			classes: 'qtip-tipsy qtip-rounded qtip-shadow',
+			tip:{
+				corner:true
+			}
+		}
+	});	
+
+	$('.locked_lineup_member .lineup_member_board').click(function(){
+		$(this).parent().children('.locked_lineup_pic').click();
+	});
 }); // close off jquery document ready
 
 </script>

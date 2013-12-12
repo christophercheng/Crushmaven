@@ -78,7 +78,9 @@
     }
 
     _dialogBox();
+
     fsOptions.onStart();
+    
   },
 
   _selectUsername = function() {
@@ -105,7 +107,7 @@
     		}
     		else {
  
-    	    	// find the original user in hte old container
+    	    	// find the original user in the old container
     	    	var selected_id = response.id + response.friend_type;
     			var duplicate_element = $('#fs-selected-user-list .fs-friends[value='+selected_id+']');
 
@@ -139,7 +141,10 @@
 		      '</a>';
         item.append(link);
         $('#fs-selected-user-list ul').append(item);
-
+        var selected_user_list = $('#fs-selected-user-list');
+        if (!selected_user_list.is(':visible'))
+        	selected_user_list.show();
+        	
 	  },
     
   _close = function() {
@@ -289,14 +294,14 @@
 		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class=" site_dialog_button site_dialog_back_button" href="javascript://"><span>&#60; Back</span></a>' +
 		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button site_dialog_go_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add</span></a>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add as Crush(s)</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
     if (!fsOptions.setupSelect){
 	    title_bar = title_bar + 
 	    	'<a href="javascript:{}" id="fs-tab" >Friends</a>' +
-	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">Friends-of-Friends | Anyone Else</a>';
+	    	'<a href="javascript:{}" id="nfs-tab" class="fs-inactive-tab">Friends-of-Friends & Anyone Else</a>';
 	  }
     //title_bar = title_bar + 
     //	'</h2><span class="close_dialog"></span>';
@@ -509,7 +514,7 @@
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
 	  if (friend0_elements.length > 0) {
-		  var new_html = '<h2>Selected Friends <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
+		  var new_html = '<h2>Friends <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
 	
 		  $.each(friend0_elements, function(){
 	    		var duplicate = $(this).clone();
@@ -521,7 +526,8 @@
 	  }
 	  
   	// build friend-of-friend list
-	  if (friend1_elements.length > 0) {
+	  //if (friend1_elements.length > 0) {
+	if (true){
 		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend1_elements, function(){
@@ -535,8 +541,9 @@
 	  
   	
   	// build non-friend list
-	  if (friend2_elements.length > 0) {
-		  var new_html = '<h2  id="nf_selected_header">Non-Friend Users <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+	 // if (friend2_elements.length > 0) {
+	if (true){
+		  var new_html = '<h2  id="nf_selected_header">Other Users <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend2_elements, function(){
 	    		var duplicate = $(this).clone();
@@ -736,7 +743,10 @@
 		
 		if (selected_friend_count - 1 !== $('#fs-user-list li').length) {
 			$('#fs-select-all').text(fsOptions.lang.buttonSelectAll);
+		    
 		}
+		if (selected_friend_count == 1)
+			$('#fs-selected-user-list').hide();
     }
     else {
 
@@ -756,6 +766,8 @@
       // hide the  user from the main container
       btn.addClass('selected');
       btn.hide();
+      if (selected_friend_count > 0)
+    	  $('#fs-selected-user-list').show();
 	// clear out the filter text box
 	$('#fs-reset').trigger('click');
 	$('#fs-input-text').focus();

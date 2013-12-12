@@ -70,12 +70,35 @@ a.button {
 	background-size:auto;
 	width:22px;
 	vertical-align:-1px;
-	background-position:-66px -214px;
+	background-position:-62px -211px;
 	height:22px;
-	cursor:pointer;
+	cursor:default;
 	opacity:1;
+
+}
+.ui-dialog .help_icon{
+	top:5px;
 }
 
+.invite_interstitial_dialog .help_icon {
+	margin-left:2px!important;
+}
+
+#mf_help_section_problem .help_icon{
+	position:absolute;
+	top:14px;
+	right:-22px;	
+}
+
+.admirer_lineup_block .help_icon {
+	position:absolute;
+	top:5px;
+	right:5px;
+}
+
+.ui-dialog .ui-dialog-title {
+	margin-right:0px!important;
+}
 .help_dialog_content {
 	display:none;
 }
@@ -122,6 +145,10 @@ a.button {
 	text-decoration:underline;
 	float:right;
 	cursor:pointer;
+}
+
+.invite_interstitial_dialog .related_subsections, .invite_interstitial_dialog .tooltip_subtitle {
+	display:none;
 }
 /* ===========================   Generic Jquery UI Dialog ========================= */
 
@@ -177,27 +204,23 @@ a.button {
 	vertical-align:-1px!important;
 	background-position:-179px -26px!important;
 	height:30px!important;
-	top:-12px!important;
-	right:-5px!important;
+	top:-20px!important;
+	right:-9px!important;
 	cursor:pointer!important;
 	z-index:10000 !important;
 	border:none!important;
 }
 
-
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
-	background:white!important;
-	background-image:url('/static/images/full_sprite.png')!important;
-	#background-image:url('/static/images/full_sprite.png')!important;	
-	background-position:-178px -27px!important;
-	border:none!important;
-}
 .blacktop .ui-state-hover .ui-icon, .blacktop .ui-state-focus .ui-icon {
 	background:#000033!important;
 	background-image:url('/static/images/full_sprite.png')!important;
 	#background-image:url('/static/images/full_sprite.png')!important;		
 	background-position:-178px -27px!important;
 	border:none!important;
+}
+.ui-dialog-titlebar-close.ui-state-hover {
+	background:none!important;
+	border:0px!important;
 }
 
 .ui-state-focus .ui-icon, .ui-state-hover .ui-icon {
@@ -2227,6 +2250,7 @@ ul.attraction_status_bar li.past_status_animated{
 .lineup_block .lineup_previews {
 	margin-top:-46px;
 	margin-left:4px;
+	cursor:default;
 }
 
 .lineup_block .lineup_block_line .lineup_block_lineup_pic{
@@ -2568,6 +2592,10 @@ ul.attraction_status_bar li.past_status_animated{
 	filter:alpha(opacity=65);
 }
 
+#bx-pager a.active img,#bx-pager a.active .lineup_member_board {
+	cursor:default;
+}
+
 .locked_lineup_member .lineup_member_board {
 	cursor:default;
 }
@@ -2639,6 +2667,7 @@ ul.bxslider_element #slide_overlay {
 	padding: 8px 8px;
 	margin:0px!important;
 	text-overflow: ellipsis;
+	display:none;
 }
 
 .slide_container{
@@ -3536,8 +3565,10 @@ ul.bxslider_element #slide_overlay {
 	font-size:12px!important;
 	border:0px!important;
 }
-
-.invite_interstitial_dialog .ui-dialog-titlebar-close {display:none}
+.invite_interstitial_dialog .site_dialog_button:hover .ui-button-text{
+text-decoration:underline;
+	}
+.invite_interstitial_dialog .ui-dialog-titlebar-close{display:none}
 
 /* ===========================   App Invite Dialog ========================= */
 
@@ -3605,6 +3636,7 @@ ul.bxslider_element #slide_overlay {
 #mf_help_section_problem {
 	#font-weight:bold;
 	color:#333333;
+	position:relative;
 }
 #mf_help_section_explanation {
 	display:none;
