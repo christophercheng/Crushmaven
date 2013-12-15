@@ -18,20 +18,53 @@ $(document).ready(function()
 			//window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
 		}); // end of .fail handler
 	}); // close off #credit_deduct_ok handler 
+	$("#feature_description .help_icon").qtip({
+		content:{
+			text:$('#credits_help_content'),
+			title:'What are credits?'
+		},
+		show:{
+			delay:0,
+		},
+		hide:{
+			delay:500,
+			fixed:true,
+		},
+		style:{
+			classes: 'qtip-blue qtip-rounded qtip-shadow',
+			tip:{
+				corner:true
+			}
+		}
+	});	
+	
+	/*  TOOLTIP SUPPORT */
+
+	$(".tooltip_close").click(function(){
+		$('.qtip').hide();
+	});
+
+	$(".tooltip_subtitle").click(function(){
+		var current_content = $(this).parent().children('.tooltip_content');
+		$(this).parent().parent().find('.tooltip_relatedcontent').not(current_content).hide();
+		if (current_content.css("display")=="none")
+			current_content.css("display","block")
+		else
+			current_content.css("display","none")
+	})
 });
 </script>
 
 <div id="credit_check_container">
 	<div id="feature_description">
 		{{ feature_name }}
+		<span class='help_icon'></span>
 	</div>
 	<div id="purchase_description_container">
-		<span class="split_column_line"><span class="split_column_line1">Credit Available:</span><span class="split_column_line2">{{ credit_available }}&nbsp;{% if credit_available == 1 %}credit
-				{% else %}credits{% endif %}</span></span>
-		<span class="split_column_line"><span class="split_column_line1">Feature Cost:</span><span class="split_column_line2 ">- {{ feature_cost }} credit</span></span>
-		<span class="split_column_line feature_cost_separator"><span class="split_column_line1"></span><span class="split_column_line2 feature_cost_separator_line"></span></span>
-		<span class="split_column_line "><span class="split_column_line1">Remaining After Purchase:</span><span class="split_column_line2">{{ credit_remaining }}&nbsp;{% if credit_available == 1 %}credit
-				{% else %}credits{% endif %}</span></span></span></span>
+
+		You have <span class="credit_amount">{{ credit_available }}&nbsp;{% if credit_available == 1 %}credit{% else %}credits{% endif %}</span> available for purchase.<BR><BR>  
+		Purchasing this feature will leave you with <span class="credit_amount">{{ credit_remaining }}&nbsp;{% if credit_remaining == 1 %}credit{% else %}credits{% endif %}</span>.
+		
 	</div><!--  close off purchase_description_container -->
 	<div class="ui-dialog-buttonpane">
 		<div class="ui-dialog-buttonset">
@@ -40,3 +73,56 @@ $(document).ready(function()
 		</div>
 	</div><!-- close off button_pane -->
 </div><!--  close off credit_check_container -->
+
+<span class="help_dialog_content" id="credits_help_content">
+<span class="tooltip_content tooltip_maincontent">
+Credits are 'virtual currency' that you can spend on certain features of the site.  
+For example, if we get your crush to respond, you will need to spend credits to see their response.  
+<i>Note:</i> we give all new users 1 credit to start.
+</span>
+<span class="related_subsections">related q&a:</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	How many credits do I have?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+ You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	Why do we charge credits for certain features?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Charging credits is the primary way that we make money from this service and put food on our tables.  
+	We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What if I run out of credits?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	How much do credits cost?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What if I don't have a Paypal account or credit card to purchase more credits?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	We are considering developing a feature that will allow you to transfer credits from another user.  
+	Please provide us with your feedback to let us know if you think this is useful.  
+	Our feedback tab is located on the bottom right hand corner of the site.
+</span>
+</span>
+<span class="tooltip_close">close</span>
+</span>

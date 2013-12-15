@@ -135,6 +135,7 @@ jQuery(document).ready(function($) {
 		load_url="/credit_checker/";
 		dialog_div = $("#credit_check_modal");
 		dialog_div.attr("feature_id",data.feature_id)
+
 		window.wait_modal_open();
 		dialog_div.load(load_url,data,function(responseTxt,statusTxt,xhr){
 			window.wait_modal_close();
@@ -597,11 +598,12 @@ $('.show_less').click(function(){
 <script type="text/javascript" src="{{ STATIC_URL }}qtip/jquery.qtip.min.js"></script>
 </body>
 
-<span class="help_dialog_content"><span id="invite_dialog_one_help_content">
+<span class="help_dialog_content" id="invite_dialog_one_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 	To determine if your crush feels the same as you, we need to first get them signed into our app.
 	We do this by sending them an anonymous email notifying them of their secret admirer.
 	</span>
 	<span class="tooltip_close">close</span>
-</span></span>
+</span>
+
 </html>

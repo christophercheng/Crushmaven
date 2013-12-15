@@ -135,7 +135,10 @@ $(document).ready(function()
 				<a class="title_bar_page_link" href="/past_admirers/">view past admirers<span class="title_bar_count">({{past_admirers_count}})</span></a>
 			</li>
 		{% else %}
-			<li class="title_bar_title">Past Admirers ({{ admirer_relationships.count }})</li>	
+			<li class="title_bar_title">Past Admirers ({{admirer_relationships.count}})</li>	
+			<li class="title_bar_page_links">
+				<a class="title_bar_page_link" href="/new_admirers/">view new admirers<span class="title_bar_count">({{ progressing_admirers_count }})</span></a>
+			</li>
 		{% endif %}
 	
 		<li class="title_bar_option">
@@ -215,7 +218,7 @@ $(document).ready(function()
 
 <div id="lineup_modal" title="Admirer Lineup"></div>
 
-<span class="help_dialog_content"><span id="admirer_block_help_content">
+<span class="help_dialog_content" id="admirer_block_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 		Someone on our site is attracted to you.  They want to anonymously know if you feel the same. 
 	</span>
@@ -240,9 +243,9 @@ $(document).ready(function()
 </span>
 
 <span class="tooltip_close">close</span>
-</span></span>
+</span>
 
-<span class="help_dialog_content"><span id="lineup_dialog_help_content">
+<span class="help_dialog_content" id="lineup_dialog_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 		Lineups do the following kind of stuff.
 	</span>
@@ -265,5 +268,5 @@ $(document).ready(function()
 	</span>
 	
 	<span class="tooltip_close">close</span>
-</span></span>
+</span>
 {% endblock %}

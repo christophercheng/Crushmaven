@@ -162,7 +162,7 @@ def ajax_load_response_dialog_content(request, crush_id):
             ajax_response += "<a href='#'  crush_id='" + crush_id + "' id='response_send_message'>Send " + crush.first_name + " a Message</a>"
         else:
             ajax_response += "<span class='response_message'>" + crush.first_name + " sent you a message as well:</span>"
-            ajax_response += "<a href='#' id='response_send_message' crush_id='" + crush_id + "'>View Message</a>"
+            ajax_response += "<a href='#' id='response_send_message' crush_id='" + crush_id + "'>view message</a>"
         ajax_response += "</div>"
     else:
         ajax_response += "<div class='dialog_subtitle' id='response_no_match'>No Mutual Attraction</div>" 
@@ -176,7 +176,7 @@ def ajax_load_response_dialog_content(request, crush_id):
                 rating = relationship.target_platonic_rating
                 ajax_response += str(rating) + " out of 5 (" + settings.PLATONIC_RATINGS[rating] + ")"
             else:
-                ajax_response += "<a href='#' unique_id='" + crush_id + "'>View Feedback</a>"
+                ajax_response += "<a href='#' unique_id='" + crush_id + "'>view " + crush.get_gender_pronoun() + " feedback</a>"
         ajax_response += "</span></div>"   
     return HttpResponse(ajax_response)
 

@@ -19,8 +19,7 @@ $(document).ready(function() // handling for the slider
 		$('#lineup_container #site-loading').hide();
 		$('#lineup_container #slide_overlay').hide();
 		footer_element=$('.lineup-footer');
-		footer_element.find('#finish-btn').removeAttr('disabled');
-		footer_element.find('#finish-btn').show();
+		footer_element.find('#finish-btn').html('close');
 		footer_msg_element = footer_element.children('#footer-msg');
 		footer_msg_element_html='Your lineup evaluation is complete!'
 	 	crush_li_elements = $('.lineup_decision').has('.crush');
@@ -170,7 +169,7 @@ $(document).ready(function() // handling for the slider
   	// this allows the inputs to be clickable on the next confirmation dialog opening
   attraction_dialog.on('click', function(e){e.stopPropagation();});
   platonic_dialog.on('click', function(e){e.stopPropagation();});
-  
+
   $('#lineup_container ').on('click','a.decision,a.platonic_reconsider',function(e) {
 	  $('#lineup_container #site-loading').show();
 	  $('#lineup_container #slide_overlay').show();
@@ -195,7 +194,7 @@ $(document).ready(function() // handling for the slider
 	  	gender_pronoun_subject = "she";
 	  	gender_pronoun_object = "her";
 	  }
-	  	  	
+	  $('.decision_confirmation_dialog').children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");	  	
 	  if (this_element.attr('add_type')=="crush") {
 	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
@@ -204,13 +203,52 @@ $(document).ready(function() // handling for the slider
 	  			decision_dialog.find('.attractor_text').remove();
 	  		}
 	  	crush_decision=true;
+		  $(".decision_confirmation_dialog .ui-dialog-titlebar .help_icon").qtip({
+				content:{
+					text:$('#attraction_confirmation_dialog_help_content').clone(),
+					title:'What happens after I add this lineup member as a crush?'
+				},
+				show:{
+					delay:0,
+				},
+				hide:{
+					delay:500,
+					fixed:true,
+				},
+				style:{
+					classes: 'qtip-blue qtip-rounded qtip-shadow',
+					tip:{
+						corner:true
+					}
+				}
+		  });
 	  }
 	  else {
 	  	url = "/ajax_add_lineup_member/platonic/{{admirer_rel.display_id}}/" + username + "/"; 
 	  	decision_dialog = platonic_dialog;
 	  	decision_dialog.html(dialog_platonic_html);
 	  	crush_decision=false;
+	  		$(".decision_confirmation_dialog .ui-dialog-titlebar .help_icon").qtip({
+					content:{
+						text:$('#platonic_confirmation_dialog_help_content').clone(),
+						title:"Why am I being asked to assess my lineup members' attractiveness?"
+					},
+					show:{
+						delay:0,
+					},
+					hide:{
+						delay:500,
+						fixed:true,
+					},
+					style:{
+						classes: 'qtip-blue qtip-rounded qtip-shadow',
+						tip:{
+							corner:true
+						}
+					}
+				});	
 	  }
+	  
 
 	  // substitute in the actual attractor names into the dialog
 	  decision_dialog.find('.attractor_first_name').html(first_name);
@@ -280,7 +318,7 @@ $(document).ready(function() // handling for the slider
     $(':focus').blur();
 
 	}); // end of click handler: $('#lineup_container li').on('click','a.decision',function(e)
-	
+
 	var goto_next_slide = function(current_position)
 	{
 
@@ -508,10 +546,23 @@ $(document).ready(function() // handling for the slider
 <div class="ui-dialog-buttonpane lineup-footer">
 	<span id="footer-msg"></span>
 	<div class="ui-dialog-buttonset">
-				<button id="finish-btn" class="site_dialog_button" type="button" disabled>Finish</button>
+				<button id="finish-btn" class="site_dialog_button site_dialog_cancel_button" type="button">Finish Later</button>
 	</div><!-- close off buttonset -->
 </div><!-- close off buttonpane -->
 <div id="dialog_attraction_add" title="Crush Confirmation "></div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation"></div>
 
+<span class="help_dialog_content" id="attraction_confirmation_dialog_help_content">
+<span class="tooltip_content tooltip_maincontent">
+	After adding this lineup member as a crush, we'll try to get them signed up, so they can take a similar lineup with you in it.  We'll notify you when they respond.
+</span>
+
+</span>
+
+
+<span class="help_dialog_content" id="platonic_confirmation_dialog_help_content">
+<span class="tooltip_content tooltip_maincontent">
+	In case this lineup member is your actual admirer, we'd like to provide them with a little more context surrounding your decision.  We hope this added insight will help them move on more easily.
+</span>
+</span>
 

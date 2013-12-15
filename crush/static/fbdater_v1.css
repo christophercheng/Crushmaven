@@ -80,8 +80,9 @@ a.button {
 	top:5px;
 }
 
-.invite_interstitial_dialog .help_icon {
-	margin-left:2px!important;
+.credit_check_dialog .help_icon {
+	margin-left:2px;
+	margin-top:-6px;
 }
 
 #mf_help_section_problem .help_icon{
@@ -90,11 +91,17 @@ a.button {
 	right:-22px;	
 }
 
-.admirer_lineup_block .help_icon {
+.admirer_lineup_block .help_icon, .decision_confirmation_dialog .help_icon,.invite_interstitial_dialog .help_icon {
 	position:absolute;
 	top:5px;
 	right:5px;
 }
+
+ .settings_container .help_icon{
+ 	position:absolute;
+ 	top:-6px;
+ 	left:16px;
+ }
 
 .ui-dialog .ui-dialog-title {
 	margin-right:0px!important;
@@ -147,9 +154,11 @@ a.button {
 	cursor:pointer;
 }
 
-.invite_interstitial_dialog .related_subsections, .invite_interstitial_dialog .tooltip_subtitle {
+.invite_interstitial_dialog .related_subsections, .invite_interstitial_dialog .tooltip_subtitle, .decision_confirmation_dialog {
 	display:none;
 }
+.ui-dialog-titlebar-close{display:none!important}
+
 /* ===========================   Generic Jquery UI Dialog ========================= */
 
 .ui-dialog .ui-dialog-content{
@@ -1383,6 +1392,11 @@ ul.title_bar li.title_bar_title{
 	text-shadow: 1px 1px 0px #000;
 	
 }
+ul.title_bar li.title_bar_title .title_bar_count{
+	font-size:9px!important;
+	vertical-align:bottom;
+	padding:0 0 0 3px;
+}
 
 ul.title_bar li.conversation_title{
 	width:100%;
@@ -1390,25 +1404,26 @@ ul.title_bar li.conversation_title{
 
 ul.title_bar li.title_bar_page_links  {
 	font-size:11px;
-	text-shadow:1px 1px 0px #000;
+	#text-shadow:1px 1px 0px #000;
 	float:right;
-	
+	color:#0077cc;
 }
 
 ul.title_bar li .title_bar_page_link {
 	position:relative;
 	display:inline-block;
 	text-align:center;
-	border-left: 1px solid black;
-	border-right:1px solid black;
+	#border-left: 1px solid black;
+	#border-right:1px solid black;
 	border-radius:2px;
 	padding: 0 4px 0 8px;
+	color:#0077cc;
 }
 
 
 ul.title_bar li.title_bar_page_links a {
 	font-size:11px;
-	color:white;
+	color:#5C93E6;
 }
 
 
@@ -1419,7 +1434,7 @@ ul.title_bar li.title_bar_page_links .title_bar_count{
 }
 
 ul.title_bar li.title_bar_page_links a:hover {
-	background-color:#404054;
+	#background-color:#404054;
 	color:white;
 	transition-property:background-color,border-color;
 	transition-duration:100ms,100ms;
@@ -1795,7 +1810,8 @@ ul.nav_bar li#nav_bar_options{
 }
 #response_modal a{
 	color:#3366FF;
-	font-weight:bold;
+	#font-weight:bold;
+	margin-top:10px;
 }
 
 .crush_block .response_view_rating span.response_view_description  {
@@ -2410,7 +2426,7 @@ ul.attraction_status_bar li.past_status_animated{
 	#font-style:italic;
 	vertical-align:bottom;
 	line-height:20px;
-	border-top:1px solid #909090;
+	#border-top:1px solid #909090;
 	padding-top:6px; 
 }
 .lineup_block_footer .lineup_block_statistics {
@@ -2899,7 +2915,7 @@ ul.bxslider_element #slide_overlay {
 	margin-bottom:-5px;
 	margin-top:-15px;
 	position:relative;
-	border-bottom:1px solid rgb(0,0,70)
+	#border-bottom:1px solid rgb(0,0,70)
 }
 
 #dialog_attraction_add .dialog_content_wrapper .attractor_name_block{
@@ -3061,56 +3077,29 @@ ul.bxslider_element #slide_overlay {
 	font-size:12px;
 }
 #credit_check_container #purchase_description_container{
-	display:inline-block;
-	padding:15px 0 0 9px;
-	width:100%;
-	border-bottom:1px solid #E2E2E2;
+	margin:0 auto!important;
+	display:table;
+	padding:20px 0 10px 0px;
+	padding:20px 15px 20px 15px;
+	#border-bottom:1px solid #E2E2E2;
 }
-
-#credit_check_container #purchase_description_container .split_column_line{
-	display:block;
-	width:100%;
-	margin-bottom:10px;
-}
-
-#credit_check_container #purchase_description_container .split_column_line .split_column_line1 {
-	display:inline-block;
-	width:190px;
-	margin-right:10px;
-	text-align:right;
+.credit_amount{
+	color:red;
 	font-weight:bold;
 }
 
-#credit_check_container #purchase_description_container .split_column_line .split_column_line2 {
-	display:inline-block;
-	font-weight:normal;
-	text-align:left;
-}
 
-#credit_check_container #purchase_description_container .split_column_line .feature_cost_separator_line{
-	border-bottom:1px solid #555555;
-	width:100px!important;
-	height:2px;
-	vertical-align:top;
-}
-#credit_check_container #purchase_description_container .feature_cost_separator{
-	margin-bottom:-5px!important;
-}
-
-.insufficient_credit_message{
-	color:red;
-	font-weight:bold!important;
-}
 #purchase_title{
 	display:block;
 	font-weight:bold;
 	font-size:14px;
 	margin-bottom:10px;
 	background:none;
-	padding:10px 0px 0px 0px;
+	padding:15px 0px 0px 0px;
 	margin-left:-5px;
 	color:black;
-	border-radius:6px 6px 0 0;
+	#border-radius:6px 6px 0 0;
+	border-top:1px solid #E2E2E2;
 }
 #credit_purchase_selection{
 	display:inline-block;
@@ -3294,8 +3283,8 @@ ul.bxslider_element #slide_overlay {
  #postman #compose_new_message {
 	position:absolute;
 	right:13px;
-	top:1px;
-	font-size:13px;
+	top:2px;
+	font-size:12px;
 	padding-left:10px;
 	padding-right:12px;
 	color:#5C93E6;
@@ -3553,21 +3542,11 @@ ul.bxslider_element #slide_overlay {
 	#padding-top:5px!important;
 }
 .invite_interstitial_dialog .ui-dialog-buttonset{ 
-	margin-right:39px!important;
+	margin-right:34px!important;
 
 }
-.invite_interstitial_dialog .site_dialog_button{
-	background:none!important;
-	color:#7E7E7E!important;
-	text-shadow:none!important;
-	color:#0077cc!important;
-	#text-decoration:underline!important;
-	font-size:12px!important;
-	border:0px!important;
-}
-.invite_interstitial_dialog .site_dialog_button:hover .ui-button-text{
-text-decoration:underline;
-	}
+
+
 .invite_interstitial_dialog .ui-dialog-titlebar-close{display:none}
 
 /* ===========================   App Invite Dialog ========================= */
@@ -4024,6 +4003,7 @@ text-decoration:underline;
 	box-shadow: 1px 2px 2px rgba(153,153,153,.5);
 	border-radius:5px;
 	background:#fff;
+	position:relative;
 }
 
 .settings_container #settings_labels {
@@ -4103,6 +4083,10 @@ text-decoration:underline;
 }
 
 .credits_settings_container #settings_labels {
+	position:relative;
+}
+
+#settings_label_credits_available {
 	position:relative;
 }
 

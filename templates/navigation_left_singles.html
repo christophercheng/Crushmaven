@@ -7,7 +7,7 @@
 			<a href="{% url 'crush.views.crush_views.new_crushes' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Your Crushes</span></span>
-				<span class="menu_count{% if num_new_responses %} new_menu_count">{{ num_new_responses }} response{% if num_new_responses > 1 %}s{% endif %}{% else %}">{{ num_crushes_in_progress }}{% endif %}</span>
+				<span class="menu_count{% if num_new_responses %} new_menu_count{% endif %}">{{ num_crushes_in_progress }}</span>
 				<span class="nav_subtext">Find out if they feel the same</span>
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">

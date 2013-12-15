@@ -135,6 +135,21 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 		}
 	});	
 });
+/*  TOOLTIP SUPPORT */
+
+$(".tooltip_close").click(function(){
+	$('.qtip').hide();
+});
+
+$(".tooltip_subtitle").click(function(){
+	var current_content = $(this).parent().children('.tooltip_content');
+	$(this).parent().parent().find('.tooltip_relatedcontent').not(current_content).hide();
+	if (current_content.css("display")=="none")
+		current_content.css("display","block")
+	else
+		current_content.css("display","none")
+})
+
 }); // close off document ready function
 </script>
 

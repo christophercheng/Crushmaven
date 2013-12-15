@@ -236,12 +236,14 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 <ul class="title_bar" id="title_bar_attractions">
 
 		{% if crush_type == 0  %}
-			<li class="title_bar_title">Crushes</li>
+			<li class="title_bar_title">New Crushes</li>
 			<li class="title_bar_page_links">
-				<a class="title_bar_page_link" href="/completed_crushes/">view past crush responses<span class="title_bar_count">({{completed_crushes_count}})</span></a>
+				<a class="title_bar_page_link" href="/completed_crushes/">view responded crushes<span class="title_bar_count">({{completed_crushes_count}})</span></a>
 			</li>
 		{% else %}
-			<li class="title_bar_title">Past Crush Responses ({{completed_crushes_count}})
+			<li class="title_bar_title">Responded Crushes ({{completed_crushes_count}})</li>
+			<li class="title_bar_page_links">
+				<a class="title_bar_page_link" href="/new_crushes/">view new crushes<span class="title_bar_count">({{crushes_in_progress_count}})</span></a>
 			</li>
 		{% endif %}
 	
@@ -295,7 +297,7 @@ $.each($('.crush_block .progress_bar_canal .progress_bar'),function(){
 	{% if crush_type == 0 %}
 		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	{% else %}
-		You have no past crush responses.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add a crush</a> to get started.</span>
+		You have no responded crushes.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add a crush</a> to get started.</span>
 	{% endif %}
 	</span>
 {% endif %}
