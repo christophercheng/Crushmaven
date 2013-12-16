@@ -27,20 +27,290 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+  
+  $(document).ready(function() 
+{	  
+	  
+	  $('#top_links a' + location.hash.replace('section','anchor')).addClass('active');
+	// smooth scroll between anchor links
+	$('#top_links a').on('click',function (e) {
+	    e.preventDefault();
+
+	    var target = this.hash;
+	    $('#top_links a').removeClass('active');
+	    $(this).addClass('active');
+	    
+	    $target = $(target);
+
+	    $('html, body').stop().animate({
+	        'scrollTop': $target.offset().top
+	    }, 700, 'swing', function () {
+	        window.location.hash = target;
+	    });
+	});
+	//FAQ SECTION INTERACTIVITY
+	$(".tooltip_subtitle").click(function(){
+		var current_content = $(this).parent().children('.tooltip_content');
+		$(this).parent().parent().find('.tooltip_relatedcontent').not(current_content).hide();
+		if (current_content.css("display")=="none")
+			current_content.css("display","block")
+		else
+			current_content.css("display","none")
+	})
+});
 </script>
 
 <body id="guest_page">
 <div class="guest_header how_it_works authenticated">
 	<div class="center_container">
 		<a class="logo" href="/home"><img src={% if request.user.is_authenticated %}"{{ STATIC_URL }}images/cm_logo_sm.png"{% else %}"{{ STATIC_URL }}images/cm_logo_sm.png"{% endif %}></a>
-			<span id="top_links"><a href="/how_it_works" class="active">How it Works</a></span>
+			<span id="top_links"><a id="how_it_works_anchor" href="#how_it_works_section" class="">How It Works</a><a id="who_it_works_on_anchor" href="#who_it_works_on_section" class="">Who It Works On</a><a id="who_will_know_anchor" href="#who_will_know_section" class="">Who Will Know</a><a id="faq_anchor" href="#faq_section" class="">FAQ</a></span>
 	</div>
 </div>
 
-<div class="guest_page how_it_works">
+<div id="how_it_works_section"class="info_section">
+<div class="info_section_content">
+	<div class="info_section_title">How It Works</div>
 
-{% with help_type as help_type %}
-	{% include "how_to_section.html" %}
-{% endwith %}
-</div><!-- close off div guest page
+	<div id="how_to_section">	
+	<div class="center_container">
+		<div class="how_to_slide_container">
+			<div class="how_to_slide {% if help_type and help_type == 'matchmakers' %}inactive_how_to_slide{% else %}active_how_to_slide{% endif %}" id="how_to_slide_singles">
+				<img src="{{ STATIC_URL }}images/dotted_line.png" id="dotted_line">
+				<div id="singles_step_1" class="singles_step">
+					<span class="singles_step_text_column">
+					<span class="singles_step_image_border"><img class="singles_step_image" src="{{ STATIC_URL }}images/singles_step_image1_v1.png"></span>
+						<span class="singles_step_title">Add a Crush</span>
+						<span class="singles_step_text">Select a Facebook friend, or any Facebook user, that you're attracted to. We'll send them an anonymous invitation to sign in.</span>
+					</span>
+					</div>
+				<div id="singles_step_2" class="singles_step">
+					<span class="singles_step_text_column">
+					<span class="singles_step_image_border"><img class="singles_step_image" src="{{ STATIC_URL }}images/singles_step_image2_v1.png"></span>
+						<span class="singles_step_title">Admirer Lineup</span>
+						<span class="singles_step_text">
+							Once signed in, we'll present your crush with a lineup of potential admirers - similar to a police lineup - with you and nine carefully selected others in it.  They'll identify anyone they're attracted to. <i>Because the lineup is randomly ordered, they won't know who their actual admirer is.</i></span>
+						</span>
+					</span>
+				</div>
+				<div id="singles_step_3" class="singles_step">
+					<span class="singles_step_text_column">
+					<span class="singles_step_image_border"><img class="singles_step_image" src="{{ STATIC_URL }}images/singles_step_image3_v1.png"></span>
+						<span class="singles_step_title">Match Notification</span>
+						<span class="singles_step_text">
+							If you're picked from the lineup, we'll notify both parties about the match.  <i>Your crush might actually think they chose you first.</i>  If not picked, we'll also let you know, and your identity remains protected.			
+						</span>
+					</span>
+				</div>
+			</div>
+		</div> <!-- close off how_to_slide_container -->
+	</div> <!--  close off center_container div -->
+</div> <!-- close off howto_section div -->
+</div> <!-- end of info_section_content -->
+</div><!-- end of how_it_works div -->
+
+
+<div id="who_it_works_on_section"class="info_section">
+<div class="info_section_content">
+	<div class="info_section_title">Who It Works On</div>
+	<div class="info_row info_row1">
+		<img class="icon" src="{{ STATIC_URL }}/images/works_friends.png">
+		<div class="info_section_subtitle">Facebook Friends</div>
+		<div class="info_section_text">Your crush's lineup will only consist of Facebook users who are also friends with your crush on Facebook.  Soon CrushMaven will work on your LinkedIn and Twitter contacts as well!</div>
+	</div> <!-- end of info_rw1 -->
+	<div class="info_row info_row2">
+		<img class="icon" src="{{ STATIC_URL }}/images/works_fof.png">
+		<div class="info_section_subtitle">Friends of Friends</div>
+		<div class="info_section_text">Not friends with your crush on Facebook but share mutual Facebook friends?  No Problem.  Your crush's lineup will only consist of Facebook users who are also friends-of-friends with your crush on Facebook.  Works like magic!</div>
+	</div> <!-- end of info_row2 -->
+	<div class="info_row info_row3">
+		<img class="icon" src="{{ STATIC_URL }}/images/works_anyone.png">
+		<div class="info_section_subtitle">Anyone on Facebook</div>
+		<div class="info_section_text">Not friends with your crush on Facebook? Share no mutual friends either?  Maybe you saw them in a photo and thought they were cute.  No Problem.  Just don't them send a random Facebook friend request.  That's creepy!</div>
+	</div> <!-- end of info_row3 -->
+</div> <!-- end of info_section_content -->
+</div><!-- end of who_it_works_on div -->
+
+<div id="who_will_know_section" class="info_section">
+<div class="info_section_content">
+	<div class="info_section_title">Who Will Know</div>
+	<div class="info_column info_column1">
+		<div class="info_section_text"><span class="info_section_subtitle">Not your crush!</span>They'll only know you're attracted to them if the feeling is mutual.  And we make them think they had the crush on you, first!</div>
+	</div> <!-- end of info_column1 -->
+	<div class="info_column info_column2">
+		<div class="info_section_text"><span class="info_section_subtitle">Not your friends!</span>We never post to your Facebook feed, so your friends won't know about your crushes.  In fact, they won't even know you're using us.</div>
+	</div> <!-- end of info_column2 -->
+	<div class="info_column info_column3">
+		<div class="info_section_text"><span class="info_section_subtitle">Not anyone!</span>We keep all your data private.  We highly doubt the NSA will care either???  Want to learn more?  Check out our <a href="/privacy">Privacy Policy</a>.</div>
+	</div> <!-- end of info_column3 -->
+</div> <!-- end of info_section_content -->
+</div><!-- end of who_will_know div -->
+
+<div id="faq_section" class="info_section">
+<div class="info_section_content help_dialog_content" id="lineup_dialog_help_content"">
+<div class="info_section_title">FAQ</div>
+
+<div class="info_section_subtitle">Admirer Lineups</div>
+
+<span class="tooltip_subsection">
+	<span class="tooltip_subtitle">How do admirer lineups work?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+	We carefully choose up to nine potential admirers for you, place them into a lineup, and then insert your actual admirer into a random position.  
+	As you view each lineup member, select any that you're attracted to.  
+	We'll send your selections a similar lineup - with you randomly placed within it. 
+	After we determine if the attraction is mutual or not, we notify you.  That's it!
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">Who is my admirer?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+	Someone on our site is attracted to you and wants to know if you feel the same.  They are one of the members in this lineup, but we're not saying who.
+	They've chosen to conceal their identity through this admirer lineup - to avoid potential awkwardness in case you don't feel the same.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		How were my members of my admirer lineup selected?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+	When you signed in to CrushMaven, you agreed to give us access to your list of friends and descriptions about them.  
+	If your secret admirer is your Facebook friend, then we use your friend list information to select other Facebook friends as lineup members (that you might also be attracted to).  
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		Can I have a secret admrier that is not a Facebook Friend?
+	</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Yes! Oftentimes our users aren't directly connected to their crushes, but they may know them in real life, or perhaps they their crush caught their attention in a Facebook pic.
+	<i>note:</i> To properly conceal your actual admirer's identity, we only select lineup members who share similar degrees of separation from you.   
+	So for instance, if your crush is not a Facebook friend, but shares a mutual friend, then all of your lineup members will be two degrees of separation from you.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What happens after I add a lineup member as a crush?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+After adding this lineup member as a crush, we'll try to get them signed up, so they can take a similar lineup with you in it.  We'll notify you when they respond.
+</span>
+</span>
+
+
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	Why am I asked to assess my lineup members' attractiveness?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	In case this lineup member is your actual admirer, we'd like to provide them with a little more context surrounding your decision.  We hope this added insight will help them move on more easily.
+</span></span>
+
+
+<div class="info_section_subtitle">Anonymous Invites</div>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		Why do we do anonymous invites??
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+		To determine if your crush feels the same, we must first get them signed into our app.
+		We do this by sending them an anonymous email notifying them of their secret admirer.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		What if I don't know my crush's email address?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+		If you don't know your crush's email, but you know the email address of your crush's friends, 
+		we can send them our anonymous invite and request that they forward it to your crush. 
+		You can also just wait and hope that your crush signs up on their own. We don't recommend that.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">How are email invites anonymous?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+Our email invites are sent from our crushmaven.com email address - not from yours.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">Why don't you just send an anonymous invite through Facebook?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+We could indirectly send a Facebook invite (with you as sender), but that would reveal your identity - fail.
+We could send a Facebook invite directly from us, but if your crush is not an existing CrushMaven user, then our Facebook invite will only appear in their 'other' inbox. Hardly anyone knows what or where that is - fail. 
+Email is the best way to go.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">Will you use my crush and mutual friend email addresses for anything else?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+Absolutely not!
+	</span>
+</span>
+
+
+<div class="info_section_subtitle">Crush Feedback</div>
+
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What is crush feedback?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+When your crush told us that they weren't interested in you, we asked them to rate your attractiveness.</span>
+</span></span>
+
+
+<div class="info_section_subtitle">Credits</div>
+
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">What are credits?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+Credits are 'virtual currency' that you can spend on certain features of the site.  
+For example, if we get your crush to respond, you will need to spend credits to see their response.  
+<i>Note:</i> we give all new users 1 credit to start.
+	</span>
+</span>
+<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">How many credits do I have?</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+ You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
+ 	</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	Why do we charge credits for certain features?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Charging credits is the primary way that we make money from this service and put food on our tables.  
+	We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What if I run out of credits?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	How much do credits cost?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
+</span></span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	What if I don't have a Paypal account or credit card to purchase more credits?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	We are considering developing a feature that will allow you to transfer credits from another user.  
+	Please provide us with your feedback to let us know if you think this is useful.  
+	Our feedback tab is located on the bottom right hand corner of the site.
+</span></span>
+
+</div><!-- class="info_section_content and help_dialog_content" -->
+</div> <!-- end of FAQ section -->
+
 </body>
+

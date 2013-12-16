@@ -343,6 +343,27 @@ div#how_it_works_section {
 	-webkit-font-smoothing: antialiased;
 }
 
+#guest_page #how_it_works_section{
+	background:#fff;
+	padding-top:90px;
+}
+
+#guest_page #how_it_works_section .info_section_title {
+	color:#9B4293;
+	text-shadow:none;
+	margin-bottom:20px!important;
+}
+#guest_page .singles_step_title{
+	color:#9B4293;
+}
+#guest_page #how_it_works_section .singles_step_text {
+	color:#474747;
+}
+#guest_page #how_it_works_section #how_to_slide_singles {
+	padding-top:0px!important;
+	margin-top:-10px!important;
+}
+
 div#how_it_works_section .icon {
 	margin-bottom:25px;
 }
@@ -352,6 +373,7 @@ div#how_it_works_section .info_column2 .icon,div#how_it_works_section .info_colu
 div#how_it_works_section .info_section_title{
 	color:#fff;
 	text-shadow:1px 1px 0 #21073D;
+
 }
 
 div#how_it_works_section .step_number{
@@ -425,7 +447,15 @@ div#who_will_know_section {
 	#background:#F2F2F2;
 	border-top:1px solid rgb(212,212,212);
 	border-bottom:1px solid rgb(212,212,212);
-	
+}
+#guest_page #who_will_know_section{
+	background:#8C3B84;
+}
+#guest_page #who_will_know_section .info_section_title,#guest_page #who_will_know_section .info_section_subtitle {
+	color:#fff;
+}
+#guest_page #FAQ_section {
+	min-height:800px;
 }
 div#who_will_know_section .info_section_title {
 	color:#ff0000;
@@ -441,6 +471,12 @@ div#who_will_know_section .info_section_subtitle {
 }
 div#who_will_know_section a {
 	color:#09abe8;
+}
+#guest_page #who_will_know_section a {
+	color:silver;
+}
+div#who_will_know_section a:hover {
+	text-decoration:underline;
 }
 div#who_will_know_section .info_section_text {
 -webkit-font-smoothing: antialiased;
@@ -520,7 +556,7 @@ color:#000;
 
 .how_to_slide_container{
 	
-	min-height:410px;
+	min-height:360px;
 	display:inline-block;
 	position:relative;
 	width:100%;
@@ -634,7 +670,7 @@ color:#000;
 }
 .how_to_slide #dotted_line {
 	position:absolute;
-	top:18px;
+	top:-15px;
 	left:56px;
 }
 .how_to_slide #dotted_line2 {
@@ -813,7 +849,7 @@ div.guest_header.authenticated .center_container{
 #top_links{
 	float:right;
 	margin-top:19px;
-	margin-right:110px;
+	margin-right:104px;
 }
 
 #top_links a{
@@ -841,7 +877,6 @@ div.guest_header.authenticated .center_container{
 }
 
 .guest_header #top_links{
-	margin-right:117px;
 	line-height:58px;
 	padding-top:1px;
 	vertical-align:middle;
@@ -872,13 +907,12 @@ div.guest_header.authenticated .center_container{
 	}
 
 .guest_header.authenticated #top_links{
-	margin-right:117px;
 	height:50px;
 	line-height:50px;
 }
 
 .guest_header.authenticated.how_it_works #top_links{
-	margin-right:450px;
+	float:right;
 }
 
 .guest_page .center_container{
@@ -1028,4 +1062,56 @@ div.legal{
 /* HOW TO PAGE */
 .guest_page .center_container #how_to_section .center_container {
 	margin-left:-100px;
+}
+
+/* FAQ SECTION */
+.help_dialog_content {
+
+}
+#faq_section .info_section_subtitle {
+	margin-top:30px;
+}
+.qtip-blue {
+	background-color:white!important;
+}
+.tooltip_subtitle {
+	display:block;
+	padding:4px 0px 4px 4px;
+	color:#5E99BD;
+	cursor:pointer;
+}
+.related_subsections{
+	display:block;
+	background:#DEF0F7;
+	padding:4px 5px;
+	color:#5E99BD;
+	margin-bottom:6px;
+	margin-top:12px;
+	border-radius:3px;
+}
+
+.tooltip_subsection{
+	display:block;
+	padding:4px 0px 2px 0px;
+}
+.tooltip_content{
+	line-height:16px;
+	color:black;
+}
+
+.tooltip_relatedcontent{
+	display:none;
+	margin-left:5px;
+	margin-top:2px;
+	margin-bottom:15px;
+	color:#474747;
+	line-height:22px;
+	padding-left:6px;
+	padding-top:3px;
+}
+.tooltip_close{
+	display:block;
+	text-decoration:underline;
+	float:right;
+	cursor:pointer;
 }
