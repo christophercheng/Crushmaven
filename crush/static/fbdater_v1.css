@@ -102,7 +102,18 @@ a.button {
  	top:-6px;
  	left:16px;
  }
+ 
 
+.response_view_rating .help_icon {
+  position:absolute;
+  top:1px;
+  right:102px;
+ }
+ 
+ #response_modal #response_container .response_view_rating .help_icon {
+ 	top:-6px;
+ 	right:-21px;
+ }
 .ui-dialog .ui-dialog-title {
 	margin-right:0px!important;
 }
@@ -1377,11 +1388,12 @@ ul.title_bar {
 	color:white;
 	letter-spacing:1px;
 	white-space:nowrap;	
+	height:22px;
 }
 ul.title_bar > li {
 	display:inline-block;
 	vertical-align:bottom;
-	line-height:17px;
+	line-height:19px;
 }
 
 ul.title_bar li.title_bar_title{
@@ -1410,7 +1422,9 @@ ul.title_bar li.title_bar_page_links  {
 }
 
 ul.title_bar li .title_bar_page_link {
-	position:relative;
+	position:absolute;
+	top:2px;
+	right:5px;
 	display:inline-block;
 	text-align:center;
 	#border-left: 1px solid black;
@@ -1790,6 +1804,14 @@ ul.nav_bar li#nav_bar_options{
 	margin-top:5px;
 }
 
+#response_modal .response_view_rating:hover {
+	border-bottom:1px solid rgb(51,102,255);
+	margin-bottom:-1px;
+}
+.crush_status_5 .right_half_block .crush_response_body span.response_view_rating {
+	position:relative;
+}
+
 .right_half_block .crush_response_body span.response_view_border{
 	border-bottom:1px solid gray;
 	width:230px;
@@ -1807,6 +1829,7 @@ ul.nav_bar li#nav_bar_options{
 #response_modal .response_view_rating{
 	display:inline-block;
 	margin-top:10px;
+	position:relative;
 }
 #response_modal a{
 	color:#3366FF;

@@ -165,6 +165,7 @@ def ajax_load_response_dialog_content(request, crush_id):
             ajax_response += "<a href='#' id='response_send_message' crush_id='" + crush_id + "'>view message</a>"
         ajax_response += "</div>"
     else:
+        ajax_response += "<script>$(\".response_view_rating .help_icon\").qtip({content:{text:$('#feedback_help_content').clone(),title:'What is crush feedback?'},show:{delay:0,},hide:{delay:500,fixed:true,},style:{classes: 'qtip-blue qtip-rounded qtip-shadow',tip:{corner:true}}});</script>"
         ajax_response += "<div class='dialog_subtitle' id='response_no_match'>No Mutual Attraction</div>" 
         ajax_response += "<div id='response_container'>"
         ajax_response += "<span class='response_message'>We're sorry, " + crush.get_name() + " did not express a mutual attraction for you." + "</span>"
@@ -177,6 +178,7 @@ def ajax_load_response_dialog_content(request, crush_id):
                 ajax_response += str(rating) + " out of 5 (" + settings.PLATONIC_RATINGS[rating] + ")"
             else:
                 ajax_response += "<a href='#' unique_id='" + crush_id + "'>view " + crush.get_gender_pronoun() + " feedback</a>"
+                ajax_response += "<span class='help_icon'></span>"
         ajax_response += "</span></div>"   
     return HttpResponse(ajax_response)
 
