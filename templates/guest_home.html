@@ -19,7 +19,9 @@
 	<title>{% if change_title%}{{ change_title }}{% else %}CrushMaven | Anonymously Discover If Someone You Like Feels The Same{% endif %}</title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
     <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
-   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela+Round">
+
+   <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Varela+Round'>
+
 
   </head>
 
@@ -61,7 +63,8 @@ jQuery(document).ready(function($) {
 	$('.facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
 	
 	setInterval(function(){$('#tagline1').fadeIn(1800);},0);
-	setInterval(function(){$('#tagline2,.facebookbtn').fadeIn(1500);},500);
+	setInterval(function(){$('.facebookbtn').fadeIn(1500);},500);
+
 
 		// hide .scrolltop first
 		$('.scrolltop').hide();

@@ -6,7 +6,7 @@ margin: 0; padding: 0; border: 0;
 }
 
 body {
-	font-family:"Varela Round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
+	font-family:"varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: auto;	
@@ -23,7 +23,7 @@ a{
 }
 
 .center_container{	
-	width:1000px;
+	width:985px;
 	margin:0 auto;
 	position:relative;
 	padding-left:10px;
@@ -45,7 +45,7 @@ a{
 	position:relative;
 	top:0px;
 	left:0px;
-	width:1000px;
+	width:985px;
 	background:none!important;
 	height:45px;
 }
@@ -69,7 +69,7 @@ a{
 
 #logo_section{
 	margin-top:0;	
-	height:585px;
+	height:575px;
 	overflow:hidden;
 	-webkit-touch-callout: none !important;
 	-webkit-user-select: none !important;
@@ -88,7 +88,7 @@ div#tagline{
 
 #logo_section_background{
 	width:100%;
-	min-width:1150px;
+	min-width:1035px;
 	position:relative;
 	vertical-align:middle;
 	opacity:.9;
@@ -169,26 +169,25 @@ h2{
 }
 h2#tagline1{
 	position:absolute;
-	top:355px;
 	top:350px;
-	left:345px;
+	left:339px;
 	#width:580px;
 	#width:600px;
 	font-size:35px;
 	font-weight:normal;
 	line-height:42px;
-	text-shadow:1px 1px 1px #21073D;
+	text-shadow:1px 1px 1px #000;
 	letter-spacing:0px;
 	color:#fff;
 	display:none;
 	font-style:normal;
-	font-family:"Varela Round"
+	font-family:"varela round"
 }
 
 .facebookbtn {
 	position:absolute;
-	left:343px;
-	top:453px;
+	left:338px;
+	top:446px;
 	width:231px;
 	height:44px;
 	cursor: pointer;
@@ -196,7 +195,7 @@ h2#tagline1{
 }
 
 .header_container .facebookbtn{
-	left:670px;
+	left:655px;
 	top:9px;
 }
 .header_container .facebookbtn img{
@@ -205,8 +204,8 @@ h2#tagline1{
 
 h2#tagline3{
 	position:absolute;
-	left:396px;
-	top:498px;
+	left:391px;
+	top:493px;
 	color:darkGray;
 	font-size:13px;
 	font-weight:normal;
@@ -315,6 +314,9 @@ div.info_column{
 	width:336px;
 	float:left;
 	padding-right:27px;
+}
+div.info_column1{
+	width:321px;
 }
 div.info_row{
 	width:100%;
