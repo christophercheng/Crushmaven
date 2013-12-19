@@ -2,17 +2,7 @@
 {% block title %}Your Crushes{% endblock %}
 {% block content %}
 {% load fbdater_extras %}
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-38751299-1']);
-  _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
 <script type="text/javascript">
 $(document).ready(function() 
 {
@@ -258,7 +248,7 @@ $(".response_view_rating .help_icon").qtip({
 
 		<li class="title_bar_title">New Crushes<span class="title_bar_count">({{crush_relationships.count}})</span></li>
 		<li class="title_bar_page_links">
-			<a class="title_bar_page_link" href="#title_bar_responded_crushes">view crush responses</a>
+			<a class="title_bar_page_link" href="#title_bar_responded_crushes">view responded crushes</a>
 		</li>
 	
 		<li class="title_bar_option">
@@ -314,7 +304,7 @@ $(".response_view_rating .help_icon").qtip({
 
 <ul class="title_bar second_title_bar" id="title_bar_responded_crushes">
 
-	<li class="title_bar_title">Crushes Who Responded<span class="title_bar_count">({{completed_crushes_count}})</span></li>
+	<li class="title_bar_title">Responded Crushes<span class="title_bar_count">({{completed_crushes_count}})</span></li>
 	<li class="title_bar_page_links">
 		<a class="title_bar_page_link" href="#title_bar_new_crushes">view new crushes</a>
 	</li>
@@ -334,7 +324,7 @@ $(".response_view_rating .help_icon").qtip({
 
 {% else %}
 	<span class="no_content">
-	You have no crushes who responded
+	You have no crushes that have responded
 	</span>
 {% endif %}
 
@@ -353,3 +343,15 @@ When your crush told us that they weren't interested in you, we asked them to ra
 </span>
 
 {% endblock %}
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-38751299-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>

@@ -24,7 +24,7 @@ body {
 	-ms-user-select: none;
 	user-select: none;
 	background:rgb(241,243,245);
-	background:url('/static/images/whitemaze_pattern.png');
+	background:url('/static/images/whitemaze_brighter_pattern.png');
 	#background:rgba(241,243,245,.5);
 	#background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
 }
@@ -1171,7 +1171,7 @@ a.logo img{
 	line-height:24px;
 	padding:15px 10px 15px 20px;
 	margin-bottom:30px;
-	border-radius:8px;
+	#border-radius:8px;
 	display:none;
 	color:#646778;
 	border:1px solid #BABAC8; 
@@ -1761,7 +1761,7 @@ ul.nav_bar li#nav_bar_options{
 .crush_response_body .hint_anonymous{
 
 	position:absolute;
-	bottom:37px;
+	bottom:39px;
 	left:158px;
 	font-size:10px;
 	font-weight:normal;
@@ -2339,19 +2339,6 @@ ul.attraction_status_bar li.past_status_animated{
 	border-radius:3px;
 	}
 	
-.lineup_block .lineup_block_line .lineup_block_lineup_pic .lineup_pic_cover {
-	background:black;
-	height:100%;
-	width:100%;
-	display:block;
-	position:absolute;
-	top:0px;
-	left:0px;
-		border:1px;
-	border-radius:3px;
-	opacity: .80;
-	filter:alpha(opacity=80);
-}
 .lineup_block .lineup_block_line .lineup_block_lineup_pic span.admirer_picked{
 	display:inline-block;
 	position:absolute;
@@ -2565,8 +2552,6 @@ ul.attraction_status_bar li.past_status_animated{
 }
 #bx-pager div a img {
 	#border: 1px solid black;
-	opacity:0.6;
-	filter:alpha(opacity=60); /* For IE8 and earlier */
 	width:42px;
 	height:42px;
 	display:inline-block;
@@ -2610,8 +2595,6 @@ ul.attraction_status_bar li.past_status_animated{
 #bx-pager div img {
 	width:42px;
 	height:42px;
-	opacity:0.6;
-	filter:alpha(opacity=60); /* For IE8 and earlier */
 }
 
 .lineup_member_board{
@@ -2678,8 +2661,8 @@ ul.attraction_status_bar li.past_status_animated{
 }
 
 #bx-pager div.locked_lineup_member:hover {
-	opacity:.35;
-	filter:alpha(opacity=35)!important; /* For IE8 and earlier */
+	opacity:.30;
+	filter:alpha(opacity=30)!important; /* For IE8 and earlier */
 	
 }
 
@@ -3821,6 +3804,10 @@ ul.bxslider_element #slide_overlay {
 	left:0;
 	background:white;
 	display:none;
+}
+
+#app_invite_form .preview_button{
+	padding:4px 12px 3px 12px!important;
 }
 #app_invite_form .preview_button:hover, #app_invite_form .preview_close{
 	background:#000033!important;

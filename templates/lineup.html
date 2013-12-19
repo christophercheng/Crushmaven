@@ -290,6 +290,10 @@ $(document).ready(function() // handling for the slider
 							lineup_member.addClass('decision_platonic');
 							lineup_member.html('NO');
 						}
+						// change lineup_member picture to that of light gray image
+						var lineup_member_pic = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] img');
+						lineup_member_pic.attr("src","{{ STATIC_URL }}images/lineup_character_male_darkgray.png");
+
 						if (this_element.attr('class') != 'platonic_reconsider')
 							goto_next_slide(decision_div.parents('li').attr('lineup_position'));
 						else
@@ -470,6 +474,11 @@ $(document).ready(function() // handling for the slider
 		hide:{
 			delay:250
 		},
+		position:{
+			adjust: {
+				x:-40
+			}
+		},
 		style:{
 			classes: 'qtip-tipsy qtip-rounded qtip-shadow',
 			tip:{
@@ -499,9 +508,9 @@ $(document).ready(function() // handling for the slider
 		{% for member in member_set %}
 		
 			{% if member.decision != None %}
-					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male.png" /><span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span></a></div>
+					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male_darkgray.png" /><span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span></a></div>
 			{% else %}
-					<div class="locked_lineup_member"><img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/lineup_character_male.png"/><span class="lineup_member_board">{{ forloop.counter}}</span></div>
+					<div class="locked_lineup_member"><img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/lineup_character_male_gray.png"/><span class="lineup_member_board">{{ forloop.counter}}</span></div>
 			{% endif %}
 			
 		{% endfor %}
