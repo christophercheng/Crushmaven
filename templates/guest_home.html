@@ -106,19 +106,20 @@ jQuery(document).ready(function($) {
         		var header_top  = header_element.css('top');
    
                 if( $(window).scrollTop() > stickyHeaderTop ) {
-
+                	if (header_element.css("opacity")=='0'){
                 		header_element.stop(true).animate({  
                 		    top: '0px', 
-                		    opacity:1
-                		  }, 500,'linear');
-
+                		    opacity:'1'
+                		  }, 400,'linear');
+                	}
                 } else {
+                	if (header_element.css("opacity")!='0'){
                 		header_element.stop(true).animate({  
 	          		    top: '-45px',  
-	          		    opacity:0
+	          		    opacity:'0'
 	          		  },  150,'linear');
                 	}
-  
+                }
         });
 		
 }); // close of jQuery(document).ready
