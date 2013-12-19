@@ -67,7 +67,6 @@ jQuery(document).ready(function($) {
 		$('.scrolltop').hide();
 		
 		// fade in .scrolltop
-		$(function () {
 			$(window).scroll(function () {
 				if ($(this).scrollTop() > 405) {
 					
@@ -81,12 +80,11 @@ jQuery(document).ready(function($) {
 			$('.scrolltop').click(function () {
 				$('body,html').animate({
 					scrollTop: 0
-				}, 800);
+				}, 600);
 				return false;
 			});
-		});
+	
 		
-		$(function() {
 			  $('a[href*=#]:not([href=#])').click(function() {
 			    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
 			      var target = $(this.hash);
@@ -94,36 +92,33 @@ jQuery(document).ready(function($) {
 			      if (target.length) {
 			        $('html,body').animate({
 			          scrollTop: target.offset().top
-			        }, 1000);
+			        }, 600);
 			        return false;
 			      }
 			    }
 			  });
-			});
+	
 
 		   // Check the initial Poistion of the Sticky Header
         var stickyHeaderTop = $('#qa_section').offset().top-47;
-        header_element = $('#guest_home_page .header');
+        var header_element = $('#guest_home_page .header');
         $(window).scroll(function(){
         		var header_top  = header_element.css('top');
    
                 if( $(window).scrollTop() > stickyHeaderTop ) {
-                	console.log(header_top);
-                	if (header_top != '0px'){
-                		
-                		header_element.animate({  
+
+                		header_element.stop(true).animate({  
                 		    top: '0px', 
-                		    opacity:'1'
-                		  }, 300,'linear');
-                	}
+                		    opacity:1
+                		  }, 500,'linear');
+
                 } else {
-                	if (header_top=='0px'){
-	              	  header_element.animate({  
+                		header_element.stop(true).animate({  
 	          		    top: '-45px',  
-	          		    opacity:'0'
-	          		  },  300,'linear');
+	          		    opacity:0
+	          		  },  150,'linear');
                 	}
-                }
+  
         });
 		
 }); // close of jQuery(document).ready
