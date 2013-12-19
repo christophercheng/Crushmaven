@@ -55,7 +55,7 @@ $(document).ready(function()
        					} // close checkbox check block
        				$.post("/ajax_reconsider/",{rel_id:rel_id, csrfmiddlewaretoken:'{{csrf_token}}' },function(data){
       
-       				window.location = "/new_crushes/";
+       				window.location = "/your_crushes/";
        				}); // close post function
 							}, // close add function
         		"Cancel": function() {$(this).dialog("close");

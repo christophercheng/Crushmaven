@@ -30,11 +30,11 @@ def home(request):
     if request.user.is_authenticated():
 
         if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
-            return HttpResponseRedirect('/new_crushes/') 
+            return HttpResponseRedirect('/your_crushes/') 
         elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
-            return HttpResponseRedirect('/new_admirers/')
+            return HttpResponseRedirect('/admirers/')
         else:
-            return HttpResponseRedirect('/new_crushes/')
+            return HttpResponseRedirect('/your_crushes/')
     else:
         return render(request,'guest_home.html')
 

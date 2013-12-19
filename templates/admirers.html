@@ -105,8 +105,8 @@ $(document).ready(function()
 	        at:'bottom left'
 		},
 		content:{
-			text:$('#admirer_block_help_content'),
-			title:'Who is my secret admirer?'
+			text:$('#lineup_dialog_help_content'),
+			title:'How do admirer lineups work?'
 		},
 		show:{
 			delay:0,
@@ -127,19 +127,12 @@ $(document).ready(function()
 </script>
 
 <!-- Display the title widget -->  
-<ul class="title_bar" id="title_bar_admirers">
-	
-		{% if admirer_type == 0  %}
-			<li class="title_bar_title">Admirers</li>
-			<li class="title_bar_page_links">
-				<a class="title_bar_page_link" href="/past_admirers/">view past admirers<span class="title_bar_count">({{past_admirers_count}})</span></a>
-			</li>
-		{% else %}
-			<li class="title_bar_title">Past Admirers ({{admirer_relationships.count}})</li>	
-			<li class="title_bar_page_links">
-				<a class="title_bar_page_link" href="/new_admirers/">view new admirers<span class="title_bar_count">({{ progressing_admirers_count }})</span></a>
-			</li>
-		{% endif %}
+<ul class="title_bar" id="title_bar_new_admirers">
+
+		<li class="title_bar_title">New Admirers <span class="title_bar_count">({{progressing_admirers_count}})</span></li>
+		<li class="title_bar_page_links">
+			<a class="title_bar_page_link" href="#title_bar_past_admirers/">view past admirers</a>
+		</li>
 	
 		<li class="title_bar_option">
 			sort:
@@ -209,58 +202,74 @@ $(document).ready(function()
 {% endfor %}
 
 {% else %}
-	{% if admirer_type == 0 %}
-		<span id="no_content">You have no <i>new</i> admirers.</span>
-	{% else %}
-		<span id="no_content">You have no past admirers <i>(with finished lineups)</i>.</span>
+		<span class="no_content">You have no <i>new</i> admirers.</span>
+{% endif %}
+
+<!-- Display the title widget -->  
+<ul class="title_bar second_title_bar" id="title_bar_past_admirers">
+	
+		<li class="title_bar_title">Past Admirers <span class="title_bar_count">({{ past_admirers_count }})</span></li>	
+		<li class="title_bar_page_links">
+			<a class="title_bar_page_link" href="#title_bar_new_admirers">view new admirers</a>
+		</li>
+	
+		<li class="title_bar_option">
+			sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
+	</li>
+</ul>
+<! -- End of crush type navigation widget --> 
+
+{% for admirer_rel in past_admirer_relationships %}
+<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
+	<span class="help_icon"></span>
+	<div class="lineup_block_line lineup_block_first_line">
+		<div class="lineup_title">
+			<span class="lineup_block_source_name">Secret Admirer #{{admirer_rel.display_id}}:</span>
+			{% if admirer_rel.friendship_type == 0 %} 
+				<span class="lineup_subtitle">a friend of yours</span> 
+			{% elif admirer_rel.friendship_type == 1 %}
+				<span class="lineup_subtitle">has mutual Facebook friend(s)</span>
+			{% else %}
+				<span class="lineup_subtitle">has no Facebook friends in common with you</span>
+			{% endif %}
+		</div><!-- close off lineup title -->
+	</div><!-- close off lineup_block line -->
+	{% with admirer_rel.date_lineup_finished as date_lineup_finished %}
+		{% include "lineup_block_background.html" %}
+	{% endwith %}
+	<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">
+		
+		{% if admirer_rel.lineup_initialization_status == 1 %}
+				{% with admirer_rel as relationship %}
+				 	{% include "lineup_block.html" %}
+				{% endwith %}
+		{% else %}
+		     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
+		{% endif %}
+	</div><!-- close off admirer_block line -->
+	<div class="lineup_block_line lineup_block_footer">
+	{% if admirer_rel.lineup_initialization_status == 1 %}
+		<span class="lineup_block_statistics">You've assessed <span class="lineup_block_statistic">{{admirer_rel|lineup_statistics}}</span> lineup members</span>
 	{% endif %}
+	{% if admirer_rel.date_lineup_finished != None %}
+		lineup completed {{admirer_rel.date_lineup_finished}}
+	{% else %}
+		lineup created {{admirer_rel.date_added|datetime_since}} ago
+	{% endif %}
+	</div><!-- close off admirer_block line -->
+</div><!--  close off admirer block -->
+{% endfor %}
+
+{% if past_admirers_count == 0 %}
+<span class="no_content">You have no past admirers <i>(with finished lineups)</i></span>
 {% endif %}
 
 <div id="lineup_modal" title="Admirer Lineup"></div>
 
-
-<span class="help_dialog_content" id="admirer_block_help_content">
-	<span class="tooltip_content tooltip_maincontent">
-	Someone on our site is attracted to you and wants to know if you feel the same. 
-	They've chosen to conceal their identity through this admirer lineup - to avoid potential awkwardness in case you don't feel the same.
-	</span>
-	<span class="related_subsections">related q&a:</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		How do admirer lineups work?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	We carefully choose up to nine potential admirers for you, place them into a lineup, and then insert your actual admirer into a random position.  
-	As you view each lineup member, select any that you're attracted to.  
-	We'll send your selections a similar lineup - with you randomly placed within it. 
-	After we determine if the attraction is mutual or not, we notify you.  That's it!
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		How were my members of my admirer lineup selected?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	When you signed in to CrushMaven, you agreed to give us access to your list of friends and descriptions about them.  
-	If your secret admirer is your Facebook friend, then we use your friend list information to select other Facebook friends as lineup members (that you might also be attracted to).  
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		Can I have a secret admrier that is not a Facebook Friend?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	Yes! Oftentimes our users aren't directly connected to their crushes, but they may know them in real life, or perhaps they their crush caught their attention in a Facebook pic.
-	<i>note:</i> To properly conceal your actual admirer's identity, we only select lineup members who share similar degrees of separation from you.   
-	So for instance, if your crush is not a Facebook friend, but shares a mutual friend, then all of your lineup members will be two degrees of separation from you.
-	</span>
-	</span>
-	<span class="tooltip_close">close</span>
-</span>
-
 <span class="help_dialog_content" id="lineup_dialog_help_content">
 <span class="tooltip_content tooltip_maincontent">
-We carefully choose up to nine potential admirers for you, place them into a lineup, and then insert your actual admirer into a random position.  
+We carefully chose up to nine potential admirers for you, placed them into a lineup, and then inserted your actual admirer into a random position.  
 As you view each lineup member, select any that you're attracted to.  
 We'll send your selections a similar lineup - with you randomly placed within it. 
 After we determine if the attraction is mutual or not, we notify you.  That's it!
@@ -283,6 +292,14 @@ They've chosen to conceal their identity through this admirer lineup - to avoid 
 <span class="tooltip_content tooltip_relatedcontent">
 	When you signed in to CrushMaven, you agreed to give us access to your list of friends and descriptions about them.  
 	If your secret admirer is your Facebook friend, then we use your friend list information to select other Facebook friends as lineup members (that you might also be attracted to).  
+</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	Who will see my choices?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Our aim is to prevent any awkwardness, so naturally we don't want anyone to know who you like or don't like.
 </span>
 </span>
 <span class ="tooltip_subsection">

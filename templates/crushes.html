@@ -50,7 +50,7 @@ $(document).ready(function()
 	   window.purchase_conversation("{{csrf_token}}",crush_id);
   });
   
-  $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/completed_crushes/";}});
+  $("#response_modal").dialog({dialogClass:'response_modal_dialog',modal: true,resizable:false, autoOpen: false,width:350,close:function(event,ui){location.href="/your_crushes/";}});
   
   	window.display_response_modal = function(crush_id) {
    	load_url="/ajax_load_response_dialog_content/" + crush_id + "/";
@@ -84,8 +84,8 @@ $(document).ready(function()
 	var purchase_rating = function(unique_id){
    		data = {};
 			data['csrfmiddlewaretoken']="{{csrf_token}}";
-			data['success_path'] = '/completed_crushes/' +  '/' + unique_id + '/';
-			data['cancel_url'] = 'http://{{request.get_host}}/completed_crushes/' +  '/' + unique_id + '/';
+			data['success_path'] = '/your_crushes/' +  '/' + unique_id + '/';
+			data['cancel_url'] = 'http://{{request.get_host}}/your_crushes/' +  '/' + unique_id + '/';
 			data['unique_id'] = unique_id;
 			data['feature_id'] = '3';
 			data['purchase_callback_name'] = 'window.rating_purchased(' + unique_id + ')';
@@ -141,7 +141,7 @@ $(document).ready(function()
       		},
       		"Delete": function() {
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
- 					document.location.href='/new_crushes/'; // reload page
+ 					document.location.href='/your_crushes/'; // reload page
  				}).fail(function(response){
  				 	window.remove_crush_dialog.dialog("close");
  				 	window.alert_modal('Removing Your Crush', "{{generic_error_message}}" );
@@ -254,19 +254,12 @@ $(".response_view_rating .help_icon").qtip({
 
 <!-- Display the crush type navigation widget -->
 
-<ul class="title_bar" id="title_bar_attractions">
+<ul class="title_bar" id="title_bar_new_crushes">
 
-		{% if crush_type == 0  %}
-			<li class="title_bar_title">New Crushes</li>
-			<li class="title_bar_page_links">
-				<a class="title_bar_page_link" href="/completed_crushes/">view crush responses<span class="title_bar_count">({{completed_crushes_count}})</span></a>
-			</li>
-		{% else %}
-			<li class="title_bar_title">Crush Responses ({{completed_crushes_count}})</li>
-			<li class="title_bar_page_links">
-				<a class="title_bar_page_link" href="/new_crushes/">view new crushes<span class="title_bar_count">({{crushes_in_progress_count}})</span></a>
-			</li>
-		{% endif %}
+		<li class="title_bar_title">New Crushes<span class="title_bar_count">({{crush_relationships.count}})</span></li>
+		<li class="title_bar_page_links">
+			<a class="title_bar_page_link" href="#title_bar_responded_crushes">view crush responses</a>
+		</li>
 	
 		<li class="title_bar_option">
 		sort:
@@ -289,7 +282,7 @@ $(".response_view_rating .help_icon").qtip({
 	<div class="second_instruction_section">
 		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Once signed in, your crush receives a carefully constructed lineup of potential admirers, including you.  They'll pick out the ones they're attracted to.</span></div>
 		<div class="instruction_sub_step"><span class="instruction_step_text">(Your identity as the actual admirer is anonymous since the lineup is randomly ordered.)</span></div>
-		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know whether you're picked (or not). Your crush may not even realize that you liked them first!</span></div>
+		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know if they picked you or not. Your crush may not even realize that you liked them first!</span></div>
 	</div>
 	<div class="instruction_block_button_line">
 		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush</a>
@@ -313,15 +306,41 @@ $(".response_view_rating .help_icon").qtip({
 
 {% elif show_help_popup == False %}
 
-<span id="no_content">
+<span class="no_content">
 
-	{% if crush_type == 0 %}
-		You have no {% if responded_relationships %} <i>ongoing</i> {% endif %}crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
-	{% else %}
-		You have no responded crushes.&nbsp;&nbsp;<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add a crush</a> to get started.</span>
-	{% endif %}
+		You have no <i>ongoing</i> crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	</span>
 {% endif %}
+
+<ul class="title_bar second_title_bar" id="title_bar_responded_crushes">
+
+	<li class="title_bar_title">Crushes Who Responded<span class="title_bar_count">({{completed_crushes_count}})</span></li>
+	<li class="title_bar_page_links">
+		<a class="title_bar_page_link" href="#title_bar_new_crushes">view new crushes</a>
+	</li>
+
+	<li class="title_bar_option">
+	sort:
+	<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
+	</li>
+</ul>
+
+{% if completed_crush_relationships %}
+	{% for crush in completed_crush_relationships %}
+		{% with crush as crush %}
+				 	{% include "crush_block.html" %}
+				{% endwith %}
+	{% endfor %}
+
+{% else %}
+	<span class="no_content">
+	You have no crushes who responded
+	</span>
+{% endif %}
+
+
+<! -- End of crush type navigation widget --> 
+
 <div id="remove_crush_dialog" title="Remove From Your Crushes"></div>
 <div id="privacy_check_modal" title="Facebook Privacy Setting Warning"></div>
 <div id="privacy_check"></div>

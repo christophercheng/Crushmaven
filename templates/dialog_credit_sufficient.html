@@ -10,8 +10,6 @@ $(document).ready(function()
 			// if successful then load next slide and thumbnail and auto go to that slide
 			window.wait_modal_close();
 			{{ purchase_callback_name }};
-			// adjust the credits number on the main site
-			$("#num_credits").load("/ajax_update_num_credits/");
 		}) 
 		.fail(function(){// if fail (credit was suddenly not available or network problem), then do nothing
 			window.wait_modal_close();

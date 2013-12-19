@@ -3,20 +3,20 @@
 <ul class = "navbar">
 
 		<!-- Left Bar Links -->	
-		<li class="{% navactive request 'new_crushes' %} new_crushes">
-			<a href="{% url 'crush.views.crush_views.new_crushes' %}">
+		<li class="{% navactive request 'your_crushes' %} new_crushes">
+			<a href="{% url 'crush.views.crush_views.your_crushes' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Your Crushes</span></span>
-				<span class="menu_count{% if num_new_responses %} new_menu_count{% endif %}">{{ num_crushes_in_progress }}</span>
+				<span class="menu_count{% if num_new_responses %} new_menu_count{% endif %}">{{ num_total_crushes }}</span>
 				<span class="nav_subtext">Find out if they feel the same</span>
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
 		</li>
-		<li class="{% navactive request 'new_admirers'%} new_admirers">
-			<a href="{% url 'crush.views.admirer_views.new_admirers' %}">
+		<li class="{% navactive request 'admirers'%} new_admirers">
+			<a href="{% url 'crush.views.admirer_views.admirers' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
-				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count">{{num_admirers_in_progress}} new {% else %}">0{% endif %}</span>
+				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count{% endif %}">{{ num_total_admirers}}</span>
 				<span class="nav_subtext">Find out who they are</span>
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
@@ -25,7 +25,7 @@
 			<a href="{% url 'postman_inbox' %}">
 				<span class="menu_icon"></span>
 				<span class="menu_title">Messages</span>
-				<span class="menu_count{% if num_new_messages %} new_menu_count">{{ num_new_messages}} new{% else %}">0{% endif %}</span>
+				<span class="menu_count{% if num_new_messages %} new_menu_count{% endif %}">{{ num_all_messages}}</span>
 				<span class="nav_subtext">Chat with your matches</span>
 			</a>
 			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">

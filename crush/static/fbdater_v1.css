@@ -88,7 +88,7 @@ a.button {
 #mf_help_section_problem .help_icon{
 	position:absolute;
 	top:14px;
-	right:-22px;	
+	right:134px;	
 }
 
 .admirer_lineup_block .help_icon, .decision_confirmation_dialog .help_icon,.invite_interstitial_dialog .help_icon {
@@ -857,7 +857,7 @@ a.logo img{
 .navbar .menu_count{
 	position:absolute;
 	right:6px;
-	top:13px;
+	top:17px;
 	display:inline-block;
 	font-size:9px!important;
 	line-height:9px;
@@ -866,11 +866,11 @@ a.logo img{
 }
 
 .navbar .new_menu_count{
-	top:11px;
-	right:-2px;
+	#top:11px;
+	#right:-2px;
 	background-color:#CC0000;
 	color:white;
-	padding:1px 2px 0px 4px;
+	padding:0px 3px 0px 4px;
 	border-radius:3px;
 	word-spacing:-2px;
 	text-shadow:none;
@@ -1150,16 +1150,6 @@ a.logo img{
 }
 /* ===========================   Center Container ========================= */
 
-.center_panel_container #no_content {
-
-	width:575px;
-	position:fixed;
-	text-align:center;
-	margin-left:-25px;
-	color:#333366!important;
-	font-weight:bold;
- 	font-size:14px;
-}
 
 #credit_check_content #site-loading {
 	display:none;
@@ -1389,7 +1379,12 @@ ul.title_bar {
 	letter-spacing:1px;
 	white-space:nowrap;	
 	height:22px;
+	position:relative;
 }
+ul.second_title_bar {
+	margin-top:45px;	
+}
+	
 ul.title_bar > li {
 	display:inline-block;
 	vertical-align:bottom;
@@ -1423,7 +1418,7 @@ ul.title_bar li.title_bar_page_links  {
 
 ul.title_bar li .title_bar_page_link {
 	position:absolute;
-	top:2px;
+	top:1px;
 	right:5px;
 	display:inline-block;
 	text-align:center;
@@ -1606,8 +1601,8 @@ ul.nav_bar li#nav_bar_options{
 	background-color:#DC143C;
 	color:white;
 	position:absolute;
-	top:-3px;
-	left:-3px;
+	top:-2px;
+	left:-2px;
 	border-radius:1px 2px 2px 2px;
 	font-size:10px;
 	font-weight:bold;
@@ -1620,6 +1615,12 @@ ul.nav_bar li#nav_bar_options{
 .updated.mutual_attraction{
 	background:rgb(102,102,255);
 	padding-left:10px;
+	padding-right:10px;
+	vertical-align:middle;
+}
+.updated.no_mutual_attraction{
+	background:black;
+		padding-left:10px;
 	padding-right:10px;
 	vertical-align:middle;
 }
@@ -1879,15 +1880,23 @@ ul.nav_bar li#nav_bar_options{
 	font-size:16px;
 }
 
-.center_panel_container #no_content {
-	margin-top:100px;
-	display:inline-block;
+
+.center_panel_container .no_content {
+	margin-left:16px;
+	#color:#333366!important;
+	text-align:center;
+	margin-left:-5px;
+	#font-weight:bold;
+ 	font-size:14px;
+	margin-top:20px;
+	display:block;
 	position:relative;
+	margin-bottom:35px;
 }
 
-.center_panel_container #no_content .no_content_action{
+.center_panel_container .no_content .no_content_action{
 	display:block;
-	margin-top:23px;
+	margin-top:15px;
 
 }
 .no_content_action a{
@@ -1895,7 +1904,7 @@ ul.nav_bar li#nav_bar_options{
 }
 
 #responses{
-	margin-bottom:30px;
+	margin-bottom:45px;
 	/*#border:1px solid red;*/
 }
 
@@ -2243,7 +2252,7 @@ ul.attraction_status_bar li.past_status_animated{
 .lineup_block_first_line{
 	#line-height:60px;
 	height:40px;
-	margin-bottom:10px;
+	margin-bottom:5px;
 }
 
 .lineup_block .lineup_title{
@@ -2253,7 +2262,7 @@ ul.attraction_status_bar li.past_status_animated{
 	#font-style:italic;
 	line-height:20px;
 	vertical-align:top;
-	margin-top:10px;
+	margin-top:5px;
 		color:#DC143C;
 }
 
@@ -2268,7 +2277,7 @@ ul.attraction_status_bar li.past_status_animated{
 .lineup_block a.button{
 	height:28px;
 	width:200px;
-	margin: 20px auto;
+	margin: 30px auto;
 	padding:7px 5px 5px 5px;
 	text-align:center;
 	border-radius:7px;
@@ -2442,8 +2451,8 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	float:right;
 	text-align:right;
-	margin-top:2px;
-	margin-bottom:4px;
+	margin-top:-10px;
+	margin-bottom:2px;
 	color:#909090;
 	font-size:11px;
 	#font-style:italic;
@@ -3561,7 +3570,7 @@ ul.bxslider_element #slide_overlay {
 }
 
 .invite_interstitial_dialog .ui-dialog-buttonpane{
-	height:36px!important;
+	height:38px!important;
 	#padding-top:5px!important;
 }
 .invite_interstitial_dialog .ui-dialog-buttonset{ 
@@ -3802,7 +3811,8 @@ ul.bxslider_element #slide_overlay {
 #preview_invite_button .arrow {
 	font-size:10px;
 	vertical-align:middle;
-	margin-left:3px; 
+	margin-left:3px;
+	padding-bottom:2px; 
 }
 #preview_section {
 	position:absolute;

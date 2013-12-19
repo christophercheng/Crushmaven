@@ -100,7 +100,7 @@ def adjust_associated_lineup_members(target_person,lineup_user,new_crush):
     
 # -- Crush List Page --
 @login_required
-def new_crushes(request, reveal_crush_id=None):
+def your_crushes(request, reveal_crush_id=None):
     
     me = request.user
   
@@ -119,21 +119,22 @@ def new_crushes(request, reveal_crush_id=None):
             reveal_crush_id = None
             
     responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
-    completed_crushes_count = CrushRelationship.objects.completed_crushes(me).count()
+
+    completed_crushes_relationships = CrushRelationship.objects.completed_crushes(me).order_by('-updated_flag','target_person__first_name')
 
     # determine whether to show help popup
-    if crush_progressing_relationships.count() == 0:
+    if crush_progressing_relationships.count() == 0 and completed_crushes_relationships.count() == 0 and responded_relationships.count() == 0:
         show_help_popup=True
     else:
         show_help_popup=False
 
     return render(request, 'crushes.html',
                               {
-                               'crush_type': 0,  # 0 is in progress, 1 is matched, 2 is not matched
                                'responded_relationships':responded_relationships,
                                'crush_relationships':crush_progressing_relationships,
+                               'completed_crush_relationships':completed_crushes_relationships,
                                'crushes_in_progress_count': crush_progressing_relationships.count(),
-                               'completed_crushes_count':completed_crushes_count,
+                               'completed_crushes_count':completed_crushes_relationships.count(),
                                'lineup_status_choice_4':settings.LINEUP_STATUS_CHOICES[4],
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
                                'check_fb_privacy_setting':check_fb_privacy,
@@ -203,34 +204,7 @@ def ajax_get_platonic_rating(request, crush_id):
         response += '<span class="response_view_score_description">"' + crush_relationship.get_target_platonic_rating_display() + '"</span>'
         return HttpResponse(response)
     else:
-        return HttpResponseForbidden("Error: You have not paid to see your attraction rating.");
-
-# -- Crushes Completed Page --
-@login_required
-def completed_crushes(request, reveal_crush_id=None):
-    me = request.user
-    crush_relationships = request.user.crush_crushrelationship_set_from_source 
-    if reveal_crush_id:
-        try:
-            reveal_crush_relationship = crush_relationships.get(target_person__username=reveal_crush_id)
-            if reveal_crush_relationship.is_results_paid == False:
-                reveal_crush_id = None  # reset the value in this error case
-        except CrushRelationship.DoesNotExist:
-            reveal_crush_id = None
-    responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
-    completed_crushes_relationships = CrushRelationship.objects.completed_crushes(me).order_by('-updated_flag','target_person__first_name')
-    crushes_in_progress_count = CrushRelationship.objects.progressing_crushes(me).count()
-    
-    return render(request, 'crushes.html',
-                              {
-                               'crush_type': 1,  # 0 is in progress, 1 is matched, 2 is not matched
-                               'responded_relationships':responded_relationships,
-                               'crush_relationships':completed_crushes_relationships,
-                               'crushes_in_progress_count': crushes_in_progress_count,
-                               'completed_crushes_count' : completed_crushes_relationships.count,
-                               'reveal_crush_id':reveal_crush_id,
-                               'show_help_popup':False # never show help popup for this subpage
-                               })   
+        return HttpResponseForbidden("Error: You have not paid to see your attraction rating."); 
 
 @login_required    
 def app_invite_form_v2(request, crush_username):

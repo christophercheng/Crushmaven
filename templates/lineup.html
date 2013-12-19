@@ -297,10 +297,9 @@ $(document).ready(function() // handling for the slider
 							$('#lineup_container #slide_overlay').hide();
 						}); // close off parent.load (making the decision and showing the html results		
 					$(this).dialog("close"); // must destroy rather than close cause switching between two dialogs causes problems
-					if (crush_decision==true) 
-						$("#num_crushes_in_progress").load("/ajax_update_num_crushes_in_progress/");
-					else 
-						$("#num_platonic_friends").load("/ajax_update_num_platonic_friends/");
+					
+					// update the date_lineup_started data field in the crush relationship object
+					
 				}   // end of add handler
 			},
 			open:function(event,ui) {
@@ -409,8 +408,8 @@ $(document).ready(function() // handling for the slider
  		
 		data = {};
 		data['csrfmiddlewaretoken']="{{csrf_token}}";
-		data['success_path'] = '/new_admirers/{{admirer_rel.display_id}}/';
-		data['cancel_url'] = 'http://{{request.get_host}}/new_admirers/{{admirer_rel.display_id}}';
+		data['success_path'] = '/admirers/{{admirer_rel.display_id}}/';
+		data['cancel_url'] = 'http://{{request.get_host}}/admirers/{{admirer_rel.display_id}}';
 		data['unique_id'] = '{{admirer_rel.display_id}}';
 		data['feature_id'] = '1';
 		data['purchase_callback_name'] = 'window.lineup_purchased()';
@@ -420,7 +419,6 @@ $(document).ready(function() // handling for the slider
    }; 
    
  	window.lineup_purchased = function(){
-			$('#num_new_admirers').load('/ajax_update_num_new_admirers');
 			next_position=parseInt(window.slider_control.getCurrentSlide()) + 1;
 			load_next_slide(next_position,resetAndAdvanceSlider);
 			window.is_lineup_paid=true;
@@ -443,10 +441,10 @@ $(document).ready(function() // handling for the slider
 			num_new_attractions++;
 			});
 
-		if (current_href.indexOf("/new_admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
+		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
 				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
-					redirect_url='/new_crushes/';
+					redirect_url='/your_crushes/';
 				if (num_new_attractions){
 					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
 					window.launch_invite_interstitial(attraction_json,redirect_url);

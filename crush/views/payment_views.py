@@ -119,12 +119,6 @@ def ajax_deduct_credit(request, feature_id, unique_id):
         else:
             return HttpResponse("")
 
-
-@login_required
-def ajax_update_num_credits(request):
-    ajax_response = str(request.user.site_credits)
-    return HttpResponse(ajax_response)  
-        
 @login_required    
 @csrf_exempt # this is needed so that paypal success redirect from payment page works 
 def paypal_pdt_purchase(request):

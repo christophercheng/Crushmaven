@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 
 # -- Admirer List Page --
 @login_required
-def new_admirers(request,show_lineup=None):
+def admirers(request,show_lineup=None):
     global g_init_dict
     me = request.user 
 
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
-    past_admirers_count = CrushRelationship.objects.past_admirers(me).count()
+    progressing_admirers_count = progressing_admirer_relationships.count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
@@ -64,16 +64,22 @@ def new_admirers(request,show_lineup=None):
         LineupMember.objects.initialize_multiple_lineups(start_relationships)
     else:
         thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))
+    
+    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
+    past_admirers_count = admirer_completed_relationships.count()
      
-    if past_admirers_count == 0 and progressing_admirer_relationships.count() > 0:#  and not settings.DEBUG:
+    if progressing_admirers_count > 0 and past_admirers_count == 0:#  and not settings.DEBUG:
         show_help_popup=True
     else:
         show_help_popup=False
+        
+       
     return render(request,'admirers.html',
                               {'profile': me.get_profile, 
-                               'admirer_type': 0, # 0 is in progress, 1 completed
                                'admirer_relationships':progressing_admirer_relationships,
+                               'past_admirer_relationships':admirer_completed_relationships,
                                'past_admirers_count': past_admirers_count,
+                               'progressing_admirers_count':progressing_admirers_count,
                                'show_lineup': show_lineup,
                                'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
                                'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
@@ -330,49 +336,12 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
         if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             admirer_rel.save(update_fields=['date_lineup_finished'])
-
+        # make sure the crush relationship object's date_lineup_started field is set
+        if (admirer_rel.date_lineup_started == None):
+            admirer_rel.date_lineup_started = datetime.datetime.now()
+            admirer_rel.save(update_fields=['date_lineup_started'])
     except FacebookUser.DoesNotExist:
         logger.error( "failed to add lineup member: " + facebook_id )
         return HttpResponse("Server Error: Could not add given lineup user")  
     return HttpResponse(ajax_response)
 
-@login_required
-def ajax_update_num_platonic_friends(request):
-
-    ajax_response = str(request.user.just_friends_targets.all().count())
-    return HttpResponse(ajax_response)
-@login_required
-def ajax_update_num_crushes_in_progress(request):
-    ajax_response = str(request.user.crush_targets.all().count())
-    return HttpResponse(ajax_response)
-
-# called when a crush response is paid for
-@login_required
-def ajax_update_num_new_responses(request):
-    ajax_response = str(CrushRelationship.objects.visible_responded_crushes(request.user).count())
-    return HttpResponse(ajax_response)
-
-# called when a lineup goes past the payment stage
-@login_required
-def ajax_update_num_new_admirers(request):
-    ajax_response = str(CrushRelationship.objects.new_admirers(request.user).count())
-    return HttpResponse(ajax_response)
-
-# -- Past Admirers Page --
-@login_required
-def past_admirers(request):
-    me = request.user 
-   
-    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
-    progressing_admirers_count = CrushRelationship.objects.progressing_admirers(me).count()
-
-    return render(request,'admirers.html',
-                              {
-                               'admirer_type': 1, # 0 is in progress, 1 completed
-                               'admirer_relationships':admirer_completed_relationships,
-                               'progressing_admirers_count': progressing_admirers_count,
-                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[2],
-                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
-                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
-                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT    
-                               })    

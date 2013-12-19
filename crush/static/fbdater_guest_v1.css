@@ -1100,7 +1100,7 @@ div.legal{
 }
 
 .tooltip_relatedcontent{
-	display:none;
+	display:block;
 	margin-left:5px;
 	margin-top:2px;
 	margin-bottom:15px;
@@ -1109,9 +1109,4 @@ div.legal{
 	padding-left:6px;
 	padding-top:3px;
 }
-.tooltip_close{
-	display:block;
-	text-decoration:underline;
-	float:right;
-	cursor:pointer;
-}
+

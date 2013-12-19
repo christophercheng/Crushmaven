@@ -49,11 +49,12 @@
 	    });
 	});
 	//FAQ SECTION INTERACTIVITY
+	$(".tooltip_relatedcontent").hide();
 	$(".tooltip_subtitle").click(function(){
-		var current_content = $(this).parent().children('.tooltip_content');
+		var current_content = $(this).parent().children('.tooltip_relatedcontent');
 		$(this).parent().parent().find('.tooltip_relatedcontent').not(current_content).hide();
 		if (current_content.css("display")=="none")
-			current_content.css("display","block")
+			current_content.fadeIn(500);
 		else
 			current_content.css("display","none")
 	})
@@ -160,6 +161,14 @@
 	We'll send your selections a similar lineup - with you randomly placed within it. 
 	After we determine if the attraction is mutual or not, we notify you.  That's it!
 	</span>
+</span>
+<span class ="tooltip_subsection">
+<span class="tooltip_subtitle">
+	Who will see my choices?
+</span>
+<span class="tooltip_content tooltip_relatedcontent">
+	Our aim is to prevent any awkwardness, so naturally we don't want anyone to know who you like or don't like.
+</span>
 </span>
 <span class ="tooltip_subsection">
 	<span class="tooltip_subtitle">Who is my admirer?</span>

@@ -3,9 +3,13 @@
 <div class="crush_block crush_status_{{crush.get_display_status}}" username="{{crush.target_person.username}}">
         
 	<!-- Display Upper-Left Flag: Mutual, NEW or UPDATED - iff relevant -->  
-	{% if crush.is_results_paid and crush.get_display_status == 4 %}
+	{% if crush.is_results_paid %}
+		{% if crush.get_display_status == 4 %}
 		<!-- Display MUTUAL ATTRACTION! if relevant -->                 
 		<span class="updated mutual_attraction">mutual attraction</span>
+		{% else %}
+		<span class="updated no_mutual_attraction">no mutual attraction</span>
+		{% endif %}
 	{% elif crush.updated_flag == True and crush.get_display_status != 'responded' %}
 		
 	     {% if crush.date_added|datetime_since == '1 minute' or crush.is_results_paid == True %}

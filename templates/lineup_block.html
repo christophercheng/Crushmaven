@@ -9,10 +9,12 @@
 		{% endfor %}
 	{% endif %}
 	{% if relationship.is_lineup_paid == True %}
-		{% if relationship.date_lineup_finished != None %}
-	       <a href="#" class="view_lineup button content_button" display_id="{{relationship.display_id}}">Finish Admirer Lineup</a>
+		{% if relationship.date_lineup_started == None %}
+	       <a href="#" class="view_lineup button content_button" display_id="{{relationship.display_id}}">Start Admirer Lineup</a>
+		{% elif relationship.date_lineup_finished == None %}
+			<a href="#" class="view_lineup button content_button" display_id="{{relationship.display_id}}">Finish Admirer Lineup</a>
 		{% else %}
-			<a href="#" class="view_lineup button content_button" display_id="{{relationship.display_id}}">Start Admirer Lineup</a>
+			<a href="#" class="view_lineup button content_button" display_id="{{relationship.display_id}}">View Admirer Lineup</a>
 		{% endif %}
 	{% else %}	
 		<a href="#"  class="view_lineup button content_button" display_id="{{relationship.display_id}}">Start Admirer Lineup</a>

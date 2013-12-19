@@ -65,7 +65,7 @@ class PlatonicRelationship(BasicRelationship):
     objects = PlatonicRelationshipManager()
  
     rating = models.IntegerField(default=None,max_length=1,blank=True,null=True) # how source rated the target's attraction
-    #rating_comment = models.CharField(max_length=50,default=None,blank=True,null=True)
+    #rating_comment = models.CharField(max_length=100,default=None,blank=True,null=True)
     #rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
  
     @transaction.commit_on_success # rollback entire function if something fails

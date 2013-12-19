@@ -315,8 +315,8 @@ jQuery(document).ready(function($) {
         $.post('/ajax_add_crush_targets/',result_dictionary, function(){
                 // on success redirect to the crush page
                 window.wait_modal_close();
-                window.launch_invite_interstitial(attraction_invites_json,'/new_crushes/'); 
-                //document.location.href='/new_crushes/'; // reload page
+                window.launch_invite_interstitial(attraction_invites_json,'/your_crushes/'); 
+                //document.location.href='/your_crushes/'; // reload page
         }).fail(function(error){
                 window.alert_modal("Add Crush(s) - Problem", error.responseText,$('#fs-dialog-box-wrap') );
   });

@@ -77,13 +77,9 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 # ----      CRUSH: DISPLAY AND HANDLING PAGES      ----    
 urlpatterns += patterns('crush.views.crush_views',
  
-    (r'^new_crushes/$', 'new_crushes'),
+    (r'^your_crushes/$', 'your_crushes'),
     
-    (r'^new_crushes/(?P<reveal_crush_id>\w+)/$','new_crushes'),
-    
-    (r'^completed_crushes/(?P<reveal_crush_id>\w+)/$','completed_crushes'),
-    
-    (r'^completed_crushes/$','completed_crushes'),
+    (r'^your_crushes/(?P<reveal_crush_id>\w+)/$','your_crushes'),
 
     (r'^app_invite_form_v2/(?P<crush_username>\w+)/','app_invite_form_v2'),
         
@@ -110,9 +106,9 @@ urlpatterns += patterns('crush.views.crush_views',
 # ----      ADMIRER: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.admirer_views',
                         
-    url(r'^new_admirers/(?P<show_lineup>\d+)/$', 'new_admirers',name="new_admirers_show_lineup"),
+    url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirers',name="admirers_show_lineup"),
     
-    url(r'^new_admirers/$', 'new_admirers',name="new_admirers_show_all"),
+    url(r'^admirers/$', 'admirers',name="admirers_show_all"),
 
     (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     
@@ -128,17 +124,6 @@ urlpatterns += patterns('crush.views.admirer_views',
     
     (r'^ajax_add_lineup_member/(?P<add_type>\w+)/(?P<display_id>\d+)/(?P<facebook_id>\d+)/$','ajax_add_lineup_member'),
     
-    (r'^ajax_update_num_crushes_in_progress/$','ajax_update_num_crushes_in_progress'),
-    
-    (r'^ajax_update_num_platonic_friends/$','ajax_update_num_platonic_friends'),
-    
-    (r'^ajax_update_num_new_admirers/$','ajax_update_num_new_admirers'),
-    
-    (r'^ajax_update_num_new_responses/$','ajax_update_num_new_responses'),
-    
-    (r'^ajax_update_num_new_responses/$','ajax_update_num_new_responses'),
-    
-    (r'^past_admirers/$','past_admirers'),
 )
 
 # ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
@@ -161,8 +146,6 @@ urlpatterns += patterns('crush.views.friends_with_admirers_views',
     
 # ----      PAYMENT PROCESSING --
 urlpatterns += patterns('crush.views.payment_views', 
-                         
-    (r'^ajax_update_num_credits/$','ajax_update_num_credits'),
     
 #    (r'^credit_checker/(?P<feature_id>\d+)/(?P<unique_id>\d+)/$','credit_checker'),
     (r'^credit_checker/$','credit_checker'),
