@@ -409,7 +409,7 @@ a.button {
 	width:100%;
   	position: fixed;
   	top: 0px;
-  	padding-left:15px;
+  	padding-left:10px;
   	width: 100%;
   	z-index: 100;
 	-webkit-touch-callout: none;
@@ -567,8 +567,8 @@ a.button {
 /* ===========================   Header Container ========================= */
 
 a.logo img{
-	margin-top:6px;
-	height:38px;
+	margin-top:8px;
+	height:36px;
 }
 .beta{
 	position:absolute;
@@ -3297,12 +3297,13 @@ ul.bxslider_element #slide_overlay {
 
  #postman #compose_new_message {
 	position:absolute;
-	right:13px;
-	top:2px;
+	right:0px;
+	top:3px;
 	font-size:12px;
 	padding-left:10px;
 	padding-right:12px;
 	color:#5C93E6;
+	letter-spacing:1px;
 }
 #postman #delete_conversation {
 	position:absolute;

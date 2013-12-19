@@ -39,7 +39,7 @@
 
 jQuery(document).ready(function($) {
 	/*-- ------ HANDLE FACEBOOK LOGIN BUTTON CLICK  -------- */
-	$('#facebookbtn').click(function(e){
+	$('.facebookbtn').click(function(e){
 		$('#tagline3').css('opacity',0);
 		$(this).fadeTo(0,.1,function(){$('#authentication_wait').show();$('#tagline3').hide();});
 		
@@ -58,10 +58,10 @@ jQuery(document).ready(function($) {
 		dot_element.css('right',new_dot_x);
 	}
 	
-	$('#facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
+	$('.facebookbtn').hover(function(){$('#tagline3').fadeIn(150);},function(){$('#tagline3').fadeOut(150);});
 	
 	setInterval(function(){$('#tagline1').fadeIn(1800);},0);
-	setInterval(function(){$('#tagline2,#facebookbtn').fadeIn(1500);},500);
+	setInterval(function(){$('#tagline2,.facebookbtn').fadeIn(1500);},500);
 
 		// hide .scrolltop first
 		$('.scrolltop').hide();
@@ -101,6 +101,31 @@ jQuery(document).ready(function($) {
 			  });
 			});
 
+		   // Check the initial Poistion of the Sticky Header
+        var stickyHeaderTop = $('#qa_section').offset().top-47;
+        header_element = $('#guest_home_page .header');
+        $(window).scroll(function(){
+        		var header_top  = header_element.css('top');
+   
+                if( $(window).scrollTop() > stickyHeaderTop ) {
+                	console.log(header_top);
+                	if (header_top != '0px'){
+                		
+                		header_element.animate({  
+                		    top: '0px', 
+                		    opacity:'1'
+                		  }, 300,'linear');
+                	}
+                } else {
+                	if (header_top=='0px'){
+	              	  header_element.animate({  
+	          		    top: '-45px',  
+	          		    opacity:'0'
+	          		  },  300,'linear');
+                	}
+                }
+        });
+		
 }); // close of jQuery(document).ready
 
 
@@ -108,6 +133,22 @@ jQuery(document).ready(function($) {
 
 
 <body id="guest_home_page">
+<div class="header fadeInDown animated">
+<div class="header_container">
+
+<!-- ============ LOGO ============= -->	
+
+<a class="logo" href="{% url 'crush.views.infrastructure_views.home' %}"><img src="{{ STATIC_URL }}images/cm_logo_sm.png"></a>
+
+<!-- ============ MIDDLE BUTTON(S) ============= -->	
+<div id="center_header_menu" class="drop_down_menu_link">
+
+<a class ="facebookbtn"><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
+</div>
+
+
+</div>
+</div><!-- close off header divs -->
 <div id="logo_section">	
 	<img id="logo_section_background" src="{{ STATIC_URL }}images/cm_image.jpg">
 	<div id="logo_bar"></div>	
@@ -119,7 +160,7 @@ jQuery(document).ready(function($) {
 			<a id="who_will_know_link" class="logo_bar_links" href="#who_will_know_section">who will know</a>
 			
 			<h2 id="tagline1">discover anonymously if the person</BR>you're attracted to feels the same</h2>
-			<a id ="facebookbtn"><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
+			<a class ="facebookbtn"><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
 			<div id="authentication_wait">authenticating<span id="authentication_dot">.</span></div>
 			<h2 id="tagline3">We never post to Facebook</h2>
 		</div>
@@ -132,11 +173,11 @@ jQuery(document).ready(function($) {
 		<div class="info_column info_column1">
 			<div class="info_section_title">You're attracted to someone you know but...</div>
 			<div class="info_section_text">
-				<span class="use_case">Not sure they feel the same?</span>
-				<span class="use_case">More than just friends?</span>
-				<span class="use_case">A classmate or co-worker?</span>
-				<span class="use_case">Are they in a relationship? Are you?</span>
-				<span class="use_case">Do they even know you exist?!!</span>
+				<span class="use_case"><div class="purple_triangle"></div>not sure they feel the same?</span>
+				<span class="use_case"><div class="purple_triangle"></div>more than just friends?</span>
+				<span class="use_case"><div class="purple_triangle"></div>a classmate or co-worker?</span>
+				<span class="use_case"><div class="purple_triangle"></div>are they in a relationship? Are you?</span>
+				<span class="use_case"><div class="purple_triangle"></div>do they even know you exist?</span>
 			</div>
 		</div> <!-- end of info_column1 -->
 		<div class="info_column info_column2">
@@ -147,12 +188,12 @@ jQuery(document).ready(function($) {
 		<div class="info_column info_column3">
 			<img class="icon" src="{{ STATIC_URL }}/images/answer.png">
 			<div class="info_section_subtitle">Don't take <span class="purple">unnecessary</span> risk!</div>
-			<div class="info_section_text">CrushMaven makes it safe and easy to find out if someone you're attracted to feels the same, without having to reveal your crush.  If the feeling isn't mutual, keep your friendship and move on!</div>
+			<div class="info_section_text">CrushMaven makes it safe and easy to find out if someone you're attracted to feels the same, without having to reveal your identity.  If the feeling isn't mutual, keep your friendship and move on!</div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of qa_section div -->
 
-<div id="how_it_works_section"class="info_section">
+<div id="how_it_works_section" class="info_section">
 	<div class="info_section_content">
 		<div class="info_section_title">How It Works</div>
 		<div class="info_column info_column1">
