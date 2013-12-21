@@ -221,15 +221,15 @@ h2#tagline3{
 #authentication_wait {
 	display:none;
 	position:absolute;
-	left:351px!important;
-	top:455px!important;
+	left:346px!important;
+	top:448px!important;
 	width: 218px!important;
   	height: 46px!important;
   	padding-top:12px;
 	color:gray;
 	letter-spacing:1px;
 	text-align:center;
-	font-size:19px;
+	font-size:16px;
 	z-index:10;
 	#color:#4A4AAB;
 	#text-shadow:1px 1px 0px #252556;

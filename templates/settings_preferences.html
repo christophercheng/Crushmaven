@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Profile Settings{% endblock %}
+{% block title %}Preference Settings{% endblock %}
 {% block content %}
 <script type="text/javascript">
 
@@ -16,12 +16,18 @@
 </script>
 <span class="title_line"></span>
 <ul class="title_bar">
-	<li class="title_bar_title">Profile Settings</li>
+	<li class="title_bar_title">Preferences</li>
 </ul>
-<div class="settings_container">
-<form class="settings_form profile_settings_form" action="/settings_profile/" method="post">
+<form class="settings_form preferences_settings_form" action="/settings_preferences/" method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
+	<div id="settings_labels">
+		<span id="settings_label_gender_preference">Gender Preference:</span>
+		<span id="settings_label_notifications">Email Notifications:</span>
+		<span id="settings_label_email">Email Address:</span>
+	</div>
+	<div id="settings_fields">
+		{{ form.as_p }}
+	</div>
 	<div id="settings_buttonset">
 		<input name="cancel" type="submit" value="Cancel">
 		<input type="submit" value="Update"/>
@@ -30,5 +36,4 @@
 		{% endif %}
 	</div>
 </form>
-</div><!-- close off settings container -->
 {% endblock %}

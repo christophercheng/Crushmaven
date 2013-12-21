@@ -182,7 +182,8 @@ $(".tooltip_subtitle").click(function(){
 	{% for field in form %}
 	   		{% if field.label != "crush_field" %}
 		   		<div class="email_field_input mf_email_field_input">	   			
-							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.help_text %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
+		   					
+							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.label != "Other Friends:" and field.label != "Friends:" %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
 							<div class="fieldWrapper">
 								{{ field }}
 								<div class="email_input_error_section">{{field.errors}}</div>
@@ -211,8 +212,8 @@ $(".tooltip_subtitle").click(function(){
 	           </div>
            </div>
            <span class="email_content_body">
-		<p>One of our users is attracted to you.  Sign in to CrushMaven.com to find out whom. </p>
-		<p><b>What is CrushMaven?</b> It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at CrushMaven.com.
+		<p>One of our users, someone who knows you, is attracted to you and wants to know if you feel the same.  Sign in to CrushMaven.com (http://www.crushmaven.com) to find out whom. </p>
+		<p><b>What is CrushMaven?</b> It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
 		</p>				
            </span>
             </div>  <!-- close off attraction_email_preview_content -->
@@ -230,13 +231,13 @@ $(".tooltip_subtitle").click(function(){
 	        </div>
         </div> <!--  close off .email_header -->
         <div class="email_content_body">
-        		<p>Someone at CrushMaven.com is attracted to {attraction name} and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  {attraction name}'s admirer wishes to remain anonymous.
+        		<p>Someone at CrushMaven.com (http://www.crushmaven.com) is attracted to your friend, [ crush-full-name ], and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  [ crush-first-name ]'s admirer wishes to remain anonymous.
         		</p>
         		<p>
-        		Would you please take a second to forward this message to {attraction name}?     
+        		Would you please take a second to forward this message to [ crush-first-name ]?     
         		</p>
         		<p>
-        		<b>What is CrushMaven?</b>  It's a new matchmaking service for people who already have someone in mind – either for themselves or friends of theirs.  Match your friends up, or find out if someone you know and like feels the same at CrushMaven.com.
+        		<b>What is CrushMaven?</b>  It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
         		</p>
         		<p>And in case you're wondering: {attraction name}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once they sign up.
         		</p>

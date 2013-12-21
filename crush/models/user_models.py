@@ -38,25 +38,17 @@ class FacebookUserManager(UserManager):
             facebook_user.last_name = fb_profile['last_name']
             new_fields.append('last_name')
         
-        if (facebook_user.birthday_year==None and 'birthday' in fb_profile):
-            date_pieces=fb_profile['birthday'].split('/')
-            if len(date_pieces)>2: # i only care to store birthday if it has a year
-                facebook_user.birthday_year= int(date_pieces[2])   
-            new_fields.append('birthday_year')
-        
-        if ('email' in fb_profile and facebook_user.email!=fb_profile['email']):
+        if ('email' in fb_profile and facebook_user.email==""):
             facebook_user.email=fb_profile['email']
             new_fields.append('email')
         
-        if facebook_user.gender== 'U': #U is the default setting (for unknown)
-            if 'gender' in fb_profile:
-                if fb_profile['gender']==u'male':
-                    facebook_user.gender=u'M'
-                elif fb_profile['gender']==u'female':
-                    facebook_user.gender=u'F'
-            else:
-                facebook_user.gender=u'M' # if no facebook gender specified (unlikely) then guess male
-            new_fields.append('gender')
+        if facebook_user.gender == u'' and 'gender' in fb_profile:
+            if fb_profile['gender']==u'male':
+                facebook_user.gender=u'M'
+            elif fb_profile['gender']==u'female':
+                facebook_user.gender=u'F'
+            new_fields.append('gender')    
+            
         if ('relationship_status' in fb_profile):            
             rel_stat = (fb_profile['relationship_status']).lower()
             if ((rel_stat == u'married') | (rel_stat==u'in a relationship') | (rel_stat==u'engaged') | (rel_stat==u'in a civil union') | (rel_stat==u'in a domestic partnership')):
@@ -201,7 +193,7 @@ class FacebookUser(AbstractUser):
                       (u'M', u'male'),
                       (u'F', u'female'),
                       )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,default=u'U')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,null=False,default=u'', blank=True)
 
     GENDER_PREF_CHOICES = (
                            (u'M',u'male'),
@@ -217,10 +209,7 @@ class FacebookUser(AbstractUser):
     # --------  END OF REQUIRED FIELDS
     
     # ----------  START OF OPTIONAL FIELDS
-    
-    birthday_year = models.IntegerField(null=True,blank=True,max_length=4,choices=[(y,y) for y in range(1920,datetime.datetime.now().year-6)])
-    age_pref_min=models.IntegerField(null=True, blank=True,choices=[(y,y) for y in range(13,99)])
-    age_pref_max=models.IntegerField(null=True,blank=True,choices=[(y,y) for y in range(13,99)])
+  
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
     site_credits = models.IntegerField(default=settings.STARTING_CREDITS) 
     
@@ -242,10 +231,7 @@ class FacebookUser(AbstractUser):
     # For inactive users - friends of theirs who have already sent them a fb invite (clear out this field during activation)
     friends_that_invited_me = models.ManyToManyField('self', symmetrical=False,related_name='friends_that_invited_me_set',blank=True)
     
-    #bNotify_crush_signed_up = models.BooleanField(default=True)
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
-    #bNotify_crush_started_lineup = models.BooleanField(default=True) # off by default cause reciprocal lineup crushes don't instantiate a lineup
-    bNotify_crush_responded = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
     
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)

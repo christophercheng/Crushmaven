@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from crush.notification_settings_form import NotificationSettingsForm
-from crush.profile_settings_form import ProfileSettingsForm
+from crush.preference_settings_form import PreferenceSettingsForm
 # import the logging library
 import logging
 
@@ -10,76 +10,30 @@ import logging
 logger = logging.getLogger(__name__)
 # -- Profile Settings Page --
 @login_required
-def settings_profile(request):
+def settings_preferences(request):
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
         data=request.POST
         if 'cancel' in data:
-            return redirect('/settings_profile/')
+            return redirect('/settings_preferences/')
         else:
-            form = ProfileSettingsForm(request.POST)
+            form = PreferenceSettingsForm(request.POST)
             if form.is_valid():
                 me=request.user
                 for element in data:
                     print "element: " + str(element) + " value: " + str(data[element])
-                updated_fields=[]
-                if 'gender' in data: 
-                    me.gender=data['gender']
-                    updated_fields.append('gender')                    
+                updated_fields=[]                  
                 if 'gender_pref' in data: 
                     me.gender_pref=data['gender_pref']
                     updated_fields.append('gender_pref')
-                me.is_single=data.get('is_single',False)
-                updated_fields.append('is_single')
-                if 'birthday_year' in data and data['birthday_year']:
-                    me.birthday_year=data['birthday_year']
-                    updated_fields.append('birthday_year')
-                if 'age_pref_min' in data and data['age_pref_min']: 
-                    me.age_pref_min=data['age_pref_min']
-                    updated_fields.append('age_pref_min')
-                if 'age_pref_max' in data and data['age_pref_max']:
-                    me.age_pref_max=data['age_pref_max']
-                    updated_fields.append('age_pref_max')
                 me.save(update_fields=updated_fields)
-                #return redirect('/settings_profile/')
-                return render(request,'settings_profile.html',
+                return render(request,'settings_preferences.html',
                               { 'form': form,'updated':True})
     else:
-        form=ProfileSettingsForm(instance=request.user)
-    return render(request,'settings_profile.html',
+        form=PreferenceSettingsForm(instance=request.user)
+    return render(request,'settings_preferences.html',
                               { 'form': form})
     
-# -- Notification settings --
-@login_required
-def settings_notifications(request):
-    # crush_name should be first name last name
-    if request.method == 'POST': # if the form has been submitted...
-        data=request.POST
-        if 'cancel' in data:
-            return redirect('/settings_notifications/')
-        else:
-            me=request.user
-            form = NotificationSettingsForm(request.POST)
-            if form.is_valid():
-                for element in request.POST:
-                    print str(element) + " value: " + str(request.POST[element])
-                me.email=data['email']
-
-                #me.bNotify_crush_signed_up=data.get('bNotify_crush_signed_up',False)
-                me.bNotify_crush_signup_reminder = data.get('bNotify_crush_signup_reminder',False)
-                #me.bNotify_crush_started_lineup=data.get('bNotify_crush_started_lineup',False)
-                me.bNotify_crush_responded=data.get('bNotify_crush_responded',False)  
-                me.bNotify_new_admirer=data.get('bNotify_new_admirer',False)
-    
-                #me.save(update_fields=['email','bNotify_crush_signed_up','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer','bNotify_setup_response_received'])                            
-                me.save(update_fields=['email','bNotify_crush_signup_reminder','bNotify_crush_responded','bNotify_new_admirer'])                            
-               
-                return render(request,'settings_notifications.html',
-                              { 'form': form,'updated':True})
-    else:
-        form=NotificationSettingsForm(instance=request.user, initial={'email':request.user.email})
-    return render(request,'settings_notifications.html',
-                              { 'form': form})
 
 # -- Credit Settings Page --
 @login_required

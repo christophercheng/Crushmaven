@@ -24,8 +24,7 @@ from payment_views import credit_checker
 from payment_views import paypal_pdt_purchase
 from payment_views import paypal_ipn_listener
 
-from settings_views import settings_profile
-from settings_views import settings_notifications
+from settings_views import settings_preferences
 from settings_views import settings_credits
 
 from static_file_views import help_how_it_works

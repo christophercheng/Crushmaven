@@ -4016,39 +4016,16 @@ ul.bxslider_element #slide_overlay {
 
 /* ===========================  Settings Pages ========================= */
 
-.settings_container {
+.settings_form {
 	display:inline-block;
 	width:100%;
-	padding:20px;
+	padding:20px 20px 30px 20px;
 	font-size:14px;
 	box-shadow: 1px 2px 2px rgba(153,153,153,.5);
 	border-radius:5px;
 	background:#fff;
 	position:relative;
 }
-
-.settings_container #settings_labels {
-	display:inline-block;
-	float:left;
-}
-
-.settings_container #settings_labels span {
-	display:block;
-	font-weight:bold;
-	text-align:right;
-}
-
-.settings_container #settings_labels span#settings_label_email {
-	margin-top:166px;
-}
-
-.settings_form {
-	display:block;
-}
-.notifications_settings_form{
-	margin-left:160px;
-}
-
 .settings_form p {
 	margin-bottom:25px;
 	font-size:14px;
@@ -4056,22 +4033,80 @@ ul.bxslider_element #slide_overlay {
 	width:100%;
 }
 
-.settings_form p input#id_email{
-	width:280px;	
-}
-
-.notifications_settings_form p input {
-	float:left;
+.settings_form #settings_labels {
 	display:inline-block;
-	margin-right:10px;
+	float:left;
+	width:180px;
+	#border:1px solid red;
 }
 
-.notifications_settings_form p label {
+.settings_form #settings_labels span {
+	display:block;
+	font-weight:bold;
+	text-align:right;
+}
+
+.preferences_settings_form #settings_label_gender_preference{
+	margin-bottom:51px;
+	margin-top:2px;
+}
+.preferences_settings_form #settings_label_notifications{
+	margin-bottom:89px;
+}
+
+.settings_form #settings_fields{
+	display:inline-block;
+	float:left;
+	width:300px;
+	#border:1px solid blue;
+	padding-left:20px;
+	position:relative;
+}
+
+.preferences_settings_form #settings_fields p {
+	display:block;
+	min-height:15px;
+	#border:1px solid red;
+}
+
+.preferences_settings_form #id_gender_pref {
+	margin-bottom:25px;
+}
+.preferences_settings_form #id_email {
+	#margin-top:25px;
+}
+
+.preferences_settings_form #id_bNotify_new_admirer{
+	margin-bottom:46px;
+}
+.preferences_settings_form #settings_fields p label {
+	display:inline-block;
+	float:right;
+	width:245px;
 	font-size:13px;
 }
 
-.profile_settings_form #settings_buttonset {
-	margin-left:205px;
+.preferences_settings_form #settings_fields p input{
+	float:left;
+	display:inline-block;
+}
+
+.settings_form  #id_email{
+	width:280px;
+}
+
+.settings_form #settings_buttonset {
+	#border:1px solid black;
+	display:block;
+	float:left;
+	width:100%;
+	padding-top:50px;
+	padding-left:154px;
+}
+
+.preferences_settings_form #settings_label span{
+	position:absolute;
+	float:right;
 }
 
 #settings_changes_saved{
@@ -4081,7 +4116,7 @@ ul.bxslider_element #slide_overlay {
 	background:orange;
 	margin-left:10px;
 }
-.settings_container .errorlist li{
+.settings_form .errorlist li{
 	list-style:none;
 	background:red;
 	display:inline-block;
@@ -4091,47 +4126,36 @@ ul.bxslider_element #slide_overlay {
 	font-size:12px;
 }
 
-.settings_container .profile_settings_form .errorlist li{
+.settings_form .preferences_settings_form .errorlist li{
 	margin-left:210px;
 }
 
-.profile_settings_form p label {
-	display:inline-block;
-	width:190px;
-	text-align:right;
-	margin-right:15px;
-	font-size:13px;	
-}
-
-.credits_settings_container #settings_labels {
-	position:relative;
-}
 
 #settings_label_credits_available {
 	position:relative;
 }
 
-.credits_settings_container #settings_labels span {
+.credits_settings_form .help_icon{
+	top:-6px;
+	left:47px;
+}
+.credits_settings_form #settings_labels span {
 	margin-bottom:35px;
 }
 
-.credits_settings_container #settings_labels img#paypal_image{
+.credits_settings_form #settings_labels img#paypal_image{
 	position:absolute;
-	bottom:-40px;
-	margin-left:40px;
-}
-
-.credits_settings_form{
-	margin-left:170px;
+	top:110px;
+	left:98px;
 }
 
 .credits_settings_form p#credit_settings_form_credits_available {
 	font-weight:bold;
-	margin-left:5px;
+	margin-left:11px;
 	display:inline-block;
 	background:#4A4AAB;
 	width:100%;
-	padding:7px 10px;
+	padding:7px 10px 7px 7px;
 	color:white;
 	font-weight:bold;
 	font-size:12px;
@@ -4144,7 +4168,11 @@ ul.bxslider_element #slide_overlay {
 	margin-bottom:8px;
 	font-size:13px;
 }
-
+.credits_settings_form #credit_purchase_options {
+	display:inline-block;
+	float:right;
+	width:314px;
+}
 .credits_settings_form p input{
 	margin-right:5px;
 }
@@ -4157,12 +4185,17 @@ ul.bxslider_element #slide_overlay {
 }
 
 .credits_settings_form #settings_buttonset {
-	margin-top:20px;
-	margin-bottom:-10px;
+	#margin-top:20px;
+	#margin-bottom:-10px;
+	padding-top:30px;
+	margin-left:40px;
 }
 .credits_settings_form #settings_buttonset p {
+	display:inline-block;
 	margin-top:7px;
 	font-size:11px;
+	padding-right:45px;
+	padding-left:3px;
 }
 
 /* ---------- Please Wait Modal ----------------*/

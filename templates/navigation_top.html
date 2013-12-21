@@ -36,13 +36,10 @@
 			Settings<i class="icon down-dir">&#x25BC;</i></a>
 		<ul id="settings_menu" class="settings_menu popup">
 			<li>
-				<a href="{% url 'crush.views.settings_views.settings_profile' %}">Profile</a>
+				<a href="{% url 'crush.views.settings_views.settings_preferences' %}">Preferences</a>
 			</li>
 			<li>
 				<a href="{% url 'crush.views.settings_views.settings_credits' %}">Credits (<span id="num_credits">{{request.user.site_credits}}</span>)</a>	
-			</li>
-			<li>
-				<a href="{% url 'crush.views.settings_views.settings_notifications' %}">Notifications</a>
 			</li>
 			<li>
 				<a href="{% url 'crush.views.infrastructure_views.logout_view' %}">Logout</a>

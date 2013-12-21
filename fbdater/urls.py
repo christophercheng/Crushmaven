@@ -162,9 +162,7 @@ urlpatterns += patterns('crush.views.settings_views',
                         
     (r'^settings_credits/$', 'settings_credits'),
     
-    (r'^settings_notifications/$','settings_notifications'),
-    
-    (r'^settings_profile/$', 'settings_profile'),
+    (r'^settings_preferences/$', 'settings_preferences'),
 )
     
 # ----      STATIC HELP PAGES --

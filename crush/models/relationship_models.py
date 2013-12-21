@@ -487,7 +487,7 @@ class CrushRelationship(BasicRelationship):
         #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
         #    subject= target_person_name + " started your secret admirer lineup!"
         #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
-        if (target_status > 3 and source_person.bNotify_crush_responded==True): # user responded
+        if (target_status > 3): # user responded
             if self.is_results_paid == True: # target person changed their mind
                 if target_status ==4:
                     crush.utils_email.send_mail_changed_attraction_response(True,full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
