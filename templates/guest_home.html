@@ -124,6 +124,10 @@ jQuery(document).ready(function($) {
                 	}
                 }
         });
+        
+        $('.use_case').on('mouseenter mouseleave',function(){
+        	$('#qa_section .info_column2 .icon').toggleClass("spinme");
+        })
 		
 }); // close of jQuery(document).ready
 

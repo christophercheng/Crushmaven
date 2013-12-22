@@ -316,6 +316,7 @@ div.info_column{
 	width:336px;
 	float:left;
 	padding-right:27px;
+	cursor:default;
 }
 div.info_column1{
 	width:321px;
@@ -398,6 +399,49 @@ border-width: 4px 0 4px 6px;
 border-color: transparent transparent transparent #9b4294;
 margin-right:10px;
 }
+
+
+#qa_section .info_column:hover .icon, .use_case:hover .purple_triangle, #qa_section .info_column2 .icon.spinme{
+-webkit-animation-name: spin;
+    -webkit-animation-duration: 300ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 300ms;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 300ms;
+    -ms-animation-iteration-count: 1;
+    -ms-animation-timing-function: linear;
+    
+    animation-name: spin;
+    animation-duration: 300ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+}
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+
 .use_case {
 	display:inline-block;
 	#border-radius:15px;
@@ -408,8 +452,12 @@ margin-right:10px;
 	#color:white;
 	#font-size:14px;
 	#line-height:20px;
+	cursor:default;
 }
 
+.use_case:hover{
+	color:#7B327A;
+}
 
 div#how_it_works_section {
 	#background:#532f83;
@@ -499,6 +547,7 @@ div#how_it_works_section .info_section_subtitle{
 	text-shadow:1px 1px 0 #21073D;
 		font-weight:600;
 	}
+	
 
 div#how_it_works_section .info_section_text {
 	margin-top:10px;
@@ -572,6 +621,32 @@ div#who_will_know_section .info_section_subtitle {
 	color:#9A3F98;
 	margin-right:8px;
 	font-size:20px;
+}
+
+
+@-webkit-keyframes spaceboots {
+	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+}
+ #who_will_know_section .info_column:hover .info_section_subtitle,#who_it_works_on_section .info_row:hover .icon{ 
+	-webkit-animation-name: spaceboots;
+	-webkit-animation-duration: 0.3s;
+	-webkit-transform-origin:50% 50%;
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-timing-function: linear;
+}
+
+.info_section_subtitle{
+	display:inline-block!important;
 }
 div#who_will_know_section a {
 	color:#09abe8;
