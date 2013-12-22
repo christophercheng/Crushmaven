@@ -297,11 +297,15 @@ span#up {
 
 div.info_section {
 	display:inline-block;
-	padding-top:54px;
-	padding-bottom:64px;
+	padding-top:90px;
+	padding-bottom:100px;
 	width:100%;	
 	#text-align: justify;
 	position:relative;
+}
+#qa_section {
+	padding-top:64px;	
+	padding-bottom:74px;
 }
 div.info_section_content {
 	margin: 0 auto;
@@ -329,7 +333,7 @@ div.info_row{
 
 div.info_section_title {
 	font-weight:600;
-	font-size:30px;
+	font-size:32px;
 	margin-bottom:30px;
 }	
 div.info_section_subtitle{
@@ -350,7 +354,7 @@ div#qa_section{
 }
 
 div#qa_section .icon {
-	height:52px;
+	height:48px;
 }
 div#qa_section .info_section_title{
 	color:red;
@@ -358,7 +362,7 @@ div#qa_section .info_section_title{
 	font-size:28px;
 	width:280px;
 	line-height:33px;
-	margin-bottom:6px;
+	margin-bottom:7px;
 }
 
 #qa_section .info_section_subtitle {
@@ -467,12 +471,16 @@ div#how_it_works_section {
 	-webkit-font-smoothing: antialiased;
 }
 
+
 .arrow_down {
 	width: 0px;
 	height: 0px;
-	border-style: solid;
-	border-width: 15px 30px 0 30px;
+
 	border-color: #fff transparent transparent transparent;
+	border-top:15px solid #fff;
+ 	border-left:30px dotted rgba(255,255,255, 0);
+ 	border-right:30px dotted rgba(255,255,255, 0);
+ 	border-bottom:0px;
 	position:absolute;
 	top:-2px;
 	left:50%;
@@ -1010,6 +1018,9 @@ div.guest_header.authenticated .center_container{
 	width:880px;
 }
 
+#guest_page .center_container{
+	width:995px;
+}
 /* HOW IT WORKS */
 
 .guest_page.how_it_works .center_container{

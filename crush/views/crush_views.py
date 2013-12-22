@@ -127,7 +127,6 @@ def your_crushes(request, reveal_crush_id=None):
         show_help_popup=True
     else:
         show_help_popup=False
-
     return render(request, 'crushes.html',
                               {
                                'responded_relationships':responded_relationships,

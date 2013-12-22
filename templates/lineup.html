@@ -194,7 +194,7 @@ $(document).ready(function() // handling for the slider
 	  	gender_pronoun_subject = "she";
 	  	gender_pronoun_object = "her";
 	  }
-	  $('.decision_confirmation_dialog').children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");	  	
+	  $('.decision_confirmation_dialog').children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");	  	
 	  if (this_element.attr('add_type')=="crush") {
 	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;

@@ -25,7 +25,7 @@ $(document).ready(function()
 		load_url="/ajax_show_lineup_slider/" + display_id + "/";
 	    e.preventDefault();
 
-		$(".lineup_modal_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");
+		$(".lineup_modal_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 
 
 		$(".lineup_modal_dialog .ui-dialog-titlebar .help_icon").qtip({
@@ -143,16 +143,16 @@ $(document).ready(function()
 
 {% if show_help_popup == True %}
 <div class="new_user_instructions">
-	<span class="instructions_title">How Admirer Lineups Work</span>
+	<span class="instructions_title">You've Got An Admirer!  Now What?</span>
 	<div class="first_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text"><strong>You've got an admirer!</strong> To protect their identity (in case the attraction isn't mutual), we've inserted them into a randomly ordered lineup of potential admirers.</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text"><strong>Find out if the attraction is mutual!</strong> To protect your admirer's identity (in case the attraction isn't mutual), we've inserted them into a randomly ordered lineup of potential admirers.</span></div>
 		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Select any potential admirer you're attracted to.</span></div>
 		<div class="instruction_sub_step"><span class="instruction_step_text">(Your selections are completely private.  Not even your friends will know.)</span></div>
-		<a class="show_more">show more</a><a class="show_less">show less</a> 
+		<a class="show_more">show last 2 steps</a><a class="show_less">show less</a> 
 	</div>
 		<div class="second_instruction_section">
 		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">In turn, we provide each of your selections with a similar type of lineup - with you in it!</span></div>
-		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll notify you if your selections like you back <i>or not</i>.  That's it - now get crackin!</span></div>
+		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll notify you if your selections like you back <i>or not</i>.  That's it!</span></div>
 	</div>
 <span class="help_icon" title="close help"></span>
 </div>		<!-- close off lineup_block line for instructional content -->
@@ -262,7 +262,7 @@ $(document).ready(function()
 {% endfor %}
 
 {% if past_admirers_count == 0 %}
-<span class="no_content">You have no past admirers <i>(with finished lineups)</i></span>
+<span class="no_content">You have no <i>past</i> admirers.</span>
 {% endif %}
 
 <div id="lineup_modal" title="Admirer Lineup"></div>

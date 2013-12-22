@@ -5,7 +5,7 @@ $(document).ready(function()
 		$('#credit_check_modal').dialog('close');
 		window.wait_modal_open("Redirecting to Paypal");
 	};
-	$("#feature_description .help_icon").qtip({
+	$(".credit_check_dialog .ui-dialog-titlebar .help_icon").qtip({
 		content:{
 			text:$('#credits_help_content'),
 			title:'What are credits?'
@@ -44,7 +44,6 @@ $(document).ready(function()
 <div id="credit_check_container">
 	<div id="feature_description">
 		{{ feature_name }}
-		<span class='help_icon'></span>
 	</div>
 	<div id="site-loading"></div>
 	<div id="purchase_description_container">

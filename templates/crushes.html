@@ -258,34 +258,7 @@ $(".response_view_rating .help_icon").qtip({
 </ul>
 <! -- End of crush type navigation widget --> 
 
-{% if show_help_popup == True %}
-<div class="new_user_instructions">
-	<span class="help_icon" title="close help"></span>
-	<span class="instructions_title">How Crushes Work</span>
-	<div class="first_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add a Facebook friend - or anyone on Facebook - that you're attracted to as a crush.</span></div>
-		<div class="instruction_sub_step"><span class="instruction_step_text">(Your crushes are completely private.  Not even your friends will know.)</span></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into CrushMaven.</span></div>
-		<a class="show_more">show more</a><a class="show_less">show less</a> 
-		 
-	</div>
-	<div class="second_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Once signed in, your crush receives a carefully constructed lineup of potential admirers, including you.  They'll pick out the ones they're attracted to.</span></div>
-		<div class="instruction_sub_step"><span class="instruction_step_text">(Your identity as the actual admirer is anonymous since the lineup is randomly ordered.)</span></div>
-		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know if they picked you or not. Your crush may not even realize that you liked them first!</span></div>
-	</div>
-	<div class="instruction_block_button_line">
-		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush</a>
-	</div>
-	</div>		<!-- close off instructional content -->
-	{% comment %}
-		{% if crushes_in_progress_count == 0 %}
-			<p class="new_user_sub_instructions">
-				<span class="sub_instruction_strong">Already in a relationship?</span>&nbsp;&nbsp;Or just more interested in matchmaking through friends?&nbsp;&nbsp;Check out our <a href="/setups_by_you/">sister site.</a>
-			</p>
-		{% endif %}
-	{% endcomment %}
-{% endif %} 
+
 
 {% if crush_relationships %}
 	{% for crush in crush_relationships %}
@@ -294,11 +267,11 @@ $(".response_view_rating .help_icon").qtip({
 				{% endwith %}
 	{% endfor %}
 
-{% elif show_help_popup == False %}
+{% else %}
 
 <span class="no_content">
 
-		You have no <i>ongoing</i> crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
+		You have no <i>new</i> crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	</span>
 {% endif %}
 
@@ -328,7 +301,30 @@ $(".response_view_rating .help_icon").qtip({
 	</span>
 {% endif %}
 
+{% if show_help_popup == True %}
+<div class="new_user_instructions crush_instructions">
+	<span class="help_icon" title="close help"></span>
+	<span class="instructions_title">Need help getting started?</span>
+	<div class="first_instruction_section">
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add a Facebook friend - or anyone on Facebook - that you're attracted to as a crush.</span></div>
+		<div class="instruction_sub_step"><span class="instruction_step_text">(Your crushes are completely private.  Not even your friends will know.)</span></div>
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into CrushMaven.</span></div>
+		<a class="show_more">show last 2 steps</a><a class="show_less">show less</a> 
+		 
+	</div>
+	<div class="second_instruction_section">
+		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Once signed in, your crush receives a carefully constructed lineup of potential admirers, including you.  They'll pick out the ones they're attracted to.</span></div>
+		<div class="instruction_sub_step"><span class="instruction_step_text">(Your identity as the actual admirer is anonymous since the lineup is randomly ordered.)</span></div>
+		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll let you know if they picked you or not. Your crush may not even realize that you liked them first!</span></div>
+	</div>
 
+	<div class="instruction_block_button_line">
+		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush Now</a>
+	</div>
+
+	</div>		<!-- close off instructional content -->
+
+{% endif %} 
 <! -- End of crush type navigation widget --> 
 
 <div id="remove_crush_dialog" title="Remove From Your Crushes"></div>

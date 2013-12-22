@@ -128,14 +128,14 @@ jQuery(document).ready(function($) {
 	
 	   * -------------------------------------------- */
 	  
-	$("#credit_check_modal").dialog({dialogClass:"credit_check_dialog blacktop",modal: true,resizable:false, autoOpen: false,width:410});
+	$("#credit_check_modal").dialog({dialogClass:"credit_check_dialog",modal: true,resizable:false, autoOpen: false,width:410});
 	
 	
 	window.purchase_feature = function(data){
 		load_url="/credit_checker/";
 		dialog_div = $("#credit_check_modal");
 		dialog_div.attr("feature_id",data.feature_id)
-
+		$(".credit_check_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 		window.wait_modal_open();
 		dialog_div.load(load_url,data,function(responseTxt,statusTxt,xhr){
 			window.wait_modal_close();
@@ -184,7 +184,7 @@ jQuery(document).ready(function($) {
 			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog",resizable:false, modal: true, autoOpen: false});
 		window.app_invite_modal.html('<div id="site-loading"></div>');
 		
-		$(".app_invite_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");
+		$(".app_invite_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 		
 		window.wait_modal_open();
 		var crush_username=$(this).attr('crush_username');	
@@ -230,7 +230,7 @@ jQuery(document).ready(function($) {
 			var modal_html ="";
 			modal_html += '<div class="modal_main_content">';
 			
-			$(".invite_interstitial_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'></span>");
+			$(".invite_interstitial_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 
 
 			$(".invite_interstitial_dialog .help_icon").qtip({
@@ -532,6 +532,7 @@ $(window).resize(function(){
 
 
 /*  TOOLTIP SUPPORT */
+$(".help_icon").html("?");
 
 $(".tooltip_close").click(function(){
 	$('.qtip').hide();
@@ -539,6 +540,8 @@ $(".tooltip_close").click(function(){
 
 $(".tooltip_subtitle").click(function(){
 	var current_content = $(this).parent().children('.tooltip_content');
+	$(".tooltip_subtitle").not(this).css('font-weight','normal').css('font-size','11px');
+	$(this).css('font-weight','bold').css('font-size','12px');
 	$(this).parent().parent().find('.tooltip_relatedcontent').not(current_content).hide();
 	if (current_content.css("display")=="none")
 		current_content.css("display","block")

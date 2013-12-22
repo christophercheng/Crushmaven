@@ -16,7 +16,7 @@ $(document).ready(function()
 			//window.alert_modal('Credit Purchasing Problem', "{{generic_error_message}}" );
 		}); // end of .fail handler
 	}); // close off #credit_deduct_ok handler 
-	$("#feature_description .help_icon").qtip({
+	$(".credit_check_dialog .ui-dialog-titlebar .help_icon").qtip({
 		content:{
 			text:$('#credits_help_content'),
 			title:'What are credits?'
@@ -56,7 +56,6 @@ $(document).ready(function()
 <div id="credit_check_container">
 	<div id="feature_description">
 		{{ feature_name }}
-		<span class='help_icon'></span>
 	</div>
 	<div id="purchase_description_container">
 

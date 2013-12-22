@@ -10,7 +10,8 @@
 				<span class="menu_count{% if num_new_responses %} new_menu_count{% endif %}">{{ num_total_crushes }}</span>
 				<span class="nav_subtext">Find out if they feel the same</span>
 			</a>
-			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
+			<span class="nav_arrow"></span>
+			<span class="nav_arrow nav_arrow_outer"></span>
 		</li>
 		<li class="{% navactive request 'admirers'%} new_admirers">
 			<a href="{% url 'crush.views.admirer_views.admirers' %}">
@@ -19,7 +20,8 @@
 				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count{% endif %}">{{ num_total_admirers}}</span>
 				<span class="nav_subtext">Find out who they are</span>
 			</a>
-			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
+			<span class="nav_arrow"></span>
+			<span class="nav_arrow nav_arrow_outer"></span>
 		</li>
 		<li class="{% navactive request 'messages' %} messages">
 			<a href="{% url 'postman_inbox' %}">
@@ -28,7 +30,8 @@
 				<span class="menu_count{% if num_new_messages %} new_menu_count{% endif %}">{{ num_all_messages}}</span>
 				<span class="nav_subtext">Chat with your matches</span>
 			</a>
-			<img src="/static/images/nav_arrow_v5.png" class="nav_arrow">
+			<span class="nav_arrow"></span>
+			<span class="nav_arrow nav_arrow_outer"></span>
 		</li>
 </ul>
 {% comment %}
