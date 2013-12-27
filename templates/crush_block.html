@@ -20,9 +20,12 @@
 	     {{ crush.resetUpdatedFlag }}
 	{% endif %}
 
-<a class="profile_pic_link" href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">
-	<img src="http://graph.facebook.com/{{crush.target_person.username}}/picture?width=160&height=160" class="profile_pic">
-</a>     
+<div class="left_half_block">
+	<a class="profile_pic_link" href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">
+		<img src="http://graph.facebook.com/{{crush.target_person.username}}/picture?width=160&height=160" class="profile_pic">
+	</a>   
+	<span class="view_facebook_widget"><a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view<span class="view_facebook_icon"></span></a></span>      
+</div>
 <div class="right_half_block">
 	<!--  <span class="response_icon"></span>-->
 	<div class="crush_response_body">
@@ -105,7 +108,6 @@
 	</div> <!-- close off div crush_response_body -->
 </div> <!-- close off div class=right_half_block -->
 
-<span class="view_facebook_widget"><a href="https://www.facebook.com/{{crush.target_person.username}}" target="_blank">view<span class="view_facebook_icon"></span></a></span>      
 
 <!--  <a username="{{crush.target_person.username}}" name= "{{crush.target_person.first_name}} 
                                 {{crush.target_person.last_name}}" class="delete_crush" href="#" ></a> -->

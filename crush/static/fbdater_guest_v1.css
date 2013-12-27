@@ -178,7 +178,7 @@ h2#tagline1{
 	font-weight:normal;
 	line-height:42px;
 	text-shadow:1px 1px 1px #000;
-	letter-spacing:0px;
+	letter-spacing:1px;
 	color:#fff;
 	display:none;
 	font-style:normal;
@@ -238,8 +238,8 @@ h2#tagline3{
 }
 #authentication_dot {
 	position:absolute;
-	right:29px;
-	bottom:10px;
+	right:34px;
+	bottom:12px;
 	color:white;
 	font-sytle:bold;
 	font-size:20px;

@@ -56,11 +56,11 @@ $('#app_invite_form').on('click','#preview_invite_button',function(){
 			$(this).children('.ui-button-text').html('Preview Invites<span class="arrow">&#x25B2;</span>');
 			preview_element.slideToggle(250);
 			$(this).removeClass('preview_close');
-			$('.sent_from_us').fadeTo(0,0).css('left',420);
+			$('.sent_from_us').fadeTo(0,0).css('left',450);
 			$('#app_invite_form #sendbutton').removeAttr('disabled');
 	}
 	else {
-		$('.sent_from_us').css('left',420);
+		$('.sent_from_us').css('left',450);
 		var form_height = $('#app_invite_form').height();
 		var buttonpane_height = $('#app_invite_form .ui-dialog-buttonpane').height();
 		preview_element.css('bottom',buttonpane_height + 24 + 'px');
@@ -211,12 +211,15 @@ $(".tooltip_subtitle").click(function(){
 	                   <span class="subject_text">You have an admirer!</span>
 	           </div>
            </div>
-           <span class="email_content_body">
-		<p>One of our users, someone who knows you, is attracted to you and wants to know if you feel the same.  Sign in to CrushMaven.com (http://www.crushmaven.com) to find out whom. </p>
-		<p><b>What is CrushMaven?</b> It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
-		</p>				
-           </span>
-            </div>  <!-- close off attraction_email_preview_content -->
+           <div class="email_content_body">
+				<p>
+					One of our users, someone who knows you, is attracted to you and wants to know if you feel the same.  Sign in to CrushMaven.com (http://www.crushmaven.com) to find out whom. 
+				</p>
+				<p>
+					<b>What is CrushMaven?</b> It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
+				</p>				
+           </div><!-- close off email content body -->
+        </div>  <!-- close off attraction_email_preview_content -->
     <div id="mf_email_preview_content" class="email_preview_content">
         <div class="email_header">
 	        <div class="email_content_header_labels">
@@ -226,20 +229,20 @@ $(".tooltip_subtitle").click(function(){
 	        </div>
 	        <div class="email_content_header_content">
 	                <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>CrushMaven.com</span><BR>
-	                <span class="email_address_holder">mutual's friend email address}</span><BR>
+	                <span class="email_address_holder">mutual's friend email address</span><BR>
 	                <span class="subject_text">Your friend has an admirer!</span>
 	        </div>
         </div> <!--  close off .email_header -->
         <div class="email_content_body">
-        		<p>Someone at CrushMaven.com (http://www.crushmaven.com) is attracted to your friend, [ crush-full-name ], and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  [ crush-first-name ]'s admirer wishes to remain anonymous.
+        		<p>Someone at CrushMaven.com (http://www.crushmaven.com) is attracted to your friend, {{crush_firstname}}, and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  {{crush_firstname}}'s admirer wishes to remain anonymous.
         		</p>
         		<p>
-        		Would you please take a second to forward this message to [ crush-first-name ]?     
+        		Would you please take a second to forward this message to {{crush_firstname}}?     
         		</p>
         		<p>
         		<b>What is CrushMaven?</b>  It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
         		</p>
-        		<p>And in case you're wondering: {attraction name}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once they sign up.
+        		<p>And in case you're wondering: {{ crush_firstname}}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once they sign up.
         		</p>
         </div>
 		</div>  <!-- close off mf_email_preview_content -->

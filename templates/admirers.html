@@ -195,7 +195,7 @@ $(document).ready(function()
 		{% if admirer_rel.date_lineup_finished != None %}
 			lineup completed {{admirer_rel.date_lineup_finished}}
 		{% else %}
-			lineup created {{admirer_rel.date_added|datetime_since}} ago
+			admirer added {{admirer_rel.date_added|datetime_since}} ago
 		{% endif %}
 		</div><!-- close off admirer_block line -->
 	</div><!--  close off admirer block -->
@@ -255,7 +255,7 @@ $(document).ready(function()
 	{% if admirer_rel.date_lineup_finished != None %}
 		lineup completed {{admirer_rel.date_lineup_finished}}
 	{% else %}
-		lineup created {{admirer_rel.date_added|datetime_since}} ago
+		admirer added {{admirer_rel.date_added|datetime_since}} ago
 	{% endif %}
 	</div><!-- close off admirer_block line -->
 </div><!--  close off admirer block -->

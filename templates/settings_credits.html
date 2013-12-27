@@ -48,7 +48,7 @@
 	<div id="settings_labels">
 	<span id="settings_label_credits_available"><span class="help_icon"></span>Credit Available:</span>
 	<span id="settings_label_purchase_credits">Purchase More Credit:</span>
-	<img src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" id="paypal_image" />		
+	<img src="{{ STATIC_URL }}images/paypal_secure_payments.jpg" id="paypal_image" />		
 </div> <!-- close off settings_labels -->
 	
 		<p id="credit_settings_form_credits_available">{{ request.user.site_credits }}&nbsp; 
@@ -76,6 +76,8 @@
 			</p>
 		</div>
 	  <input type="hidden" name="cmd" value="_xclick">
+	  <input type="hidden" name="SOLUTIONTYPE" value="Sole">
+	  <input type="hidden" name="LANDINGPAGE" value="Billing">
 	  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
 	  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
 	  <input type="hidden" name="business" value="{{ paypal_email }}">
@@ -85,8 +87,8 @@
 	  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
 		
 		<div id="settings_buttonset">
-			<input type="submit" value="Purchase" onclick="window.wait_modal_open();" alt="Make payments with PayPal - it's fast, free and secure!" >
-			<p>You will be redirected to PayPal for all payment processing including credit cards.</p>
+			<input type="image" src="{{STATIC_URL}}images/paypal_buy_now_button.gif" onclick="window.wait_modal_open();" alt="Make payments with PayPal - it's fast, free and secure!" >
+			<!-- <p>You will be redirected to PayPal for all payment processing including credit cards.</p> -->
 		</div>
 	</form>
 

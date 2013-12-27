@@ -295,7 +295,7 @@
 		 '<a href="javascript:{}" id="fs-cancel-button" class="site_dialog_button site_dialog_cancel_button"><span class="ui-button-text">'+ fsOptions.lang.buttonCancel +'</span></a>' +
 			'<a id="fs-back-button" class=" site_dialog_button site_dialog_back_button" href="javascript://"><span>&#60; Back</span></a>' +
 		 '<button href="javascript:{}" id="fs-continue-button" class="site_dialog_button site_dialog_go_button" disabled><span class="ui-button-text">' + fsOptions.lang.buttonContinue + '</span></button>' +
-		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add as Crush(s)</span></a>' +
+		 '<a href="javascript:{}" id="fs-submit-button" class="site_dialog_button site_dialog_go_button"><span>Add to Crushes</span></a>' +
   	'</div>';
     
     var title_bar = '<h2 id="fs-dialog-title"><span>'+fsOptions.lang.title+'</span>';
@@ -544,7 +544,7 @@
   	// build non-friend list
 	 // if (friend2_elements.length > 0) {
 	if (true){
-		  var new_html = '<h2  id="nf_selected_header">Other Users <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+		  var new_html = '<h2  id="nf_selected_header">Others<span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
 			
 		  $.each(friend2_elements, function(){
 	    		var duplicate = $(this).clone();

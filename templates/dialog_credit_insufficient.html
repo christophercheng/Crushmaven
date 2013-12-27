@@ -41,7 +41,7 @@ $(document).ready(function()
 });
 </script>
 
-<div id="credit_check_container">
+<div id="credit_check_container" class= "credit_insufficient_container">
 	<div id="feature_description">
 		{{ feature_name }}
 	</div>
@@ -62,7 +62,7 @@ $(document).ready(function()
 		<span class="purchase_option"><input type = "radio" name="amount" value="17" onClick="document.getElementById('item_name_field').value='20 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=20';document.getElementById('notify_url').value='{{paypal_notify_url}}20/'"><span class="credit_option_amount">20 credits</span> for $17 USD &nbsp;<span class="percentage_bonus">15% off!</span></span>
 		<span class="purchase_option"><input type = "radio" name="amount" value="32" onClick="document.getElementById('item_name_field').value='40 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=40';document.getElementById('notify_url').value='{{paypal_notify_url}}40/'"><span class="credit_option_amount">40 credits</span> for $32 USD &nbsp;<span class="percentage_bonus">20% off!</span></span>
 		<span class="purchase_option"><input type = "radio" name="amount" value="75" onClick="document.getElementById('item_name_field').value='100 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=100';document.getElementById('notify_url').value='{{paypal_notify_url}}100/'"><span class="credit_option_amount">100 credits</span> for $75 USD &nbsp;<span class="percentage_bonus">25% off!</span></span>
-		<img src="http://www.paypal.com/en_AU/i/btn/x-click-but01.gif" id="paypal_image">
+		<img src="{{STATIC_URL}}images/paypal_secure_payments.jpg" id="paypal_image">
 		  <input type="hidden" name="cmd" value="_xclick">
 		  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
 		  <input type="hidden" name="business" value="{{ paypal_email }}">
@@ -74,10 +74,9 @@ $(document).ready(function()
 	</div><!-- close off credit_purchase_selection -->
 	<div class="ui-dialog-buttonpane">
 		<!-- <span id="purchase_button_description">You will be directed to PayPal</span> -->
-		<div class="ui-dialog-buttonset">
+		<div class="ui-dialog-buttonset paypal_redirect_buttonset">
+		<input type='image' id="credit_deduct_ok" onclick="window.morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" src="{{STATIC_URL}}images/paypal_buy_now_button.gif"</input> 
 		<button type='button' onclick="$('#credit_check_modal').dialog('close');" class="ui-button site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
-		<button class="ui-button site_dialog_button" id="credit_deduct_ok" onclick="window.morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" ><span class="ui-button-text">Make Payment</span></button> 
-		
 		</div>
 	</div><!-- close off button_bar -->
 </form>
