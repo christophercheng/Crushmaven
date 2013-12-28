@@ -11,8 +11,8 @@ in the INSTALLED_APPS setting.
 {% block content %}
 
 <div id="postman">
-<ul class="title_bar">
-	<li class="title_bar_title">{% block pm_folder_title %}{% endblock %}</li>
+<ul class="title_bar" id="title_bar_received_messages">
+	<li class="title_bar_title">Received Messages</li>
 </ul>
 
 {% autopaginate pm_messages %}
@@ -25,37 +25,47 @@ in the INSTALLED_APPS setting.
 {% block pm_sender_header %}<label>sort by:</label> 
 	<a href="{% postman_order_by sender %}">{% trans "attraction" %}</a>{% endblock %}&nbsp;|&nbsp;<a href="{% postman_order_by date %}">date</a>
  </div>
-<div id="pm_messages">
+<div class="pm_messages">
 
-	<div id="pm_messages_unread">
-		<p class="pm_message_header">Unread</p>
 		{% for message in pm_messages %}
-			{% if message.read_at == None %} 
 				{% with message as message %}
 				 	{% include "postman/inbox_message_block.html" %}
 				{% endwith %}
-			{% endif %}
 		{% endfor %}
-	</div><!-- close off pm_messages_unread -->
-	
-	<div id="pm_messages_read">
-		<p class="pm_message_header pm_message_read_header">Read</p>
-		{% for message in pm_messages %}
-			{% if message.read_at != None %} 
-				{% with message as message %}
-				 	{% include "postman/inbox_message_block.html" %}
-				{% endwith %}
-			{% endif %}
-	{% endfor %}
-	</div><!-- close off pm_messages_read -->
 
 </div><!-- close off pm_messages -->
 
 {% paginate %}
 {% else %}
-<p class = "no_content">{% trans "You have no messages" %} <i>from your crushes</i>.<span class="no_content_action"><a href='/messages/write'>Send</a> one now.</span></p>
+<p class = "no_content">{% trans "You have no newly received messages" %} <i>from your crushes</i>.<BR><span class="no_content_action"><a href='/messages/write'>Send</a> one now.</span></p>
 {% endif %}
+
+
+<ul class="title_bar second_title_bar" id="title_bar_sent_messages">
+<li class="title_bar_title">Sent Messages</li>
+</ul>	
+
+<a id="compose_new_message" href="{% url 'postman_write' %}">create new message</a>
+{% if pm_sent_messages %}
+
+<div class="pm_messages">
+
+		{% for message in pm_sent_messages %}
+				{% with message as message %}
+				 	{% include "postman/inbox_message_block.html" %}
+				{% endwith %}
+		{% endfor %}
+
+</div><!-- close off pm_messages -->
+
+{% paginate %}
+{% else %}
+<p class = "no_content">{% trans "You have no newly sent messages" %} <i>to your crushes</i>.<BR><span class="no_content_action"><a href='/messages/write'>Send</a> one now.</span></p>
 {% endif %}
+
+
+{% endif %}
+
 {% block pm_footer_info %}{% endblock %}
 </div><!-- close off postman -->
 {% endblock content %}

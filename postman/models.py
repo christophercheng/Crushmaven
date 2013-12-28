@@ -140,8 +140,7 @@ class MessageManager(models.Manager):
             qs = qs.order_by(order_by)
         #print "filtered messages 1 : " + str(qs)
         # get all valid readable emails
-        qs = qs.filter(Q(Q(recipient=user) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED)) |
-                             Q(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True)) )
+        qs = qs.filter(Q(recipient=user) & Q(recipient_archived=False) & Q(recipient_deleted_at__isnull=True) & Q(moderation_status=STATUS_ACCEPTED))
         #print "filtered messages 2 : " + str(qs)
         # separate out   
             # group messages into those between two users, then grab the last one
@@ -162,17 +161,32 @@ class MessageManager(models.Manager):
         return self.inbox(user, related=False, option=OPTION_MESSAGES).filter(read_at__isnull=True).count()
 
     def sent(self, user, **kwargs):
+        
         """
-        Return all messages sent by a user but not marked as archived or deleted.
+        Return accepted messages received by a user but not marked as archived or deleted.
         """
-        related = ('recipient',)
-        filters = {
-            'sender': user,
-            'sender_archived': False,
-            'sender_deleted_at__isnull': True,
-            # allow to see pending and rejected messages as well
-        }
-        return self._folder(related, filters, **kwargs)
+        related = ('recipient',) 
+
+        """Base code, in common to the folders."""
+        if related:
+            qs = self.select_related(*related)
+        else:
+            qs = self.all()
+        order_by=kwargs.pop('order_by',None)
+        if order_by:
+            qs = qs.order_by(order_by)
+        #print "filtered messages 1 : " + str(qs)
+        # get all valid readable emails
+        qs = qs.filter(Q(sender=user) & Q(sender_archived=False) & Q(sender_deleted_at__isnull=True) )
+        #print "filtered messages 2 : " + str(qs)
+        # separate out   
+            # group messages into those between two users, then grab the last one
+        qs = qs.filter(id__in=self._last_in_thread)
+        #print "filtered messages 3 : " + str(qs)
+        return qs
+        # For single message, 'count' is returned as 0. Should be acceptable if known.
+        # If not, replace "COUNT(*)" by "1+COUNT(*)" and add:
+        # ' AND T."id" <> T."thread_id"'   
 
     def archives(self, user, **kwargs):
         """

@@ -5,6 +5,7 @@ Created on Nov 1, 2012
 from django.conf import settings
 from datetime import datetime,timedelta
 from crush.models import CrushRelationship
+from postman.models import Message
 from django.db.models import Q
 
 def context_processor(request):
@@ -16,8 +17,10 @@ def context_processor(request):
         past_admirer_relationships = CrushRelationship.objects.past_admirers(me)
         visible_responded_crushes = CrushRelationship.objects.visible_responded_crushes(me)
         #progressing_crushes = CrushRelationship.objects.progressing_crushes(me)
-        all_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
-
+       # all_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
+        sent_thread_count=Message.objects.inbox(request.user).count()
+        received_thread_count=Message.objects.sent(request.user).count()
+        all_messages_count = sent_thread_count + received_thread_count
         new_messages_count=request.user.received_messages.filter(recipient_archived=False,recipient_deleted_at__isnull=True,read_at__isnull=True,moderation_status=settings.STATUS_ACCEPTED).count()
         
         ajax_reprocess_friends_with_admirers=True

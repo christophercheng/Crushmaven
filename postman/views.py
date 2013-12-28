@@ -50,9 +50,10 @@ def _folder(request, folder_name, view_name, option, template_name):
     if order_by:
         kwargs.update(order_by=order_by)
     msgs = getattr(Message.objects, folder_name)(request.user, **kwargs)
-        
+    sent_msgs=getattr(Message.objects, 'sent')(request.user,**kwargs) 
     return render_to_response(template_name, {
         'pm_messages': msgs,  # avoid 'messages', already used by contrib.messages
+        'pm_sent_messages':sent_msgs,
         'by_conversation': option is None,
         'by_message': option == OPTION_MESSAGES,
         'by_conversation_url': reverse(view_name),

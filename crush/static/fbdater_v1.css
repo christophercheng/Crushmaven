@@ -3519,7 +3519,7 @@ ul.bxslider_element #slide_overlay {
 }
 
 #postman .no_content {
-	margin-top:60px!important;
+	margin-top:40px!important;
 }
 /* ===========================  Message Inbox ========================= */	
 
@@ -3547,24 +3547,36 @@ ul.bxslider_element #slide_overlay {
 	font-weight:bold;
 	font-size:13px;
 }
-#postman #pm_messages_read {
+#postman .pm_messages_read {
 	margin-top:25px;
 }
 
 .conversation_row{
-	border-bottom: #ECEFF5 1px solid;
+
 	cursor:pointer;
 	padding:10px;
 	width:100%;
 	display:inline-block;
-}
-
-.conversation_row:hover{
+	border-bottom: #D4D7DC 1px solid;
+	border-radius:5px;
+	position:relative;
 	background-color:#ECEFF5;
-	border-top:10px solid #ECEFF5;
-	border-bottom:11px solid #ECEFF5;
-	padding-top :0px;
-	padding-bottom:0px;
+}
+/*
+.conversation_row.not_read{
+	border:1px solid #F68C9C;
+	padding:9px;
+}
+*/
+.conversation_row:hover{
+	background-color:#D4D7DC;
+	#border-top:10px solid #ECEFF5;
+	#border-bottom:11px solid #ECEFF5;
+	#padding-top :0px;
+	#padding-bottom:0px;
+}
+.conversation_row.not_read:hover{
+	border-color:#ECEFF5;
 }
 
 .conversation_row .first_column{
@@ -3580,7 +3592,7 @@ ul.bxslider_element #slide_overlay {
 .conversation_row .second_column{
 	float:left;
 	margin-left:15px;
-	width:465px;
+	width:463px;
 	font-size:13px;
 	padding-top:5px;
 	}
@@ -3597,7 +3609,7 @@ ul.bxslider_element #slide_overlay {
 	margin-right:3px;
 }
 .conversation_row .second_column .attraction_name .message_from_prefix {
-	background:#D6D6EB;
+	#background:#D6D6EB;
 }
 .conversation_row .second_column .attraction_name .message_to_prefix {
 	display:inline-block;
@@ -3621,6 +3633,18 @@ ul.bxslider_element #slide_overlay {
 .conversation_row .second_column .conversation_body .message_read_more {
 	#text-decoration:underline;
 	color:#3366FF;
+}
+
+.conversation_row .msg_unread{
+	#float:left;
+	position:absolute;
+	top:0px;
+	left:0px;
+	color:white;
+	font-size:9px;
+	border-radius:1px;
+	padding:0px 4px 0px 2px;
+	background:red;
 }
 
 /* ===========================  Message Conversation ========================= */	
