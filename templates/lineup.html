@@ -73,7 +73,7 @@ $(document).ready(function() // handling for the slider
 			$('.bxslider_element').show();		
 			if (last_loaded_slide>0){
 				setTimeout(function(){window.slider_control.goToSlide(last_loaded_slide)},500);
-				setTimeout(function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();},750);
+				setTimeout(function(){$('#lineup_container #site-loading').show();$('#lineup_container #slide_overlay').hide();},750);
 
 			}
 			else{

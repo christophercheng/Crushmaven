@@ -723,7 +723,7 @@ a.logo img{
 	background-image:url('/static/images/full_sprite.png');
 	background-repeat:no-repeat;
 	background-size:auto;
-	background-position:-9px -126px;
+	background-position:0px -117px;
 	height:30px;
 	width:30px;
 	top:12px;
@@ -885,22 +885,22 @@ a.logo img{
 }
 
 .navbar li.inactive.new_crushes a .menu_icon{
-	background-position:-74px -42px;
+	background-position:-65px -33px;
 }
 .navbar li.inactive.new_admirers a .menu_icon{
-	background-position:-75px -71px;
+	background-position:-66px -62px;
 }
 .navbar li.inactive.messages a .menu_icon{
-	background-position:-76px -100px;	
+	background-position:-67px -91px;	
 }
-.navbar li.active.new_crushes a .menu_icon{
-	background-position:-39px -42px;
+.navbar li.inactive.new_crushes:hover a .menu_icon,.navbar li.active.new_crushes a .menu_icon{
+	background-position:0px -31px;
 }
-.navbar li.active.new_admirers a .menu_icon{
-	background-position:-40px -71px;	
+.navbar li.inactive.new_admirers:hover a .menu_icon,.navbar li.active.new_admirers a .menu_icon{
+	background-position:0px -62px;	
 }
-.navbar li.active.messages a .menu_icon{
-	background-position:-41px -100px;
+.navbar li.inactive.messages:hover a .menu_icon,.navbar li.active.messages a .menu_icon{
+	background-position:0px -91px;
 }
 /*
 .navbar li.active.new_crushes:hover a .menu_icon{
@@ -1034,7 +1034,6 @@ a.logo img{
 
 .navbar li.inactive{
 	border-radius:6px;
-
 }
 
 .navbar li.inactive a {
@@ -1045,6 +1044,25 @@ a.logo img{
 	border-radius:6px;
 	border:1px solid #E9E9EB;
 	
+}
+
+.navbar li.inactive:hover a {
+	background:#3A3A48;
+	color:white;
+ 	text-shadow: 1px 1px 1px #000;
+ 	border-radius:6px 0px 0px 6px;
+ 	border-left:1px solid #242434;
+ 	border-bottom:1px solid #242434;
+ 	border-top:1px solid #242434;
+ 	border-right:1px solid #3A3A48;
+	
+}
+
+.navbar li.inactive:hover .nav_arrow {	
+	display:block;
+	border-color: #3A3A48 transparent transparent transparent;
+	border-left:16px solid #3A3A48;
+
 }
 
 .nav_subtext {
@@ -1063,60 +1081,6 @@ a.logo img{
 	border-bottom: 1px solid #fff!important;
 }
 
-.left_sidebar_container .button_container {
-	height:38px;
-	width:100%;
-	margin-top:20px; 
-}
-
-.left_sidebar_container .button_container a .add_icon{
-	position:absolute;
-	display:block;
-	background-image:url('/static/images/full_sprite.png');
-	#background-image:url('/static/images/full_sprite.png');	
-	background-repeat:no-repeat;
-	background-size:auto;
-	background-position:-90px -305px;
-	height:30px;
-	width:30px;
-	top:2px;
-	left:34px;
-}
-
-.left_sidebar_container #combo_singles_button a{
-	display:inline-block;
-	background-color:#242434;
-	text-shadow:1px 1px 0px #000;
-	font-size:14px;
-	color:white;
-	line-height:38px;
-	vertical-align:middle;
-	font-weight:normal;
-	cursor:pointer;
-	text-align:center;
-	#letter-spacing:1px;
-	width:100%;
-	border-radius:8px;
-	padding-left:20px;
-}
-
-
-.left_sidebar_container #combo_singles_button a:hover{
-	background-color:rgb(66,66,82);
-	transition-property:background-color;
-	transition-duration:200ms;
-	-webkit-transition-duration:200ms;
-	-webkit-transition-property:color,background-color;
-
-}
-.left_sidebar_container #combo_singles_button a:active{
-	color:#E02B50;
-}
-	
-
-.navbar li.active.setup_requests_for_me a,.navbar li.active.setups_for_me a, .navbar li.setup_requests_for_me a:hover,.navbar li.setups_for_me a:hover {
-	border-bottom:1px solid #595983;	
-}
 
 /* ===========================   Right Sidebar ========================= */
 
@@ -1498,9 +1462,10 @@ ul.title_bar {
 	list-style:none;
 	margin-bottom:25px;
 	background:#242434;
-	#background:#09ABE8;
+	background:#2E8AE6;
 	#border:1px solid #000;
 	border-radius:4px 15px 15px 4px;
+	border-radius:12px;
 	display:inline-block;
 	padding-top:1px;    
 	width:100%;
@@ -1514,7 +1479,7 @@ ul.title_bar {
 	#border: 1px solid #09ABE8;
 	#border-left:5px solid #09ABE8;
 }
-
+/*
 #title_bar_new_crushes , #title_bar_responded_crushes {
 	border-left:5px solid #ED1939;
 	#background: #09ABE8;
@@ -1539,7 +1504,7 @@ ul.title_bar {
 	#background: -0-linear-gradient(left,#242434,#fff);
 	#background: linear-gradient(left, #242434,#fff);
 }
-
+*/
 ul.second_title_bar {
 	margin-top:45px;	
 }
@@ -1780,6 +1745,7 @@ ul.nav_bar li#nav_bar_options{
 	height:18px;
 	vertical-align:middle;
 	letter-spacing:1px;	
+	z-index:1;
 }
 
 .updated.mutual_attraction{
@@ -2313,7 +2279,7 @@ ul.attraction_status_bar li.past_status_animated{
 	background-size:auto;
 	width:16px;
 	vertical-align:-1px;
-	background-position:-43px -133px;
+	background-position:-31px -124px;
 	height:16px;
 	margin-left:3px;
 }
@@ -2453,6 +2419,7 @@ ul.attraction_status_bar li.past_status_animated{
 	vertical-align:top;
 	margin-top:5px;
 		color:#ED1939;
+	#color:#9A3F98;
 }
 
 .lineup_block .lineup_title .lineup_subtitle{
@@ -2474,6 +2441,7 @@ ul.attraction_status_bar li.past_status_animated{
 	font-style:normal;
 	font-size:15px;
 	background-color: #DC143C;
+	#background-color:#9A3F98;
 	letter-spacing:1px;
 }
 .lineup_block a.button:hover{
@@ -2872,8 +2840,8 @@ ul.bxslider_element #slide_overlay {
 }
 #lineup_container #site-loading {
 	position:absolute;
-	left:270px;
-	top:230px;
+	left:257px;
+	top:147px;
 	z-index:11;
 }
 
@@ -3005,6 +2973,19 @@ ul.bxslider_element #slide_overlay {
 	background:#09abe8;
 	background:#ED1939;
 	padding-right:5px;
+	position:relative;
+}
+.lineup_decision a.decision[add_type='crush'] .thumbs_up_icon{
+	position:absolute;
+	display:block;
+	background-image:url('/static/images/full_sprite.png');	
+	background-repeat:no-repeat;
+	background-size:auto;
+	height:20px;
+	width:20px;
+	top:15px;
+	right:20px;
+	background-position:0px -31px;
 }
 
 .lineup_decision a.decision[add_type='crush']:hover{
@@ -3139,7 +3120,7 @@ ul.bxslider_element #slide_overlay {
 	background-size:auto;
 	width:20px;
 	vertical-align:-1px;
-	background-position:-109px -39px;
+	background-position:-100px -30px;
 	height:20px;
 	bottom:13px;
 	left:45px;
@@ -4355,7 +4336,7 @@ ul.bxslider_element #slide_overlay {
 
 .credits_settings_form #settings_labels img#paypal_image{
 	position:absolute;
-	top:225px;
+	top:231px;
 	left:50px;
 	height:40px;
 }
