@@ -885,16 +885,16 @@ a.logo img{
 }
 
 .navbar li.inactive.new_crushes a .menu_icon{
-	background-position:-65px -33px;
+	background-position:-30px -33px;
 }
 .navbar li.inactive.new_admirers a .menu_icon{
-	background-position:-66px -62px;
+	background-position:-31px -62px;
 }
 .navbar li.inactive.messages a .menu_icon{
-	background-position:-67px -91px;	
+	background-position:-31px -91px;	
 }
 .navbar li.inactive.new_crushes:hover a .menu_icon,.navbar li.active.new_crushes a .menu_icon{
-	background-position:0px -31px;
+	background-position:0px -32px;
 }
 .navbar li.inactive.new_admirers:hover a .menu_icon,.navbar li.active.new_admirers a .menu_icon{
 	background-position:0px -62px;	
@@ -965,8 +965,6 @@ a.logo img{
 	line-height:15px;
 	vertical-align:middle;
 }
-
-
 
 .navbar .new_menu_response_count{
 	position:absolute;
@@ -3120,7 +3118,7 @@ ul.bxslider_element #slide_overlay {
 	background-size:auto;
 	width:20px;
 	vertical-align:-1px;
-	background-position:-100px -30px;
+	background-position:-64px -30px;
 	height:20px;
 	bottom:13px;
 	left:45px;
