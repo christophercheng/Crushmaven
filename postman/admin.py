@@ -82,7 +82,7 @@ class MessageAdmin(admin.ModelAdmin):
     form = MessageAdminForm
     search_fields = ('subject', 'body')
     date_hierarchy = 'sent_at'
-    list_display = ('subject', 'admin_sender', 'admin_recipient', 'sent_at', 'moderation_status')
+    list_display = ('subject', 'admin_sender', 'admin_recipient', 'sent_at', 'moderation_status','body')
     list_filter = ('moderation_status', )
     fieldsets = (
         (None, {'fields': (

@@ -9,6 +9,7 @@ from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
 from crush.models.miscellaneous_models import Purchase,InviteEmail
 from crush.models.lineup_models import LineupMember
+from postman.models import Message
 
 class FacebookUserAdmin(admin.ModelAdmin):
     list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email') # what columns to display
