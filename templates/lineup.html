@@ -505,7 +505,7 @@ $(document).ready(function() // handling for the slider
 {% include "lineup_block_background.html" %}
 {% endwith %}
 	<div id="bx-pager">
-		{% for member in member_set %}
+		{% for member in member_set|slice:":10" %}
 		
 			{% if member.decision != None %}
 					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male_darkgray.png" /><span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span></a></div>
@@ -522,7 +522,7 @@ $(document).ready(function() // handling for the slider
 
 <ul class="bxslider_element" style="display:none">
 <div id="slide_overlay" style="display:none"></div>
-{% for member in member_set %}
+{% for member in member_set|slice:":10" %}
 	{% if member.decision != None %}
 		
 	<li class="preload" lineup_position = "{{member.position}}" >

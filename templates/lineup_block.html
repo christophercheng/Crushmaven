@@ -1,10 +1,10 @@
 {% load fbdater_extras %}
 	{% if relationship.date_lineup_finished != None %}
-		{% for member in relationship.lineupmember_set.all %}
+		{% for member in relationship.lineupmember_set.all|slice:":10" %}
 			<span class="lineup_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% elif member.decision > 0 %}admirer_not_picked{% endif %}"></span></span>
 		{% endfor %}
 	{% else %}
-		{% for member in relationship.lineupmember_set.all %}
+		{% for member in relationship.lineupmember_set.all|slice:":10" %}
 			<span class="lineup_block_lineup_pic_anonymous"><img src="{{ STATIC_URL }}images/lineup_character_male{% if member.decision != None %}_darkgray{% endif %}.png?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% elif member.decision > 0 %}admirer_not_picked{% elif member.decision == None %}no_decision{% endif %}">{% if member.decision == 0 %}YES{% elif member.decision > 0 %}NO{% elif member.decision == None %}{{ forloop.counter }}{% endif %}</span></span>
 		{% endfor %}
 	{% endif %}
