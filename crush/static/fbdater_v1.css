@@ -664,7 +664,9 @@ a.button {
 }
 
 .lineup_block_line #loading {
-	margin-left:65px;
+	margin-left:52px;
+	margin-top:50px;
+	margin-bottom:5px;
 }
 
 /* ===========================   Header Container ========================= */
@@ -2462,6 +2464,11 @@ ul.attraction_status_bar li.past_status_animated{
 }
 .admirer_lineup_block .lineup_previews {
 	margin-top:-45px;
+}
+
+.admirer_lineup_block .lineup_error{
+	margin-top:70px;
+	margin-bottom:8px;
 }
 
 .lineup_block .lineup_block_line .lineup_block_lineup_pic{

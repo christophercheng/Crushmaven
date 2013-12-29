@@ -100,7 +100,7 @@ def ajax_display_lineup_block(request, display_id):
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
         ajax_response += settings.LINEUP_STATUS_CHOICES[4]
-        return HttpResponse(ajax_response)
+        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
     
     crush_id = relationship.target_person.username
     rel_id_state=str(relationship.id) + '_initialization_state'
@@ -128,11 +128,11 @@ def ajax_display_lineup_block(request, display_id):
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
         ajax_response += settings.LINEUP_STATUS_CHOICES[4]
-        return HttpResponse(ajax_response)
+        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
 
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
-        return HttpResponse(ajax_response)
+        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
 
     return render(request,'lineup_block.html', {'relationship':relationship,
                                                 'fail_status_5':settings.LINEUP_STATUS_CHOICES[5],
