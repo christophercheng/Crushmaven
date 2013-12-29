@@ -36,7 +36,7 @@
 	{{ message.sent_at|compact_date:_("g:i A,M j,n/j/y") }}
 	</div>
 	<div class="conversation_body">
-		{% if not message.not_read %}<span class="MercuryRepliedIndicator seenByListener repliedLast seenByAll"></span>{% endif %}
+		{% if message.read_at %}<span class="MercuryRepliedIndicator seenByListener repliedLast seenByAll"></span>{% endif %}
 	 	{% if message.sender == request.user or request.user|can_view:message %}
 	 		{{message.body|truncatebody:75}} 
 		{% else %}

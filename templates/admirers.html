@@ -74,7 +74,7 @@ $(document).ready(function()
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
         
-        setTimeout(function(){$.ajax(ajax_url, {
+        $.ajax(ajax_url, {
         
    				timeout: {{lineup_block_timeout}}, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
    				success: function (data) {
@@ -90,7 +90,7 @@ $(document).ready(function()
    					lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
    					$.get(ajax_fail_url);
    				} 
-				});},3000);
+				});
 				
     });
     

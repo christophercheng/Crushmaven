@@ -737,7 +737,11 @@ class LineupMemberManager(models.Manager):
         global g_init_dict
         rel_id=str(relationship.id)
         crush_id=relationship.target_person.username
-        if g_init_dict[crush_id][rel_id+'_initialization_state']>0:
+        if g_init_dict[crush_id][rel_id+'_initialization_state']>0 or relationship.lineupmember_set.count() > 0:
+            # if the relationship has already been initialized or at least one lineup member has already been created, then short cirtcuit out
+            logger.debug( "REL ID:" + rel_id + "create_lineup being short circuited " + str(acceptable_id_array) )
+            logger.debug("initialization state: " + str(g_init_dict[crush_id][rel_id+'_initialization_state']))
+            logger.debug("lineup member count: " + str(relationship.lineupmember_set.count()))
             return
         logger.debug( "REL ID:" + rel_id + "create_lineup: " + str(acceptable_id_array) )
         g_init_dict[crush_id][rel_id+'_initialization_state']=1
@@ -746,12 +750,13 @@ class LineupMemberManager(models.Manager):
         random_end = len(acceptable_id_array) - 1
         admirer_position=random.randint(0, random_end) # normally len(data) should be 9
         index = 0
+        
         for lineup_id in acceptable_id_array:
             # if the current lineup position is where the admirer should go, then insert the admirer
             if index==admirer_position:
                 LineupMember.objects.create(position=index,username = relationship.source_person.username,relationship=relationship,decision=None)
                 #print "put crush in position: " + str(index) 
-                index = index + 1            
+                index = index + 1           
             LineupMember.objects.create(position=index,username=lineup_id,relationship=relationship,decision=None)
             index = index + 1
         # the following condition (to put admirer in last position) should not occur, but just in case let's handle it    
