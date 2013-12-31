@@ -222,7 +222,7 @@ class LineupMemberManager(models.Manager):
             time.sleep(.5)
             num_fetch_tries+=1
         
-        # METHOD 1: API MUTUAL APP FRIEND 
+        # METHOD 1: API MUTUAL APP FRIEND - Try to get 9 friends of friends off of a single friend.
         if len(mutual_app_friend_array)>0:
             logger.debug("Was ABLE to get more than 0 API APP mutual friends between admirer and attraction")
 
@@ -233,7 +233,7 @@ class LineupMemberManager(models.Manager):
         else:
             logger.error("Was not able to get more than 0 API APP mutual friends between admirer and attraction")
             
-        # METHOD 2: API 9 Friends from 9 Crush App Friends     
+        # METHOD 2: API 9 Friends from 9 Crush App Friends   
         if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
             crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
             if len(crush_app_friend_array) >= settings.MINIMUM_LINEUP_MEMBERS:

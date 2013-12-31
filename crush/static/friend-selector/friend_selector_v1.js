@@ -514,46 +514,41 @@
 	  
 	  var container = $('#fs-confirm-user-list'); 
 	// build friend list  
-	  if (friend0_elements.length > 0) {
-		  var new_html = '<h2>Friends <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
-	
-		  $.each(friend0_elements, function(){
-	    		var duplicate = $(this).clone();
-	    		duplicate.find('input').remove();
-	    		new_html += '<li>' + duplicate.html() + '</li>';
-	    	});
-		  new_html+='</ul>';
-		  container.append(new_html);
-	  }
+	  var new_html = '<h2>Friends <span class="nf_selected_header_count">' + friend0_elements.length + '</span></h2><ul>';
+
+	  $.each(friend0_elements, function(){
+    		var duplicate = $(this).clone();
+    		duplicate.find('input').remove();
+    		new_html += '<li>' + duplicate.html() + '</li>';
+    	});
+	  new_html+='</ul>';
+	  container.append(new_html);
 	  
   	// build friend-of-friend list
 	  //if (friend1_elements.length > 0) {
-	if (true){
-		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
-			
-		  $.each(friend1_elements, function(){
-	    		var duplicate = $(this).clone();
-	    		duplicate.find('input').remove();
-	    		new_html += '<li>' + duplicate.html() + '</li>';;
-	    	});
-		  new_html+='</ul>';
-		  container.append(new_html);
-	  }
+	  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
+		
+	  $.each(friend1_elements, function(){
+    		var duplicate = $(this).clone();
+    		duplicate.find('input').remove();
+    		new_html += '<li>' + duplicate.html() + '</li>';;
+    	});
+	  new_html+='</ul>';
+	  container.append(new_html);
+
 	  
   	
   	// build non-friend list
 	 // if (friend2_elements.length > 0) {
-	if (true){
-		  var new_html = '<h2  id="nf_selected_header">Others<span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
-			
-		  $.each(friend2_elements, function(){
-	    		var duplicate = $(this).clone();
-	    		duplicate.find('input').remove();
-	    		new_html += '<li>' + duplicate.html() + '</li>';
-	    	});
-		  new_html+='</ul>';
-		  container.append(new_html);
-	  }
+	  var new_html = '<h2  id="nf_selected_header">Others<span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+		
+	  $.each(friend2_elements, function(){
+    		var duplicate = $(this).clone();
+    		duplicate.find('input').remove();
+    		new_html += '<li>' + duplicate.html() + '</li>';
+    	});
+	  new_html+='</ul>';
+	  container.append(new_html);
 
   },
 

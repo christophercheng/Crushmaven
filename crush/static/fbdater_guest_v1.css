@@ -30,6 +30,9 @@ a{
 	padding-left:20px;
 	padding-right:5px;
 }
+#guest_page .center_container {
+	padding-left:0px;
+}
 
 #guest_home_page .header {
 	display:none;
@@ -298,7 +301,7 @@ span#up {
 div.info_section {
 	display:inline-block;
 	padding-top:90px;
-	padding-bottom:100px;
+	padding-bottom:80px;
 	width:100%;	
 	#text-align: justify;
 	position:relative;
@@ -902,30 +905,32 @@ body#guest_page{
 }
 
 div.guest_header{
-	height:58px;
+	height:50px;
 	width:100%;
 	position:fixed;
 	top:0px;
 	z-index:100;
 	background-color:#000;
-	background: -moz-linear-gradient(top, #000, #000 40%,#000032);
-	background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
-	background: -0-linear-gradient(top, #000, #000 40%,#000032);
-	background: linear-gradient(top, #000, #000 40%,#000032);
+	background-color:#242434;
+	#background: -moz-linear-gradient(top, #000, #000 40%,#000032);
+	#background: -webkit-linear-gradient(top, #000, #000 40%,#000032);
+	##background: -0-linear-gradient(top, #000, #000 40%,#000032);
+	#background: linear-gradient(top, #000, #000 40%,#000032);
 	border-bottom:1px solid black;
-	padding-left:20px;
-	box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+	padding-left:10px;
+	box-shadow: 0 1px 0px rgba(0,0,0,0.5);
 	
 }
 
 .guest_header.authenticated{
 	height:50px;
 	background:#262626;
-	background: -moz-linear-gradient(top, #454545, #262626);
-	background: -webkit-linear-gradient(top, #454545, #262626);
-	background: -0-linear-gradient(top, #454545, #262626);
-	background: linear-gradient(top, #454545, #262626);
-	box-shadow: 0 2px 0px #6e6e6e;
+	background:#242434;
+	#background: -moz-linear-gradient(top, #454545, #262626);
+	#background: -webkit-linear-gradient(top, #454545, #262626);
+	#background: -0-linear-gradient(top, #454545, #262626);
+	#background: linear-gradient(top, #454545, #262626);
+	box-shadow: 0 1px 0px #6e6e6e;
 }
 
 div.guest_header.authenticated .center_container{
@@ -933,20 +938,19 @@ div.guest_header.authenticated .center_container{
 	margin-right:auto;
 }
 .guest_header img{
-	margin-top:5px;
-	height:48px;
-	margin-left:6px;
+	height:30px;
+	margin-top:10px;
 }
 .guest_header.authenticated img {
-	height:40px;
-	margin-top:6px;
+	height:25px;
+	margin-top:13px;
 	margin-left:0px;
 }
 
 #top_links{
 	float:right;
 	margin-top:19px;
-	margin-right:104px;
+	margin-right:73px;
 }
 
 #top_links a{
@@ -974,7 +978,7 @@ div.guest_header.authenticated .center_container{
 }
 
 .guest_header #top_links{
-	line-height:58px;
+	line-height:50px;
 	padding-top:1px;
 	vertical-align:middle;
 	margin-top:0px;
@@ -1019,7 +1023,7 @@ div.guest_header.authenticated .center_container{
 }
 
 #guest_page .center_container{
-	width:995px;
+	width:975px!important;
 }
 /* HOW IT WORKS */
 
@@ -1103,6 +1107,7 @@ div.legal{
 	background:white;
 	margin-top:10px;
 	z-index:10;
+	margin-left:10px;
 }
 
 .legal p{
@@ -1170,6 +1175,9 @@ div.legal{
 }
 #faq_section .info_section_subtitle {
 	margin-top:30px;
+}
+#guest_page #faq_section .info_section_title{
+	margin-bottom:0px;
 }
 .qtip-blue {
 	background-color:white!important;

@@ -1087,18 +1087,24 @@ a.logo img{
 #friend_referral_bar_header {
 	#height:30px;
 	display:block;
-	padding:4px 0px 0px 12px;
+	padding:4px 0px 0px 7px;
 	background:#E9E9EB;
-	background:White;
-	border-radius:6px 6px 0px 0px;
-	border:1px solid #D3D3D6;
+	background:white;
+	#background: -moz-linear-gradient(left,#fff,rgba(0,0,0,.5));
+	#background: -webkit-linear-gradient(left,#fff,rgba(0,0,0,.5));
+	#background: -0-linear-gradient(left,#fff,rgba(0,0,0,.5));
+	#background: linear-gradient(left, #fff,rgba(0,0,0,.5));
+	border-radius:2px 6px 2px 0px;
+	border-bottom:1px solid #D3D3D6;
 	#border-bottom:1px solid #D3D3D6;
+	font-size:15px;
 }
 .header_subtext {
 	display:block;
 	font-size:9px;
 	font-weight:normal;
 	letter-spacing:1px;
+	margin-top:1px;
 }
 	
 #friend_referral_bar{
@@ -1118,6 +1124,7 @@ a.logo img{
  	#border:1px solid #F1F3F5;
 	border-bottom:1px solid #C6C6CC;
  	#border-radius:0px 0px 5px 5px;
+ 	#border-radius:0px;
  	#margin-top:-3px;
  }
 
