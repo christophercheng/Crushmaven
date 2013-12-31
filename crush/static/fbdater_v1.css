@@ -423,6 +423,7 @@ a.button {
 .header {
 	height:50px;
 	background-color:#242434;
+	background-color:#1e2126;
 	#background: -moz-linear-gradient(top,#000,#242434);
 	#background: -webkit-linear-gradient(top,#000,#242434);
 	#background: -0-linear-gradient(top,#000,#242434);
@@ -445,6 +446,7 @@ a.button {
 
 .header_container{
 	background-color:#242434;
+	background-color:#1e2126;
 	#background: -moz-linear-gradient(top,#000,#242434);
 	#background: -webkit-linear-gradient(top,#000,#242434);
 	#background: -0-linear-gradient(top,#000,#242434);
@@ -778,11 +780,11 @@ a.logo img{
 }
 
 .header_container li.submenu:hover, #get_started_link:hover{
-	background:#242434;
-	background: -moz-linear-gradient(top,#191924,#242434);
-	background: -webkit-linear-gradient(top,#191924,#242434);
-	background: -0-linear-gradient(top,#191924,#242434);
-	background: linear-gradient(top,#191924,#242434);
+	background:#181A1E;
+	#background: -moz-linear-gradient(top,#191924,#242434);
+	#background: -webkit-linear-gradient(top,#191924,#242434);
+	#background: -0-linear-gradient(top,#191924,#242434);
+	#background: linear-gradient(top,#191924,#242434);
 	
 }
 
@@ -800,7 +802,7 @@ a.logo img{
 	padding-top:7px;
 	padding-bottom:5px;
 	background-color:#3A3A4C;
-	background-color:#242434;
+	background-color:#181A1E;
 	margin-right:5px;
 }
 
@@ -824,6 +826,7 @@ a.logo img{
 
 .settings_menu a:hover {
 	background:#12121A!important;
+	background:#2E2E3A!important;
 }
 
 #right_header_menu li a .pic{
@@ -860,8 +863,8 @@ a.logo img{
 	position:absolute;
 	top:0px;
 	right:-16px;	
-	border-color: #242434 transparent transparent transparent;
-	border-left:16px solid #242434;
+	border-color: #1e2126 transparent transparent transparent;
+	border-left:16px solid #1e2126;
  	border-right:0px;
  	border-top:32px dotted rgba(255,255,255, 0)!important;
  	border-bottom:32px dotted rgba(255,255,255, 0)!important;
@@ -996,10 +999,10 @@ a.logo img{
  	height:100%;
  	text-shadow: 1px 1px 1px #000;
  	border-radius:6px 0px 0px 6px;
- 	background:#242434;
- 	border-left:1px solid #242434;
- 	border-bottom:1px solid #242434;
- 	border-top:1px solid #242434;
+ 	background:#1e2126;
+ 	border-left:1px solid #1e2126;
+ 	border-bottom:1px solid #1e2126;
+ 	border-top:1px solid #1e2126;
 }
 
 /*
@@ -1051,9 +1054,9 @@ a.logo img{
 	color:white;
  	text-shadow: 1px 1px 1px #000;
  	border-radius:6px 0px 0px 6px;
- 	border-left:1px solid #242434;
- 	border-bottom:1px solid #242434;
- 	border-top:1px solid #242434;
+ 	border-left:1px solid #1e2126;
+ 	border-bottom:1px solid #1e2126;
+ 	border-top:1px solid #1e2126;
  	border-right:1px solid #3A3A48;
 	
 }
