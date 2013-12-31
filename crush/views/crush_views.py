@@ -178,7 +178,7 @@ def ajax_load_response_dialog_content(request, crush_id):
                 ajax_response += str(rating) + " out of 5 (" + settings.PLATONIC_RATINGS[rating] + ")"
             else:
                 ajax_response += "<a href='#' unique_id='" + crush_id + "'>view " + crush.get_gender_pronoun() + " feedback</a>"
-                ajax_response += "<span class='help_icon'></span>"
+                ajax_response += "<span class='help_icon'>?</span>"
         ajax_response += "</span></div>"   
     return HttpResponse(ajax_response)
 
