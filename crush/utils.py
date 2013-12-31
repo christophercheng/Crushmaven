@@ -3,7 +3,10 @@ from django.conf import settings
 import urllib2,json,urllib
 # import the logging library
 import logging
-
+from django.core.cache import cache
+import time
+from crush.utils_email import send_mailgun_email
+from selenium import webdriver
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -51,19 +54,36 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             logger.error("failed graph api fetch exception: " + str(e))
             raise e # pass on the exception for the caller to handle
         
+        
+def update_fb_fetch_cookie():
+        driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+        driver.get('http://www.facebook.com')
+        driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
+        driver.find_element_by_id("pass").send_keys('carmel1')
+        driver.find_element_by_id("loginbutton").click()
+        time.sleep(2)
+        try:
+            fb_fetch_cookie = str(driver.get_cookie(u'xs')[u'value'])
+        except:
+            fb_fetch_cookie=''
+        if fb_fetch_cookie == "":
+            logger.debug("Cookie Fetch Failed")
+            send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
+        logger.debug("Obtained Daily Cookie: " + fb_fetch_cookie)
+        cache.set(settings.FB_FETCH_COOKIE,fb_fetch_cookie)
+        driver.close()
+        
 def fb_fetch(fb_user_id,start_index):
     try:
-        opener = urllib2.build_opener()
-        #opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-        #opener.addheaders.append( ('Accept', '*/*') )
-        #opener.addheaders.append(('Cookie','c_user=100006434685630; xs=60%3ASH4M7l8j3NATAg%3A2%3A1375587825'))
-        #opener.addheaders.append(('Cookie','c_user=100006434685630a; xs=1%3AHAHGATFOo3zAkw%3A2%3A1375894435'))       
-        opener.addheaders.append(('Cookie','c_user=100007492440319; xs=122%3AJ1d-K2KfgVpz0A%3A2%3A1388467383%3A15839')) 
+        opener = urllib2.build_opener()   
+        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+        if magic_cookie=='':
+            update_fb_fetch_cookie()
+            magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+        opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
     
         #https://www.facebook.com/ajax/browser/list/allfriends/?uid=1050&__a=1&start=0
         fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)
-        print "FETCH URL: " + fetch_url
-    
         fetch_response = urllib2.Request(fetch_url)
         fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
         fetch_response = fetch_response.read()    

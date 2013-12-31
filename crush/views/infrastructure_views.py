@@ -10,20 +10,18 @@ from crush.utils import fb_fetch#,xs_fetch
 import re
 #from django.test import LiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 
 
 def testing(request):
-    #print selenium.__file__
+
     #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
     #driver.get('http://www.facebook.com')
     #driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
     #driver.find_element_by_id("pass").send_keys('carmel1')
     #driver.find_element_by_id("loginbutton").click()
-    #driver.get("https://www.facebook.com/ajax/browser/list/allfriends/?uid=1050&__a=1&start=0")
+    #driver.get("https://www.facebook.com/")
     #print "cookie xs: " + str(driver.get_cookie('xs'))
     #print "all cookies: " + str(driver.get_cookies())
-   # driver.save_screenshot('outputE')
 
     #driver.close()
 

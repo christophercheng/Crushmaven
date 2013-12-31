@@ -218,6 +218,7 @@ CACHES = {
 #        }
 
 INACTIVE_USER_CACHE_KEY = 'all_inactive_user_list'
+FB_FETCH_COOKIE = 'fb_fetch_cookie'
 DATE_NOTIFICATIONS_LAST_SENT_CACHE_KEY = 'date_notifiactions_last_sent'
 
 # define the custom user that inherits from Django's User model
