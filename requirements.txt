@@ -18,3 +18,4 @@ zope.interface==3.8.0
 gunicorn==18.0
 dj-database-url
 psycopg2
+south==0.8.4
