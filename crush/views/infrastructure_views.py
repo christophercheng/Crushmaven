@@ -8,7 +8,7 @@ from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch#,xs_fetch
 import re
-
+from django.core.cache import cache
 
 def testing(request):
  
@@ -20,6 +20,11 @@ def testing(request):
     
    
     return HttpResponse(result)
+
+def testing2(request):
+ 
+    magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+    return HttpResponse(str(magic_cookie))
 
 # import the logging library
 import logging
