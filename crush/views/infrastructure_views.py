@@ -10,7 +10,7 @@ from crush.utils import fb_fetch#,xs_fetch
 import re
 #from django.test import LiveServerTestCase
 from selenium import webdriver
-
+import time
 
 def testing(request):
 
@@ -24,34 +24,37 @@ def testing(request):
     #print "all cookies: " + str(driver.get_cookies())
 
     #driver.close()
+    result = ""
+    try:
+        #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+        print"start it up now"
+
+        driver = webdriver.PhantomJS()
+    except Exception as e:
+        print "not able to get phantom driver: " + str(e)
+        #logger.error("problems laoding phantomjs driver")
+        result = "exception by webdriver startup"
+        return HttpResponse(result)
+    driver.get('http://www.facebook.com')
+    driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
+    driver.find_element_by_id("pass").send_keys('flirtally')
+    driver.find_element_by_id("loginbutton").click()
+    time.sleep(2)
+    try:
+        fb_fetch_cookie = str(driver.get_cookie(u'xs')[u'value'])
+    except:
+        return HttpResponse("exception by driver.get_cookie")
+    driver.close()
+    return HttpResponse("cookie = " + fb_fetch_cookie)
+    
 
     
-    
-    fetch_response = fb_fetch("1050",0)
-    extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
+    #fetch_response = fb_fetch("1050",0)
+    #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
-    extracted_id_list = list(set(extracted_id_list))
-    result = "Number of results: " + str(len(extracted_id_list))
+    #extracted_id_list = list(set(extracted_id_list))
+    #result = "Number of results: " + str(len(extracted_id_list))
     
-    
-    
-    #result += "--------------"
-    #result +=fetch_response
-
-
-    
-#    fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=0&start=1&uid=1090&hc_location=profile_browser"
-#    fetch_url = "https://iphone.facebook.com/chris.h.cheng?v=friends&mutual&startindex=60&__ajax__="
-#    fetch_url = "https://www.facebook.com/ajax/pagelet/generic.php/AllFriendsAppCollectionPagelet?data=%7B%22collection_token%22%3A%22651900292%3A2356318349%3A2%22%2C%22cursor%22%3A%22MDpub3Rfc3RydWN0dXJlZDo1NjUxNTc5NjQ%3D%22%2C%22tab_key%22%3A%22friends%22%2C%22profile_id%22%3A651900292%2C%22overview%22%3Afalse%2C%22ftid%22%3Anull%2C%22order%22%3Anull%2C%22sk%22%3A%22friends%22%7D&__user=651900292&__a=1&__dyn=7n8ahyj2qmpnzpQ9UmAWaUQFo&__req=c%20HTTP/1.1"    #fetch_url = "http://www.cnn.com"
-#    storage = StringIO()
-#    c = pycurl.Curl()
-#    c.setopt(c.URL, fetch_url)
-#    c.setopt(c.HTTPHEADER, ['referrer:www.facebook.com,Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0'])
-#    c.setopt(c.WRITEFUNCTION, storage.write)
-#    c.setopt(pycurl.SSL_VERIFYPEER, 0)  # skip SSL certification validation (to prevent SSL certificate errro)
-#    c.setopt(pycurl.SSL_VERIFYHOST, 0)  # skip SSL certificate validation
-#    c.perform()
-#    result = storage.getvalue() 
    
     return HttpResponse(result)
 
