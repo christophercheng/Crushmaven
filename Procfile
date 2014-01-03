@@ -1,1 +1,1 @@
-web: gunicorn fbdater.wsgi:application
+web: gunicorn fbdater.wsgi -b 0.0.0.0:$PORT
