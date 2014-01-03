@@ -103,19 +103,19 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
+#BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+#STATIC_ROOT = 'staticfiles'
+#STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'static'),
+#)
 
-#STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
+STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-#STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 
 # HEROKU ADD-ON SUMO CDN:
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
@@ -125,11 +125,11 @@ STATICFILES_DIRS = (
 
 
 # Additional locations of static files
-#STATICFILES_DIRS = (
+STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-#)
+)
 
 LOGIN_URL = '/home/' #where to direct user if they try to access a page where login required
 
