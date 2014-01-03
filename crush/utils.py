@@ -58,6 +58,7 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
 def update_fb_fetch_cookie():
         try:
             #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+            print"start"
             driver = webdriver.PhantomJS()
         except Exception as e:
             print "not able to get phantom driver: " + str(e)
@@ -84,9 +85,9 @@ def fb_fetch(fb_user_id,start_index):
         opener = urllib2.build_opener()   
         magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
         print "magic cookie is : " + str(magic_cookie)
-        if magic_cookie=='':
-            update_fb_fetch_cookie()
-            magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+        #if magic_cookie=='':
+        update_fb_fetch_cookie()
+        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
         opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
     
         #https://www.facebook.com/ajax/browser/list/allfriends/?uid=1050&__a=1&start=0
