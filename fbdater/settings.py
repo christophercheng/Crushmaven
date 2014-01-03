@@ -6,8 +6,10 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.insert(0, PROJECT_PATH)
-ALLOWED_HOSTS = ['www.crushmaven.com']#new for django 1.5 
-DEBUG = False
+#ALLOWED_HOSTS = ['www.crushmaven.com']#new for django 1.5 
+ALLOWED_HOSTS=['crushmaven.com','.herokuapp.com']
+
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 import logging
 
@@ -101,7 +103,15 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+#STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -109,17 +119,17 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 
 # HEROKU ADD-ON SUMO CDN:
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
-CDN_URL = os.getenv('CDN_SUMO_URL')
-STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
+#CDN_URL = os.getenv('CDN_SUMO_URL')
+#STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
 
 
 
 # Additional locations of static files
-STATICFILES_DIRS = (
+#STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
+#)
 
 LOGIN_URL = '/home/' #where to direct user if they try to access a page where login required
 
@@ -226,8 +236,8 @@ AUTH_USER_MODEL = 'crush.FacebookUser'
 
 
 # Facebook settings are set via environment variables
-FACEBOOK_APP_ID = '165610330293338' # CrushMaven App on Facebook
-FACEBOOK_APP_SECRET = 'e16934ee8ee9bf0a61f120d9e2bb6c02'
+FACEBOOK_APP_ID = '563185300424922' # CrushMaven App on Facebook
+FACEBOOK_APP_SECRET = '4a0d7982f553640cbb2c4dde20d6e2b8'
 #FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
 FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email'
 
@@ -344,8 +354,7 @@ POSTMAN_DISALLOW_MULTIRECIPIENTS=True
 POSTMAN_DISALLOW_COPIES_ON_REPLY=True
 POSTMAN_AUTO_MODERATE_AS=True
 POSTMAN_SHOW_USER_AS='get_name'
-#MAILGUN_API_KEY = "key-6bhq7tq9k6oqc48hvp3uvq33gmt36kb1"
-MAILGUN_API_KEY = 'key-23q7lzko-uih79w3mkh573yl1r69r7u4'
+MAILGUN_API_KEY = 'key-36jm6mhebjbgv2bn58zk4xthvjcygwm1'
 
 # note that NamesLookup is a class that handles the magic behind the dynamic drop down dialog
 AJAX_LOOKUP_CHANNELS={'postman_users':('crush.models.user_models','NamesLookup')}
@@ -357,14 +366,14 @@ POSTMAN_AUTOCOMPLETER_APP={
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
 
-#DATABASES = {}
+DATABASES = {}
 # Parse database configuration from $DATABASE_URL
 #try:
-#    import dj_database_url
-#    DATABASES['default'] =  dj_database_url.config()
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-#    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #except:
 #    pass
 try:

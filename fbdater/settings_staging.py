@@ -2,7 +2,7 @@ from settings import *
 import logging
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-ALLOWED_HOSTS = ['flirtally-staging.herokuapp.com']#new for django 1.5 
+ALLOWED_HOSTS = ['*']#new for django 1.5 
 logging.basicConfig(
     level = logging.DEBUG,
     format = '%(asctime)s %(levelname)s %(message)s',
@@ -46,8 +46,8 @@ LOGGING = {
 
 
 # Facebook settings are set via environment variables
-FACEBOOK_APP_ID = '341035956028074' # Crush Discovery App on Facebook
-FACEBOOK_APP_SECRET = '66cb9c533b7b10798aa3daee3ec5c558'
+FACEBOOK_APP_ID = '711097435568407' # Crush Discovery App on Facebook
+FACEBOOK_APP_SECRET = '5fa571d36c1ec81500b3abeac016abe1'
 INITIALIZATION_THREADING=True
 
 MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself

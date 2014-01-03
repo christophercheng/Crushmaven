@@ -1098,7 +1098,8 @@ a.logo img{
 	#background: -0-linear-gradient(left,#fff,rgba(0,0,0,.5));
 	#background: linear-gradient(left, #fff,rgba(0,0,0,.5));
 	border-radius:2px 6px 2px 0px;
-	border-bottom:1px solid #D3D3D6;
+	border:1px solid #D8D8DA;
+	#border-bottom:1px solid #D3D3D6;
 	#border-bottom:1px solid #D3D3D6;
 	font-size:15px;
 }

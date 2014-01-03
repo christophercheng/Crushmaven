@@ -59,7 +59,7 @@ def update_fb_fetch_cookie():
         driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
         driver.get('http://www.facebook.com')
         driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
-        driver.find_element_by_id("pass").send_keys('carmel1')
+        driver.find_element_by_id("pass").send_keys('flirtally')
         driver.find_element_by_id("loginbutton").click()
         time.sleep(2)
         try:

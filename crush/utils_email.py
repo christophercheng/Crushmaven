@@ -29,18 +29,18 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
             print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
 
 def send_mail_user_logged_in(user, header_string):
-    if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126']:
+    if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','chris_h_cheng@hotmail.com',user.get_name() + ' logged in!',header_string,header_string)
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_crush_invite_text.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,full_name + ' has an admirer (one of our users)',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,full_name + ', you have a new admirer!',html,text)
     
 def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address):
     html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,full_name + " has an admirer (one of our users)",html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,full_name + " has a secret admirer (one of our users)",html,text)
 
 def send_mail_new_admirer(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_notify_new_admirer.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})

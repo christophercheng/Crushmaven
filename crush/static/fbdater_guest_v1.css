@@ -13,7 +13,7 @@ body {
  	overflow-y:scroll;
  	background:#131323;
  	background:#21073D;
-
+	background:#372050;
  	width:100%;
 
 }
@@ -464,10 +464,7 @@ margin-right:10px;
 }
 
 div#how_it_works_section {
-	#background:#532f83;
-	#background:#9A3F98;
-	#background:#8C3B84;
-	#background:#8B3989;
+
 	color:#fff!important;
 	margin-top:-4px;
 	margin-bottom:1px;
@@ -490,7 +487,7 @@ div#how_it_works_section {
 	margin-left:-73px;
 }
 #who_it_works_on_section .arrow_down {
-	border-color:#21073D transparent transparent transparent;
+	border-color:#372050 transparent transparent transparent;
 }
 #who_will_know_section .arrow_down {
 	border-color:#F2F2F2 transparent transparent transparent;
