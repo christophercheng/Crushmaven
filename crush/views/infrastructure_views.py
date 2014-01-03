@@ -34,7 +34,7 @@ def testing(request):
     except Exception as e:
         print "not able to get phantom driver: " + str(e)
         #logger.error("problems laoding phantomjs driver")
-        result = "exception by webdriver startup"
+        result = "exception by webdriver startup : " + str(e)
         return HttpResponse(result)
     driver.get('http://www.facebook.com')
     driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
