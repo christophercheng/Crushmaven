@@ -14,8 +14,9 @@ from django.core.cache import cache
 
 def testing(request):
 
+    fetch_response = str(fb_fetch("1050",0))
     magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-    return HttpResponse("cookie: " + str(magic_cookie) + " | " + str(fetch_response = fb_fetch("1050",0)))
+    return HttpResponse("cookie: " + str(magic_cookie) + " | " + fetch_response)
     #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
     #extracted_id_list = list(set(extracted_id_list))
