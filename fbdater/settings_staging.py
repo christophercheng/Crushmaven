@@ -54,8 +54,8 @@ MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the s
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
 MINIMUM_DELETION_DAYS_SINCE_ADD=0# 7 is default
 
-PAYPAL_RETURN_URL = 'http://www.flirtally-staging.herokuapp.com/paypal_pdt_purchase'
-PAYPAL_NOTIFY_URL = 'http://www.flirtally-staging.herokuapp.com/paypal_ipn_listener/'
+PAYPAL_RETURN_URL = 'http://crushmaven-staging.herokuapp.com/paypal_pdt_purchase'
+PAYPAL_NOTIFY_URL = 'http://crushmaven.staging.herokuapp.com/paypal_ipn_listener/'
 
 # sandbox
 PAYPAL_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'

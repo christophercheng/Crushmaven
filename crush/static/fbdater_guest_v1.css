@@ -17,6 +17,9 @@ body {
  	width:100%;
 
 }
+#guest_page body{
+	width:1014px;
+}
 
 a{
 	color:white;
@@ -50,6 +53,7 @@ a{
 	top:0px;
 	left:0px;
 	width:995px;
+	width:1014px;
 	background:none!important;
 	height:45px;
 }
