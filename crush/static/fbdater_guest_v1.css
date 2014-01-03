@@ -88,6 +88,7 @@ a{
 	user-select: none !important;
 	background:#000;
 	position:relative;
+	width:100%;
 }
 
 div#tagline{
@@ -119,7 +120,7 @@ div#tagline{
 	width:100%;
 }
 #logo_section .center_container {
-	width:1009px;
+	width:1014px;
 	margin:0 auto;
 }
 
@@ -318,7 +319,7 @@ div.info_section {
 div.info_section_content {
 	margin: 0 auto;
 	padding-left:20px;
-	min-width:1014px;
+	width:1014px;
 	display:block;
 	height:100%;
 	text-rendering: optimizeLegibility;
@@ -377,7 +378,7 @@ div#qa_section .info_section_title{
 	color:red;
 	color:#3b5998;
 	font-size:22px;
-	white-space:nowrap;
+
 }
 
 #qa_section .info_section_text {
@@ -660,6 +661,7 @@ div#who_will_know_section .info_section_subtitle {
 
 .info_section_subtitle{
 	display:inline-block!important;
+	white-space:nowrap;
 }
 div#who_will_know_section a {
 	color:#09abe8;
