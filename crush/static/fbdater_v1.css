@@ -512,6 +512,7 @@ a.button {
     .left_sidebar,.center_panel,.right_sidebar {
     margin-left:0px;
     }
+    /*
     .right_sidebar{
     	position:absolute;
     	margin-left:10px;
@@ -527,6 +528,7 @@ a.button {
     #friend_referral_bar_header,#friend_referral_bar{
     display:none!important;
     }
+    */
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
@@ -540,6 +542,8 @@ a.button {
     .left_sidebar,.center_panel,.right_sidebar {
     margin-left:0px;
     }
+    
+    /*
         .right_sidebar{
     	position:absolute;
     	margin-left:10px;
@@ -555,6 +559,7 @@ a.button {
     #friend_referral_bar_header,#friend_referral_bar{
     display:none!important;;
     }
+    */
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
@@ -568,6 +573,7 @@ a.button {
     .left_sidebar,.center_panel,.right_sidebar {
     margin-left:0px;
     }
+    /*
         .right_sidebar{
     	position:absolute;
     	margin-left:10px;
@@ -583,6 +589,7 @@ a.button {
     #friend_referral_bar_header,#friend_referral_bar{
     display:none!important;;
     }
+    */
 }
 
 /* if screen is too short, then don't fix the sidebars */
@@ -594,6 +601,7 @@ a.button {
     .left_sidebar,.center_panel,.right_sidebar {
     margin-left:0px;
     }	
+    /*
        .right_sidebar{
     	position:absolute;
     	margin-left:10px;
@@ -609,6 +617,7 @@ a.button {
     #friend_referral_bar_header,#friend_referral_bar{
     display:none!important;;
     }
+    */
 }
 
 @media (max-width:900px)
@@ -622,6 +631,7 @@ a.button {
     .left_sidebar,.center_panel,.right_sidebar {
     margin-left:0px;
     }
+    /*
     .right_sidebar{
     	position:absolute;
     	margin-left:10px;
@@ -637,8 +647,9 @@ a.button {
 
     
     #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;;
+    display:none!important;
     }
+    */
 }
 
 /* ===========================   Overlays & Loading Animation ========================= */
