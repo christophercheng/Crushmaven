@@ -1,1 +1,1 @@
-web: heroku run python manage.py run_gunicorn -a crushmaven
+web: manage.py run_gunicorn -a crushmaven
