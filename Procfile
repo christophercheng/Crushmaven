@@ -1,1 +1,1 @@
-web: gunicorn fbdater.wsgi -b 0.0.0.0:$PORT
+web: python manage.py run_gunicorn
