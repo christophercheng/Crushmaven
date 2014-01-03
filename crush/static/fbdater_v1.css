@@ -507,10 +507,13 @@ a.button {
         position:static;
     }
     .main_container{
-    margin-top:0px;
+    margin-top:0px!important;
     }
-    .left_sidebar,.center_panel,.right_sidebar {
+    .left_sidebar,.center_panel {
     margin-left:0px;
+    }
+    .right_sidebar{
+    float:none;
     }
     /*
     .right_sidebar{
@@ -537,12 +540,14 @@ a.button {
         position:static;
     }
     .main_container{
-    margin-top:0px;
+    margin-top:0px!important;
     }
-    .left_sidebar,.center_panel,.right_sidebar {
+    .left_sidebar,.center_panel{
     margin-left:0px;
     }
-    
+        .right_sidebar{
+    float:none;
+    }
     /*
         .right_sidebar{
     	position:absolute;
@@ -566,12 +571,16 @@ a.button {
     /* Put your iPhone 4g styles in here */ 
     .header, .left_sidebar, .right_sidebar {
         position:static;
+ 
     }
     .main_container{
-    margin-top:0px;
+    margin-top:0px!important;
     }
-    .left_sidebar,.center_panel,.right_sidebar {
+    .left_sidebar,.center_panel {
     margin-left:0px;
+    }
+        .right_sidebar{
+    float:none;
     }
     /*
         .right_sidebar{
@@ -595,12 +604,18 @@ a.button {
 /* if screen is too short, then don't fix the sidebars */
 @media (max-height:530px)
  {
-    .left_sidebar, .right_sidebar {
+    .header,.left_sidebar, .right_sidebar {
         position:static;
     }
-    .left_sidebar,.center_panel,.right_sidebar {
+    .left_sidebar,.center_panel{
     margin-left:0px;
     }	
+    .main_container{
+    margin-top:0px!important;
+    }
+        .right_sidebar{
+    float:none;
+    }
     /*
        .right_sidebar{
     	position:absolute;
@@ -626,10 +641,13 @@ a.button {
         position:static;
     }
     .main_container{
-    margin-top:0px;
+    margin-top:0px!important;
     }
-    .left_sidebar,.center_panel,.right_sidebar {
+    .left_sidebar,.center_panel{
     margin-left:0px;
+    }
+        .right_sidebar{
+    float:none;
     }
     /*
     .right_sidebar{
