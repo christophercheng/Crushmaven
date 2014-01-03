@@ -365,7 +365,7 @@ POSTMAN_AUTOCOMPLETER_APP={
     'arg_default':'postman_users'}
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
-
+DATABASES={}
 if os.environ.get('DATABASE_URL', None):
     import dj_database_url
     DATABASES['default'] = dj_database_url.config()
