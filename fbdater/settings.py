@@ -9,7 +9,7 @@ sys.path.insert(0, PROJECT_PATH)
 #ALLOWED_HOSTS = ['www.crushmaven.com']#new for django 1.5 
 ALLOWED_HOSTS=['*']
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 import logging
 
