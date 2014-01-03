@@ -376,6 +376,7 @@ if os.environ.get('DATABASE_URL', None):
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #except:
 #    pass
+print "HELP ME!"
 try:
     from settings_local import *
 except ImportError, e:
