@@ -97,7 +97,6 @@ div#tagline{
 #logo_section_background{
 	width:100%;
 	min-width:1035px;
-	min-width:1014px;
 	position:relative;
 	vertical-align:middle;
 	opacity:.9;
@@ -318,7 +317,8 @@ div.info_section {
 div.info_section_content {
 	margin: 0 auto;
 	padding-left:20px;
-	width:1014px;
+	min-width:1014px;
+	width:100%;
 	display:block;
 	height:100%;
 	text-rendering: optimizeLegibility;
