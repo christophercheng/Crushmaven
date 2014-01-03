@@ -43,7 +43,14 @@ LOGGING = {
             },
     }
 }
+DATABASES = {}
+# Parse database configuration from $DATABASE_URL
+#try:
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '711097435568407' # Crush Discovery App on Facebook
