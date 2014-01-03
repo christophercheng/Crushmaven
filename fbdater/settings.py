@@ -205,7 +205,6 @@ INSTALLED_APPS = (
     'postman',
     'ajax_select',
     'south',
-    'gunicorn'
 )
 
 # using heroku MEMCACHIER ADD-ON

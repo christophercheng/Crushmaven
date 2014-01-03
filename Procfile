@@ -1,1 +1,1 @@
-web: python manage.py run_gunicorn
+web: gunicorn fbdater.wsgi:application
