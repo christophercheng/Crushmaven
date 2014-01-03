@@ -54,7 +54,7 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             logger.error("failed graph api fetch exception: " + str(e))
             raise e # pass on the exception for the caller to handle
         
-        
+# this function forces the cache to update its fb cookie value.  this is called daily from custom management command
 def update_fb_fetch_cookie():
         try:       
             driver = webdriver.PhantomJS()
