@@ -23,8 +23,8 @@ def testing(request):
 
 def testing2(request):
  
-    magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-    return HttpResponse(str(magic_cookie))
+    magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
+    return HttpResponse("cookie in cache: " + magic_cookie)
 
 # import the logging library
 import logging
