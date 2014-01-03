@@ -60,6 +60,7 @@ def update_fb_fetch_cookie():
             driver = webdriver.PhantomJS()
         except Exception as e:
             print "not able to get phantom driver: " + str(e)
+            send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed.  driver=webdriver.phantomjs() caused exception.  Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
             raise e
         driver.get('http://www.facebook.com')
         driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
@@ -81,13 +82,10 @@ def fb_fetch(fb_user_id,start_index):
     try:
         opener = urllib2.build_opener()   
         magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-        print "magic cookie is : " + str(magic_cookie)
-        if magic_cookie!='hi':
+        if magic_cookie!='':
             update_fb_fetch_cookie()
             magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
         opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
-    
-        #https://www.facebook.com/ajax/browser/list/allfriends/?uid=1050&__a=1&start=0
         fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=" + str(fb_user_id) + "&__a=1&start=" + str(start_index)
         fetch_response = urllib2.Request(fetch_url)
         fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
