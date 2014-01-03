@@ -28,6 +28,7 @@ def testing(request):
     try:
         #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
         print"start it up now"
+        print "do this"
 
         driver = webdriver.PhantomJS()
     except Exception as e:
