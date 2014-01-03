@@ -97,6 +97,7 @@ div#tagline{
 #logo_section_background{
 	width:100%;
 	min-width:1035px;
+	min-width:1014px;
 	position:relative;
 	vertical-align:middle;
 	opacity:.9;
