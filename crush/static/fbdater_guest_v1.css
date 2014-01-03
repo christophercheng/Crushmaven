@@ -377,6 +377,7 @@ div#qa_section .info_section_title{
 	color:red;
 	color:#3b5998;
 	font-size:22px;
+	white-space:nowrap;
 }
 
 #qa_section .info_section_text {
