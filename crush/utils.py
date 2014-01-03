@@ -82,7 +82,7 @@ def fb_fetch(fb_user_id,start_index):
     try:
         opener = urllib2.build_opener()   
         magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-        if magic_cookie!='':
+        if magic_cookie=='':
             update_fb_fetch_cookie()
             magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
         opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
