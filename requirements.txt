@@ -3,7 +3,6 @@ PyRSS2Gen==1.0.0
 Twisted==12.2.0
 altgraph==0.10.1
 bdist-mpkg==0.4.4
-bonjour-py==0.3
 django-ajax-selects==1.2.5
 macholib==1.5
 modulegraph==0.10.1
