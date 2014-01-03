@@ -14,14 +14,14 @@ import re
 def testing(request):
 
     
-    fetch_response = fb_fetch("1050",0)
-    extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
+    return HttpResponse(str(fetch_response = fb_fetch("1050",0)))
+    #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
-    extracted_id_list = list(set(extracted_id_list))
-    result = "Number of results: " + str(len(extracted_id_list))
+    #extracted_id_list = list(set(extracted_id_list))
+    #result = "Number of results: " + str(len(extracted_id_list))
     
    
-    return HttpResponse(result)
+    #return HttpResponse(result)
 
 # import the logging library
 import logging
