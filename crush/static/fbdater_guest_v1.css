@@ -122,6 +122,7 @@ div#tagline{
 #logo_section .center_container {
 	width:1014px;
 	margin:0 auto;
+	padding:0!important;
 }
 
 #logo_section #logo_bar {
