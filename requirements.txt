@@ -7,6 +7,6 @@ requests==1.1.0
 virtualenv==1.9.1
 wsgiref==0.1.2
 south==0.8.1
-pylibmc==1.2.2
+pylibmc==1.2.3
 django-pylibmc-sasl==0.2.4
 selenium==2.39.0
