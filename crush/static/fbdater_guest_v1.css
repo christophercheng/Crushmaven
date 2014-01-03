@@ -549,6 +549,7 @@ div#how_it_works_section .step_number{
 div#how_it_works_section .info_section_subtitle{
 	#color:#9A3F98;
 	color:#fff;
+	white-space:nowrap;
 	#border-bottom:1px solid #9A3F98;
 	#border-bottom:1px solid white;
 	#border-color:#532f83;
