@@ -58,7 +58,9 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
 def update_fb_fetch_cookie():
         try:
             driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+            driver = webdriver.PhantomJS("phantomjs")
         except Exception as e:
+            print "not able to get phantom driver: " + str(e)
             logger.error("problems laoding phantomjs driver")
             raise e
         driver.get('http://www.facebook.com')
