@@ -366,11 +366,11 @@ POSTMAN_AUTOCOMPLETER_APP={
 AJAX_SELECT_BOOTSTRAP = True
 AJAX_SELECT_INLINES = 'inline'
 
-DATABASES = {}
-# Parse database configuration from $DATABASE_URL
-#try:
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+if os.environ.get('DATABASE_URL', None):
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config()
+
+
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
