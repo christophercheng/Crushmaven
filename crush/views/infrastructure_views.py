@@ -8,13 +8,14 @@ from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch#,xs_fetch
 import re
+from django.core.cache import cache
 #from django.test import LiveServerTestCase
 
 
 def testing(request):
 
-    
-    return HttpResponse(str(fetch_response = fb_fetch("1050",0)))
+    magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+    return HttpResponse("cookie: " + str(magic_cookie) + " | " + str(fetch_response = fb_fetch("1050",0)))
     #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
     #extracted_id_list = list(set(extracted_id_list))
