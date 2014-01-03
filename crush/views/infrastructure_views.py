@@ -9,52 +9,16 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch#,xs_fetch
 import re
 #from django.test import LiveServerTestCase
-from selenium import webdriver
-import time
+
 
 def testing(request):
 
-    #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
-    #driver.get('http://www.facebook.com')
-    #driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
-    #driver.find_element_by_id("pass").send_keys('carmel1')
-    #driver.find_element_by_id("loginbutton").click()
-    #driver.get("https://www.facebook.com/")
-    #print "cookie xs: " + str(driver.get_cookie('xs'))
-    #print "all cookies: " + str(driver.get_cookies())
-
-    #driver.close()
-    result = ""
-    try:
-        #driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
-        print"start it up now"
-        print "do this"
-
-        driver = webdriver.PhantomJS()
-    except Exception as e:
-        print "not able to get phantom driver: " + str(e)
-        #logger.error("problems laoding phantomjs driver")
-        result = "exception by webdriver startup : " + str(e)
-        return HttpResponse(result)
-    driver.get('http://www.facebook.com')
-    driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
-    driver.find_element_by_id("pass").send_keys('flirtally')
-    driver.find_element_by_id("loginbutton").click()
-    time.sleep(2)
-    try:
-        fb_fetch_cookie = str(driver.get_cookie(u'xs')[u'value'])
-    except:
-        return HttpResponse("exception by driver.get_cookie")
-    driver.close()
-    return HttpResponse("cookie = " + fb_fetch_cookie)
     
-
-    
-    #fetch_response = fb_fetch("1050",0)
-    #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
+    fetch_response = fb_fetch("1050",0)
+    extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
-    #extracted_id_list = list(set(extracted_id_list))
-    #result = "Number of results: " + str(len(extracted_id_list))
+    extracted_id_list = list(set(extracted_id_list))
+    result = "Number of results: " + str(len(extracted_id_list))
     
    
     return HttpResponse(result)
