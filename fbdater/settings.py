@@ -9,7 +9,7 @@ sys.path.insert(0, PROJECT_PATH)
 #ALLOWED_HOSTS = ['www.crushmaven.com']#new for django 1.5 
 ALLOWED_HOSTS=['crushmaven.com','crushmaven.herokuapp.com']
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 import logging
 
@@ -376,7 +376,6 @@ if os.environ.get('DATABASE_URL', None):
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #except:
 #    pass
-print "HELP ME!"
 try:
     from settings_local import *
 except ImportError, e:
