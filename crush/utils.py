@@ -56,7 +56,11 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
         
         
 def update_fb_fetch_cookie():
-        driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+        try:
+            driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+        except Exception as e:
+            logger.error("problems laoding phantomjs driver")
+            raise e
         driver.get('http://www.facebook.com')
         driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
         driver.find_element_by_id("pass").send_keys('flirtally')
