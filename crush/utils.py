@@ -57,7 +57,7 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
 # this function forces the cache to update its fb cookie value.  this is called daily from custom management command
 def update_fb_fetch_cookie():
         try:       
-            driver = webdriver.PhantomJS("/usr/local/bin/phantomjs")
+            driver = webdriver.PhantomJS("/vendor/phantomjs/bin")
         except Exception as e:
             print "not able to get phantom driver: " + str(e)
             send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed.  driver=webdriver.phantomjs() caused exception.  Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
