@@ -177,6 +177,9 @@ jQuery(document).ready(function($) {
 	 * -------------------------------------------- */
 	window.app_invite_modal=null;
 	$(".app_invite_link,#invite_interstitial_modal").on("click", ".app_invite", function(e) {
+	    {% if DEBUG!= True %}
+	    ga('send', 'event', 'button', 'click', 'invite_crush_button');
+	    {% endif %}
 		e.preventDefault();
 		// only initialize jquery modal dialog once per page load
 
@@ -451,6 +454,9 @@ jQuery(document).ready(function($) {
            var crush_name = $(this).attr('crush_name');
            var crush_first_name = $(this).attr('crush_first_name');
            var crush_last_name = $(this).attr('crush_last_name');
+           {% if DEBUG!= True %}
+           ga('send', 'event', 'button', 'click', 'notify_inactive_friend_button');
+           {% endif %}
            send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name);
   });
   
@@ -557,6 +563,9 @@ $(".tooltip_subtitle").click(function(){
 * -------------------------------------------- */
 
 $('.show_more').click(function(){
+    {% if DEBUG!= True %}
+    ga('send', 'event', 'button', 'click', 'show_more_help_button');
+    {% endif %}
 	$(this).hide();
 	$('.second_instruction_section').show(200);
 	$('.first_instruction_section .show_less').show();
@@ -565,12 +574,19 @@ $('.show_more').click(function(){
 });
 $('.show_less').click(function(){
 	$(this).hide();
+	
+    {% if DEBUG!= True %}
+    ga('send', 'event', 'button', 'click', 'show_less_help_button');
+    {% endif %}
 	$('.show_more').show();
 	$('.second_instruction_section').hide(200);
 	setTimeout(function(){$('.new_user_instructions').removeClass('expanded');},100);
 });
 
 $('.bt-fs-dialog').click(function(){
+    {% if DEBUG!= True %}
+    ga('send', 'event', 'button', 'click', 'friend_selector_all_buttons');
+    {% endif %}
 	window.wait_modal_open();
 })
 
