@@ -7,6 +7,7 @@ from django.core.cache import cache
 import time
 from crush.utils_email import send_mailgun_email
 from selenium import webdriver
+import os
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -63,8 +64,10 @@ def update_fb_fetch_cookie():
             send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed.  driver=webdriver.phantomjs() caused exception.  Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
             raise e
         driver.get('http://www.facebook.com')
-        driver.find_element_by_id("email").send_keys('i.am.not.spam.i.swear@gmail.com')
-        driver.find_element_by_id("pass").send_keys('flirtally')
+        fb_fetch_username = os.environ.get('FB_FETCH_USERNAME', '')
+        fb_fetch_password=os.environ.get('FB_FETCH_PASSWORD','')
+        driver.find_element_by_id("email").send_keys(fb_fetch_username)
+        driver.find_element_by_id("pass").send_keys(fb_fetch_password)
         driver.find_element_by_id("loginbutton").click()
         time.sleep(2)
         try:
