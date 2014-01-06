@@ -6,7 +6,7 @@ from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch#,xs_fetch
+from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
 
@@ -149,13 +149,10 @@ def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
-                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Find out who's attracted to you at crushmaven.com. | Already in a relationship?  Help set your friends up - all at crushmaven.com.",
-                               'change_url':"http://www.crushmaven.com/admirer_for/" + first_name + "/" + last_initial + "/"
+                               'change_description': "CrushMaven is a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. More than just friends?  Find out at crushmaven.com.",
+                               'change_url':"http://" + request.META.HTTP_HOST + "/admirer_for/" + first_name + "/" + last_initial + "/"
                                })    
     return HttpResponse("")
-
-def xs_fetch_cookie(request):
-    xs_fetch()
 
 #import sleekxmpp
 #import logging
