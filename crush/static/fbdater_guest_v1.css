@@ -876,20 +876,16 @@ color:#000;
 .footer_section .center_container {
 	padding-top:35px;
 	font-size:16px;
-	color:#858585;
-	color:#fff;
 	padding-bottom:40px;
 	font-family:"helvetica neue",arial;
 	letter-spacing:1px;
 	text-align:center;
+	color:#fff;
 }
 .footer_section .center_container .first_footer_line{
 	display:inline-block;
 }
 
-.footer_section:hover .first_footer_line, .footer_section:hover a{
-	color:#09ABE8!important;
-}
 .hidden_text{
 
 	color:#141432;
@@ -900,7 +896,17 @@ color:#000;
 	display:inline-block;
 	margin-left:20px;
 	font-weight:normal;
-	color:#82829B;
+	color:#fff;
+}
+
+a#bottom_link_contact:hover {
+	color:#ED1939;
+}
+a#bottom_link_terms:hover {
+	color:#9A3F98;
+}
+a#bottom_link_privacy:hover {
+	color:#09ABE8;
 }
 
 /*  ----------- GUEST PAGES ------------ */
