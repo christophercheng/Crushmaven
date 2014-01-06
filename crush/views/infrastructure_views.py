@@ -9,9 +9,10 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
-
+@login_required
 def testing(request):
- 
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
     fetch_response = fb_fetch("1050",0)
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
@@ -20,11 +21,18 @@ def testing(request):
     
    
     return HttpResponse(result)
-
+@login_required
 def testing2(request):
- 
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
     magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
     return HttpResponse("cookie in cache: " + magic_cookie)
+@login_required
+def testing_prep(request):
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
+    cache.set(settings.FB_FETCH_COOKIE,"151%3AmpkGYqrbJNvC7A%3A2%3A1388994027%3A15839")
+    return HttpResponse("done")
 
 # import the logging library
 import logging

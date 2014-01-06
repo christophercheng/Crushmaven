@@ -44,11 +44,11 @@ class MultiEmailField(forms.Field):
                 mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
                 print str(mailgun_result.text)
                 dictionary_result = json.loads(mailgun_result.text)
-                if not dictionary_result['is_valid']:
-                    raise ValidationError(('%s is not a valid email address') % email)
             except Exception as e:
-                    print str(e)
-                    raise ValidationError("Please try again.  We're having issues :(")
+                raise ValidationError("Please try again.  We're having issues :(")
+            if not dictionary_result['is_valid']:
+                raise ValidationError(('%s is not a valid email address') % email)
+
 
 # same as mutliemailfield but doesn't have placeholder text
 class MF_MultiEmailField(MultiEmailField):

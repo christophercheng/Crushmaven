@@ -66,6 +66,8 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     
     (r'^testing2/$','testing2'),
     
+    (r'^testing_prep/$','testing_prep'),
+    
     (r'^setup_by/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','setup_by'),
     
     (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for'),

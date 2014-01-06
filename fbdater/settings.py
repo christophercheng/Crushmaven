@@ -215,9 +215,10 @@ os.environ['MEMCACHE_PASSWORD'] = os.environ.get('MEMCACHIER_PASSWORD', '')
 CACHES = {
   'default': {
     'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
-    'TIMEOUT': 500,
+    'TIMEOUT': 160000, #86,000 seconds is about one day so expire the cookie in 2 days
     'BINARY': True,
-    'OPTIONS': { 'tcp_nodelay': True }
+    'OPTIONS': { 'tcp_nodelay': True,
+                'MAX_ENTRIES':1000000 }
   }
 }
 # old cache for local memory - will not likely work on Heroku because a dyno may be dynamically run on separate instances - which would invalidate cache
