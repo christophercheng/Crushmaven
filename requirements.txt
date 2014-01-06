@@ -9,3 +9,4 @@ pylibmc==1.2.3
 django-pylibmc-sasl==0.2.4
 selenium==2.39.0
 gunicorn==18.0
+newrelic
