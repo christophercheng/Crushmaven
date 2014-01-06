@@ -53,7 +53,7 @@ def home(request):
         else:
             return HttpResponseRedirect('/your_crushes/')
     else:
-        return render(request,'guest_home.html')
+        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID})
 
 
 @login_required
