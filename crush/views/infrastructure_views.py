@@ -150,7 +150,8 @@ def admirer_for(request,first_name,last_initial):
                               {
                                'change_title': first_name + " " + last_initial + '. has an admirer!', 
                                'change_description': "CrushMaven is a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. More than just friends?  Find out at crushmaven.com.",
-                               'change_url':"http://" + request.META['HTTP_HOST'] + "/admirer_for/" + first_name + "/" + last_initial + "/"
+                               'change_url':"http://" + request.META['HTTP_HOST'] + "/admirer_for/" + first_name + "/" + last_initial + "/",
+                               'facebook_app_id':settings.FACEBOOK_APP_ID
                                })    
     return HttpResponse("")
 
