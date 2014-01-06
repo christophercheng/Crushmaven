@@ -218,7 +218,7 @@ CACHES = {
     'TIMEOUT': 160000, #86,000 seconds is about one day so expire the cookie in 2 days
     'BINARY': True,
     'OPTIONS': { 'tcp_nodelay': True,
-                'MAX_ENTRIES':1000000 }
+                'MAX_ENTRIES':1000 }
   }
 }
 # old cache for local memory - will not likely work on Heroku because a dyno may be dynamically run on separate instances - which would invalidate cache
