@@ -877,7 +877,7 @@ color:#000;
 	padding-top:35px;
 	font-size:16px;
 	color:#858585;
-	color:#82829B;
+	color:#fff;
 	padding-bottom:40px;
 	font-family:"helvetica neue",arial;
 	letter-spacing:1px;
@@ -888,7 +888,7 @@ color:#000;
 }
 
 .footer_section:hover .first_footer_line, .footer_section:hover a{
-	color:#fff!important;
+	color:#09ABE8!important;
 }
 .hidden_text{
 
