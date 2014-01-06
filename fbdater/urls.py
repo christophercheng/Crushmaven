@@ -6,10 +6,28 @@ from django.contrib import admin
 from ajax_select import urls as ajax_select_urls
 #from django.views.generic.base import RedirectView
 from django.conf import settings
+from django.contrib import sitemaps
+from django.core.urlresolvers import reverse
+
+class StaticViewSitemap(sitemaps.Sitemap):
+    priority = 0.5
+    changefreq = 'daily'
+
+    def items(self):
+        return ['home_short','contact', 'terms','privacy']
+
+    def location(self, item):
+        return reverse(item)
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
+
 
 admin.autodiscover()
 handler404 = 'crush.views.infrastructure_views.home'
 #handler500 = '/setups_for_me/'
+
 
 # Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
@@ -19,6 +37,9 @@ urlpatterns = patterns('facebook.views',
     (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
 )
 
+urlpatterns+=patterns('',
+(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+)
 #urlpatterns += patterns('',
 #(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v2.png')),
 #)
@@ -172,13 +193,12 @@ urlpatterns += patterns('crush.views.static_file_views',
     
     (r'^help_how_it_works/$','help_how_it_works'),
     
-    (r'^terms/$', 'help_terms'),
+    url(r'^terms/$', 'help_terms', name='terms'),
     
-    (r'^privacy/$', 'help_privacy'),
+    url(r'^privacy/$', 'help_privacy', name='privacy'),
         
-    (r'^contact/$', 'help_contact'),
+    url(r'^contact/$', 'help_contact', name='contact'),
     
-    (r'^help_fb_privacy_setting/$','help_fb_privacy_setting'),
 )
 
 urlpatterns += patterns('',
