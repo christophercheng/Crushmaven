@@ -6,12 +6,14 @@ Created on Dec 24, 2012
 import re
 from django import forms
 from django.core.validators import email_re
-from django.forms import ValidationError,TextInput
+from django.forms import ValidationError
+import requests
+from django.conf import settings
 
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
 class MultiEmailField(forms.Field):
-    widget=forms.TextInput(attrs={'placeholder':'Enter one or more email addresses'})
+    widget=forms.TextInput(attrs={'placeholder':'Enter one or more email addresses','maxlength':'100'})
     
     def to_python(self,value):
         #'normalize data to a list of strings'
@@ -37,10 +39,13 @@ class MultiEmailField(forms.Field):
                 raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
                 raise ValidationError(('%s is not a valid email address') % email)
+            mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
+            if mailgun_result!=None:
+                raise ValidationError(('%s is not a valid email address') % email)
 
 # same as mutliemailfield but doesn't have placeholder text
 class MF_MultiEmailField(MultiEmailField):
-    widget=forms.TextInput()
+    widget=forms.TextInput(attrs={'maxlength':'100'})
    
 
 class AppInviteForm2(forms.Form):

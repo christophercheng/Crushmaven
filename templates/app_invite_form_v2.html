@@ -12,7 +12,7 @@ $(document).ready(function()
 
                 $("#sendbutton").attr('disabled','disabled');
                 $("#sendbutton").attr('value','sending...');
-                $("#sendwrapper").prepend('<span>Sending message, please wait... </span>');
+                $("#sendwrapper").prepend('<span>Submitting form, please wait... </span>');
                 $("#ajaxwrapper").load(
                     form.attr('action') + ' #ajaxwrapper',
                     form.serializeArray(),
@@ -28,7 +28,16 @@ $(document).ready(function()
                 			else
                 				location.href='/your_crushes';
                 		}
-            		});
+                    	else if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
+                    		
+                    			$('#app_invite_form #mutual_friend_input_section').show();
+                    			section_offset=$('#mutual_friend_input_section').offset().top + 26; // this is the pixel top position of the first input
+                    			offsetTop = $('#mutual_friend_input_section .errorlist').first().children('li').offset().top-section_offset;
+                    			$('#mutual_friend_input_section').animate({
+                    				scrollTop:offsetTop
+                    			},0);
+                    		}
+                    	});
                 
                e.preventDefault();
                });// close off submit function
@@ -42,7 +51,6 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	$('#app_invite_form #mutual_friend_input_section').toggle();
 	$(this).children('.arrow').toggle(); 
 	//$(this).children('#down_arrow').toggle();
-	
 	
 });
 
@@ -134,6 +142,7 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 			}
 		}
 	});	
+	
 });
 /*  TOOLTIP SUPPORT */
 
