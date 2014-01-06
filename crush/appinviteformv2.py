@@ -9,6 +9,7 @@ from django.core.validators import email_re
 from django.forms import ValidationError
 import requests
 from django.conf import settings
+import json
 
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
@@ -39,9 +40,15 @@ class MultiEmailField(forms.Field):
                 raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
                 raise ValidationError(('%s is not a valid email address') % email)
-            mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
-            if mailgun_result!=None:
-                raise ValidationError(('%s is not a valid email address') % email)
+            try:
+                mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
+                print str(mailgun_result.text)
+                dictionary_result = json.loads(mailgun_result.text)
+                if not dictionary_result['is_valid']:
+                    raise ValidationError(('%s is not a valid email address') % email)
+            except Exception as e:
+                    print str(e)
+                    raise ValidationError("Please try again.  We're having issues :(")
 
 # same as mutliemailfield but doesn't have placeholder text
 class MF_MultiEmailField(MultiEmailField):
