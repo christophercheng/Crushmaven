@@ -587,14 +587,22 @@ div#who_it_works_on_section .icon{
 	margin-right:15px;
 	vertical-align:bottom;
 }
-#who_it_works_on_section .info_row:hover .info_section_subtitle{
-	font-size:23px;
-	cursor:default;
-}
+
 div#who_it_works_on_section .info_section_subtitle {
 	display:inline;
 	#color:#09abe8;
-	color:#3b5998;
+	#color:#3b5998;
+	background:#3b5998;
+	color:#fff;
+	border-radius:2px 15px 15px 2px;
+	padding:2px 15px 0px 7px;
+}
+
+div#who_it_works_on_section .info_row2 .info_section_subtitle{
+	margin-left:12px;
+}
+div#who_it_works_on_section .info_row3 .info_section_subtitle{
+	margin-left:18px;
 }
 
 div#who_it_works_on_section .info_section_title {
