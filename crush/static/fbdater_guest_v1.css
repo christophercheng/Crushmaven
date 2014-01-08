@@ -479,35 +479,6 @@ div#how_it_works_section {
 }
 
 
-.arrow_down {
-	display:none;
-	width: 0px;
-	height: 0px;
-
-	border-color: #fff transparent transparent transparent;
-	border-top:15px solid #fff;
- 	border-left:30px dotted rgba(255,255,255, 0);
- 	border-right:30px dotted rgba(255,255,255, 0);
- 	border-bottom:0px;
-	position:absolute;
-	top:-2px;
-	left:50%;
-	margin-left:-73px;
-}
-#who_it_works_on_section .arrow_down {
-	border-color:#372050 transparent transparent transparent;
-}
-#who_will_know_section .arrow_down {
-	border-color:#F2F2F2 transparent transparent transparent;
-	z-index:5;
-}
-#who_will_know_section .arrow_down_outer {
-	border-color:rgb(212,212,212) transparent transparent transparent;
-	z-index:4;
-	top:-1px;
-}
-
-
 #guest_page #how_it_works_section{
 	background:#fff;
 	padding-top:90px;
@@ -539,7 +510,7 @@ div#how_it_works_section .info_column2 .icon,div#how_it_works_section .info_colu
 div#how_it_works_section .info_section_title{
 	color:#fff;
 	text-shadow:1px 1px 0 #21073D;
-	margin-left:-100px;
+	margin-left:-108px;
 	margin-top:-15px;
 	text-align:center;
 	margin-bottom:45px;
@@ -647,7 +618,7 @@ div#who_will_know_section .info_section_title {
 	color:#ff0000;
 	#color:#09abe8;
 	color:#9A3F98;
-	margin-left:-72px;
+	margin-left:-74px;
 	text-align:center;
 	font-size:39px;
 	margin-top:-15px;
@@ -918,7 +889,7 @@ color:#000;
 #bottom_links a{
 	font-size:14px;
 	display:inline-block;
-	margin-left:22px;
+	margin-left:20px;
 	font-weight:normal;
 	color:#fff;
 }
