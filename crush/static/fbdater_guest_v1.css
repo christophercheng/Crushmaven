@@ -474,11 +474,47 @@ div#how_it_works_section {
 
 	color:#fff!important;
 	margin-top:-4px;
-	margin-bottom:1px;
+	#margin-bottom:1px;
 	-webkit-font-smoothing: antialiased;
+	border-top:1px solid #000;
+	border-bottom:1px solid #000;
+	background:#372050;
+
 }
-
-
+/*
+div#qa_section:after{
+    content: " ";
+    display:block;
+    position: relative;
+    bottom:-312px;
+    left:0px;
+    width:100%;
+    height:14px;
+    background: linear-gradient(#FFF 0%, transparent 0%), linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
+    background: -webkit-linear-gradient(#FFF 0%, transparent 0%), -webkit-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -webkit-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
+    background: -o-linear-gradient(#FFF 0%, transparent 0%), -o-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -o-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
+    background: -moz-linear-gradient(#FFF 0%, transparent 0%), -moz-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -moz-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
+        background: -ms-linear-gradient(#FFF 0%, transparent 0%), -ms-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -ms-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
+    background-repeat: repeat-x;
+    background-size: 0px 100%, 13px 14px, 13px 14px;
+}
+div#how_it_works_section:after{
+    content: " ";
+    display:block;
+    position: relative;
+    bottom:-377px;
+    left:0px;
+    width:100%;
+    height:14px;
+    background: linear-gradient(#372050 0%, transparent 0%), linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
+    background: -webkit-linear-gradient(#372050 0%, transparent 0%), -webkit-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -webkit-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
+    background: -o-linear-gradient(#372050 0%, transparent 0%), -o-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -o-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
+    background: -moz-linear-gradient(#372050 0%, transparent 0%), -moz-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -moz-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
+        background: -ms-linear-gradient(#372050 0%, transparent 0%), -ms-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -ms-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
+    background-repeat: repeat-x;
+    background-size: 0px 100%, 13px 14px, 13px 14px;
+}
+*/
 #guest_page #how_it_works_section{
 	background:#fff;
 	padding-top:90px;
@@ -553,9 +589,10 @@ div#how_it_works_section .info_column2 .icon {
 }
 
 div#who_it_works_on_section {
+	
 	background:#F2F2F2;
 	#background:white;
-	border-top:1px solid rgb(212,212,212);
+	#border-top:1px solid rgb(212,212,212);
 }
 
 div#who_it_works_on_section .icon{
@@ -867,6 +904,9 @@ color:#000;
 }
 
 /* --------- FOOTER SECTION --------- */
+.footer_section{
+	border-top:1px solid #000;
+}
 .footer_section .center_container {
 	padding-top:50px;
 	font-size:16px;
