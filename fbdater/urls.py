@@ -28,6 +28,8 @@ urlpatterns += patterns('',
 urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
 
+        
+    url(r'^sitemap\.xml', 'sitemap'),
     
     url(r'^$', 'home', name="home_short"),
     
@@ -49,8 +51,6 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     
     (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for'),
 
-    
-    url(r'^sitemap\.xml', 'sitemap'),
 )
    
 
