@@ -51,7 +51,7 @@ import hashlib, hmac
 # handles both member and guest home page
 
 def sitemap(request):
-    return HttpResponseRedirect('/static/sitemap.xml',mimetype='application/xml')
+    return HttpResponseRedirect('/static/sitemap.xml',mimetype='text/xml')
 
 def home(request):
 
