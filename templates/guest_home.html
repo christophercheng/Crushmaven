@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+<html lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://ogp.me/ns/fb#" xmlns:website="http://ogp.me/ns/website">
+
+<head>
   <meta property="fb:app_id" content="{{ facebook_app_id }}" /> 
   <meta property="og:type"  content="website" /> 
   <meta property="og:description" content="{% if change_description %}{{ change_description }}{% else %}CrushMaven | More than just friends?  Anonymously discover if someone you like feels the same.{% endif %}" />
@@ -21,10 +22,9 @@
 
   
   <link type="text/css" href="{{ STATIC_URL }}fbdater_guest_v1.css" rel="stylesheet"/>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
-    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
-
-   <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Varela+Round'>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
+  <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
+  <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Varela+Round'>
 
 	{% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
 	 <script>
@@ -40,6 +40,7 @@
 		  {% endif %}
 	</script>
 	{% endif %}
+	
   </head>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
