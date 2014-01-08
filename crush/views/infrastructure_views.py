@@ -50,6 +50,9 @@ import hashlib, hmac
 # -- Home Page --
 # handles both member and guest home page
 
+def sitemap(request):
+    return HttpResponseRedirect('/static/sitemap.xml')
+
 def home(request):
 
     if request.user.is_authenticated():

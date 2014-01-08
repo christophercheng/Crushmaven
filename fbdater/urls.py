@@ -6,23 +6,6 @@ from django.contrib import admin
 from ajax_select import urls as ajax_select_urls
 #from django.views.generic.base import RedirectView
 from django.conf import settings
-from django.contrib import sitemaps
-from django.core.urlresolvers import reverse
-
-class StaticViewSitemap(sitemaps.Sitemap):
-    priority = 0.5
-    changefreq = 'daily'
-
-    def items(self):
-        return ['home_short','contact', 'terms','privacy']
-
-    def location(self, item):
-        return reverse(item)
-
-sitemaps = {
-    'static': StaticViewSitemap,
-}
-
 
 admin.autodiscover()
 handler404 = 'crush.views.infrastructure_views.home'
@@ -37,47 +20,20 @@ urlpatterns = patterns('facebook.views',
     (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
 )
 
-urlpatterns+=patterns('',
-(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
-)
-#urlpatterns += patterns('',
-#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v2.png')),
-#)
-#urlpatterns += patterns('',
-#(r'^favicon\.png$', RedirectView.as_view(url='/static/images/favicon_v2.png')),
-#)
-
-# in case something bad has happened enable this view so that all site requests go here
-#urlpatterns += patterns('crush.views.infrastructure_views',    
-#    (r'', 'under_construction'),
-#)
-
 urlpatterns += patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_ROOT}),
 )
 
-
-#    url(r'^accounts/login/$','django.contrib.auth.views.login'),
-
-
-
-#initialize_nf_crush(request,admirer_id,crush_id,admirer_gender,minimum_lineup_members):
-
-# ----      LINEUP FUNCTIONALITY  --
-#urlpatterns += patterns('crush.views.lineup_views',
-  
-#    (r'^initialize_fof_crush/$','initialize_fof_crush'),
-
-#)
-
 # ----      BASIC APP FUNCTIONALITY  --
 urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
+
+    
     url(r'^$', 'home', name="home_short"),
     
     url(r'^home/$', 'home',name="home_medium"),  
     
-    (r'^google_home/$','google_home'),
+    (r'^ghome/$','google_home'),
     
     (r'^ajax_submit_feedback/$','ajax_submit_feedback'),
 
@@ -91,11 +47,10 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     
     (r'^testing_prep/$','testing_prep'),
     
-    (r'^setup_by/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','setup_by'),
-    
     (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for'),
+
     
-    (r'^setup_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','setup_for'),   
+    url(r'^sitemap\.xml', 'sitemap'),
 )
    
 
@@ -153,8 +108,6 @@ urlpatterns += patterns('crush.views.admirer_views',
 
 # ----      PLATONIC FRIENDS: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.platonic_friend_views',    
-
-    (r'^just_friends/$', 'just_friends'),
     
     (r'^ajax_reconsider/$','ajax_reconsider'),
 )
