@@ -6,7 +6,7 @@ margin: 0; padding: 0; border: 0;
 }
 
 body {
-	font-family:"varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
+	font-family:"Houschka Rounded Medium","varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: auto;	
@@ -192,7 +192,8 @@ h2#tagline1{
 	color:#fff;
 	display:none;
 	font-style:normal;
-	font-family:"varela round"
+	font-family:"varela round", Verdana;
+	
 }
 
 .facebookbtn {
@@ -342,7 +343,7 @@ div.info_row{
 }
 
 div.info_section_title {
-	font-weight:600;
+	#font-weight:600;
 	font-size:32px;
 	margin-bottom:30px;
 }	
@@ -479,6 +480,7 @@ div#how_it_works_section {
 
 
 .arrow_down {
+	display:none;
 	width: 0px;
 	height: 0px;
 
@@ -515,6 +517,7 @@ div#how_it_works_section {
 	color:#9A3F98;
 	text-shadow:none;
 	margin-bottom:20px!important;
+
 }
 #guest_page .singles_step_title{
 	color:#9A3F98;
@@ -536,7 +539,11 @@ div#how_it_works_section .info_column2 .icon,div#how_it_works_section .info_colu
 div#how_it_works_section .info_section_title{
 	color:#fff;
 	text-shadow:1px 1px 0 #21073D;
-
+	margin-left:-100px;
+	margin-top:-15px;
+	text-align:center;
+	margin-bottom:45px;
+	font-size:39px;
 }
 
 div#how_it_works_section .step_number{
@@ -557,7 +564,7 @@ div#how_it_works_section .info_section_subtitle{
 	#border-color:darkGray;
 	#padding-bottom:14px;
 	text-shadow:1px 1px 0 #21073D;
-		font-weight:600;
+	font-weight:600;
 	}
 	
 
@@ -594,7 +601,7 @@ div#who_it_works_on_section .info_section_subtitle {
 	#color:#3b5998;
 	background:#3b5998;
 	color:#fff;
-	border-radius:2px 15px 15px 2px;
+	border-radius:4px 15px 15px 4px;
 	padding:2px 15px 0px 7px;
 }
 
@@ -608,6 +615,9 @@ div#who_it_works_on_section .info_row3 .info_section_subtitle{
 div#who_it_works_on_section .info_section_title {
 	color:#3b5998;
 	#color:#09abe8;
+	font-size:39px;
+		margin-top:-15px;
+		margin-bottom:45px;
 }
 div#who_it_works_on_section .info_section_text{
 	margin-bottom:36px;
@@ -637,6 +647,11 @@ div#who_will_know_section .info_section_title {
 	color:#ff0000;
 	#color:#09abe8;
 	color:#9A3F98;
+	margin-left:-72px;
+	text-align:center;
+	font-size:39px;
+	margin-top:-15px;
+	margin-bottom:45px;
 }
 div#who_will_know_section .info_section_subtitle {
 	color:#ff0000;
@@ -660,7 +675,7 @@ div#who_will_know_section .info_section_subtitle {
 	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
 	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
 }
- #who_will_know_section .info_column:hover .info_section_subtitle, #how_it_works_section .info_column3:hover .icon{ 
+ #who_will_know_section .info_column:hover .info_section_subtitle, #how_it_works_section .info_column3:hover .icon, #how_it_works_section .info_column1:hover .icon{ 
 	-webkit-animation-name: spaceboots;
 	-webkit-animation-duration: 0.2s;
 	-webkit-transform-origin:50% 50%;
@@ -882,16 +897,17 @@ color:#000;
 
 /* --------- FOOTER SECTION --------- */
 .footer_section .center_container {
-	padding-top:35px;
+	padding-top:50px;
 	font-size:16px;
-	padding-bottom:40px;
-	font-family:"helvetica neue",arial;
+	padding-bottom:55px;
+	#font-family:"helvetica neue",arial;
 	letter-spacing:1px;
 	text-align:center;
 	color:#fff;
 }
 .footer_section .center_container .first_footer_line{
 	display:inline-block;
+	margin-left:-40px;
 }
 
 .hidden_text{
@@ -902,7 +918,7 @@ color:#000;
 #bottom_links a{
 	font-size:14px;
 	display:inline-block;
-	margin-left:20px;
+	margin-left:22px;
 	font-weight:normal;
 	color:#fff;
 }
