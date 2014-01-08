@@ -29,7 +29,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     # guest vs. member processing done at view module
 
         
-    url(r'^sitemap\.xml', 'sitemap'),
+    #url(r'^sitemap\.xml', 'sitemap'),
     
     url(r'^$', 'home', name="home_short"),
     
