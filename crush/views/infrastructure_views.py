@@ -63,7 +63,19 @@ def home(request):
     else:
         return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID})
 
-
+#same as home but allows me to do special tracking
+def google_home(request):
+    if request.user.is_authenticated():
+    
+            if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
+                return HttpResponseRedirect('/your_crushes/') 
+            elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
+                return HttpResponseRedirect('/admirers/')
+            else:
+                return HttpResponseRedirect('/your_crushes/')
+    else:
+        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'google_ad_visit':True})
+        
 @login_required
 def ajax_submit_feedback(request):
     message=request.POST['message']

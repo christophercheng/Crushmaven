@@ -32,6 +32,9 @@
 
 		  ga('create', 'UA-46806664-1', 'crushmaven.com');
 		  ga('send', 'pageview');
+		  {% if google_ad_visit %}
+		  	ga('send', 'event', 'button', 'click', 'google_ad_visit');
+		  {% endif %}
 	</script>
 	{% endif %}
   </head>
