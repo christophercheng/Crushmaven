@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
-	<meta property="fb:app_id" content="{{ facebook_app_id }}" /> 
+  <meta property="fb:app_id" content="{{ facebook_app_id }}" /> 
   <meta property="og:type"  content="website" /> 
   <meta property="og:description" content="{% if change_description %}{{ change_description }}{% else %}CrushMaven | More than just friends?  Anonymously discover if someone you like feels the same.{% endif %}" />
   <meta property="og:title" content="{% if change_title%}{{ change_title }}{% else %}CrushMaven | More than just friends? Anonymously discover if someone you like feels the same.{% endif %}" />
   <meta property="og:image" content="http://{{ request.META.HTTP_HOST}}{{ STATIC_URL }}images/cm_logo_lg.png"/>
   <meta property="og:image:width" content="259" />
-	<meta property="og:image:height" content="230" />
+  <meta property="og:image:height" content="230" />
   <meta property="og:site_name" content="CrushMaven"/>
   <meta property="og:url" content="{% if change_url %}{{ change_url }}{% else %}http://{{ request.META.HTTP_HOST }}{% endif %}" />
+  
   <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
   <meta name="description" content="{% if change_description %}{{ change_description }}{% else %}More than just friends? Anonymously discover if someone you like feels the same at CrushMaven.com{% endif %}" />
   <meta name="robots" content="all,index" />
   <meta name="Revisit-After" content="1 Days" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-  <meta name="msvalidate.01" content="F565741F4EDE19923152093B57600E64" />
+  
+  <title>{% if change_title%}{{ change_title }}{% else %}CrushMaven{% endif %}</title>
+
+  
   <link type="text/css" href="{{ STATIC_URL }}fbdater_guest_v1.css" rel="stylesheet"/>
-	<title>{% if change_title%}{{ change_title }}{% else %}CrushMaven{% endif %}</title>
     <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
     <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
 
