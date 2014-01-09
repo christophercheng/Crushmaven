@@ -240,14 +240,15 @@ class FacebookUser(AbstractUser):
         global all_inactive_user_list
     # this is done whenever an active user is first created
         try:
-
+            logger.warning("calling find_inactive_friends with access_token: " + self.access_token + " and username: " + self.username)
             #print "attempting to load the json results"
+            
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
 
         except Exception as e:
-            print str(e)
+            #print str(e)
             logger.error("failed calling graph api fetch with me/friends and access code: " + self.access_token + " for user: " + self.username)
-            raise 
+            raise e
 
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
