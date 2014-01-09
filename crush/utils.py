@@ -52,7 +52,7 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
             return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
             
         else:
-            logger.error("failed graph api fetch exception: " + str(e) + " : " + str(url))
+            logger.error("failed graph api fetch exception: " + str(e) + " : " + str(url) + " and access token: " + access_token)
             raise e # pass on the exception for the caller to handle
         
 # this function forces the cache to update its fb cookie value.  this is called daily from custom management command
