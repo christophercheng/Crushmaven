@@ -2327,8 +2327,8 @@ ul.attraction_status_bar li.past_status_animated{
 	background-position:-31px -124px;
 	height:16px;
 	margin-left:3px;
-	background-color:#3b5998;
-	background-color:none;
+	#background-color:#3b5998;
+	#background-color:none;
 	border-radius:2px;
 	margin-right:3px;
 	vertical-align:bottom
