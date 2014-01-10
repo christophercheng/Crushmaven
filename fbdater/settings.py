@@ -280,9 +280,9 @@ PLATONIC_RATINGS = {
                      }
 
 DELETION_ERROR = {
-                  0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
-                  1:'Your crush is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes can not be removed while the user is interacting with the associated admirer lineup.',
-                  2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, all Likes may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
+                  0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, crushes may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',
+                  1:'Your crush is currently taking your admirer lineup.  To prevent other users from gaming the system i.e. figuring out what your feelings are without revealing their own, crushes can not be removed while the user is interacting with the associated admirer lineup.',
+                  2:"To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, crushes may only be removed once " + str(MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW) + " days have passed since their response was first viewed.", 
                    }
 
 LINEUP_STATUS_CHOICES = {

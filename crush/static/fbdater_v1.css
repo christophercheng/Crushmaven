@@ -2328,6 +2328,7 @@ ul.attraction_status_bar li.past_status_animated{
 	height:16px;
 	margin-left:3px;
 	background-color:#3b5998;
+	background-color:none;
 	border-radius:2px;
 	margin-right:3px;
 	vertical-align:bottom
@@ -2336,6 +2337,7 @@ ul.attraction_status_bar li.past_status_animated{
 .left_half_block:hover .view_facebook_icon{
 	#background-color:#3b5998;
 	#border:1px solid #3b5998;
+	background-color:#3b5998;
 	box-shadow:1px 1px 1px #000;
 }
 
