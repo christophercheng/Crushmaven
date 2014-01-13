@@ -209,7 +209,7 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         logger.error (" facebook lineup user not found")
         ajax_response += '<div class="slide_container">'
         ajax_response +='<span class="lineup_name">user not available</span>'
-        ajax_response +='<span class="lineup_mugshot"><img src="http://www.crushmaven.com/static/images/fb_unknown_user_pic.jpg"></span>'
+        ajax_response +='<span class="lineup_mugshot view_facebook_widget"><img src="http://www.crushmaven.com/static/images/fb_unknown_user_pic.jpg"></span>'
         ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + str(lineup_member.username) + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
         ajax_response +='<span class="lineup_decision" username="' + str(lineup_member.username) + '" style="margin-top:5px">'
         ajax_response += "<span class=' choice crush existing_choice'>Sorry, this lineup member is no longer available...</span>"
@@ -225,9 +225,9 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     # build the basic elements
     # 1) name, photo, position info 
     ajax_response += '<div class="slide_container">'
-    ajax_response +='<span class="lineup_name">' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</span>'#<span class="lineup_position_info">(' + str(display_position)  + ' of ' + str(lineup_count) + ')</span></span>'
-    ajax_response +='<span class="lineup_mugshot"><img src="' + lineup_member_user.get_facebook_pic(125) + '"></span>'
-    ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
+    ajax_response +='<a href="https://www.facebook.com/' + lineup_member_user.username + '" target="_blank">' + '<span class="lineup_name">' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '</span>'
+    ajax_response +='<span class="lineup_mugshot"><img src="' + lineup_member_user.get_facebook_pic(125) + '"><span class="view_facebook_widget">view<span class="view_facebook_icon"></span></span> </a></span>'
+    #ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + lineup_member_user.username + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
 
     # if the relationship is friend-of-friend, then show pictures of mutual friends:
     if admirer_rel.friendship_type==1:
