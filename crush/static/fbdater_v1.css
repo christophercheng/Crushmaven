@@ -10,7 +10,6 @@ display: block;
 
 
 body {
-	font-family:"lucida grande","helvetica neue",helvetica,arial,verdana,sans-serif;  
   font-size: 14px;  
   line-height: 16px;
   color: #333333;  
@@ -232,7 +231,7 @@ a.button {
 	border-radius:8px 8px 0 0!important;
 	font-size:17px!important;
 	font-weight:bold!important;
-	font-family:"Lucida Grande", arial,helvetica!important;
+	font-family:"Lucida Grande", helvetica, arial!important;
 }
 
 .ui-icon{
@@ -457,7 +456,6 @@ a.button {
 	z-index: 101;
 	position:relative;
 	height:100%;
-	font-family:"helvetica neue";
 }
 
 .left_sidebar {
@@ -771,7 +769,6 @@ a.logo img{
 #right_header_menu a{
 	color:#333333;
 	font-size:13px;
-	#font-family:helvetica;
 	font-weight:bold;
 	text-align:right;
 	padding-left:15px;
@@ -885,7 +882,6 @@ a.logo img{
 	height:65px;
 	width:195px;
 	margin-top:15px;
-	font-family:"helvetica neue";
 }
 
 .left_sidebar_container .navbar li .nav_arrow {
@@ -1013,9 +1009,7 @@ a.logo img{
 	font-style:italic!important;
 	text-shadow:none;
 }
-.navbar li .nav_subtext{
-	font-family:"lucida grande";
-}
+
 .navbar li.active .menu_count{
 	top:17px;
 }
@@ -1271,7 +1265,6 @@ a.logo img{
 
 .new_user_instructions{
 	font-weight:normal;
-	#font-family:helvetica;
 	width:530px;
 	margin-left:auto;
 	margin-right:auto;
@@ -1347,8 +1340,7 @@ a.logo img{
 	text-shadow: 1px 1px 0 #FFFFFF;
 	color:#4A4AAB;
 	color:#404054;
-	font-family:"helvetica neue";
-		color:#2E8AE6!important;
+	color:#2E8AE6!important;
 	font-size:24px!important;
 }
 .new_user_instructions span.instructions_subtitle{
@@ -1457,7 +1449,7 @@ a.logo img{
 	font-weight:bold;
 	font-size:13px;
 	text-decoration:none;
-	font-family:arial;
+	#font-family:arial;
 	text-shadow:1px 1px 0px #000;
 	letter-spacing:1px;
 }
@@ -1471,7 +1463,6 @@ a.logo img{
 }
 .new_user_sub_instructions{
 	font-weight:normal;
-	#font-family:helvetica;
 	width:450px;
 	margin-left:auto;
 	margin-right:auto;
@@ -1515,7 +1506,6 @@ ul.title_bar {
 	white-space:nowrap;	
 	height:21px;
 	position:relative;
-	font-family:"helvetica neue";
 	border-bottom:1px solid #fff;
 	#border: 1px solid #09ABE8;
 	#border-left:5px solid #09ABE8;
@@ -1844,7 +1834,6 @@ ul.nav_bar li#nav_bar_options{
 	font-size:17px;
 	color:#333333;
 	line-height:16px;
-	#font-family:helvetica,"lucida grande",tahoma,verdana,arial,sans-serif;
 	}
 	
 .down-dir{
@@ -2107,7 +2096,6 @@ ul.attraction_status_bar{
 
 ul.attraction_status_bar li{
 	display:inline-block;
-	font-family:"trebuchet MS";
 }
 
 ul.attraction_status_bar li p {
@@ -2123,7 +2111,6 @@ ul.attraction_status_bar li.status_bar_name{
 	font-style:italic;
 	font-weight:bold;
 	font-size:14px;
-	#font-family:helvetica,arial;
 	color:white;
 	padding:3px 7px;
 	margin:0;
@@ -2174,7 +2161,6 @@ ul.attraction_status_bar li.past_status_animated{
 	list-style:circle;
 }
 .status_details li {
-	#font-family:helvetica,"lucida grande",tahoma,verona,arial,sans-serif;
 	font-size:12px;
 	margin-left:27px;
 	line-height:16px;
@@ -2491,7 +2477,6 @@ ul.attraction_status_bar li.past_status_animated{
 	padding:7px 5px 5px 5px;
 	text-align:center;
 	border-radius:7px;
-	#font-family:arial;
 	font-style:normal;
 	font-size:15px;
 	background-color: #DC143C;
@@ -2902,7 +2887,6 @@ ul.bxslider_element #slide_overlay {
 }
 
 #lineup_container #lineup-header {
-	#font-family: helvetica,"lucida grande", tahoma, verdana, arial, sans-serif;
 	font-size: 12px;  
   	line-height: 17px;
   	text-align: left;
@@ -3754,7 +3738,6 @@ ul.bxslider_element #slide_overlay {
 
 #fs-dialog #fs-selected-user-list a, #fs-dialog #fs-user-list a, #fs-dialog #fs-confirm-user-list a{
 	color: #333333;
-	#font-family: helvetica,'Lucida Grande', Tahoma, Verdana, Arial, sans-serif !important;
 	font-size: 11px;
 	line-height: normal !important;
 	width: 555px;
@@ -4143,7 +4126,6 @@ ul.bxslider_element #slide_overlay {
 	margin-top:-1px;
 	position:relative;
 	font-size:12px;
-	font-family:helvetica;
 	border-radius:10px;
 	background:white;
 }
