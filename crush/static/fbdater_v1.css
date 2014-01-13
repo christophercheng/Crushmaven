@@ -2281,9 +2281,15 @@ ul.attraction_status_bar li.past_status_animated{
 
 .view_facebook_widget{
 	position:absolute;
-	left:117px;
+	left:113px;
 	top:142px;
-	width:70px;
+	width:47px;
+	height:18px;
+	display:block;
+	background: black;
+	opacity:.35;
+	border-radius:2px 0px 0px 0px;
+	text-align:center;
 }
 .view_facebook_widget a{
 	display:inline-block;
@@ -2292,20 +2298,16 @@ ul.attraction_status_bar li.past_status_animated{
 	color:#CDCDCD;
 	color:#fff;
 	letter-spacing:1px;
-	margin-bottom:1px;
 
 }
 
-.left_half_block:hover .view_facebook_widget a{
-	#color:#3b5998 ;
-	text-shadow:1px 1px 1px #000;
-}
+
 .view_facebook_icon{
 	display:inline-block;
 	border-radius:0px;
 	#background-color:#F1F1F1;
 	#background-color:none;
-	border:1px solid #f1f1f1;
+	border:1px solid #949494;
 	background-image:url('/static/images/full_sprite.png');	
 	background-repeat:no-repeat;
 	background-size:auto;
@@ -2315,16 +2317,15 @@ ul.attraction_status_bar li.past_status_animated{
 	height:16px;
 	margin-left:3px;
 	#background-color:#3b5998;
-	#background-color:none;
-	border-radius:2px;
-	margin-right:3px;
-	vertical-align:bottom
+	margin-right:-2px;
+	vertical-align:bottom;
+	margin-bottom:1px;
 }
 
-.left_half_block:hover .view_facebook_icon{
-	border:1px solid #3b5998;
-	background-color:#3b5998;
+.left_half_block:hover .view_facebook_widget {
+	opacity:.6;
 }
+
 
 
 /* ===========================   Admirer Page ========================= */
