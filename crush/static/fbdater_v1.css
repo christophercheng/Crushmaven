@@ -1248,6 +1248,7 @@ a.logo img{
 }
 .company_info a{
 	font-size:11px;
+	color:gray;
 }
 .company_info a:hover{
 	color:#0A0A14;
