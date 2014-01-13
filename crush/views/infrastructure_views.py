@@ -92,8 +92,12 @@ def ajax_submit_feedback(request):
 # -- Logout --
 @login_required
 def logout_view(request):
+    if request.user.username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
+        logout_path="/home?no_track"
+    else:
+        logout_path="/home/"
     logout(request)
-    return HttpResponseRedirect("/home/")
+    return HttpResponseRedirect(logout_path)
 
 def under_construction(request):
     return render(request,'under_construction.html')
