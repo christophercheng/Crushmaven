@@ -34,7 +34,7 @@ $(document).ready(function()
   
   $("#response_modal").on('click', '#response_send_message', function(e){
   	e.preventDefault();
-    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+  	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'view_response_button');
     {% endif %}
 	   var crush_id = $(this).attr('crush_id');
@@ -66,14 +66,14 @@ $(document).ready(function()
    
    $(".response_view_rating a").click(function(){
    		unique_id=$(this).attr('unique_id');
-	    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+   		{% if no_track != True  %}
 	    ga('send', 'event', 'button', 'click', 'view_rating_button');
 	    {% endif %}
 	   	purchase_rating(unique_id);
    });
    
    $("#response_modal").on('click','.response_view_rating a',function(){
-	    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	   {% if no_track != True  %}
 	    ga('send', 'event', 'button', 'click', 'view_rating_button');
 	    {% endif %}
 		unique_id=$(this).attr('unique_id');
@@ -123,7 +123,7 @@ $(document).ready(function()
 		$(this).parents('ul').css('display','none');
   		var name=$(this).attr('name');	
   		var username=$(this).attr('username');
-	    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+  		{% if no_track != True  %}
 	    ga('send', 'event', 'button', 'click', 'delete_crush_button');
 	    {% endif %}
   		$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
@@ -140,12 +140,12 @@ $(document).ready(function()
       window.remove_crush_dialog.dialog('option', 'buttons', {
     		"Cancel": function() {
     			$("#remove_crush_dialog").dialog("close");
-    		    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+    			{% if no_track != True  %}
     		    ga('send', 'event', 'button', 'click', 'delete_crush_cancel_button');
     		    {% endif %}
       		},
       		"Delete": function() {
-      		    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+      			{% if no_track != True  %}
       		    ga('send', 'event', 'button', 'click', 'delete_crush_confirmation_button');
       		    {% endif %}
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
@@ -168,7 +168,7 @@ $(document).ready(function()
  * -------------------------------------------- */
 
 $('.crush_name_link').click(function(){
-    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'crush_name_link_button');
     {% endif %}
 	menu_element = $(this).parent('.crush_block_name_center').children('ul');

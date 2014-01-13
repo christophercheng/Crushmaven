@@ -3,7 +3,7 @@
 <!-- ============ MIDDLE BUTTON(S) ============= -->	
 <div id="center_header_menu" class="drop_down_menu_link">
 
-		<a href="#" id="get_started_link" class="bt-fs-dialog" {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}onclick="ga('send', 'event', 'button', 'click', 'friend_selector_top_button');"{% endif %}><span class="add_icon"></span>Add a Crush</a>
+		<a href="#" id="get_started_link" class="bt-fs-dialog" {% if no_track != True  %}onclick="ga('send', 'event', 'button', 'click', 'friend_selector_top_button');"{% endif %}><span class="add_icon"></span>Add a Crush</a>
 </div>
 
 <!-- ============ LOGO ============= -->	

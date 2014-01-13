@@ -31,7 +31,10 @@ def context_processor(request):
                 ajax_reprocess_friends_with_admirers=False
 
         inactive_friend_section_html = me.html_for_inactive_friend_section(ajax_reprocess_friends_with_admirers)
-           
+        if  request.get_host() != 'www.crushmaven.com' or me.username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
+            no_track=True
+        else:
+            no_track=False
         return {
             'num_total_crushes': CrushRelationship.objects.all_crushes(me).count(),
             'num_total_admirers': progressing_admirers_count + past_admirer_relationships.count(),
@@ -48,6 +51,12 @@ def context_processor(request):
             'minimum_samegender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'minimum_crushgender_friends':settings.MINIMUM_LINEUP_MEMBERS,
             'inactive_friend_section_html':inactive_friend_section_html,
+            'no_track':no_track
             }
-    else: # whenever a user is logged in, just use an empty dictionary
-        return {}
+    else: # whenever a user is not logged in , if there is ?no_track in url, then disable analytics tracking
+        if request.get_host() != 'www.crushmaven.com' or 'no_track' in request.build_absolute_uri():
+            no_track=True
+        else:
+            no_track=False
+            
+        return {'no_track':no_track}

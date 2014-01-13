@@ -15,7 +15,7 @@
 	    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-	    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	    {% if no_track != True %}
 	    <script>
 	    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	    	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
 	 * -------------------------------------------- */
 	window.app_invite_modal=null;
 	$(".app_invite_link,#invite_interstitial_modal").on("click", ".app_invite", function(e) {
-	    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	    {% if no_track != True %}
 	    ga('send', 'event', 'button', 'click', 'invite_crush_button');
 	    {% endif %}
 		e.preventDefault();
@@ -464,7 +464,7 @@ jQuery(document).ready(function($) {
            var crush_name = $(this).attr('crush_name');
            var crush_first_name = $(this).attr('crush_first_name');
            var crush_last_name = $(this).attr('crush_last_name');
-           {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+           {% if no_track != True %}
            ga('send', 'event', 'button', 'click', 'notify_inactive_friend_button');
            {% endif %}
            send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name);
@@ -573,7 +573,7 @@ $(".tooltip_subtitle").click(function(){
 * -------------------------------------------- */
 
 $('.show_more').click(function(){
-    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+    {% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'show_more_help_button');
     {% endif %}
 	$(this).hide();
@@ -585,7 +585,7 @@ $('.show_more').click(function(){
 $('.show_less').click(function(){
 	$(this).hide();
 	
-    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'show_less_help_button');
     {% endif %}
 	$('.show_more').show();
@@ -594,7 +594,7 @@ $('.show_less').click(function(){
 });
 
 $('.bt-fs-dialog').click(function(){
-    {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}
+	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'friend_selector_all_buttons');
     {% endif %}
 	window.wait_modal_open();

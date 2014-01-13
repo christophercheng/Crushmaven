@@ -4,7 +4,7 @@
 
 		<!-- Left Bar Links -->	
 		<li class="{% navactive request 'your_crushes' %} new_crushes">
-			<a href="{% url 'crush.views.crush_views.your_crushes' %}" {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_crushes');"{% endif %}>
+			<a href="{% url 'crush.views.crush_views.your_crushes' %}" {% if no_track != True  %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_crushes');"{% endif %}>
 				<span class="menu_icon"></span>
 				<span class="menu_title">Your Crushes</span></span>
 				<span class="menu_count{% if num_new_responses %} new_menu_count{% endif %}">{{ num_total_crushes }}</span>
@@ -13,7 +13,7 @@
 			<span class="nav_arrow"></span>
 		</li>
 		<li class="{% navactive request 'admirers'%} new_admirers">
-			<a href="{% url 'crush.views.admirer_views.admirers' %}"  {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_admirers');"{% endif %}>
+			<a href="{% url 'crush.views.admirer_views.admirers' %}"  {% if no_track != True  %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_admirers');"{% endif %}>
 				<span class="menu_icon"></span>
 				<span class="menu_title admirers_menu_title">Admirers</span>
 				<span class="menu_count{% if num_admirers_in_progress %} new_menu_count{% endif %}">{{ num_total_admirers}}</span>
@@ -22,7 +22,7 @@
 			<span class="nav_arrow"></span>
 		</li>
 		<li class="{% navactive request 'messages' %} messages">
-			<a href="{% url 'postman_inbox' %}"  {% if request.META.HTTP_HOST == 'www.crushmaven.com' %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_messages');"{% endif %}>
+			<a href="{% url 'postman_inbox' %}"  {% if no_track != True  %}onclick="ga('send', 'event', 'button', 'click', 'navigation_button_messages');"{% endif %}>
 				<span class="menu_icon"></span>
 				<span class="menu_title">Conversations</span>
 				<span class="menu_count{% if num_new_messages %} new_menu_count{% endif %}">{{ num_all_messages}}</span>
