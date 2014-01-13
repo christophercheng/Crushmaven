@@ -344,4 +344,3 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
         logger.error( "failed to add lineup member: " + facebook_id )
         return HttpResponse("Server Error: Could not add given lineup user")  
     return HttpResponse(ajax_response)
-
