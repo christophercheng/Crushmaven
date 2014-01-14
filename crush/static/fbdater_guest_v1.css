@@ -479,7 +479,6 @@ div#how_it_works_section {
 	border-top:1px solid #000;
 	border-bottom:1px solid #000;
 	background:#372050;
-
 }
 /*
 div#qa_section:after{
@@ -1264,3 +1263,58 @@ div.legal{
 	padding-top:3px;
 }
 
+#show_lineup_screenshot{
+	position:relative;	
+	display:block;
+	margin-top:10px;
+	margin-bottom:-10px;
+}
+#show_lineup_screenshot .open_btn:hover{
+	opacity:1;
+}
+.close_btn:hover,.open_btn:hover{
+	cursor:pointer;
+	color:#fff;
+}
+#lineup_screenshot_container{
+	display:none;
+	width:615px;
+	height:402px;
+	background:#000;
+	border-radius:20px;
+	position:absolute;
+	left:-200px;
+	top:-200px;
+	z-index:1000;
+	padding-top:5px;
+	padding-left:5px;
+}
+#show_lineup_screenshot .open_btn {
+	display:inline-block;
+	padding:6px 15px 5px 15px;
+	border-radius:8px;
+	background:#fff;
+	opacity:.8;
+	color:#372050;
+	
+}
+#lineup_screenshot_container .close_btn{
+	position:absolute;
+	top:-4px;
+	right:-4px;
+	background-color:#000;
+	border-radius:50%;
+	background-image: url("http://www.crushmaven.com/static/images/full_sprite.png");
+    background-repeat: no-repeat;
+    background-size: auto auto;
+    width: 30px;
+    background-position: -61px -58px;
+    height: 30px;
+}
+#lineup_screenshot_container .close_btn:hover{
+	background-color:#2E2E2E;
+			/* transition */
+	-webkit-transition: 100ms;
+	-moz-transition: 100ms;
+	transition: 100ms;	
+}

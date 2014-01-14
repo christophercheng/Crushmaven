@@ -138,7 +138,18 @@ jQuery(document).ready(function($) {
         $('.use_case').on('mouseenter mouseleave',function(){
         	$('#qa_section .info_column2 .icon').toggleClass("spinme");
         })
-		
+        
+        $('#show_lineup_screenshot .open_btn').click(function(){
+        	$('#lineup_screenshot_container').fadeIn();
+        	if ($('#lineup_screenshot_container img').attr('src')=='')
+        		$('#lineup_screenshot_container img').attr('src','{{ STATIC_URL }}images/lineup_screenshot.jpg');
+        });
+        $('#show_lineup_screenshot .close_btn').click(function(){
+        	$('#lineup_screenshot_container').fadeOut();
+        });
+        $('#lineup_screenshot_container img').click(function(){
+        	$('#lineup_screenshot_container').fadeOut();
+        });
 }); // close of jQuery(document).ready
 
 
@@ -218,6 +229,7 @@ jQuery(document).ready(function($) {
 			<img class="icon" src="{{ STATIC_URL }}images/crush_lineup_purple_extended.png">
 			<div class="info_section_subtitle"><span class="step_number">2</span> Admirer Lineup</div>
 			<div class="info_section_text">Once signed in, we present your crush with a lineup of potential admirers - similar to a police lineup - with you and nine carefully selected others.  It's randomly ordered so your crush won't know who their actual admirer is!</div>
+			<span id="show_lineup_screenshot"><span class="open_btn">view lineup example</span><div id="lineup_screenshot_container"><img src=""><div class="close_btn"></div></div></span>
 		</div> <!-- end of info_column2 -->
 		<div class="info_column info_column3">
 			<img class="icon" src="{{ STATIC_URL }}images/match_alert_white.png">
