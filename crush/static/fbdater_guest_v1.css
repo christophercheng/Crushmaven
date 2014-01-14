@@ -1267,7 +1267,7 @@ div.legal{
 	position:relative;	
 	display:block;
 	margin-top:10px;
-	margin-bottom:-15px;
+	margin-bottom:-10px;
 }
 #show_lineup_screenshot .open_btn:hover{
 	opacity:1;
