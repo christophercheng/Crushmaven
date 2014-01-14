@@ -140,6 +140,9 @@ jQuery(document).ready(function($) {
         })
         
         $('#show_lineup_screenshot .open_btn').click(function(){
+    	    {% if no_track != True %}
+    	    	ga('send', 'event', 'button', 'click', 'view_example_lineup_button');
+    	    {% endif %}
         	$('#lineup_screenshot_container').fadeIn();
         	if ($('#lineup_screenshot_container img').attr('src')=='')
         		$('#lineup_screenshot_container img').attr('src','{{ STATIC_URL }}images/lineup_screenshot.jpg');
