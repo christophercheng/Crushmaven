@@ -716,7 +716,7 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         iDict = cache.get(crush_id)
         
-        if not iDict == None or iDict[rel_id+'_initialization_state']>0: 
+        if iDict == None or iDict[rel_id+'_initialization_state']>0: 
             # other threads have already completed the job
             return
         crush_friend=iDict['crush_friend_array'][cf_index]
@@ -793,7 +793,7 @@ class LineupMemberManager(models.Manager):
 
         rel_id=str(relationship.id)
         crush_id=relationship.target_person.username
-        iDict=cache(crush_id)
+        iDict=cache.get(crush_id)
         if iDict==None or iDict[rel_id+'_initialization_state']>0: 
             # other threads have already completed the job
             return
