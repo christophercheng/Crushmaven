@@ -49,22 +49,22 @@ def admirers(request,show_lineup=None):
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5): 
                     start_relationships.append(relationship)
                     continue
-   
+    logger.debug("Initializing: " + str(len(start_relationships)) + " relationships") 
     if len(uninitialized_relationships)>0 or len(start_relationships)>0:
         # reset initialize the global variable and set the number of relationships to initialize   
     
         for relationship in uninitialized_relationships:
             start_relationships.append(relationship)
-        logger.debug("Initializing: " + str(len(start_relationships)) + " relationships") 
+        cache.set(me.username,{})
         cache.set(me.username, {'initialization_count':len(start_relationships)})
         #g_init_dict[me.username]={}    
         #g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
 
 
-        if settings.INITIALIZATION_THREADING:
-            thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))           
-        else:
+        if not settings.INITIALIZATION_THREADING:
             LineupMember.objects.initialize_multiple_lineups(start_relationships)
+        else:
+            thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))
     
     admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
     past_admirers_count = admirer_completed_relationships.count()
@@ -111,6 +111,7 @@ def ajax_display_lineup_block(request, display_id):
     while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
         #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
         iDict=cache.get(crush_id)
+
         if iDict==None:
         #if not crush_id in g_init_dict:
             relationship.lineup_initialization_status = 5

@@ -439,7 +439,7 @@ class LineupMemberManager(models.Manager):
         crush_id=relationship.target_person.username
         iDict=cache.get(crush_id)
         rel_id=str(relationship.id)
-        if len(iDict[rel_id + '_mutual_friend_array']) > 0:
+        if False:#len(iDict[rel_id + '_mutual_friend_array']) > 0:
             # set some of the global variables
             random.shuffle(iDict[rel_id + '_mutual_friend_array'])
             cache.set(crush_id,iDict)
@@ -557,7 +557,23 @@ class LineupMemberManager(models.Manager):
         iDict=cache.get(crush_id)
         rel_id=str(relationship.id)
         iDict[rel_id+'_batch_id_array']+=extracted_id_list
-        iDict[rel_id+'_batch_blocks_received']  += 1 # TODO replace this with F function to prevent race function
+        num_unlock_attempts=0
+        fetching_lock_key=crush_id + "_" + str(rel_id) + "_fetching_lock"
+        while not cache.add(fetching_lock_key,True):
+            #wait till we can finally add that key
+            time.sleep(.1)
+            num_unlock_attempts+=1
+            if num_unlock_attempts >= 300:# lock waited 30 seconds, problem
+                logger.debug("fetching lock starvation problem - 300 10 second millisecond attempts failed")
+                self.initialize_fail(relationship,5)   
+        iDict=cache.get(crush_id)
+        if iDict==None or iDict[rel_id+'_initialization_state']>0: 
+            # other threads have already completed the job
+            return
+        logger.debug('q_start_index: ' + str(q_start_index) + " acquired batching_lock")
+        iDict[rel_id+'_batch_blocks_received'] += 1
+        cache.set(crush_id,iDict)
+        cache.delete(fetching_lock_key)
         
         if iDict[rel_id+'_batch_blocks_received'] < iDict[rel_id+'_batch_blocks_requested']:      
             cache.set(crush_id,iDict)
@@ -793,28 +809,53 @@ class LineupMemberManager(models.Manager):
 
         rel_id=str(relationship.id)
         crush_id=relationship.target_person.username
+        num_unlock_attempts=0
+        batching_lock_key=crush_id + "_" + str(rel_id) + "_batching_lock"
+        while not cache.add(batching_lock_key,True):
+            #wait till we can finally add that key
+            time.sleep(.1)
+            
+            num_unlock_attempts+=1
+            logger.debug('cf index: ' + str(cf_index) + " waiting for lock on attempt: " + str(num_unlock_attempts))
+            if num_unlock_attempts >= 300:# lock waited 30 seconds, problem
+                logger.debug("backing lock starvation problem - 300 10 second millisecond attempts failed")
+                self.initialize_fail(relationship,5)   
         iDict=cache.get(crush_id)
         if iDict==None or iDict[rel_id+'_initialization_state']>0: 
             # other threads have already completed the job
             return
+        logger.debug('cf index: ' + str(cf_index) + " acquired batching_lock at " + str(datetime.datetime.now()))
+        logger.debug('num batch received before: ' + str(iDict[rel_id+'_batch_friends_received']))
         iDict[rel_id+'_batch_friends_received'] += 1
-        cache.set(crush_id, iDict)
+        logger.debug('num batch received after: ' + str(iDict[rel_id+'_batch_friends_received']))
+        cache.set(crush_id,iDict)
+        logger.debug('cf index: ' + str(cf_index) + " releasing batching_lock at " + str(datetime.datetime.now()))
+        cache.delete(batching_lock_key)
         logger.debug( "finished processing friend # " + str(iDict[rel_id+'_batch_friends_received']) + " at cf_index: " + str(cf_index) + " with number of ids: " + str(len(iDict[rel_id+'_filtered_id_array'])) )
-        
+        logger.debug ("batch friends received: " + str(iDict[rel_id+'_batch_friends_received']) + " | batch friends requested: " + str(iDict[rel_id+'_batch_friends_requested']))
         if iDict[rel_id+'_batch_friends_received'] == iDict[rel_id+'_batch_friends_requested']:
+            logger.debug("all batches in")
             if len(iDict[rel_id+'_filtered_id_array']) < settings.IDEAL_LINEUP_MEMBERS:
+                logger.debug("length of filtered id array is less than ideal lineup members")
                 cf_index = iDict[rel_id+'_batch_start_cf_index'] + iDict[rel_id+'_batch_friends_requested']
                 
                 if cf_index < len(iDict['crush_friend_array']):
+                    logger.debug("grabbomg another batch of friends to process")
                     self.batch_fetch_friends(relationship,cf_index)
                 else: #no more people to fetch
+                    logger.debug("we can't grab another batch of friends. so see if we have minimum # lineup members")
                     #print "no more friends to process"
                     if len(iDict[rel_id+'_filtered_id_array']) >= settings.MINIMUM_LINEUP_MEMBERS: 
                         # take what we got!
                         #print "take what we got and call finalize initialization"
+                        logger.debug("we got minimum # lineup members")
                         self.finalize_initialization(relationship)
                     else:
+                        logger.debug("we don't go minimum # lineup members")
                         self.initialize_fail(relationship,2)
+            else:
+                logger.debug("we got more than the ideal # lineup members")
+                self.finalize_initialization(relationship)
 
     # ================================================================    
     # Method 4G: send matched id results back to server and launch lineup
