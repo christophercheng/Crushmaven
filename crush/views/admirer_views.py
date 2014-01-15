@@ -55,7 +55,6 @@ def admirers(request,show_lineup=None):
     
         for relationship in uninitialized_relationships:
             start_relationships.append(relationship)
-        cache.set(me.username,{})
         cache.set(me.username, {'initialization_count':len(start_relationships)})
         #g_init_dict[me.username]={}    
         #g_init_dict[me.username]['initialization_count'] = len(start_relationships) 

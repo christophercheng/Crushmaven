@@ -42,7 +42,7 @@ class LineupMemberManager(models.Manager):
                 #g_init_dict[crush_id]['exclude_id_string'] = comma_delimit_list(LineupMember.objects.get_exclude_id_array(relationship))
             else: # just add the source person (admirer to the list)
                 #g_init_dict[crush_id]['exclude_id_string'] += "," + relationship.source_person.username
-                iDict[crush_id]['exclude_id_string'] += "," + relationship.source_person.username
+                iDict['exclude_id_string'] += "," + relationship.source_person.username
             cache.set(crush_id,iDict)
         for relationship in start_relationships: 
             relationship.lineup_initialization_status=0
