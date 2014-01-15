@@ -92,12 +92,6 @@ a.button {
 	margin-top:-6px;
 }
 
-#mf_help_section_problem .help_icon{
-	position:absolute;
-	top:40px;
-	left:55px;	
-}
-
 .admirer_lineup_block .help_icon, .decision_confirmation_dialog .help_icon,.invite_interstitial_dialog .help_icon {
 	position:absolute;
 	top:5px;
@@ -3927,8 +3921,16 @@ ul.bxslider_element #slide_overlay {
 	color:#0077cc!important;
 	font-size:12px!important;	
 	display:block;
-	
 }
+#mutual_friend_help_section #mutual_friend_input_section_show a {
+	position:relative;
+}
+#mutual_friend_help_section #mutual_friend_input_section_show a .help_icon{
+	position:absolute;
+	top:-3px;
+	left:-19px;	
+}
+
 
 #mutual_friend_help_section #mutual_friend_input_section_show a{
 	#color:#ff0033!important;
