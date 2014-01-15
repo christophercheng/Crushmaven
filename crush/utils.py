@@ -60,8 +60,8 @@ def update_fb_fetch_cookie():
         try:       
             driver = webdriver.PhantomJS()
         except Exception as e:
-            print "not able to get phantom driver: " + str(e)
-            send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed.  driver=webdriver.phantomjs() caused exception.  Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
+            logger.debug( "not able to get phantom driver to update fb fetch cookie.  exception: " + str(e))
+            send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed.  driver=webdriver.phantomjs() caused exception: " + str(e) + " - Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
             raise e
         driver.get('http://www.facebook.com')
         fb_fetch_username = os.environ.get('FB_FETCH_USERNAME', '')
