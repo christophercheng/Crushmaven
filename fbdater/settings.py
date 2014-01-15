@@ -261,7 +261,7 @@ INITIALIZATION_THREADING=True
 # auto delay the response between the start time and end time (in seconds)
 CRUSH_RESPONSE_DELAY_START = 180 # 180 default = 3hours x 60 minutes =  180
 CRUSH_RESPONSE_DELAY_END = 2160 # 2160 default = 36 hours x 60 minutes = 2160
-STARTING_CREDITS=1 # change to 1 in production
+STARTING_CREDITS=0 # changed to 0 in production on 1/14/14
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=1# 0 # default is = 1 hours
