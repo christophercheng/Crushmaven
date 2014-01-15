@@ -145,7 +145,7 @@ class LineupMemberManager(models.Manager):
                     return
 
         except Exception as e:
-            logger.warning( "ERROR: problem wit initializing friend lineup with recent friends: " + str(e) + " with relationship id: " + relationship.id )
+            logger.warning( "ERROR: problem wit initializing friend lineup with recent friends: " + str(e) + " with relationship id: " + str(relationship.id) )
             pass # we're still good, just won't have any recent friends i list
        
         try:
@@ -250,6 +250,7 @@ class LineupMemberManager(models.Manager):
         iDict=cache.get(crush_id)
         #exclude_id_string=g_init_dict[crush_id]['exclude_id_string']
         exclude_id_string=iDict['exclude_id_string']   
+        logger.debug("Exclude_id_string: " + str(exclude_id_string))
         # set up the batch fql queries
         crush_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM+user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + ')))"}'
         crush_app_friend_dict='{"method":"GET","relative_url":"fql?q=SELECT uid,friend_count,sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=' + crush_id + ' AND NOT (uid2 IN (' + exclude_id_string + '))) AND is_app_user"}'
@@ -289,7 +290,7 @@ class LineupMemberManager(models.Manager):
             logger.error("Was not able to get more than 0 API APP mutual friends between admirer and attraction")
             
         # METHOD 2: API 9 Friends from 9 Crush App Friends   
-        if 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
+        if len(fb_result)>4 and 'body' in fb_result[4] and 'data' in fb_result[4][u'body']:
             crush_app_friend_array=json.loads(fb_result[4][u'body'])['data']
             if len(crush_app_friend_array) >= settings.MINIMUM_LINEUP_MEMBERS:
                 logger.debug("Was ABLE to get more than minimum API APP crush friends between admirer and attraction")
@@ -302,7 +303,7 @@ class LineupMemberManager(models.Manager):
                 logger.debug("Was NOT ABLE to get more than minimum API APP crush friends between admirer and attraction")
 
         # METHOD 3 & 4: NON-API MUTUAL FRIEND / NON-API 9 Friends from 9 Crush Friends
-        if 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
+        if len(fb_result) > 3 and 'body' in fb_result[1] and 'data' in fb_result[1][u'body']:
 
             if 'body' in fb_result[3] and 'data' in fb_result[3][u'body']:
                 mutual_friend_array=json.loads(fb_result[1][u'body'])['data']
@@ -434,6 +435,7 @@ class LineupMemberManager(models.Manager):
     # ================================================================
 
     def try_nonapi_mf_initialization(self,relationship):
+        logger.debug("Trying METHOD 3: nonapi_mf_initialization on relationship: " + str(relationship.id) + " " + relationship.source_person.last_name + " -> " + relationship.target_person.last_name)
         crush_id=relationship.target_person.username
         iDict=cache.get(crush_id)
         rel_id=str(relationship.id)
@@ -444,6 +446,7 @@ class LineupMemberManager(models.Manager):
             self.process_mutual_friend(relationship,0)
         
         else:
+            logger.debug("mutual friend array is not > 0")
             self.try_nonapi_cf_initialization(relationship)
             
     #=================================================================    
@@ -478,10 +481,6 @@ class LineupMemberManager(models.Manager):
         else: 
             iDict[mfriend_id_lock]=True
             cache.set(crush_id,iDict)
-        
-        
-        
-        
         
         newDict=cache.get(crush_id)
         logger.debug( "REL ID:" + rel_id + ": Method 3A (process_mutual_friend), mutual friend:" + mfriend_id + " at mf_index: " + str(mf_index) )
@@ -522,10 +521,11 @@ class LineupMemberManager(models.Manager):
         cache.set(crush_id,iDict)
         if settings.INITIALIZATION_THREADING:
             for x in range(q_start_index,last_fetch_index):          
-                self.fetch_block(relationship,mf_index,q_block_array,q_start_index,x)
+                thread.start_new_thread(self.fetch_block,(relationship,mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
+
         else:
             for x in range(q_start_index,last_fetch_index):
-                thread.start_new_thread(self.fetch_block,(relationship,mf_index,q_block_array,q_start_index,x)) #initialize lineup asynchronously            
+                self.fetch_block(relationship,mf_index,q_block_array,q_start_index,x)
 
     #=================================================================    
     # METHOD 3C - Fetch Single Block
@@ -680,12 +680,11 @@ class LineupMemberManager(models.Manager):
         if settings.INITIALIZATION_THREADING:
             for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
                 # call a single person handler           
-                self.start_single_friend_fetch(relationship,x)   
+               thread.start_new_thread(self.start_single_friend_fetch,(relationship,x)) #initialize lineup asynchronously                         
         else:
             for x in range(cf_index,next_cf_index): # /iterate through next 18 friends
                 # call a single person handler 
-                thread.start_new_thread(self.start_single_friend_fetch,(relationship,x)) #initialize lineup asynchronously                       
-
+                self.start_single_friend_fetch(relationship,x)   
     # ================================================================    
     # METHOD 4b - Subroutine B: Single Person Fetch Handler - build q block array and fire off processing for each block
     # ================================================================
