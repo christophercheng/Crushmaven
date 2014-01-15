@@ -95,7 +95,7 @@ a.button {
 #mf_help_section_problem .help_icon{
 	position:absolute;
 	top:40px;
-	right:55px;	
+	left:55px;	
 }
 
 .admirer_lineup_block .help_icon, .decision_confirmation_dialog .help_icon,.invite_interstitial_dialog .help_icon {
