@@ -741,7 +741,7 @@ a.logo img{
 	border-left:1px solid black;
 	border-right:1px solid black;
 	padding-top:5px;
-	font-family:"varela round";
+	font-family:"varela round","Lucida Grande",helvetica, arial;
 }
 #get_started_link .add_icon{
 	position:absolute;

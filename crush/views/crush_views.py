@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 # called by crush selector upson submit button press
 @login_required
 def ajax_add_crush_targets(request):
-    global g_init_dict
     post_data = request.POST
     # ensure that user has not exceeded beta limits:
     if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_CRUSHES:

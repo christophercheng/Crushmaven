@@ -9,7 +9,7 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
-@login_required
+#@login_required
 def testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
@@ -21,17 +21,17 @@ def testing(request):
     
    
     return HttpResponse(result)
-@login_required
+#@login_required
 def testing2(request):
-    if request.user.username != '651900292':
-        return HttpResponse("nu uhhhh")
+    #if request.user.username != '651900292':
+    #    return HttpResponse("nu uhhhh")
     magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
     return HttpResponse("cookie in cache: " + magic_cookie)
-@login_required
+#@login_required
 def testing_prep(request):
-    if request.user.username != '651900292':
-        return HttpResponse("nu uhhhh")
-    cache.set(settings.FB_FETCH_COOKIE,"151%3AmpkGYqrbJNvC7A%3A2%3A1388994027%3A15839")
+   # if request.user.username != '651900292':
+    #    return HttpResponse("nu uhhhh")
+    cache.set(settings.FB_FETCH_COOKIE,"137%3AyoNXnPd5mpliVA%3A2%3A1389009777%3A14734")
     return HttpResponse("done")
 
 # import the logging library
