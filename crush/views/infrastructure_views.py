@@ -54,43 +54,51 @@ def sitemap(request):
     return HttpResponseRedirect('/static/sitemap.xml',mimetype='application/xml')
 
 def home(request):
-
+    get_parameter_string=""
+    if request.GET.__contains__('signin'): # in the facebook authentication process, we append signin as GET parameter so we know when we just logged in
+        get_parameter_string = "?signin=true" #this is used to check if user is on mobile when signing in
     if request.user.is_authenticated():
 
         if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
-            return HttpResponseRedirect('/your_crushes/') 
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string) 
         elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
-            return HttpResponseRedirect('/admirers/')
+            return HttpResponseRedirect('/admirers/' + get_parameter_string)
         else:
-            return HttpResponseRedirect('/your_crushes/')
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID})
+        return render(request,'guest_home.html', {})
 
 #same as home but allows me to do special tracking
 def google_home(request):
+    get_parameter_string=""
+    if request.GET.__contains__('signin'): # in the facebook authentication process, we append signin as GET parameter so we know when we just logged in
+        get_parameter_string = "?signin=true" #this is used to check if user is on mobile when signing in
     if request.user.is_authenticated():
     
-            if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
-                return HttpResponseRedirect('/your_crushes/') 
-            elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
-                return HttpResponseRedirect('/admirers/')
-            else:
-                return HttpResponseRedirect('/your_crushes/')
+        if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string) 
+        elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
+            return HttpResponseRedirect('/admirers/' + get_parameter_string)
+        else:
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID, 'ad_visit':True,'google_ad_visit':True})
+        return render(request,'guest_home.html', { 'ad_visit':True,'google_ad_visit':True})
 
 #same as home but allows me to do special tracking
 def bing_home(request):
+    get_parameter_string=""
+    if request.GET.__contains__('signin'): # in the facebook authentication process, we append signin as GET parameter so we know when we just logged in
+        get_parameter_string = "?signin=true" #this is used to check if user is on mobile when signing in
     if request.user.is_authenticated():
     
-            if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
-                return HttpResponseRedirect('/your_crushes/') 
-            elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
-                return HttpResponseRedirect('/admirers/')
-            else:
-                return HttpResponseRedirect('/your_crushes/')
+        if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string) 
+        elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
+            return HttpResponseRedirect('/admirers/' + get_parameter_string)
+        else:
+            return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'ad_visit':True,'bing_ad_visit':True})
+        return render(request,'guest_home.html', {'ad_visit':True,'bing_ad_visit':True})
     
     #same as home but allows me to do special tracking
 def facebook_home(request):
@@ -103,7 +111,7 @@ def facebook_home(request):
             else:
                 return HttpResponseRedirect('/your_crushes/')
     else:
-        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'ad_visit':True,'facebook_ad_visit':True})
+        return render(request,'guest_home.html', {'ad_visit':True,'facebook_ad_visit':True})
         
 @login_required
 def ajax_submit_feedback(request):
