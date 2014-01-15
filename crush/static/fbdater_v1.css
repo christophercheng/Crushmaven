@@ -3405,6 +3405,10 @@ ul.bxslider_element #slide_overlay {
 #credit_check_modal{
 	border-radius:0 0 6px 6px!important;
 }
+.mobile_warning_dialog{
+	width:100%;
+	height:100%;
+}
 .credit_check_dialog .paypal_redirect_buttonset{
 	#float:right!important;
 	margin-left:70px!important;

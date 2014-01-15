@@ -28,7 +28,7 @@ def admirers(request,show_lineup=None):
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
     error_relationships = progressing_admirer_relationships.filter(Q(lineup_initialization_status=0) | Q(lineup_initialization_status__gt=1))
-    logger.debug("Initializing: " + str(len(uninitialized_relationships)) + " relationships")
+
     start_relationships=[]
     if len(error_relationships) > 0:
         for relationship in error_relationships: 
@@ -49,7 +49,7 @@ def admirers(request,show_lineup=None):
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5): 
                     start_relationships.append(relationship)
                     continue
- 
+    logger.debug("Initializing: " + str(len(start_relationships)) + " relationships") 
     if len(uninitialized_relationships)>0 or len(start_relationships)>0:
         # reset initialize the global variable and set the number of relationships to initialize   
     
@@ -60,10 +60,10 @@ def admirers(request,show_lineup=None):
         g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
 
 
-    if not settings.INITIALIZATION_THREADING:
-        LineupMember.objects.initialize_multiple_lineups(start_relationships)
-    else:
-        thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))
+        if not settings.INITIALIZATION_THREADING:
+            LineupMember.objects.initialize_multiple_lineups(start_relationships)
+        else:
+            thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))
     
     admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
     past_admirers_count = admirer_completed_relationships.count()
@@ -147,6 +147,7 @@ def ajax_initialization_failed(request, display_id):
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)    
     except CrushRelationship.DoesNotExist:
         return HttpResponseNotFound("")
+    logger.debug("lineup initialization failed called from client for relationship: " + str(relationship.id))
     if relationship.lineup_initialization_status == None or relationship.lineup_initialization_status == 0:
         relationship.lineup_initialization_status = 5
         relationship.save(update_fields=['lineup_initialization_status'])

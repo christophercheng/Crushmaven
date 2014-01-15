@@ -73,7 +73,7 @@ $(document).ready(function()
    				success: function (data) {
    					if (data == ""){
    						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
-   	   					$.get(ajax_fail_url);
+   	   					$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
    					}
    					else{
    						lineup_block_div.html(data);
@@ -81,7 +81,7 @@ $(document).ready(function()
    				},
    				error: function(){
    					lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
-   					$.get(ajax_fail_url);
+   					$.get(ajax_fail_url + '?reason=ajax_initialization_call_returned_error');
    				} 
 				});
 				
