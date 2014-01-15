@@ -39,6 +39,8 @@ urlpatterns += patterns('crush.views.infrastructure_views',
    # to turn off tracking in anonymous pages, then add ?no_track to end of URL
     
     (r'^ghome/$','google_home'),
+    (r'^bhome/$','bing_home'),
+    (r'^fhome/$','facebook_home'),
     
     (r'^ajax_submit_feedback/$','ajax_submit_feedback'),
 

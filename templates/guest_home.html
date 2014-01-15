@@ -33,8 +33,14 @@
 
 		  ga('create', 'UA-46806664-1', 'crushmaven.com');
 		  ga('send', 'pageview');
-		  {% if google_ad_visit %}
-		  	ga('send', 'event', 'button', 'click', 'google_ad_visit');
+		  {% if ad_visit %}
+			  {% if google_ad_visit %}
+			  	ga('send', 'event', 'button', 'click', 'google_ad_visit');
+			  {% elif bing_ad_visit %}
+			  	ga('send', 'event', 'button', 'click', 'bing_ad_visit');
+			  {% elif facebook_ad_visit %}
+			  	ga('send', 'event', 'button', 'click', 'facebook_ad_visit');
+			  {% endif %}
 		  {% endif %}
 	</script>
 	{% endif %}
@@ -48,6 +54,9 @@ jQuery(document).ready(function($) {
 	
 	/*-- ------ HANDLE FACEBOOK LOGIN BUTTON CLICK  -------- */
 	$('.facebookbtn').click(function(e){
+	    {% if no_track != True %}
+    		ga('send', 'event', 'button', 'click', 'login_button');
+    	{% endif %}
 		$('#tagline3').css('opacity',0);
 		$(this).fadeTo(0,.1,function(){$('#authentication_wait').show();$('#tagline3').hide();});
 		

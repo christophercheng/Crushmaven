@@ -77,7 +77,33 @@ def google_home(request):
             else:
                 return HttpResponseRedirect('/your_crushes/')
     else:
-        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'google_ad_visit':True})
+        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID, 'ad_visit':True,'google_ad_visit':True})
+
+#same as home but allows me to do special tracking
+def bing_home(request):
+    if request.user.is_authenticated():
+    
+            if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
+                return HttpResponseRedirect('/your_crushes/') 
+            elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
+                return HttpResponseRedirect('/admirers/')
+            else:
+                return HttpResponseRedirect('/your_crushes/')
+    else:
+        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'ad_visit':True,'bing_ad_visit':True})
+    
+    #same as home but allows me to do special tracking
+def facebook_home(request):
+    if request.user.is_authenticated():
+    
+            if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
+                return HttpResponseRedirect('/your_crushes/') 
+            elif CrushRelationship.objects.progressing_admirers(request.user).count()>0:
+                return HttpResponseRedirect('/admirers/')
+            else:
+                return HttpResponseRedirect('/your_crushes/')
+    else:
+        return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID,'ad_visit':True,'facebook_ad_visit':True})
         
 @login_required
 def ajax_submit_feedback(request):
