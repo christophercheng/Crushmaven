@@ -456,6 +456,7 @@ margin-right:10px;
 	#font-size:14px;
 	#line-height:20px;
 	cursor:default;
+	white-space:nowrap;
 }
 
 .use_case:hover{
@@ -1296,7 +1297,7 @@ div.legal{
 	background:#fff;
 	opacity:.8;
 	color:#372050;
-	
+	white-space:nowrap;
 }
 #lineup_screenshot_container .close_btn{
 	position:absolute;
