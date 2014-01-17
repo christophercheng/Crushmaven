@@ -326,7 +326,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
             lineup_member.decision=0
         else:
             PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
-            ajax_response = '<span class="choice platonic">Not Interested</span>'
+            ajax_response = '<span class="choice platonic new_platonic">Not Interested</span>'
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
             lineup_member.decision=1
         lineup_member.save(update_fields=['decision'])

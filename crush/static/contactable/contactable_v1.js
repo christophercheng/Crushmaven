@@ -14,6 +14,7 @@
 
 	//define the new for the plugin ans how to call it	
 	$.fn.contactable = function(options) {
+		
 		//set default options  
 		var defaults = {
 			message : 'Message',

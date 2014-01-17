@@ -440,24 +440,30 @@ $(document).ready(function() // handling for the slider
 	 	var attraction_json = {};
 	 	var redirect_url='';
 	 	var num_new_attractions=0;
+	 	var num_new_platonics=0;
 		$('.bxslider_element li .slide_container .lineup_decision .new_crush').each(function(){
 			attraction_json[$(this).attr('username')]=$(this).attr('fullname');
 			num_new_attractions++;
 			});
+		$('.bxslider_element li .slide_container .lineup_decision .new_platonic').each(function(){
+			num_new_platonics++;
+			});
 
-		if (current_href.indexOf("/admirers/") != -1) { // if user is on progressing admirers page, not on completed admirers page:
+		if (num_new_attractions){
 			// redirect user to crushes in progress if there is only one progressing lineup and it is done
-				if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
-					redirect_url='/your_crushes/';
-				if (num_new_attractions){
-					$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
-					window.launch_invite_interstitial(attraction_json,redirect_url);
-					return;
-				}
+			if (total_decisions == {{member_set.count}} && {{ request.user.get_progressing_admirers.count }} == 1)	
+				redirect_url='/your_crushes/';
+			else 
+				redirect_url='/admirers/';
+			$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
+			window.launch_invite_interstitial(attraction_json,redirect_url);
+			return;
 		}
+
 		
 		$('#lineup_modal').dialog("close");//closing of lineup modal automatically refreshes page
-		window.location.href=redirect_url;
+		if (num_new_platonics > 0) // reload page if at least 1 new platonic
+			location.href=redirect_url;
 	};
 	
 	$('#lineup_modal').on('click','#finish-btn',function(e) {

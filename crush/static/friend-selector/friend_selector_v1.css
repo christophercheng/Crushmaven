@@ -44,7 +44,7 @@
 }
 
 #fs-dialog-title:hover{
-	cursor:move;
+	#cursor:move;
 }
 #fs-dialog-title span {
   display: block;

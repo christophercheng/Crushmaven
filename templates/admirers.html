@@ -9,7 +9,7 @@ $(document).ready(function()
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
-    var lineup_dialog = $("#lineup_modal").dialog({dialogClass:'lineup_modal_dialog',modal: true, height: '366',show: 'fade',width:575,resizable:false,autoOpen: false,close:function(event,ui){window.handle_lineup_dialog_close();}});
+    var lineup_dialog = $("#lineup_modal").dialog({dialogClass:'lineup_modal_dialog',modal: true, draggable:false,height: '376',show: 'fade',width:575,resizable:false,autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })},close:function(event,ui){window.handle_lineup_dialog_close();}});
     $('.lineup_block').on('click', '.view_lineup', function(e) {
 		var display_id=$(this).attr('display_id');		
 		window.wait_modal_open();
@@ -47,11 +47,11 @@ $(document).ready(function()
 				window.alert_modal("Lineup Problem", "{{generic_error_message}}" );
 				return false;
 				}
-
+			window.wait_modal_close();
 			lineup_dialog.dialog("open");
 			window.startup_slider();
 			$(':focus').blur();
-			window.wait_modal_close();
+
 		}); 
 
 	});			
