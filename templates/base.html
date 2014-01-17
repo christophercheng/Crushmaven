@@ -548,8 +548,10 @@ window.handle_window_resize=function(){
 };
 var timeoutPointer;
 $(window).resize(function(){
-	clearTimeout(timeoutPointer);
-	timeoutPointer = setTimeout(window.handle_window_resize,100);
+	if $('body').css('overflow')!='hidden'{ // don't reposition window on mobile devices
+		clearTimeout(timeoutPointer);
+		timeoutPointer = setTimeout(window.handle_window_resize,100);
+	}
 });
 
 
