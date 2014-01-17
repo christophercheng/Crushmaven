@@ -30,7 +30,8 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
 
 def send_mail_user_logged_in(user, header_string):
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
-        send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','chris_h_cheng@hotmail.com',user.get_name() + ' logged in!',header_string,header_string)
+        send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','chris_h_cheng@hotmail.com',user.get_name() + ' logged in!','http://www.facebook.com/' + str(user.username) + " " + header_string,header_string)
+        send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','6465732737@vmobl.com',user.get_name() + ' logged in!','http://www.facebook.com/'+str(user.username),"")
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
