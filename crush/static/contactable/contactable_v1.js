@@ -38,10 +38,14 @@
 				var fromMarginBottom = parseInt($(this_id_prefix+'#contactForm').css('marginBottom'));
 				// fromMarginBottom is a hack to determine if the form is visible or not.  after jquery 1.8.3, the toggle() button was changed so this is the workaround
 				if (fromMarginBottom < -100){
+					$(this).parent().find('#contactForm').css('display','block');
+
 					$(this).animate({"marginBottom": "-=5px"}, "fast").animate({"marginBottom": "+=280px"}, "fast");
 					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=0px"}, "fast").animate({"marginBottom": "+=320px"}, "fast"); 
 				}
 				else {
+					$(this).parent().find('#contactForm').css('display','hidden');
+
 					$(this_id_prefix+'#contactForm').animate({"marginBottom": "-=320px"}, "fast");
 					$(this).animate({"marginBottom": "-=280px"}, "fast").animate({"marginBottom": "+=5px"}, "fast"); 
 				}

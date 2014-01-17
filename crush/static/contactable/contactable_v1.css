@@ -23,6 +23,7 @@
 }
 
 #contactable #contactForm {
+	display:none;
 	background-color:#242434;
 	border-radius:10px 0 0 0;
 	#border:4px solid white;

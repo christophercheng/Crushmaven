@@ -496,6 +496,10 @@ a.button {
 /* for small screens, don't fix anything */
 @media (max-device-width:800px)
  {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
     .header, .left_sidebar, .right_sidebar {
         position:static;
     }
@@ -528,6 +532,11 @@ a.button {
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    
+    body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
     /* Put your iPhone 4g styles in here */ 
     .header, .left_sidebar, .right_sidebar {
         position:static;
@@ -562,6 +571,11 @@ a.button {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
     /* Put your iPhone 4g styles in here */ 
+   
+	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}   
     .header, .left_sidebar, .right_sidebar {
         position:static;
  
@@ -597,6 +611,10 @@ a.button {
 /* if screen is too short, then don't fix the sidebars */
 @media (max-height:530px)
  {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
     .header,.left_sidebar, .right_sidebar {
         position:static;
     }
@@ -630,6 +648,10 @@ a.button {
 
 @media (max-width:900px)
  {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
     .header, .left_sidebar, .right_sidebar {
         position:static;
     }
