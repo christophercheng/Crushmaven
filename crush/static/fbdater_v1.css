@@ -1373,7 +1373,7 @@ a.logo img{
 	margin-bottom:12px;
 	display:block;
 	position:relative;
-	font-size:12px;
+	font-size:12px!important;
 }
 
 .new_user_instructions .instruction_sub_step{
