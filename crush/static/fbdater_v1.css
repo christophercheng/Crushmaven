@@ -1390,6 +1390,7 @@ a.logo img{
 	display:inline-block;
 	margin-left:28px;
 	text-shadow: 1px 1px 0 #FFFFFF;
+	font-size:12px!important;
 }
 .new_user_instructions .help_icon2{
 	display:inline-block;
