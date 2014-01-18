@@ -1376,6 +1376,11 @@ a.logo img{
 	font-size:12px!important;
 }
 
+.new_user_instructions .instruction_step_text{
+	display:inline-block;
+	margin-left:28px;
+	font-size:12px!important;
+}
 .new_user_instructions .instruction_sub_step{
 	margin-top:-12px;
 	line-height:19px;
@@ -1384,13 +1389,7 @@ a.logo img{
 	position:relative;
 	#font-style:italic;
 	color:#B3B3BB;
-	font-size:11px;
-}
-.new_user_instructions .instruction_step_text{
-	display:inline-block;
-	margin-left:28px;
-	text-shadow: 1px 1px 0 #FFFFFF;
-	font-size:12px!important;
+	font-size:11px!important;
 }
 .new_user_instructions .help_icon2{
 	display:inline-block;
