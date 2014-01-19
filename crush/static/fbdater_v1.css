@@ -1383,7 +1383,7 @@ a.logo img{
 }
 .new_user_instructions .instruction_sub_step{
 	margin-top:-12px;
-	line-height:19px;
+	#line-height:19px;
 	margin-bottom:12px;
 	display:block;
 	position:relative;
