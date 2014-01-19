@@ -912,7 +912,7 @@ a.logo img{
 .navbar li.inactive:hover .nav_arrow {	
 	display:block;
 	border-color: #3A3A48 transparent transparent transparent;
-	border-left:16px solid #3A3A48;
+	border-left:15px solid #3A3A48;
 
 }
 
