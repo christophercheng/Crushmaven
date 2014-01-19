@@ -6,7 +6,6 @@
 	    <meta name="robots" content="all,index" />
 	    <meta name="Revisit-After" content="30 Days" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>CrushMaven - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
 
@@ -122,8 +121,6 @@ jQuery(document).ready(function($) {
 		    },
 		    onClose: function(){
 		    	$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });
-		    	if ($('body').css('overflow') != 'hidden')
-		    		$('meta[name="viewport"]').content = 'width=device-width, initial-scale=1.0';
 		    },
 		    onStart: function(){
 		    	 $("body").css({ overflow: 'hidden' });
@@ -606,8 +603,6 @@ $('.show_less').click(function(){
 });
 
 $('.bt-fs-dialog').click(function(){
-	if ($('body').css('overflow') != 'hidden')
-		$('meta[name="viewport"]').content = 'width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0';
 	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'friend_selector_all_buttons');
     {% endif %}

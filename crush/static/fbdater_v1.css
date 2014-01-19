@@ -904,9 +904,9 @@ a.logo img{
 .left_sidebar_container .navbar li .nav_arrow {
 	position:absolute;
 	top:0px;
-	right:-16px;	
+	right:-15px;	
 	border-color: #1e2126 transparent transparent transparent;
-	border-left:16px solid #1e2126;
+	border-left:15px solid #1e2126;
  	border-right:0px;
  	border-top:32px dotted rgba(255,255,255, 0)!important;
  	border-bottom:32px dotted rgba(255,255,255, 0)!important;
