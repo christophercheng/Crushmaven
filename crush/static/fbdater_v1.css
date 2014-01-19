@@ -491,214 +491,7 @@ a.button {
 	margin-left:10px;
 }
 
-/* =================   RESONSIVE DESIGN  ============== */
 
-/* for small screens, don't fix anything */
-@media (max-device-width:800px)
- {
- 	body {
-  	overflow-x: auto!important;	
- 	overflow-y: scroll!important;
- 	}
-    .header, .left_sidebar, .right_sidebar {
-        position:static;
-    }
-    .main_container{
-    margin-top:0px!important;
-    }
-    .left_sidebar,.center_panel {
-    margin-left:0px;
-    }
-    .left_sidebar_container .navbar li .nav_arrow {
-		right:-14px;
-    }
-    .right_sidebar{
-    float:none;
-    }
-    /*
-    .right_sidebar{
-    	position:absolute;
-    	margin-left:10px;
-    	width:195px;
-    	top:330px;
-    	left:-4px;
-    	border-top:1px solid #D3D3D6;
-    	padding-top:30px;
-    }
-    .right_sidebar .right_sidebar_container {
-    	margin-left:0px;
-    }
-    #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;
-    }
-    */
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2) {
-    
-    body {
-  	overflow-x: auto!important;	
- 	overflow-y: scroll!important;
- 	}
-    /* Put your iPhone 4g styles in here */ 
-    .header, .left_sidebar, .right_sidebar {
-        position:static;
-    }
-    .main_container{
-    margin-top:0px!important;
-    }
-    .left_sidebar,.center_panel{
-    margin-left:0px;
-    }
-        .right_sidebar{
-    float:none;
-    }
-        .left_sidebar_container .navbar li .nav_arrow {
-		right:-14px;
-    }
-    /*
-        .right_sidebar{
-    	position:absolute;
-    	margin-left:10px;
-    	width:195px;
-    	top:330px;
-    	left:-4px;
-    	border-top:1px solid #D3D3D6;
-    	padding-top:30px;
-    }
-    .right_sidebar .right_sidebar_container {
-    	margin-left:0px;
-    }
-    #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;;
-    }
-    */
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
-    /* Put your iPhone 4g styles in here */ 
-   
-	body {
-  	overflow-x: auto!important;	
- 	overflow-y: scroll!important;
- 	}   
-    .header, .left_sidebar, .right_sidebar {
-        position:static;
- 
-    }
-    .main_container{
-    margin-top:0px!important;
-    }
-    .left_sidebar,.center_panel {
-    margin-left:0px;
-    }
-        .right_sidebar{
-    float:none;
-    }
-        .left_sidebar_container .navbar li .nav_arrow {
-		right:-14px;
-    }
-    /*
-        .right_sidebar{
-    	position:absolute;
-    	margin-left:10px;
-    	width:195px;
-    	top:330px;
-    	left:-4px;
-    	border-top:1px solid #D3D3D6;
-    	padding-top:30px;
-    }
-    .right_sidebar .right_sidebar_container {
-    	margin-left:0px;
-    }
-    #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;;
-    }
-    */
-}
-
-/* if screen is too short, then don't fix the sidebars */
-@media (max-height:530px)
- {
- 	body {
-  	overflow-x: auto!important;	
- 	overflow-y: scroll!important;
- 	}
-    .header,.left_sidebar, .right_sidebar {
-        position:static;
-    }
-    .left_sidebar,.center_panel{
-    margin-left:0px;
-    }	
-    .main_container{
-    margin-top:0px!important;
-    }
-        .right_sidebar{
-    float:none;
-    }
-        .left_sidebar_container .navbar li .nav_arrow {
-		right:-14px;
-    }
-    /*
-       .right_sidebar{
-    	position:absolute;
-    	margin-left:10px;
-    	width:195px;
-    	top:330px;
-    	left:-4px;
-    	border-top:1px solid #D3D3D6;
-    	padding-top:30px;
-    }
-    .right_sidebar .right_sidebar_container {
-    	margin-left:0px;
-    }
-    #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;;
-    }
-    */
-}
-
-@media (max-width:900px)
- {
- 	body {
-  	overflow-x: auto!important;	
- 	overflow-y: scroll!important;
- 	}
-    .header, .left_sidebar, .right_sidebar {
-        position:static;
-    }
-    .main_container{
-    margin-top:0px!important;
-    }
-    .left_sidebar,.center_panel{
-    margin-left:0px;
-    }
-        .right_sidebar{
-    float:none;
-    }
-        .left_sidebar_container .navbar li .nav_arrow {
-		right:-14px;
-    }
-    /*
-    .right_sidebar{
-    	position:absolute;
-    	margin-left:10px;
-    	width:195px;
-    	top:330px;
-    	left:-15px;
-    	padding-top:0px;
-    	text-align:center;
-    }
-    .right_sidebar .right_sidebar_container {
-    	margin-left:0px;
-    }
-
-    
-    #friend_referral_bar_header,#friend_referral_bar{
-    display:none!important;
-    }
-    */
-}
 
 /* ===========================   Overlays & Loading Animation ========================= */
 
@@ -4536,4 +4329,214 @@ ul.bxslider_element #slide_overlay {
 /* facebook dialogs should always appear on top */
 .fb_dialog{
 	z-index:10001!important;
+	
+	
+/* =================   RESONSIVE DESIGN _ SHOULD ALWAYS BE ON BOTTOM OF CSS   ============== */
+
+/* for small screens, don't fix anything */
+@media (max-device-width:800px)
+ {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px!important;
+    }
+    .left_sidebar,.center_panel {
+    margin-left:0px;
+    }
+    .left_sidebar_container .navbar li .nav_arrow {
+		right:-14px;
+    }
+    .right_sidebar{
+    float:none;
+    }
+    /*
+    .right_sidebar{
+    	position:absolute;
+    	margin-left:10px;
+    	width:195px;
+    	top:330px;
+    	left:-4px;
+    	border-top:1px solid #D3D3D6;
+    	padding-top:30px;
+    }
+    .right_sidebar .right_sidebar_container {
+    	margin-left:0px;
+    }
+    #friend_referral_bar_header,#friend_referral_bar{
+    display:none!important;
+    }
+    */
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    
+    body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
+    /* Put your iPhone 4g styles in here */ 
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px!important;
+    }
+    .left_sidebar,.center_panel{
+    margin-left:0px;
+    }
+        .right_sidebar{
+    float:none;
+    }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-14px;
+    }
+    /*
+        .right_sidebar{
+    	position:absolute;
+    	margin-left:10px;
+    	width:195px;
+    	top:330px;
+    	left:-4px;
+    	border-top:1px solid #D3D3D6;
+    	padding-top:30px;
+    }
+    .right_sidebar .right_sidebar_container {
+    	margin-left:0px;
+    }
+    #friend_referral_bar_header,#friend_referral_bar{
+    display:none!important;;
+    }
+    */
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+    /* Put your iPhone 4g styles in here */ 
+   
+	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}   
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+ 
+    }
+    .main_container{
+    margin-top:0px!important;
+    }
+    .left_sidebar,.center_panel {
+    margin-left:0px;
+    }
+        .right_sidebar{
+    float:none;
+    }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-14px;
+    }
+    /*
+        .right_sidebar{
+    	position:absolute;
+    	margin-left:10px;
+    	width:195px;
+    	top:330px;
+    	left:-4px;
+    	border-top:1px solid #D3D3D6;
+    	padding-top:30px;
+    }
+    .right_sidebar .right_sidebar_container {
+    	margin-left:0px;
+    }
+    #friend_referral_bar_header,#friend_referral_bar{
+    display:none!important;;
+    }
+    */
+}
+
+/* if screen is too short, then don't fix the sidebars */
+@media (max-height:530px)
+ {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
+    .header,.left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .left_sidebar,.center_panel{
+    margin-left:0px;
+    }	
+    .main_container{
+    margin-top:0px!important;
+    }
+        .right_sidebar{
+    float:none;
+    }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-14px;
+    }
+    /*
+       .right_sidebar{
+    	position:absolute;
+    	margin-left:10px;
+    	width:195px;
+    	top:330px;
+    	left:-4px;
+    	border-top:1px solid #D3D3D6;
+    	padding-top:30px;
+    }
+    .right_sidebar .right_sidebar_container {
+    	margin-left:0px;
+    }
+    #friend_referral_bar_header,#friend_referral_bar{
+    display:none!important;;
+    }
+    */
+}
+
+@media (max-width:900px)
+ {
+ 	body {
+  	overflow-x: auto!important;	
+ 	overflow-y: scroll!important;
+ 	}
+    .header, .left_sidebar, .right_sidebar {
+        position:static;
+    }
+    .main_container{
+    margin-top:0px!important;
+    }
+    .left_sidebar,.center_panel{
+    margin-left:0px;
+    }
+        .right_sidebar{
+    float:none;
+    }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-14px;
+    }
+    /*
+    .right_sidebar{
+    	position:absolute;
+    	margin-left:10px;
+    	width:195px;
+    	top:330px;
+    	left:-15px;
+    	padding-top:0px;
+    	text-align:center;
+    }
+    .right_sidebar .right_sidebar_container {
+    	margin-left:0px;
+    }
+
+    
+    #friend_referral_bar_header,#friend_referral_bar{
+    display:none!important;
+    }
+    */
+}
 }
