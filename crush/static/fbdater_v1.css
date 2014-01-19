@@ -509,6 +509,9 @@ a.button {
     .left_sidebar,.center_panel {
     margin-left:0px;
     }
+    .left_sidebar_container .navbar li .nav_arrow {
+		right:-15px;
+    }
     .right_sidebar{
     float:none;
     }
@@ -550,6 +553,9 @@ a.button {
         .right_sidebar{
     float:none;
     }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-15px;
+    }
     /*
         .right_sidebar{
     	position:absolute;
@@ -589,6 +595,9 @@ a.button {
         .right_sidebar{
     float:none;
     }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-15px;
+    }
     /*
         .right_sidebar{
     	position:absolute;
@@ -627,6 +636,9 @@ a.button {
         .right_sidebar{
     float:none;
     }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-15px;
+    }
     /*
        .right_sidebar{
     	position:absolute;
@@ -663,6 +675,9 @@ a.button {
     }
         .right_sidebar{
     float:none;
+    }
+        .left_sidebar_container .navbar li .nav_arrow {
+		right:-15px;
     }
     /*
     .right_sidebar{
