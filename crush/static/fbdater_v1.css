@@ -4329,7 +4329,7 @@ ul.bxslider_element #slide_overlay {
 /* facebook dialogs should always appear on top */
 .fb_dialog{
 	z-index:10001!important;
-	
+}
 	
 /* =================   RESONSIVE DESIGN _ SHOULD ALWAYS BE ON BOTTOM OF CSS   ============== */
 
@@ -4538,5 +4538,4 @@ ul.bxslider_element #slide_overlay {
     display:none!important;
     }
     */
-}
 }
