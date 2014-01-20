@@ -104,10 +104,14 @@ $('.sent_from_us').css('opacity',0);
 });
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
-	$("#mf_help_section_problem .help_icon").qtip({
+	$("#mutual_friend_input_section_show a .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
 			title:"How can I anonymously seek help from mutual friends?"
+		},
+		position: {
+	        my: 'right bottom',  
+	        at:'top left'
 		},
 		show:{
 			delay:0,

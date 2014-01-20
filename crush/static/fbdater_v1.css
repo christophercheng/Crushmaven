@@ -3687,6 +3687,13 @@ ul.bxslider_element #slide_overlay {
 .app_invite_dialog{
 	width:550px!important;
 }
+.app_invite_dialog .ui-dialog-title {
+	position:relative;
+}
+.app_invite_dialog .ui-dialog-title .help_icon{
+	top:-7px;
+	right:-18px;
+}
 
 .generic_email_errors {
 	margin-left:130px;
