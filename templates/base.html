@@ -123,9 +123,9 @@ jQuery(document).ready(function($) {
 		    	$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });
 		    },
 		    onStart: function(){
-		    	 $("body").css({ overflow: 'hidden' });
+		    	 //$("body").css({ overflow: 'hidden' });
 		    	 //$("#fs-dialog-box-wrap").draggable({handle:"#fs-dialog-title",containment:$("#fs-overlay")});
-		    	// window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
+		    	//window.scrollTo(0,0); // hack to allow dialog to show - cause it always loads relative to fixed elements
 		    	 //$('body').css('overflow-y','hidden !important');
 		    },
 		    }); // close off .bt-fs-dialog.fSelector
@@ -604,7 +604,7 @@ $('.bt-fs-dialog').click(function(){
 	{% if no_track != True  %}
     ga('send', 'event', 'button', 'click', 'friend_selector_all_buttons');
     {% endif %}
-	window.wait_modal_open();
+	//window.wait_modal_open();
 })
 
 }); // close of jQuery(document).ready

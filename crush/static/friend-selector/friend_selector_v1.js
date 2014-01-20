@@ -48,7 +48,7 @@
 
   _start = function() {
 	  
-	  window.wait_modal_close();//openend in jquery script as soon as a friend selector button is clicked
+	 // window.wait_modal_close();//openend in jquery script as soon as a friend selector button is clicked
 	  if ( FB === undefined ){
 	      window.alert_modal('Facebook Connection Error', "Sorry, we are experiencing difficultly connecting to Facebook.  Please try again later.",$('#fs-dialog-box-wrap'));
 	      return false;
