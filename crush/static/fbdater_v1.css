@@ -1775,7 +1775,7 @@ ul.nav_bar li#nav_bar_options{
 	bottom:2px;
 	left:35px;
 	font-size:10px;
-	font-weight:normal;
+	font-weight:bold;
 	color:red;
 	z-index:9;
 	vertical-align:bottom;
@@ -1784,7 +1784,7 @@ span.alert_icon{
 	display:inline-block;
 	font-weight:bold;
 	background:red;
-	border-radius:3px;
+	border-radius:50%;
 	color:#fff;
 	text-align:center;
 	vertical-align:middle;
