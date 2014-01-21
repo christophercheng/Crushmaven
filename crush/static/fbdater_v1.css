@@ -1761,13 +1761,38 @@ ul.nav_bar li#nav_bar_options{
 .crush_response_body .hint_anonymous{
 
 	position:absolute;
-	bottom:39px;
-	left:158px;
+	bottom:42px;
+	left:155px;
 	font-size:10px;
 	font-weight:normal;
 	color:#00297A;
 	letter-spacing:1px;
 	z-index:9;
+}
+.crush_response_body .invite_warning{
+
+	position:absolute;
+	bottom:2px;
+	left:35px;
+	font-size:10px;
+	font-weight:normal;
+	color:red;
+	z-index:9;
+	vertical-align:bottom;
+}
+span.alert_icon{
+	display:inline-block;
+	font-weight:bold;
+	background:red;
+	border-radius:3px;
+	color:#fff;
+	text-align:center;
+	vertical-align:middle;
+	margin-right:5px;
+	width:15px;
+	height:15px;
+	font-size:14px;
+	margin-bottom:1px;
 }
 
 .crush_response_body .app_invite_link_more a{
@@ -3599,7 +3624,7 @@ ul.bxslider_element #slide_overlay {
 
 .modal_main_content {
 	width:100%;
-	padding: 5px 15px 0px 15px;
+	padding: 10px 15px 10px 15px;
 }
 
 .attraction_invite_row{
@@ -3607,7 +3632,7 @@ ul.bxslider_element #slide_overlay {
 	width:100%;
 	display:inline-block;
 	padding:4px 0px 4px 0px;
-	border-top: 1px solid gray;
+	border-top: 1px solid #CCCCCC;
 	line-height:40px;
 	vertical-align:middle
 }
@@ -3670,11 +3695,18 @@ ul.bxslider_element #slide_overlay {
 }
 .invite_interstitial_dialog .ui-dialog-buttonset{ 
 	margin-right:34px!important;
-
 }
 
+.invite_interstitial_dialog .ui-dialog-titlebar-close{
+	display:none;
+}
 
-.invite_interstitial_dialog .ui-dialog-titlebar-close{display:none}
+.confirm_close_invite_dialog .ui-dialog-content{
+	padding:25px 15px!important;
+	line-height:24px!important;
+	color:#333333!important;	
+	font-size:14px;
+}
 
 /* ===========================   App Invite Dialog ========================= */
 

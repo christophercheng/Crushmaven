@@ -236,6 +236,24 @@ jQuery(document).ready(function($) {
 	
 	window.invite_interstitial_modal=null;
 	window.invite_interstitial_modal_redirect_url="";
+	
+	window.confirm_close_invite_interstitial=function(){
+		$(".invite_interstitial_dialog").hide();
+		var number_crushes=	$('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button').length;
+		var confirmation_modal=$("#confirm_invite_interstitial_modal");
+		if (number_crushes > 1)
+			confirmation_modal.html("You are very unlikely to receive any response from your crushes, unless you first send them an invite to sign into CrushMaven.");
+		else
+			confirmation_modal.html("You are very unlikely to receive any response from your crush, unless you first send them an invite to sign into CrushMaven.");
+
+	   confirmation_modal.dialog({dialogClass:'confirm_close_invite_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".invite_interstitial_dialog").show();$(this).dialog("close");}},
+	                                                                                                                                                          {text: "Send Invites Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(this).dialog("close");window.invite_interstitial_modal.dialog("close");}}],
+		   							beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });}});
+	   confirmation_modal.dialog("open");
+	   $(':focus').blur();
+	  };  
+
+	
 	window.launch_invite_interstitial = function(attraction_json,redirect_url) {
 			// only initialize jquery modal dialog once per page load
 			
@@ -289,7 +307,7 @@ jQuery(document).ready(function($) {
 			modal_html += '</div>';//close off dialog_main_content div
 			modal_html += '<div class="ui-dialog-buttonpane">';
 			modal_html += '<div class="ui-dialog-buttonset">';
-			modal_html += '<button type="button" onclick="window.invite_interstitial_modal.dialog(\'close\');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text ">send invites later</span></button>';
+			modal_html += '<button type="button" onclick="window.confirm_close_invite_interstitial();" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text ">send invites later</span></button>';
 			modal_html += '</div></div>';
 			
 			window.invite_interstitial_modal.html(modal_html);
@@ -374,6 +392,7 @@ jQuery(document).ready(function($) {
 			message=custom_message;
 		
 		if (!$("#wait_modal").dialog("isOpen")){
+				$("#wait_modal").html(message);
 				$('#wait_modal').dialog("open");
 		}
 		
@@ -388,7 +407,7 @@ jQuery(document).ready(function($) {
 			$('#wait_modal').dialog("option",{beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });$('.wait_modal_dialog').css('z-index',old_dialog_z);$('.ui-widget-overlay').css('z-index',old_overlay_z).removeClass('wait_mode')}});
 		}
 		$(".ui-widget-overlay").fadeTo(0,.1);
-		$("#wait_modal").html(message);
+		
 	};  
 
 	window.wait_modal_close=function(){
@@ -630,9 +649,10 @@ $('.bt-fs-dialog').click(function(){
 </div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
 <div id="alert_modal" title="Something's Not Right"></div>
-<div id="wait_modal">Please Wait</div>
+<div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>
 <div id="invite_interstitial_modal" title = "Want a response? Invite them to CrushMaven!"></div>
+<div id="confirm_invite_interstitial_modal" title = "Are You Sure You Wish to Skip Invites?"></div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>
 <div id="contactable"></div><!-- contactable html placeholder -->
