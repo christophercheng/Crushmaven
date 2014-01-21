@@ -259,8 +259,9 @@ def app_invite_form_v2(request, crush_username):
         fb_query_string = str(request.user.username + '/mutualfriends/' + crush_username)
         try:           
             mutual_friend_json = graph_api_fetch(request.user.access_token, fb_query_string)
-        except:
-            raise 
+        except Exception as e:
+            logger.debug("finding mutual friends failed with exception: " + str(e))
+            raise  
         logger.debug( "Length of mutual_friend json: "+ str(len(mutual_friend_json)) )
         form = AppInviteForm2(mutual_friend_json=mutual_friend_json)
     crush_firstname=crush_fullname.split(' ',1)[0]
