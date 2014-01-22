@@ -160,7 +160,10 @@ def failed_email_send(request):
             relationship=bad_email.relationship
             bad_email.delete()
             relationship.notify_source_person_bad_invite_email(bad_email_address)
-        
+            # check the crush relationship - if no other invite emails sent, then change it's status back to 0
+            if relationship.inviteemail_set.count() == 0 and relationship.target_status == 1:
+                    relationship.target_status=0
+                    relationship.save(update_fields=['target_status'])
     except Exception as e:
         print e
         pass
@@ -218,62 +221,3 @@ def admirer_for(request,first_name,last_initial):
                                'facebook_app_id':settings.FACEBOOK_APP_ID
                                })    
     return HttpResponse("")
-
-#import sleekxmpp
-#import logging
-
-#logging.basicConfig(level=logging.DEBUG)
-
-#class SendMsgBot(sleekxmpp.ClientXMPP):
-    """
-    A basic SleekXMPP bot that will log in, send a message,
-    and then log out.
-    """
-"""
-    
-    def __init__(self, jid, recipient, message):
-
-        sleekxmpp.ClientXMPP.__init__(self, jid, 'ignore')
-
-    
-        # The message we wish to send, and the JID that
-        # will receive it.
-        self.recipient = recipient
-        self.msg = message
-    
-        # The session_start event will be triggered when
-        # the bot establishes its connection with the server
-        # and the XML streams are ready for use. We want to
-        # listen for this event so that we we can initialize
-        # our roster.
-        self.add_event_handler("session_start", self.start, threaded=True)
-
-    def start(self, event):
-    
-        self.send_presence()
-    
-        self.get_roster()
-    
-        self.send_message(mto=self.recipient,
-                        mbody=self.msg,
-                        mtype='chat')
-    
-        # Using wait=True ensures that the send queue will be
-        # emptied before ending the session.
-        self.disconnect(wait=True)
-        
-
-def send_fb_chat_message(access_token,fb_from_id,fb_to_id,msg):
-
-    
-    xmpp = SendMsgBot(fb_from_id, fb_to_id, unicode(msg))
-    
-    xmpp.credentials['api_key'] = settings.FACEBOOK_APP_ID
-    xmpp.credentials['access_token'] = access_token
-    
-    if xmpp.connect(('chat.facebook.com', 5222)):
-        xmpp.process(block=True)
-        print("Done")
-    else:
-        print("Unable to connect.")
-"""      
