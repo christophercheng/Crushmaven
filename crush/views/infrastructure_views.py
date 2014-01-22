@@ -62,7 +62,7 @@ def testing3(request):
         response += user.get_name() + ' : ' + str(user.min_crush_status) + '<br>'
         logger.debug(user.get_name() + " : " + str(more_crushes_count))
         for crush_name in crush_list:
-            response += "* " + str(crush_name) + "<BR>"
+            response += "* " + str(crush_name.encode('ascii', 'ignore')) + "<BR>"
         if more_crushes_count > 0:
             response += " and " + str(more_crushes_count) + " more...<BR><BR>"
     return HttpResponse(response)
