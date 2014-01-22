@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title></title>
+		</style>
+	</head>
+	<body style="font-family:helvetica">
+		<table align="center" style="border:1px solid black;padding:15px 25px 35px 25px" width="600px">
+		<tbody><tr><td>
+		
+			<table width="100%" style="font-size:16px;color:#2B2B2B">
+				<tr style="background-color:black" width="100%" valign="middle" height="60px">
+					<td width="100%" style="padding-left:25px;padding-top:3px">
+						<img height="35px" src="http://www.crushmaven.com/static/images/cm_logo_sm.png">
+					</td>
+				</tr>
+				<tr>
+				<td width="500px" style="padding:30px 25px 15px 25px;line-height:30px;font-size:16px">
+					<b>We need your help!</b> &nbsp;To obtain a response from your crushes, we first need to send them an invitation to sign into CrushMaven.
+
+				</td>
+			</tr>
+			<tr>
+			<td width="500px" style="padding:0px 25px 10px 25px;line-height:30px;font-size:16px">
+				<b>Please log back in and provide us with email addresses for the following people, so we can send them our anonymous invite:</b>
+			</td>
+		</tr>
+		{% for crush_full_name in crush_list %}
+		<tr>
+		<td width="500px" style="padding:0px 25px 0px 30px;line-height:25px;font-size:16px">
+			* {{ crush_full_name }} 
+		</td>
+		</tr>
+		{% endfor %}
+		{% if more_crushes_count %}
+		<tr>
+		<td width="500px" style="padding:0px 25px 0px 40px;line-height:30px;font-size:16px">
+			and {{ more_crushes_count }} more...
+		</td>
+		</tr>
+		{% endif %}
+		<tr style="height:20px;">
+			<td></td>
+		</tr>
+				<tr>
+				<td width="500px" style="padding:15px 28px 15px 28px;line-height:30px;background-color:#E5E5E5;color:#595959;font-size:15px">
+					<B>Did you know?</b>&nbsp; You can also provide us with email addresses of friends or contacts of your crush.  We'll let them know that their friend has an admirer, and ask them to forward our invitation on to their friend.
+				</td>
+				</tr>
+				<tr width="100%"height="40px">
+					<td align="center" style="padding-top:35px">
+						<a href="http://www.crushmaven.com/admirers/" style="margin-top:15px;background-color:#2952CC;color:white;text-align:center;cursor:pointer;padding:9px 25px 7px 25px;letter-spacing:1px;text-decoration:none;font-size:16px;border-radius:7px;"><b>Log In Now</b></a>
+					</td>
+				</tr>	
+			</table>
+		</td></tr></tbody>	
+		</table>
+		<table align="center" style="padding-bottom:30px" width="600px">
+		<tbody><tr><td>
+			<table width="100%" style="font-size:16px;color:#2B2B2B">
+				<tr>
+					<td width="500px" style="padding:15px 25px 0px 25px;line-height:24px;font-size:14px">
+						Adjust notifications in your <a style="cursor:pointer;" href="http://www.crushmaven.com/settings_preferences">account settings</a>.
+					</td>
+				</tr>
+			</table>
+		</td></tr></tbody>
+		</table>
+	</body>
+</html>
