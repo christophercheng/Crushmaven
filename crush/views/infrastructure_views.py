@@ -163,7 +163,8 @@ def failed_email_send(request):
             # check the crush relationship - if no other invite emails sent, then change it's status back to 0
             if relationship.inviteemail_set.count() == 0 and relationship.target_status == 1:
                     relationship.target_status=0
-                    relationship.save(update_fields=['target_status'])
+                    relationship.date_invite_last_sent=None
+                    relationship.save(update_fields=['target_status','date_invite_last_sent'])
     except Exception as e:
         print e
         pass
