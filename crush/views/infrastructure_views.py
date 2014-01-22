@@ -55,7 +55,7 @@ def testing3(request):
         for relevant_crush in relevant_crush_list:
             crush_list.append(relevant_crush.target_person.get_name())
         if len(relevant_crush_list)>4: # calculate number of other relationships
-            more_crushes_count = user.objects.crush_crushrelationships_set_from_source.filter(target_status__lt=1).count() - 5
+            more_crushes_count = user.crush_crushrelationship_set_from_source.filter(target_status__lt=1).count() - 5
 
         # call the send email function
         
