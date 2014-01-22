@@ -63,7 +63,7 @@ def testing3(request):
         for crush_name in crush_list:
             response += "* " + str(crush_name) + "<BR>"
         if more_crushes_count > 0:
-            response += " and " + more_crushes_count + " more... " + "<BR><BR>"
+            response += " and " + str(more_crushes_count) + " more... " + "<BR><BR>"
     return HttpResponse(response)
 
 
