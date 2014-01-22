@@ -126,6 +126,10 @@ def your_crushes(request, reveal_crush_id=None):
         show_help_popup=True
     else:
         show_help_popup=False
+    if me.email == '':
+        email_exists=False
+    else:
+        email_exists=True
     return render(request, 'crushes.html',
                               {
                                'responded_relationships':responded_relationships,
@@ -137,7 +141,8 @@ def your_crushes(request, reveal_crush_id=None):
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
                                'check_fb_privacy_setting':check_fb_privacy,
                                'reveal_crush_id':reveal_crush_id,
-                               'show_help_popup':show_help_popup
+                               'show_help_popup':show_help_popup,
+                               'email_exists':email_exists
                                })    
 @login_required
 def ajax_load_response_dialog_content(request, crush_id):

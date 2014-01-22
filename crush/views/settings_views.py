@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 # -- Profile Settings Page --
 @login_required
 def settings_preferences(request):
+
     # crush_name should be first name last name
     if request.method == 'POST': # if the form has been submitted...
         data=request.POST
@@ -20,15 +21,35 @@ def settings_preferences(request):
             form = PreferenceSettingsForm(request.POST)
             if form.is_valid():
                 me=request.user
-                for element in data:
-                    print "element: " + str(element) + " value: " + str(data[element])
-                updated_fields=[]                  
-                if 'gender_pref' in data: 
+                updated_fields=[] 
+                updated=False
+                if 'gender_pref' in data and data['gender_pref'] != me.gender_pref: 
                     me.gender_pref=data['gender_pref']
                     updated_fields.append('gender_pref')
+                if 'email' in data and data['email'] != me.email:
+                    me.email=data['email']
+                    updated_fields.append('email')
+                if 'bNotify_new_admirer' in data:
+                    if me.bNotify_new_admirer != True:
+                        me.bNotify_new_admirer = True
+                        updated_fields.append('bNotify_new_admirer')
+                else:
+                    if me.bNotify_new_admirer != False:
+                        me.bNotify_new_admirer = False
+                        updated_fields.append('bNotify_new_admirer')
+                if 'bNotify_crush_signup_reminder' in data:
+                    if me.bNotify_crush_signup_reminder != True:
+                        me.bNotify_crush_signup_reminder = True
+                        updated_fields.append('bNotify_crush_signup_reminder')
+                else:
+                    if me.bNotify_crush_signup_reminder != False:
+                        me.bNotify_crush_signup_reminder = False
+                        updated_fields.append('bNotify_crush_signup_reminder')
+                if len(updated_fields)>0:
+                    updated=True
                 me.save(update_fields=updated_fields)
                 return render(request,'settings_preferences.html',
-                              { 'form': form,'updated':True})
+                              { 'form': form,'updated':updated})
     else:
         form=PreferenceSettingsForm(instance=request.user)
     return render(request,'settings_preferences.html',
