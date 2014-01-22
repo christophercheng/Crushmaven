@@ -29,7 +29,7 @@ class Command(NoArgsCommand):
         relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
         invite_sent_count=0
         for user in relevant_user_set:
-            if user.email == '':
+            if user.email == '' or user.bNotify_crush_signup_reminder == False:
                 continue
             crush_list=[]
             more_crushes_count=0
