@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
-        if datetime.now().day == 1: 
+        if datetime.now().day != 1: 
             logger.debug("skipping the invite reminder cause it's not first of month")
             return
         relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
