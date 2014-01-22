@@ -412,8 +412,14 @@
 }
 #fs-confirm-user-list h2#fof_selected_header,#fs-confirm-user-list h2#nf_selected_header {
 margin-top: 15px;
-	
 }
+
+#fs-confirm-user-list h2 a {
+	color:#3366ff!important;
+	cursor:pointer!important;
+	font-size:9px!important;
+}
+
 #fs-confirm-user-list ul li{
 	display:inline-block;
   width:150px;

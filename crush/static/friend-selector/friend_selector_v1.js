@@ -525,9 +525,11 @@
 	  container.append(new_html);
 	  
   	// build friend-of-friend list
-	  //if (friend1_elements.length > 0) {
-	  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
-		
+	  if (friend1_elements.length > 0) 
+		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends <span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
+	  else
+		  var new_html = '<h2 id="fof_selected_header">Friends-of-Friends &nbsp;<a class="add-more-button" href="#">(add more)</a><span class="nf_selected_header_count">' + friend1_elements.length + '</span></h2><ul>';
+
 	  $.each(friend1_elements, function(){
     		var duplicate = $(this).clone();
     		duplicate.find('input').remove();
@@ -539,9 +541,11 @@
 	  
   	
   	// build non-friend list
-	 // if (friend2_elements.length > 0) {
-	  var new_html = '<h2  id="nf_selected_header">Others<span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
-		
+	  if (friend2_elements.length > 0) 
+		  var new_html = '<h2  id="nf_selected_header">Others <span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+	  else
+		  var new_html = '<h2  id="nf_selected_header">Others &nbsp;<a class="add-more-button" href="#">(add more)</a><span class="nf_selected_header_count">' + friend2_elements.length + '</span></h2><ul>';
+
 	  $.each(friend2_elements, function(){
     		var duplicate = $(this).clone();
     		duplicate.find('input').remove();
@@ -574,6 +578,10 @@
     
     wrap.delegate('#fs-back-button', 'click.fs', function(){
         _back();
+      });
+    wrap.delegate('.add-more-button', 'click.fs', function(){
+    	_back();
+    	$('#nfs-tab').trigger('click');
       });
     
     wrap.delegate('#fs-select-button', 'click.fs', function(){
