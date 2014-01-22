@@ -44,7 +44,7 @@ def testing3(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
     response=''
-    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status'))
+    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
 
    
     for user in relevant_user_set:
