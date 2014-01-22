@@ -20,8 +20,8 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
 #                           "to": email_address,"subject": subject, "html":html_message}
             if send_time != None:
                 data_dict["o:deliverytime"]=str(send_time) 
-            logger.debug(str(data_dict))
-            logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + text_message)
+            #logger.debug(str(data_dict))
+            logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject)
             result= requests.post("https://api.mailgun.net/v2/crushmaven.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
             logger.debug( "MailGun Response: " + str(result))
         
@@ -66,4 +66,4 @@ def send_mail_delivery_problem(full_name, short_name, first_name,invalid_email_a
 def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushes_count):
     html=render_to_string('email_template_invite_reminder.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_invite_reminder_text.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Your crushes are waiting...',html,text)
+    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)

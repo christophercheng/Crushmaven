@@ -24,6 +24,6 @@ class PreferenceSettingsForm(ModelForm):
         self.fields['gender_pref'].label=""
         self.label_suffix=""
         self.fields['email'].label= ""
-        self.fields['bNotify_crush_signup_reminder'].label="Invitation Not Sent Reminder"
+        self.fields['bNotify_crush_signup_reminder'].label="Crush Invite Reminder"
         self.fields['bNotify_new_admirer'].label=" New Admirer Notification"
         

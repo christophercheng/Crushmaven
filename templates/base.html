@@ -242,9 +242,9 @@ jQuery(document).ready(function($) {
 		var number_crushes=	$('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button').length;
 		var confirmation_modal=$("#confirm_invite_interstitial_modal");
 		if (number_crushes > 1)
-			confirmation_modal.html("You are very unlikely to receive any response from your crushes, unless you first send them an invite to sign into CrushMaven.");
+			confirmation_modal.html("You will not likely receive a response from your crushes unless you first send them an invite to sign into CrushMaven.");
 		else
-			confirmation_modal.html("You are very unlikely to receive any response from your crush, unless you first send them an invite to sign into CrushMaven.");
+			confirmation_modal.html("You will not likely receive a response from your crush unless you first send them an invite to sign into CrushMaven.");
 
 	   confirmation_modal.dialog({dialogClass:'confirm_close_invite_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".invite_interstitial_dialog").show();$(this).dialog("close");}},
 	                                                                                                                                                          {text: "Send Invites Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(this).dialog("close");window.invite_interstitial_modal.dialog("close");}}],
