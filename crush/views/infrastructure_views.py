@@ -9,7 +9,11 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
-#@login_required
+from crush.models import FacebookUser
+from crush.models import CrushRelationship
+from django.db.models import Q
+from django.db.models import Count,Min,Max
+@login_required
 def testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
@@ -21,19 +25,49 @@ def testing(request):
     
    
     return HttpResponse(result)
-#@login_required
+@login_required
 def testing2(request):
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
     #if request.user.username != '651900292':
     #    return HttpResponse("nu uhhhh")
     magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
     return HttpResponse("cookie in cache: " + magic_cookie)
-#@login_required
+@login_required
 def testing_prep(request):
-   # if request.user.username != '651900292':
-    #    return HttpResponse("nu uhhhh")
+    if request.user.username != '651900292':
+       return HttpResponse("nu uhhhh")
     cache.set(settings.FB_FETCH_COOKIE,"137%3AyoNXnPd5mpliVA%3A2%3A1389009777%3A14734")
     return HttpResponse("done")
+@login_required
+def testing3(request):
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
+    response=''
+    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status'))
 
+   
+    for user in relevant_user_set:
+        crush_list=[]
+        more_crushes_count=0
+        # get all crush relationships for this user
+        relevant_crush_list=user.crush_crushrelationship_set_from_source.filter(target_status__lt=1)[:5]
+        for relevant_crush in relevant_crush_list:
+            crush_list.append(relevant_crush.target_person.get_name())
+        if len(relevant_crush_list)>4: # calculate number of other relationships
+            more_crushes_count = user.objects.crush_crushrelationships_set_from_source.filter(target_status__lt=1).count() - 5
+
+        # call the send email function
+        
+        response += user.get_name() + ' : ' + str(user.min_crush_status) + '<br>'
+        for crush_name in crush_list:
+            response += "* " + str(crush_name) + "<BR>"
+        if more_crushes_count > 0:
+            response += " and " + more_crushes_count + " more... " + "<BR><BR>"
+    return HttpResponse(response)
+
+
+        
 # import the logging library
 import logging
 
