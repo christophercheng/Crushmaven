@@ -58,7 +58,7 @@ class MF_MultiEmailFieldHelp(MultiEmailField):
     widget=forms.TextInput(attrs={'placeholder':' enter one or more email addresses','maxlength':'100'})
 
 class TwitterField(forms.Field):
-    widget=forms.TextInput(attrs={'placeholder':' enter their twitter username','maxlength':'15'})
+    widget=forms.TextInput(attrs={'placeholder':' enter their twitter username (if known)','maxlength':'15'})
     
     def to_python(self,value):
         #'normalize data to a list of strings'
