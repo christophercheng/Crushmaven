@@ -23,8 +23,8 @@ body {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	background:rgb(241,243,245);
-	background:url('/static/images/whitemaze_brighter_pattern.png');
+	background:#FCFDFD;#rgb(241,243,245);
+	#background:url('/static/images/whitemaze_brighter_pattern.png');
 	#background:rgba(241,243,245,.5);
 	#background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
 	font-family:"Lucida Grande", helvetica, arial!important;
