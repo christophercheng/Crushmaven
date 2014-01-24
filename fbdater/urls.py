@@ -47,6 +47,8 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^logout_view/$', 'logout_view'),
     
     (r'^failed_email_send/$','failed_email_send'),
+
+    (r'^crushlist/$','crushlist'),
     
     (r'^testing/$','testing'),
     

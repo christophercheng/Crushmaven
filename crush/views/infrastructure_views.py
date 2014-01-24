@@ -2,13 +2,25 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from crush.models import CrushRelationship
+from crush.models import CrushRelationship,FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
+
+
+@login_required
+def crushlist(request):
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
+    response = "<h2>List of Inactive Users Who Haven't Been Twitter Invited:</h1><BR><BR>"
+    relevant_user_list = FacebookUser.objects.filter(is_active=False, date_twitter_invite_last_sent=None)
+    for user in relevant_user_list:
+        response += "<a href='www.facebook.com/" + user.username + "'>" + user.get_name() + "</a><BR>"
+    return HttpResponse(response)
+    
 
 @login_required
 def testing(request):
