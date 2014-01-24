@@ -18,7 +18,7 @@ def crushlist(request):
     response = "<h2>List of Inactive Users Who Haven't Been Twitter Invited:</h1><BR>"
     relevant_relationship_list = CrushRelationship.objects.filter(target_person__is_active=False,target_person__date_twitter_invite_last_sent=None).order_by('-date_added')
     for relationship in relevant_relationship_list:
-        response += relationship.source_person.get_name() + "(<a href='www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + ") has a crush on " + relationship.target_person.get_name() + "(<a href='www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
+        response += relationship.source_person.get_name() + "(<a href='www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + "</a>) -> " + relationship.target_person.get_name() + "(<a href='www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
     return HttpResponse(response)
     
 
