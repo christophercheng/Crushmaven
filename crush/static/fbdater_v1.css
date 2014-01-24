@@ -894,6 +894,8 @@ a.logo img{
 }
 .navbar li.active .new_menu_count{
 	top:15px;
+	color:#1e2126;
+	background-color:#fff;
 }
 
 .navbar li.active a {
@@ -1255,6 +1257,7 @@ a.logo img{
 	background:#2E8AE6;
 	text-align:center;
 	color:#F1F1F3;
+	color:#fff;
 	line-height:19px;
 	font-size:12px;
 	vertical-align:middle;
