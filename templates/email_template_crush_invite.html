@@ -14,24 +14,30 @@
 						<img height="35px" src="http://www.crushmaven.com/static/images/cm_logo_sm.png">
 					</td>
 				</tr>
+				<tr  width="100%" height="100px">
+					<td width="100%" style="padding-left:25px;padding-top:25px">
+						<img height="100px" src="http://graph.facebook.com/{{recipient_fb_username}}/picture?type=large&height=100">
+					</td>
+				</tr>
 				<tr>
-					<td width="500px" style="padding:25px 25px 10px 25px;line-height:30px;">
+					<td width="500px" style="padding:15px 25px 10px 25px;line-height:30px;">
 						Dear {{first_name}},
 					</td>
 				</tr>
 				<tr>
 					<td width="500px" style="padding:0px 25px 10px 25px;line-height:30px;font-size:16px">
+					Frist off, this is not spam.  
 					{% if friendship_type == 0 %}
-						<b>One of our users, a Facebook friend of yours, is attracted to you and wants to know if you feel the same.</B> 
+						One of our users, a Facebook friend of yours, gave us your email and Facebook profile.  <b>Why? Because they're attracted to you and want to know if you feel the same.</B> 
 					{% elif friendship_type == 1 %}
-						<b>One of our users is attracted to you and wants to know if you feel the same.  You share a mutual Facebook friend.</B>				
+						One of our users, someone who knows you and shares a mutual Facebook friend, gave us your email and Facebook profile.  <b>Why? Because they're attracted to you and want to know if you feel the same.</B>				
 					{% else %}
-						<b>One of our users, someone who knows you, is attracted to you and wants to know if you feel the same.</B>  				
+						One of our users, someone who knows you, gave us your email and Facebook profile.  <b>Why? Because they're attracted to you and want to know if you feel the same.</B>  				
 				{% endif %}
 					</td>
 				<tr>
 					<td width="500px" style="padding:0px 25px 15px 25px;line-height:30px;font-size:16px">
-						Sign in to <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> to find out whom.
+						Please sign in to <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> to find out whom.
 					</td>
 				</tr>
 				</tr>

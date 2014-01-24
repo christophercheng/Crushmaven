@@ -4,19 +4,31 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title></title>
 </head>
-	<body>
+	<body style="font-family:helvetica">
 		<table align="center" style="border:1px solid #DBDBDB;padding:15px 25px 30px 25px" width="600px">
 		<tbody><tr><td>
 		
 			<table width="100%" style="font-size:16px;color:#2B2B2B">
 				<tr style="background-color:#F5F5F5" width="100%" valign="middle" height="60px">
-					<td width="100%" style="padding-left:25px;padding-top:6px">
-						<img height="50px" src="{{ STATIC_URL }}images/cm_logo_sm.png">
+					<td width="100%" style="padding-left:25px;padding-top:3px">
+						<img height="35px" src="http://www.crushmaven.com/static/images/cm_logo_sm.png">
+					</td>
+				</tr>
+				{% if recipient_first_name and recipient_fb_usename %}
+				<tr  width="100%" height="100px">
+					<td width="100%" style="padding-left:25px;padding-top:25px">
+						<img height="100px" src="http://graph.facebook.com/{{recipient_fb_username}}/picture?type=large&height=100">
 					</td>
 				</tr>
 				<tr>
-					<td width="500px" style="padding:25px 25px 10px 25px;line-height:30px;font-size:16px">
-						Someone at <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> is attracted to your friend, <b>{{full_name}}</b>, and would like your help to determine if {{pronoun_subject}} feels the same.  Unfortunately, we can't tell you more than that.  {{first_name}}'s admirer wishes to remain anonymous.
+					<td width="500px" style="padding:15px 25px 0px 25px;line-height:30px;">
+						Dear {{recipient_first_name}},
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td width="500px" style="padding:{% if recipient_first_name and recipient_fb_usename %}15px{% else %}25px{% endif %} 25px 10px 25px;line-height:30px;font-size:16px">
+						First off, this is not spam.  Someone at <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> provided us with your email.  Why?  Because they're attracted to your friend, <b>{{full_name}}</b>, and would like your help to determine if {{pronoun_subject}} feels the same.  Unfortunately, we can't tell you more than that.  They wish to remain anonymous.
 					</td>
 				</tr>
 				<tr>
@@ -41,7 +53,7 @@
 		<tbody><tr><td>
 			<table width="100%" style="font-size:16px;color:#2B2B2B">
 				<tr>
-					<td width="500px" style="padding:15px 25px 0px 25px;line-height:24px;font-size:13px">
+					<td width="500px" style="padding:15px 25px 0px 52px;line-height:24px;font-size:13px">
 						In case you're wondering, {{first_name}}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once {{first_name}} signs up.
 					</td>
 				</tr>

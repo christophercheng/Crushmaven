@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class InviteEmailManager(models.Manager):
-    def process(self,new_email,new_relationship,new_is_for_crush):
+    def process(self,new_email,new_relationship,new_is_for_crush,mf_recipient_first_name=None,mf_recipient_fb_username=None):
         if new_is_for_crush and new_relationship.target_person.is_active:
             logger.debug("Don't send invite email to " + new_relationship.target_person.get_name() + ", an active user.")
             return True # don't do anything if the invite is to the crush who is already an active user
@@ -36,7 +36,7 @@ class InviteEmailManager(models.Manager):
         except Exception as e: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
             invite_emails=self.filter(relationship=new_relationship,is_for_crush=new_is_for_crush).order_by('date_last_sent')
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
-                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush,date_last_sent = datetime.datetime.now())
+                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush,mf_recipient_first_name=mf_recipient_first_name,mf_recipient_fb_username=mf_recipient_fb_username,date_last_sent = datetime.datetime.now())
                 new_invite.send();
             # for now just ignore user's request and don't send out an email - we don't want to overflood the database with random emails.   
             #else: # user has already created a maximum number of crush emails
@@ -70,6 +70,9 @@ class InviteEmail(models.Model):
     date_last_sent=models.DateTimeField(blank=True,null=True,default=None)
     is_for_crush=models.BooleanField(default=True) # if false, then the email was sent to a mutual friend
 
+    mf_recipient_first_name = models.CharField(max_length=50,blank=True,null=True,default=None)
+    mf_recipient_fb_username = models.CharField(max_length=50,blank=True,null=True,default=None) 
+
     def __unicode__(self):
         if self.is_for_crush == True:
             return smart_text(self.email) + u'(crush) : ' +  smart_text(self.relationship) 
@@ -83,7 +86,7 @@ class InviteEmail(models.Model):
         crush_first_name = crush_user.first_name
         if self.is_for_crush: # don't send this email to a user who is already an active user (CrushMaven takes care of that)
             subject = crush_short_name + ", you have an admirer!"
-            send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email)
+            send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email,crush_user.username)
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
             crush_pronoun_subject = crush_user.get_gender_pronoun_subject()

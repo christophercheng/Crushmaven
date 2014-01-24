@@ -33,15 +33,15 @@ def send_mail_user_logged_in(user, header_string):
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','admin@crushmaven.com',user.get_name() + ' logged in!','http://www.facebook.com/' + str(user.username) + " " + header_string,'http://www.facebook.com/' + str(user.username) + " " + header_string)
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','6465732737@vmobl.com',user.get_name() + ' logged in!','http://www.facebook.com/'+str(user.username),'http://www.facebook.com/'+str(user.username))
             
-def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address):
-    html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
+def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address,recipient_fb_username=None):
+    html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL,'recipient_fb_username':recipient_fb_username})
     text=render_to_string('email_template_crush_invite_text.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', you have a new admirer!',html,text)
+    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', you have a new admirer (not spam)',html,text)
     
-def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address):
-    html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
+def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address,recipient_first_name = None,recipient_fb_username=None):
+    html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL,'recipient_first_name':recipient_first_name,'recipient_fb_username':recipient_fb_username})
     text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + " has a secret admirer (one of our users)",html,text)
+    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + " needs your help (not spam)",html,text)
 
 def send_mail_new_admirer(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_notify_new_admirer.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
