@@ -116,3 +116,18 @@ class Purchase(models.Model):
             current_user.site_credits = F('site_credits') + self.credit_total     
             current_user.save(update_fields = ['site_credits']) 
         return super(Purchase, self).save(*args,**kwargs)
+    
+# store additional twitter usernames to prevent bad user behavior
+class TwitterUsername(models.Model):
+    
+    class Meta: 
+    # this allows the models to be broken into separate model files
+        app_label = 'crush' 
+    # Twitter handle used to invite inactive crush targets
+    twitter_username = models.CharField(max_length=15)
+    date_twitter_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True)      
+    user = models.ForeignKey('FacebookUser')   
+    
+    def __unicode__(self):
+        return smart_text(self.twitter_username) 
+  
