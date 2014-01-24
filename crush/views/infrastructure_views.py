@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from crush.models import CrushRelationship,FacebookUser
+from crush.models import CrushRelationship
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
@@ -16,9 +16,9 @@ def crushlist(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
     response = "<h2>List of Inactive Users Who Haven't Been Twitter Invited:</h1><BR><BR>"
-    relevant_user_list = FacebookUser.objects.filter(is_active=False, date_twitter_invite_last_sent=None)
-    for user in relevant_user_list:
-        response += "<a href='www.facebook.com/" + user.username + "'>" + user.get_name() + "</a><BR>"
+    relevant_relationship_list = CrushRelationship.objects.filter(target_person__is_active=False,target_person__date_twitter_invite_last_sent=None)
+    for relationship in relevant_relationship_list:
+        response += relationship.source_person.get_name() + "(<a href='www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + ") has a crush on " + relationship.target_person.get_name() + "(<a href='www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
     return HttpResponse(response)
     
 
