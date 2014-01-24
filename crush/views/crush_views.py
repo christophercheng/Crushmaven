@@ -2,7 +2,7 @@ from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember
+from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastTwitterUsername
 import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
@@ -249,6 +249,37 @@ def app_invite_form_v2(request, crush_username):
                     friend_email_fail_array.append(email)
                     continue
 
+            new_twitter_username = form.cleaned_data['twitter_username']
+            if new_twitter_username != '':
+                target_person=crush_relationship.target_person
+                target_person_existing_twitter=target_person.twitter_username
+                if target_person.twitter_username == None:
+                    # update current twitter username 
+                    crush_relationship.target_person.twitter_username=new_twitter_username
+                    crush_relationship.target_person.save(update_fields=['twitter_username']);
+                    # then send out programattic invite
+                elif target_person_existing_twitter!=new_twitter_username:
+                    # check if there already ten twitter handles, if so then just ignore this one (Some bad user behavior going on)
+                    past_twitters=target_person.pasttwitterusername_set.all()
+                    if past_twitters.count() < 10:
+                        # check if current twitter name has been stored in a past twitterusername instance
+                        past_twitter_exists=False
+                        new_twitter_exists=False
+                        for past_twitter in past_twitters:
+                            if past_twitter.twitter_username == target_person_existing_twitter:
+                                past_twitter_exists=True;
+                            if past_twitter.twitter_username == new_twitter_username:
+                                new_twitter_exists=True;
+                        if not past_twitter_exists:
+                            # if it has not already been stored, then store it into past twitterUsername instance
+                            PastTwitterUsername.objects.create(user=target_person,twitter_username=target_person_existing_twitter,date_twitter_invite_last_sent=target_person.date_twitter_invite_last_sent)
+                        
+                        # update the current twitter username
+                        crush_relationship.target_person.twitter_username=new_twitter_username
+                        crush_relationship.target_person.save(update_fields=['twitter_username']);
+                        # if new twitter username not previously stored, then send off programatic invite
+                        # if previously stored, then don't send off programatic invite
+                    
             # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
             if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0:
                 crush_relationship.target_status = 1;

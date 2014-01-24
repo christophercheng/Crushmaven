@@ -78,7 +78,7 @@ a.button {
 	vertical-align:middle!important;
 	text-align:center!important;
 	font-weight:normal!important;
-	text-shadow:1px 1px 0px #000!important;
+	#text-shadow:1px 1px 0px #000!important;
 	padding-left:1px;
 }
 
@@ -3719,16 +3719,23 @@ ul.bxslider_element #slide_overlay {
 .app_invite_dialog{
 	width:550px!important;
 }
-.app_invite_dialog .ui-dialog-title {
-	position:relative;
+
+.app_invite_dialog .ui-dialog-titlebar .help_icon{
+	top:5px;
+	right:5px;
 }
-.app_invite_dialog .ui-dialog-title .help_icon{
-	top:-7px;
-	right:-18px;
+.app_invite_dialog .ui-dialog-title{
+	margin-top:-5px!important;
+}
+.app_invite_dialog .ui-dialog-titlebar{
+	padding-top: 16px!important;
+	height: 43px!important;
 }
 
 .generic_email_errors {
-	margin-left:130px;
+	margin-left: 60px;
+margin-top: -10px;
+margin-bottom: 10px!important;
 }
 
 #email_input_section{
@@ -3740,18 +3747,14 @@ ul.bxslider_element #slide_overlay {
 
 #attraction_email_input_section{
 	padding-top:20px;
-	padding-bottom:20px;
+	#padding-bottom:15px;
 }
 
 #attraction_email_input_section .crush_email_name {
-	font-size:14px;
+	font-size:13px;
 	display:inline-block;
-	width:90px;
-	height:30px;
-	vertical-align:middle;
-	overflow:hidden;
-	text-overflow:ellipsis;
-	white-space:nowrap;
+	color:#4D4D4D;
+	padding-top:4px;
 }
 
 .email_field_input{
@@ -3770,13 +3773,13 @@ ul.bxslider_element #slide_overlay {
 }
 
 #mutual_friend_help_section {
-	margin-left:50px;
-	margin-bottom:20px;
+	margin-left:58px;
+	margin-bottom:24px;
 	text-align:center;
 	width:450px;
 	line-height:18px;
-	border-top:1px solid darkGray;
-	padding-top:25px;
+	#border-top:1px solid darkGray;
+	padding-top:-5px;
 }
 #mf_help_section_problem {
 	#font-weight:bold;
@@ -3792,7 +3795,7 @@ ul.bxslider_element #slide_overlay {
 	#font-weight:bold;
 	#color:#ff0033!important;
 	color:#0077cc!important;
-	font-size:12px!important;	
+	font-size:13px!important;	
 	display:block;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show a {
@@ -3800,15 +3803,15 @@ ul.bxslider_element #slide_overlay {
 }
 #mutual_friend_help_section #mutual_friend_input_section_show a .help_icon{
 	position:absolute;
-	top:-3px;
-	left:-19px;	
+	top: -1px;
+	right: -20px;
+	background-color:#0077cc!important;
 }
-
 
 #mutual_friend_help_section #mutual_friend_input_section_show a{
 	#color:#ff0033!important;
 		color:#0077cc!important;
-	font-size:12px!important;
+	font-size:13px!important;
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show a:hover{
@@ -3820,9 +3823,9 @@ ul.bxslider_element #slide_overlay {
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show .arrow{
-	font-size:10px;
+	font-size:12px;
 	vertical-align:bottom;
-	margin-left:1px;
+	margin-right:1px;
 }
 #mutual_friend_input_section_subtitle{
 	display:inline-block;
@@ -3866,7 +3869,7 @@ ul.bxslider_element #slide_overlay {
 
 .mf_email_field_input .fieldWrapper{
 	display:inline-block;
-	width:360px!important;
+	width:340px!important;
 }
 
 .email_field_input label img{
@@ -3887,10 +3890,17 @@ ul.bxslider_element #slide_overlay {
 
 .email_field_input .fieldWrapper{
 	display:inline-block;
-	width:385px;
+	width:365px;
+	position:relative;
 }
 .email_field_input .fieldWrapper input{
 	width:100%;
+}
+
+.email_field_input .fieldWrapper .help_icon{
+	right:3px;
+	top:6px;
+	background-color:#cccccc!important;
 }
 
 .email_input_error_section {
@@ -3916,13 +3926,15 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	float:left;
 	font-style:italic;
-	margin-bottom:5px;
-	margin-top:-1px;
+	margin-bottom:9px;
+	margin-top:-4px;
+	margin-left:4px
 }
 
 .sub_label{
-	font-size:10px;
+	font-size:9px;
 	color:#909090;
+	margin-bottom:15px;
 }
 
 #app_invite_form .ui-dialog-buttonpane{
@@ -3935,11 +3947,19 @@ ul.bxslider_element #slide_overlay {
 #app_invite_form .site_dialog_button{
 	font-size:14px!important;
 }
+#app_invite_form .modal_instructions{
+	padding-left:20px;
+}
 
 #app_invite_form .ui-dialog-buttonpane {
 	position:relative!important;
 }
 
+#app_invite_form .twitter_icon{
+	margin-right:-3px;
+	margin-left:3px;
+	color:#B2B2B2;
+}
 #preview_invite_button{
 	margin-right:15px!important;
 	color:#fff!important;

@@ -118,7 +118,7 @@ class Purchase(models.Model):
         return super(Purchase, self).save(*args,**kwargs)
     
 # store additional twitter usernames to prevent bad user behavior
-class TwitterUsername(models.Model):
+class PastTwitterUsername(models.Model):
     
     class Meta: 
     # this allows the models to be broken into separate model files

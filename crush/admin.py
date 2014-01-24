@@ -7,7 +7,7 @@ Created on Mar 4, 2013
 from django.contrib import admin
 from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
-from crush.models.miscellaneous_models import Purchase,InviteEmail
+from crush.models.miscellaneous_models import Purchase,InviteEmail,PastTwitterUsername
 from crush.models.lineup_models import LineupMember
 from postman.models import Message
 
@@ -57,6 +57,13 @@ class InviteEmailAdmin(admin.ModelAdmin):
     ordering=('-date_last_sent','-is_for_crush','relationship','email')
     fields=('relationship','email', 'is_for_crush','date_last_sent')
     raw_id_fields=('relationship',)
+class PastTwitterUsernameAdmin(admin.ModelAdmin):
+    list_display = ('user','twitter_username','date_twitter_invite_last_sent')
+    search_fields = ('user','twitter_username')
+    list_filter = ('date_twitter_invite_last_sent',)
+    ordering=('-user','-date_twitter_invite_last_sent')
+    fields=('twitter_username','date_twitter_invite_last_sent')
+    raw_id_fields=('user',)
 
 admin.site.register(FacebookUser,FacebookUserAdmin)
 admin.site.register(CrushRelationship,CrushRelationshipAdmin)
@@ -64,3 +71,4 @@ admin.site.register(PlatonicRelationship,PlatonicRelationshipAdmin)
 admin.site.register(LineupMember,LineupMemberAdmin)
 admin.site.register(Purchase,PurchaseAdmin)
 admin.site.register(InviteEmail,InviteEmailAdmin)
+admin.site.register(PastTwitterUsername,PastTwitterUsernameAdmin)
