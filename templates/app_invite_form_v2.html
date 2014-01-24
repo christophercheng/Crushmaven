@@ -49,6 +49,7 @@ $(document).ready(function()
 		
 $('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
 	$('#app_invite_form #mutual_friend_input_section').toggle();
+	$('#mutual_friend_help_section #mutual_friend_input_section_show a .help_icon').toggle();
 	$(this).children('.arrow').toggle(); 
 	//$(this).children('#down_arrow').toggle();
 	
@@ -199,7 +200,7 @@ $(".tooltip_subtitle").click(function(){
 
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
-      <label for="id_crush_emails"><span class="crush_email_name">Email</span></label> 
+      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name">Email</span></label> 
       <div class="fieldWrapper">
          {{ form.crush_emails }}
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
@@ -213,7 +214,7 @@ $(".tooltip_subtitle").click(function(){
    </div><!-- close attraction_email_input -->
 	
 <div id="mutual_friend_help_section">
- <div id="mutual_friend_input_section_show"><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span><a>Anonymously seek help from {{ crush_firstname }}'s friends<span class="help_icon">?</span></a></div>
+ <div id="mutual_friend_input_section_show"><a><span class="help_icon">?</span>Anonymously seek help from {{ crush_firstname }}'s friends</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
 </div><!-- close of mutual friend help section -->
 <div id="mutual_friend_input_section">
 	{% for field in form %}
@@ -382,33 +383,6 @@ Email is the best way to go.
 	<span class="help_dialog_content"><span id="invite_dialog_twoc_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 	If you know the twitter username of your crush, we can send them an anonymous tweet from our CrushMaven twitter account.  We'll let them know what's up and ask them to sign in. 
-	</span>
-	<span class="related_subsections">related q&a:</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		How are email invites anonymous?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	Our email invites are sent from our crushmaven.com email address - not from yours.
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		Why don't you just send an anonymous invite through Facebook?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	We could indirectly send a Facebook invite (with you as sender) but that would reveal your identity - fail.
-	We could send a Facebook invite directly from us, but if your crush is not an existing CrushMaven user, then our Facebook invite will only appear in their 'other' inbox. Hardly anyone knows what or where that is - fail. 
-	Email is the best way to go.
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		Will you use my crush and mutual friend email addresses for anything else?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-		Absolutely not!
-	</span>
 	</span>
 	<span class="tooltip_close">close</span>
 	</span></span>

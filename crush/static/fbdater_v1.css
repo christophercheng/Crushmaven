@@ -63,7 +63,7 @@ a.button {
 
 /* =================  Help Tooltips ========================= */
 .help_icon{
-	display:inline-block!important;
+	display:inline-block;
 	position:absolute!important;
 	cursor:default!important;
 	border-radius:50%!important;
@@ -3728,8 +3728,8 @@ ul.bxslider_element #slide_overlay {
 	margin-top:-5px!important;
 }
 .app_invite_dialog .ui-dialog-titlebar{
-	padding-top: 16px!important;
-	height: 43px!important;
+	padding-top: 17px!important;
+	height: 47px!important;
 }
 
 .generic_email_errors {
@@ -3746,7 +3746,7 @@ margin-bottom: 10px!important;
 }
 
 #attraction_email_input_section{
-	padding-top:20px;
+	padding-top:29px;
 	#padding-bottom:15px;
 }
 
@@ -3755,6 +3755,9 @@ margin-bottom: 10px!important;
 	display:inline-block;
 	color:#4D4D4D;
 	padding-top:4px;
+}
+#attraction_email_input_section .first_crush_email_name {
+	margin-right:11px;
 }
 
 .email_field_input{
@@ -3773,7 +3776,7 @@ margin-bottom: 10px!important;
 }
 
 #mutual_friend_help_section {
-	margin-left:58px;
+	margin-left:74px;
 	margin-bottom:24px;
 	text-align:center;
 	width:450px;
@@ -3790,7 +3793,7 @@ margin-bottom: 10px!important;
 	display:none;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show {
-	margin-top:8px;
+	margin-top:17px;
 	text-align:center;
 	#font-weight:bold;
 	#color:#ff0033!important;
@@ -3803,9 +3806,10 @@ margin-bottom: 10px!important;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show a .help_icon{
 	position:absolute;
-	top: -1px;
-	right: -20px;
+	top: 2px;
+	left: -20px;
 	background-color:#0077cc!important;
+	display:none;
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show a{
@@ -3824,8 +3828,8 @@ margin-bottom: 10px!important;
 
 #mutual_friend_help_section #mutual_friend_input_section_show .arrow{
 	font-size:12px;
-	vertical-align:bottom;
-	margin-right:1px;
+	#vertical-align:bottom;
+	margin-left:1px;
 }
 #mutual_friend_input_section_subtitle{
 	display:inline-block;
@@ -3928,7 +3932,7 @@ margin-bottom: 10px!important;
 	font-style:italic;
 	margin-bottom:9px;
 	margin-top:-4px;
-	margin-left:4px
+	margin-left:9px
 }
 
 .sub_label{
@@ -3948,7 +3952,7 @@ margin-bottom: 10px!important;
 	font-size:14px!important;
 }
 #app_invite_form .modal_instructions{
-	padding-left:20px;
+	padding-left:48px;
 }
 
 #app_invite_form .ui-dialog-buttonpane {
@@ -3956,7 +3960,7 @@ margin-bottom: 10px!important;
 }
 
 #app_invite_form .twitter_icon{
-	margin-right:-3px;
+	margin-right:-4px;
 	margin-left:3px;
 	color:#B2B2B2;
 }
