@@ -30,6 +30,20 @@ body {
 	font-family:"Lucida Grande", helvetica, arial!important;
 }
 
+#intro_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1e2126;
+    #filter:alpha(opacity=70);
+    #-moz-opacity:0.7;
+    #-khtml-opacity: 0.7;
+    opacity: .95;
+    z-index: 10000;
+}
+
 a {
    font-size: 15px;
    color: #3366ff;
@@ -713,7 +727,7 @@ a.logo img{
 	position:absolute;
 	top:0px;
 	right:-1px;
-	background:#1e2126;
+	background:#2E8AE6;
 	width:1px;
 	height:64px;
 }
@@ -721,11 +735,16 @@ a.logo img{
 	display:none;
 }
 .left_sidebar_container .navbar li.inactive:hover .extra_right_border {
-	background:#3A3A48;
+	background:#1e2126;
 	display:inline-block;
 }
+.left_sidebar_container .navbar li.active a:active .extra_right_border {
+	top:1px;
+	height:63px;
+	right:0px;
+	}
 .left_sidebar_container .navbar li.inactive a:active .extra_right_border {
-	background:#3A3A48;
+	background:#1e2126;
 	display:inline-block;
 	top:1px;
 	height:63px;
@@ -735,8 +754,8 @@ a.logo img{
 	position:absolute;
 	top:0px;
 	right:-16px;	
-	border-color: #1e2126 transparent transparent transparent;
-	border-left:16px solid #1e2126;
+	border-color: #2E8AE6 transparent transparent transparent;
+	border-left:16px solid #2E8AE6;
  	border-right:0px;
  	border-top:32px dotted rgba(255,255,255, 0)!important;
  	border-bottom:32px dotted rgba(255,255,255, 0)!important;
@@ -756,8 +775,8 @@ a.logo img{
 
 .navbar li.inactive:hover .nav_arrow {	
 	display:block;
-	border-color: #3A3A48 transparent transparent transparent;
-	border-left:16px solid #3A3A48;
+	border-color: #1e2126 transparent transparent transparent;
+	border-left:16px solid #1e2126;
 
 }
 
@@ -880,12 +899,12 @@ a.logo img{
 .navbar li.active a {
 	color:white;
  	height:100%;
- 	text-shadow: 1px 1px 1px #000;
+ 	#text-shadow: 1px 1px 1px #000;
  	border-radius:6px 0px 0px 6px;
- 	background:#1e2126;
- 	border-left:1px solid #1e2126;
+ 	background:#2E8AE6;
+ 	border-left:1px solid #2E8AE6;
  	border-bottom:1px solid #fff;
- 	border-top:1px solid #1e2126;
+ 	border-top:1px solid #2E8AE6;
 }
 
 /*
@@ -933,14 +952,14 @@ a.logo img{
 }
 
 .navbar li.inactive:hover a {
-	background:#3A3A48;
+	background:#1e2126;
 	color:white;
  	text-shadow: 1px 1px 1px #000;
  	border-radius:6px 1px 1px 6px;
  	border-left:1px solid #1e2126;
  	border-bottom:1px solid #1e2126;
  	border-top:1px solid #1e2126;
- 	border-right:1px solid #3A3A48;
+ 	border-right:1px solid #1e2126;
 	
 }
 

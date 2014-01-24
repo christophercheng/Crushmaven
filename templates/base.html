@@ -36,10 +36,17 @@
 		
     </head>
 <body>
-
+{% if 'signin' in request.GET %}
+<div id="intro_overlay"> </div>
+{% endif %}
 <script> 
 jQuery(document).ready(function($) {
+	{% if 'signin' in request.GET %}
 
+		$('#intro_overlay').fadeOut(2000);
+	{% endif %}
+
+	
 	function toTitleCase(str)
 	{
 	    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
