@@ -955,8 +955,8 @@ a.logo img{
  	border-top:1px solid #2E8AE6;
  	border-right:1px solid #2E8AE6;
  	transition-property:background,border-color;
-	transition-duration:200ms,200mx;
-	-webkit-transition-duration:200ms,200ms;
+	transition-duration:150ms,150mx;
+	-webkit-transition-duration:150ms,150ms;
 	-webkit-transition-property:background,border-color;
 	
 }
