@@ -3842,7 +3842,7 @@ margin-bottom: 10px!important;
 	display:none;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show {
-	margin-top:17px;
+	margin-top:8px;
 	text-align:center;
 	#font-weight:bold;
 	#color:#ff0033!important;
@@ -3879,6 +3879,7 @@ margin-bottom: 10px!important;
 	font-size:12px;
 	#vertical-align:bottom;
 	margin-left:1px;
+	color:#0077cc;
 }
 #mutual_friend_input_section_subtitle{
 	display:inline-block;
@@ -3901,7 +3902,7 @@ margin-bottom: 10px!important;
 	max-height: 178px; 
 	padding-bottom:5px;
 	display:none;
-	margin-top:-6px;
+	margin-top:-1px;
 }
 
 #mutual_friend_input_section .mf_email_name {
