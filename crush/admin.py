@@ -51,11 +51,11 @@ class PurchaseAdmin(admin.ModelAdmin):
     raw_id_fields=('purchaser',)
 
 class InviteEmailAdmin(admin.ModelAdmin):
-    list_display = ('relationship','is_for_crush','email','date_last_sent')
+    list_display = ('relationship','is_for_crush','mf_recipient_first_name','mf_recipient_fb_username','email','date_last_sent')
     search_fields = ('relationship','email')
     list_filter = ('date_last_sent',)
     ordering=('-date_last_sent','-is_for_crush','relationship','email')
-    fields=('relationship','email', 'is_for_crush','date_last_sent')
+    fields=('relationship','email', 'is_for_crush', 'mf_recipient_first_name','mf_recipient_fb_username','date_last_sent')
     raw_id_fields=('relationship',)
 class PastTwitterUsernameAdmin(admin.ModelAdmin):
     list_display = ('user','twitter_username','date_twitter_invite_last_sent')

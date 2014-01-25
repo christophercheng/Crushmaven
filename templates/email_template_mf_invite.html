@@ -14,7 +14,7 @@
 						<img height="35px" src="http://www.crushmaven.com/static/images/cm_logo_sm.png">
 					</td>
 				</tr>
-				{% if recipient_first_name and recipient_fb_usename %}
+				{% if recipient_fb_username != '' %}
 				<tr  width="100%" height="100px">
 					<td width="100%" style="padding-left:25px;padding-top:25px">
 						<img height="100px" src="http://graph.facebook.com/{{recipient_fb_username}}/picture?type=large&height=100">
@@ -27,8 +27,8 @@
 				</tr>
 				{% endif %}
 				<tr>
-					<td width="500px" style="padding:{% if recipient_first_name and recipient_fb_usename %}15px{% else %}25px{% endif %} 25px 10px 25px;line-height:30px;font-size:16px">
-						First off, this is not spam.  Someone at <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> provided us with your email.  Why?  Because they're attracted to your friend, <b>{{full_name}}</b>, and would like your help to determine if {{pronoun_subject}} feels the same.  Unfortunately, we can't tell you more than that.  They wish to remain anonymous.
+					<td width="500px" style="padding:{% if recipient_fb_username != '' %}15px{% else %}25px{% endif %} 25px 10px 25px;line-height:30px;font-size:16px">
+						First off, this is not spam.  Someone at <a style="cursor:pointer;" href="http://www.crushmaven.com/">CrushMaven.com</a> provided us with your contact information.  Why?  Because they're attracted to your friend, <b>{{full_name}}</b>, and would like your help to determine if {{pronoun_subject}} feels the same.  Unfortunately, we can't tell you more than that.  They wish to remain anonymous.
 					</td>
 				</tr>
 				<tr>

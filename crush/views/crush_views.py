@@ -218,7 +218,7 @@ def app_invite_form_v2(request, crush_username):
         form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json)
         if form.is_valid():
             # send out the emails here
-            crush_email_list = form.cleaned_data['crush_emails']
+            crush_email_list = form.cleaned_data['crush_emails']['cleaned_email_list']
             friend_email_list = form.get_mutual_friend_email_array()
             try:
                 crush_relationship = CrushRelationship.objects.get(source_person=request.user, target_person__username=crush_username)
@@ -239,17 +239,18 @@ def app_invite_form_v2(request, crush_username):
                 except:
                     crush_email_fail_array.append(email)
                     continue
-            for email in friend_email_list:
-                try:
-                    if InviteEmail.objects.process(new_email=email, new_relationship=crush_relationship, new_is_for_crush=False):
-                        friend_email_success_array.append(email)
-                    else:
+            for mf in friend_email_list:
+                for email in mf['cleaned_email_list']: 
+                    try:
+                        if InviteEmail.objects.process(new_email=email, new_relationship=crush_relationship, new_is_for_crush=False,mf_recipient_first_name=mf['recipient_first_name'],mf_recipient_fb_username=mf['recipient_fb_username']):
+                            friend_email_success_array.append(email)
+                        else:
+                            friend_email_fail_array.append(email)
+                    except:
                         friend_email_fail_array.append(email)
-                except:
-                    friend_email_fail_array.append(email)
-                    continue
+                        continue
 
-            new_twitter_username = form.cleaned_data['twitter_username']
+            new_twitter_username = form.cleaned_data['twitter_username']['cleaned_email_list']
             if new_twitter_username != '':
                 target_person=crush_relationship.target_person
                 target_person_existing_twitter=target_person.twitter_username

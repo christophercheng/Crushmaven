@@ -18,8 +18,10 @@ class MultiEmailField(forms.Field):
     
     def to_python(self,value):
         #'normalize data to a list of strings'
+        #self.label = Brad Davis
+        # self.help_text = facebook username
         if not value:
-            return []
+            return {'cleaned_email_list':[]}
         email_list = EMAIL_SEPARATOR.split(value)
         cleaned_email_list = []
         for email in email_list:
@@ -27,7 +29,9 @@ class MultiEmailField(forms.Field):
                 email = email.strip() #remove whitespace characters before and after
                 if email != '':
                     cleaned_email_list.append(email)
-        return cleaned_email_list
+        cleaned_email_object = {'recipient_first_name':self.label,'recipient_fb_username': self.help_text, 'cleaned_email_list':cleaned_email_list}
+
+        return cleaned_email_object
     
     def validate(self,value):
         # check if value consists only of valid emails
@@ -35,7 +39,7 @@ class MultiEmailField(forms.Field):
         # use the parent's handling of required fields, etc.
         super(MultiEmailField,self).validate(value)
         print "----VALIDATION PROCESS: " + str(value) + "---------" 
-        for email in value:
+        for email in value['cleaned_email_list']:
             if email == '':
                 raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
@@ -64,13 +68,14 @@ class TwitterField(forms.Field):
         #'normalize data to a list of strings'
         if len(value) > 0 and value[0]=='@':
             value= value[1:]
-        return value
+        
+        return {'cleaned_email_list':[value]}
     
     def validate(self,value):
         # check if value consists only of valid emails
         
         # use the parent's handling of required fields, etc.
-        if ' ' in value:
+        if ' ' in value['cleaned_email_list']:
             raise ValidationError ("invalid Twitter username (no spaces)")
    
 
@@ -98,7 +103,7 @@ class AppInviteForm2(forms.Form):
         if len(self._errors) == 0:
             at_least_one_data=False
             for name,value in self.cleaned_data.items():
-                if len(value) > 0:
+                if len(value['cleaned_email_list']) > 0:
                     at_least_one_data=True
                     break;
             if not at_least_one_data:
@@ -108,10 +113,13 @@ class AppInviteForm2(forms.Form):
     
     # return all email addresses in an enumeration (treat output like an array)
     def get_mutual_friend_email_array(self):
-        for name,value_array in self.cleaned_data.items():
-            if name.startswith('mutual_friend_') and len(value_array) > 0:
-                for email_address in value_array:
-                    yield email_address
+        result_list=[]
+        for name,value in self.cleaned_data.items():
+            if name.startswith('mutual_friend_') and len(value['cleaned_email_list']) > 0:
+                result_list.append(value)
+        return result_list
+                #for email_address in value_array['cleaned_email_list']:
+                #    yield {'mf_email':email_address,'mf_recipient_first_name':
 
         
         
