@@ -32,7 +32,7 @@
 		return this.each(function() {
 			//construct the form
 			var this_id_prefix = '#'+this.id+' ';
-			$(this).html('<div id="contactable_inner">Feedback</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/><span id="powered">- POWERED <i>by</i> CRUSHMAVEN -</span></div></form>');
+			$(this).html('<div id="contactable_inner">Have A Suggestion?</div><form id="contactForm"><div id="loading"></div><div id="callback"></div><div class="holder"><p class="disclaimer">'+options.disclaimer+'</p><textarea maxlength="500" id="message" required name="message" class="message" rows="10" cols="25" ></textarea><input type="submit" class="submit" value="'+options.submit+'"/><span id="powered">- POWERED <i>by</i> CRUSHMAVEN -</span></div></form>');
 			//show / hide function
 			$(this_id_prefix+'div#contactable_inner').click(function(){
 				var fromMarginBottom = parseInt($(this_id_prefix+'#contactForm').css('marginBottom'));
