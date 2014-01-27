@@ -61,9 +61,8 @@ class MF_MultiEmailFieldNoHelp(MultiEmailField):
 class MF_MultiEmailFieldHelp(MultiEmailField):
     widget=forms.TextInput(attrs={'placeholder':'enter any email addresses','maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
-class MF_MultiGenericEmailField(MultiEmailField):
-    widget=forms.TextInput(attrs={'maxlength':'100'})
-class MaleTwitterField(forms.Field):
+
+class TwitterField(forms.Field):
     widget=forms.TextInput(attrs={'placeholder':'username','maxlength':'15'})
     
     def to_python(self,value):
@@ -79,11 +78,6 @@ class MaleTwitterField(forms.Field):
         # use the parent's handling of required fields, etc.
         if ' ' in value['cleaned_email_list']:
             raise ValidationError ("invalid Twitter username (can't contain spaces)")
-   
-class FemaleTwitterField(MaleTwitterField):
-    widget=forms.TextInput(attrs={'placeholder':'twitter username','maxlength':'15'})
-class BiTwitterField(MaleTwitterField):
-    widget=forms.TextInput(attrs={'placeholder':'twitter username','maxlength':'15'})
 
     
 class AppInviteForm2(forms.Form):
@@ -99,20 +93,14 @@ class AppInviteForm2(forms.Form):
             else:
                 self.fields['mutual_friend_%s' % i] = MF_MultiEmailFieldHelp(required=False,label=friend['name'],help_text=friend['id'])
             mutual_friend_count+=1
-        if crush_pronoun=="Her":
-            self.twitter_username=FemaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
-        elif crush_pronoun=="His":
-            self.twitter_username=MaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
-        else:
-            self.twitter_username=BiTwitterField(required=False,label='crush_field',help_text="HEHEHE")
 
         #if mutual_friend_count == 0:
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldHelp(required=False,label='Friends:',help_text='Enter one or more email addresses')
         #else:
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
-    twitter_username=MaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
-    mf_generic_emails = MF_MultiGenericEmailField(required=False,label='crush_field',help_text="HEHEHEH")
+    twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
+    mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
 
     def clean(self):
         print "clean called"
