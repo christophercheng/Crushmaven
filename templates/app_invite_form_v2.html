@@ -28,8 +28,8 @@ $(document).ready(function()
                 				location.href='/your_crushes';
                 		}
                     	else { // some sort of error
-         					$("#app_invite_form .site_dialog_button").removeAttr('disabled')
-           					$("#sendbutton").attr('value','Send')
+         					$("#app_invite_form .site_dialog_button").removeAttr('disabled');
+           					$("#sendbutton").attr('value','Send');
                     		if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
   
                     			$('#app_invite_form #mutual_friend_input_section').show();
@@ -39,6 +39,7 @@ $(document).ready(function()
                     				scrollTop:offsetTop
                     			},0);
                     		}
+         					
                     	}
                     	});
                 
@@ -118,7 +119,7 @@ $('.sent_from_us').css('opacity',0);
 });
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
-	$(".email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon").qtip({
+	$(".app_invite_dialog .email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
 			title:"Why am I asked for the emails of my crush's friends?"
@@ -141,7 +142,7 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 			}
 		}
 	});	
-	$(".email_field_input .fieldWrapper.twitter_fieldWrapper .help_icon").qtip({
+	$(".app_invite_dialog .email_field_input .fieldWrapper.twitter_fieldWrapper .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twoc_help_content'),
 			title:"How do you use my crush's twitter name?"
