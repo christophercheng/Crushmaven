@@ -57,11 +57,11 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	input_section_element.toggle();
 	if (input_section_element.is(':visible')){
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
-		label_element.html("hide {{ crush_firstname }}'s {{mf_friend_count}} friends")
+		label_element.html("hide your {{mf_friend_count}} mutual friends")
 	}
 	else{
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
-		label_element.html("show {{ crush_firstname }}'s {{mf_friend_count}} friends")
+		label_element.html("show your {{mf_friend_count}} mutual friends who can help")
 
 	}
 	$(this).children('.arrow').toggle(); 
@@ -234,7 +234,7 @@ $(".tooltip_subtitle").click(function(){
 
 <div id="mutual_friend_help_section">
 	{% if mf_friend_count > 0 %}
-	<div id="mutual_friend_input_section_show"><a>show {{ crush_firstname }}'s {{mf_friend_count}} friends</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
+	<div id="mutual_friend_input_section_show"><a>show your {{mf_friend_count}} mutual friends who can help</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
 	<div id="mutual_friend_input_section">
 	
 		{% for field in form %}

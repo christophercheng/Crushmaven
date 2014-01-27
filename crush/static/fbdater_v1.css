@@ -3749,8 +3749,14 @@ ul.bxslider_element #slide_overlay {
 	color:white;
 	display:inline-block;
 }
+
+.twitter_fieldWrapper{
+	margin-bottom:15px;
+}
+
 .mf_generic_emails_fieldWrapper{
 	margin-top:15px;
+	margin-bottom:15px
 }
 .mf_generic_emails_label{
 	margin-top:15px;
@@ -3928,7 +3934,7 @@ ul.bxslider_element #slide_overlay {
 .sub_label{
 	font-size:9px;
 	color:#909090;
-	margin-bottom:18px;
+	margin-bottom:20px;
 }
 
 #app_invite_form .ui-dialog-buttonpane{
