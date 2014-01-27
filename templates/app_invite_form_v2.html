@@ -6,6 +6,11 @@
 <script>
 $(document).ready(function() 
 {
+
+	{% if mf_friend_count > 0 %}
+		$('#mutual_friend_help_section').css('min-height','40px');
+	{% endif %}
+	
         var form=$("#app_invite_form");
         
         form.submit(function(e) {
@@ -57,11 +62,13 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	input_section_element.toggle();
 	if (input_section_element.is(':visible')){
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
-		label_element.html("hide your {{mf_friend_count}} mutual friends")
+		$('#mutual_friend_help_section #mutual_friend_input_section_show  .help_icon').show();
+		label_element.html("hide mutual friends")
 	}
 	else{
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
-		label_element.html("show your {{mf_friend_count}} mutual friends who can help")
+		$('#mutual_friend_help_section #mutual_friend_input_section_show  .help_icon').hide();
+		label_element.html("show {{mf_friend_count}} mutual friends who can help")
 
 	}
 	$(this).children('.arrow').toggle(); 
@@ -119,7 +126,7 @@ $('.sent_from_us').css('opacity',0);
 });
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
-	$(".app_invite_dialog .email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon").qtip({
+	$(".app_invite_dialog .email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon, #mutual_friend_help_section #mutual_friend_input_section_show .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
 			title:"Why am I asked for the emails of my crush's friends?"
@@ -234,7 +241,7 @@ $(".tooltip_subtitle").click(function(){
 
 <div id="mutual_friend_help_section">
 	{% if mf_friend_count > 0 %}
-	<div id="mutual_friend_input_section_show"><a>show your {{mf_friend_count}} mutual friends who can help</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
+	<div id="mutual_friend_input_section_show"><span class="help_icon">?</span><a>show {{mf_friend_count}} mutual friends who can help</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
 	<div id="mutual_friend_input_section">
 	
 		{% for field in form %}

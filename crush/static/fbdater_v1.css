@@ -3767,6 +3767,7 @@ ul.bxslider_element #slide_overlay {
 	position:relative;
 	min-height:30px;
 	padding-top:10px;
+	margin-top:-10px;
 }
 
 #mutual_friend_help_section label {
@@ -3792,13 +3793,13 @@ ul.bxslider_element #slide_overlay {
 	background:white;
 	padding:0px 10px;
 }
-#mutual_friend_help_section #mutual_friend_input_section_show a {
+#mutual_friend_help_section #mutual_friend_input_section_show  {
 	position:relative;
 }
-#mutual_friend_help_section #mutual_friend_input_section_show a .help_icon{
+#mutual_friend_help_section #mutual_friend_input_section_show  .help_icon{
 	position:absolute;
 	top: 2px;
-	left: -20px;
+	left: -11px;
 	background-color:#0077cc!important;
 	display:none;
 }
