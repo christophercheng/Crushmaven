@@ -3839,6 +3839,7 @@ ul.bxslider_element #slide_overlay {
 	padding-bottom:5px;
 	padding-top:10px;
 	display:none;
+	background:#FCFCFC;
 }
 
 #mutual_friend_input_section .mf_email_name {

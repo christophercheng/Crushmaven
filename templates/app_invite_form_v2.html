@@ -56,11 +56,11 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	label_element = $('#app_invite_form #mutual_friend_input_section_show a');
 	input_section_element.toggle();
 	if (input_section_element.is(':visible')){
-		$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
+		//$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
 		label_element.html("hide {{ crush_firstname }}'s {{mf_friend_count}} friends")
 	}
 	else{
-		$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
+		//$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
 		label_element.html("show {{ crush_firstname }}'s {{mf_friend_count}} friends")
 
 	}

@@ -226,7 +226,7 @@ jQuery(document).ready(function($) {
 					$(this).html("{{ajax_error}}");
 			}
 			else{
-				window.app_invite_modal.dialog("option","title", "<img style='display:inline-block;margin-right:7px;margin-bottom:-4px;' src='http://graph.facebook.com/" + crush_username + "/picture?width=20&height=20'>Anonymously Invite " + crush_firstname);
+				window.app_invite_modal.dialog("option","title", "<img style='display:inline-block;margin-right:7px;margin-bottom:-4px;' src='http://graph.facebook.com/" + crush_username + "/picture?width=20&height=20'>Anonymously Invite " + crush_firstname + " (3 options)");
 				window.app_invite_modal.dialog('open');
 				$(':focus').blur();
 			}
