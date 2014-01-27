@@ -9,8 +9,7 @@ $(document).ready(function()
         var form=$("#app_invite_form");
         
         form.submit(function(e) {
-
-                $("#sendbutton").attr('disabled','disabled');
+                $("#app_invite_form .site_dialog_button").attr('disabled','disabled');
                 $("#sendbutton").attr('value','sending...');
                 $("#sendwrapper").prepend('<span>Submitting form, please wait... </span>');
                 $("#ajaxwrapper").load(
@@ -19,7 +18,7 @@ $(document).ready(function()
                     function(responseText, responseStatus,XHR) {
                     	if (responseStatus!='success'){
            					window.alert_modal("Email Validation Problem","One of your emails isn't jiving with our email validation process.  If you copy/pasted an email from somewhere else, try typing in that email directly.  Sorry for the trouble!")
-           					$("#sendbutton").removeAttr('disabled')
+           					$("#app_invite_form .site_dialog_button").removeAttr('disabled')
            					$("#sendbutton").attr('value','Send')
                     	}
                     	else if (responseText=="_GOOD"){
@@ -28,8 +27,11 @@ $(document).ready(function()
                 			else
                 				location.href='/your_crushes';
                 		}
-                    	else if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
-                    		
+                    	else { // some sort of error
+         					$("#app_invite_form .site_dialog_button").removeAttr('disabled')
+           					$("#sendbutton").attr('value','Send')
+                    		if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
+  
                     			$('#app_invite_form #mutual_friend_input_section').show();
                     			section_offset=$('#mutual_friend_input_section').offset().top + 26; // this is the pixel top position of the first input
                     			offsetTop = $('#mutual_friend_input_section .errorlist').first().children('li').offset().top-section_offset;
@@ -37,6 +39,7 @@ $(document).ready(function()
                     				scrollTop:offsetTop
                     			},0);
                     		}
+                    	}
                     	});
                 
                e.preventDefault();
