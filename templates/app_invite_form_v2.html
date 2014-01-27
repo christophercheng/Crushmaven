@@ -10,7 +10,7 @@ $(document).ready(function()
         
         form.submit(function(e) {
                 $("#app_invite_form .site_dialog_button").attr('disabled','disabled');
-                $("#sendbutton").attr('value','sending...');
+                $("#sendbutton").attr('value','Wait');
                 $("#sendwrapper").prepend('<span>Submitting form, please wait... </span>');
                 $("#ajaxwrapper").load(
                     form.attr('action') + ' #ajaxwrapper',
@@ -19,7 +19,7 @@ $(document).ready(function()
                     	if (responseStatus!='success'){
            					window.alert_modal("Email Validation Problem","One of your emails isn't jiving with our email validation process.  If you copy/pasted an email from somewhere else, try typing in that email directly.  Sorry for the trouble!")
            					$("#app_invite_form .site_dialog_button").removeAttr('disabled')
-           					$("#sendbutton").attr('value','Send')
+           					$("#sendbutton").attr('value','Wait')
                     	}
                     	else if (responseText=="_GOOD"){
                     		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
