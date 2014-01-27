@@ -48,8 +48,18 @@ $(document).ready(function()
 
 		
 $('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
-	$('#app_invite_form #mutual_friend_input_section').toggle();
-	$('#mutual_friend_help_section #mutual_friend_input_section_show a .help_icon').toggle();
+	input_section_element= $('#app_invite_form #mutual_friend_input_section');
+	label_element = $('#app_invite_form #mutual_friend_input_section_show a');
+	input_section_element.toggle();
+	if (input_section_element.is(':visible')){
+		$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
+		label_element.html("hide {{ crush_firstname }}'s {{mf_friend_count}} friends")
+	}
+	else{
+		$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
+		label_element.html("show {{ crush_firstname }}'s {{mf_friend_count}} friends")
+
+	}
 	$(this).children('.arrow').toggle(); 
 	//$(this).children('#down_arrow').toggle();
 	
@@ -105,10 +115,10 @@ $('.sent_from_us').css('opacity',0);
 });
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
-	$("#mutual_friend_input_section_show a .help_icon").qtip({
+	$(".email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
-			title:"How can I anonymously seek help from mutual friends?"
+			title:"Why am I asked for the emails of my crush's friends?"
 		},
 		position: {
 	        my: 'left bottom',  
@@ -128,7 +138,7 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 			}
 		}
 	});	
-	$(".email_field_input .fieldWrapper .help_icon").qtip({
+	$(".email_field_input .fieldWrapper.twitter_fieldWrapper .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twoc_help_content'),
 			title:"How do you use my crush's twitter name?"
@@ -200,37 +210,44 @@ $(".tooltip_subtitle").click(function(){
 
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
-      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name">Email</span></label> 
-      <div class="fieldWrapper">
+      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun }} Emails</span></label> 
+      <div class="fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
       		<span class="email_separator sub_label">separate multiple emails with commas</span>
       </div>
-      <label for="id_twitter_username"><span class="crush_email_name">Twitter </span><span class="twitter_icon">@</span></label> 
-      <div class="fieldWrapper">
-      {{ form.twitter_username }}<span class="help_icon">?</span>
-      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
-   </div>
+      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Twitter </span></label> 
+      <div class="fieldWrapper twitter_fieldWrapper"><span class="twitter_icon">&nbsp;</span>
+	      {{ form.twitter_username }}<span class="help_icon">?</span>
+	      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
+      </div>
+      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Friends<span class="email_icon">&nbsp;</span></span></label> 
+      <div class="fieldWrapper mf_generic_emails_fieldWrapper"><span class="email_icon">&nbsp;</span>
+         {{ form.mf_generic_emails }}<span class="help_icon">?</span>
+         <div class="email_input_error_section">{{ form.mf_generic_emails.errors }}</div>
+      </div>
    </div><!-- close attraction_email_input -->
-	
+
 <div id="mutual_friend_help_section">
- <div id="mutual_friend_input_section_show"><a><span class="help_icon">?</span>Anonymously seek help from {{ crush_firstname }}'s friends</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
+	{% if mf_friend_count > 0 %}
+	<div id="mutual_friend_input_section_show"><a>show {{ crush_firstname }}'s {{mf_friend_count}} friends</a><span id="down_arrow" class="arrow">&#x25BC;</span><span id="up_arrow" class="arrow">&#x25B2;</span></div>
+	<div id="mutual_friend_input_section">
+	
+		{% for field in form %}
+		   		{% if field.label != "crush_field" %}
+			   		<div class="email_field_input mf_email_field_input">	   			
+			   					
+								<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.label != "Other Friends:" and field.label != "Friends:" %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
+								<div class="fieldWrapper">
+									{{ field }}
+									<div class="email_input_error_section">{{field.errors}}</div>
+								</div><!-- close off field wrapper -->
+		      	</div> <!--  close off email_field_input -->	   			
+		   		{% endif %}
+		   {% endfor %}
+	{% endif %}	   
+	</div> <!--  close off mutual_friend_input_section -->
 </div><!-- close of mutual friend help section -->
-<div id="mutual_friend_input_section">
-	{% for field in form %}
-	   		{% if field.label != "crush_field" %}
-		   		<div class="email_field_input mf_email_field_input">	   			
-		   					
-							<label for="id_mutual_friend_email"><span class="mf_email_name">{{field.label}}</span>{% if field.label != "Other Friends:" and field.label != "Friends:" %}<img src="http://graph.facebook.com/{{field.help_text}}/picture?width=25&height=25">{% else %}<img class="other_contact_pic" src = "{{ STATIC_URL }}images/fb_unknown_user_pic.jpg"> {% endif %}</label>
-							<div class="fieldWrapper">
-								{{ field }}
-								<div class="email_input_error_section">{{field.errors}}</div>
-							</div><!-- close off field wrapper -->
-	      	</div> <!--  close off email_field_input -->	   			
-	   		{% endif %}
-	   {% endfor %}
-	   
-	</div> <!--  close off mutual_friend_input_section -->      
 
 
 <div id="preview_section">

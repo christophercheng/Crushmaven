@@ -3696,9 +3696,9 @@ ul.bxslider_element #slide_overlay {
 }
 
 .generic_email_errors {
-	margin-left: 60px;
-margin-top: -10px;
-margin-bottom: 10px!important;
+	margin-left: 46px;
+	margin-top: -16px;
+	margin-bottom: 10px!important;
 }
 
 #email_input_section{
@@ -3709,8 +3709,7 @@ margin-bottom: 10px!important;
 }
 
 #attraction_email_input_section{
-	padding-top:29px;
-	#padding-bottom:15px;
+	padding-top:30px;
 }
 
 #attraction_email_input_section .crush_email_name {
@@ -3718,10 +3717,9 @@ margin-bottom: 10px!important;
 	display:inline-block;
 	color:#4D4D4D;
 	padding-top:4px;
+	width:120px;
 }
-#attraction_email_input_section .first_crush_email_name {
-	margin-right:11px;
-}
+
 
 .email_field_input{
 	display:inline-block;
@@ -3730,22 +3728,45 @@ margin-bottom: 10px!important;
 }
 .email_field_input label{
 	display:inline-block;
-	width:135px;
+	margin-left:48px;
 	float:left;
-	text-align:right;
+	text-align:left;
 	padding-right:5px;
 	font-size:12px;
 	font-weight:normal;
+
+}
+#attraction_email_input_section .invite_option_label{
+	background:#2E8AE6;
+	border-radius:50%;
+	height:16px;
+	width:16px;
+	#font-weight:bold;
+	font-size:9px;
+	margin-right:5px;
+	text-align:center;
+	vertical-align:middle;
+	color:white;
+	display:inline-block;
+}
+.mf_generic_emails_fieldWrapper{
+	margin-top:15px;
+}
+.mf_generic_emails_label{
+	margin-top:15px;
 }
 
 #mutual_friend_help_section {
-	margin-left:74px;
-	margin-bottom:24px;
-	text-align:center;
-	width:450px;
 	line-height:18px;
-	#border-top:1px solid darkGray;
-	padding-top:-5px;
+	position:relative;
+	min-height:30px;
+	padding-top:10px;
+}
+
+#mutual_friend_help_section label {
+	font-size: 13px;
+	color: #4D4D4D;
+	margin-right:15px;
 }
 #mf_help_section_problem {
 	#font-weight:bold;
@@ -3756,13 +3777,14 @@ margin-bottom: 10px!important;
 	display:none;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show {
-	margin-top:8px;
-	text-align:center;
-	#font-weight:bold;
-	#color:#ff0033!important;
+	left:166px;
+	top:-11px;
 	color:#0077cc!important;
 	font-size:13px!important;	
-	display:block;
+	display:inline-block;
+	position:absolute;
+	background:white;
+	padding:0px 10px;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show a {
 	position:relative;
@@ -3776,9 +3798,9 @@ margin-bottom: 10px!important;
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show a{
-	#color:#ff0033!important;
-		color:#0077cc!important;
+	color:#0077cc!important;
 	font-size:13px!important;
+	text-align:right;
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show a:hover{
@@ -3790,7 +3812,7 @@ margin-bottom: 10px!important;
 }
 
 #mutual_friend_help_section #mutual_friend_input_section_show .arrow{
-	font-size:12px;
+	font-size:10px;
 	#vertical-align:bottom;
 	margin-left:1px;
 	color:#0077cc;
@@ -3815,8 +3837,8 @@ margin-bottom: 10px!important;
 	overflow-y:auto;
 	max-height: 178px; 
 	padding-bottom:5px;
+	padding-top:10px;
 	display:none;
-	margin-top:-1px;
 }
 
 #mutual_friend_input_section .mf_email_name {
@@ -3831,13 +3853,16 @@ margin-bottom: 10px!important;
 }
 
 .mf_email_field_input label{
-	width:160px;
-	font-size:11px;
+	width:163px;
+	font-size:11px!important;
+	margin-left:10px;
+	text-align:right;
+	margin-right:1px!important;
 }
 
 .mf_email_field_input .fieldWrapper{
 	display:inline-block;
-	width:340px!important;
+	width:328px!important;
 }
 
 .email_field_input label img{
@@ -3858,7 +3883,7 @@ margin-bottom: 10px!important;
 
 .email_field_input .fieldWrapper{
 	display:inline-block;
-	width:365px;
+	width:328px;
 	position:relative;
 }
 .email_field_input .fieldWrapper input{
@@ -3875,7 +3900,6 @@ margin-bottom: 10px!important;
 	display:block;
 	float:left;
 	margin-bottom:4px;
-	padding-left:5px;
 	list-style:none;
 	width:100%;
 }
@@ -3885,7 +3909,7 @@ margin-bottom: 10px!important;
 	background:red;
 	color:white;
 	margin-bottom:2px;
-	padding:2px 5px 2px 5px;
+	padding:2px 5px 1px 5px;
 	border-radius:2px;
 	box-shadow: 1px 2px 2px rgba(0,0,0,.5);
 	}
@@ -3896,13 +3920,13 @@ margin-bottom: 10px!important;
 	font-style:italic;
 	margin-bottom:9px;
 	margin-top:-4px;
-	margin-left:9px
+	margin-left:5px
 }
 
 .sub_label{
 	font-size:9px;
 	color:#909090;
-	margin-bottom:15px;
+	margin-bottom:18px;
 }
 
 #app_invite_form .ui-dialog-buttonpane{
@@ -3923,10 +3947,44 @@ margin-bottom: 10px!important;
 	position:relative!important;
 }
 
-#app_invite_form .twitter_icon{
+#app_invite_form .twitter_icon, #app_invite_form .email_icon{
 	margin-right:-4px;
-	margin-left:3px;
+	margin-left:6px;
 	color:#B2B2B2;
+	text-align:right;
+}
+#app_invite_form .twitter_icon{
+	margin-left:-20px;
+}
+.email_icon{
+	position:absolute;
+	top:7px;
+	left:-27px;
+	display:inline-block!important;
+	background-image:url('/static/images/full_sprite.png')!important;
+	background-repeat:no-repeat;
+	background-size:auto!important;
+	width:20px!important;
+	vertical-align:-1px!important;
+	height:30px!important;
+	border:none!important;
+	background-position:-66px -94px!important;
+	border:none!important;
+}
+.twitter_icon{
+	position:absolute;
+	top:5px;
+	left:-2px;
+	display:inline-block!important;
+	background-image:url('/static/images/full_sprite.png')!important;
+	background-repeat:no-repeat;
+	background-size:auto!important;
+	width:20px!important;
+	vertical-align:-1px!important;
+	height:30px!important;
+	border:none!important;
+	background-position:-66px -124px!important;
+	border:none!important;
 }
 #preview_invite_button{
 	margin-right:15px!important;

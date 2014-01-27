@@ -14,7 +14,7 @@ import json
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
 class MultiEmailField(forms.Field):
-    widget=forms.TextInput(attrs={'placeholder':' enter any email addresses of your crush','maxlength':'100'})
+    widget=forms.TextInput(attrs={'maxlength':'100'})
     
     def to_python(self,value):
         #'normalize data to a list of strings'
@@ -59,30 +59,38 @@ class MF_MultiEmailFieldNoHelp(MultiEmailField):
     widget=forms.TextInput(attrs={'maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
 class MF_MultiEmailFieldHelp(MultiEmailField):
-    widget=forms.TextInput(attrs={'placeholder':' enter one or more email addresses','maxlength':'100'})
-
-class TwitterField(forms.Field):
-    widget=forms.TextInput(attrs={'placeholder':' enter their twitter username (if known)','maxlength':'15'})
+    widget=forms.TextInput(attrs={'placeholder':'enter any email addresses','maxlength':'100'})
+# same as mutliemailfield but placeholder text is not crush specific
+class MF_MultiGenericEmailField(MultiEmailField):
+    widget=forms.TextInput(attrs={'maxlength':'100'})
+class MaleTwitterField(forms.Field):
+    widget=forms.TextInput(attrs={'placeholder':'username','maxlength':'15'})
     
     def to_python(self,value):
         #'normalize data to a list of strings'
         if len(value) > 0 and value[0]=='@':
             value= value[1:]
         
-        return {'cleaned_email_list':[value]}
+        return {'cleaned_email_list':value}
     
     def validate(self,value):
         # check if value consists only of valid emails
         
         # use the parent's handling of required fields, etc.
         if ' ' in value['cleaned_email_list']:
-            raise ValidationError ("invalid Twitter username (no spaces)")
+            raise ValidationError ("invalid Twitter username (can't contain spaces)")
    
+class FemaleTwitterField(MaleTwitterField):
+    widget=forms.TextInput(attrs={'placeholder':'twitter username','maxlength':'15'})
+class BiTwitterField(MaleTwitterField):
+    widget=forms.TextInput(attrs={'placeholder':'twitter username','maxlength':'15'})
 
+    
 class AppInviteForm2(forms.Form):
 
     def __init__(self,*args,**kwargs):
         mutual_friend_json=kwargs.pop('mutual_friend_json',None)
+        crush_pronoun=kwargs.pop('crush_pronoun',None)
         super(AppInviteForm2, self).__init__(*args,**kwargs)
         mutual_friend_count=0
         for i,friend in enumerate(mutual_friend_json):
@@ -91,12 +99,20 @@ class AppInviteForm2(forms.Form):
             else:
                 self.fields['mutual_friend_%s' % i] = MF_MultiEmailFieldHelp(required=False,label=friend['name'],help_text=friend['id'])
             mutual_friend_count+=1
-        if mutual_friend_count == 0:
-            self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldHelp(required=False,label='Friends:',help_text='Enter one or more email addresses')
+        if crush_pronoun=="Her":
+            self.twitter_username=FemaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
+        elif crush_pronoun=="His":
+            self.twitter_username=MaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
         else:
-            self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
+            self.twitter_username=BiTwitterField(required=False,label='crush_field',help_text="HEHEHE")
+
+        #if mutual_friend_count == 0:
+        #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldHelp(required=False,label='Friends:',help_text='Enter one or more email addresses')
+        #else:
+        #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
-    twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
+    twitter_username=MaleTwitterField(required=False,label='crush_field',help_text="HEHEHE")
+    mf_generic_emails = MF_MultiGenericEmailField(required=False,label='crush_field',help_text="HEHEHEH")
 
     def clean(self):
         print "clean called"
@@ -107,7 +123,7 @@ class AppInviteForm2(forms.Form):
                     at_least_one_data=True
                     break;
             if not at_least_one_data:
-                raise forms.ValidationError("Enter at least one valid email address or twitter username")
+                raise forms.ValidationError("Enter at least one email address or twitter username")
         
         return super(AppInviteForm2,self).clean()
     
