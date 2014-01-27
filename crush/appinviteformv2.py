@@ -40,6 +40,7 @@ class MultiEmailField(forms.Field):
         super(MultiEmailField,self).validate(value)
         print "----VALIDATION PROCESS: " + str(value) + "---------" 
         for email in value['cleaned_email_list']:
+
             if email == '':
                 raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
@@ -84,7 +85,7 @@ class AppInviteForm2(forms.Form):
 
     def __init__(self,*args,**kwargs):
         mutual_friend_json=kwargs.pop('mutual_friend_json',None)
-        crush_pronoun=kwargs.pop('crush_pronoun',None)
+        self.source_person_email = kwargs.pop('source_person_email',None)
         super(AppInviteForm2, self).__init__(*args,**kwargs)
         mutual_friend_count=0
         for i,friend in enumerate(mutual_friend_json):
@@ -101,6 +102,7 @@ class AppInviteForm2(forms.Form):
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
     mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
+    source_person_email=''
 
     def clean(self):
         print "clean called"
@@ -110,8 +112,13 @@ class AppInviteForm2(forms.Form):
                 if len(value['cleaned_email_list']) > 0:
                     at_least_one_data=True
                     break;
+
             if not at_least_one_data:
                 raise forms.ValidationError("Enter at least one email address or twitter username")
+            # check that user has entered his or her email in the crush email field
+            crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
+            if self.source_person_email in crush_emails:
+                raise forms.ValidationError("Please enter your crush's email - not your own")
         
         return super(AppInviteForm2,self).clean()
     

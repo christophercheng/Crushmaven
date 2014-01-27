@@ -218,10 +218,11 @@ def app_invite_form_v2(request, crush_username):
     elif request.user.gender_pref==u'B':
         crush_pronoun="Their"
     crush_firstname=crush_fullname.split(' ',1)[0]
+    source_person_email=request.user.email
     # crush_name should be first name last name
     if 'posted_form' in request.POST:  # if the form has been submitted...
         mutual_friend_json=eval(request.POST['mutual_friend_json'])
-        form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json,crush_pronoun=crush_pronoun)
+        form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json,source_person_email=source_person_email)
         if form.is_valid():
             # send out the emails here
             crush_email_list = form.cleaned_data['crush_emails']['cleaned_email_list']
@@ -316,7 +317,7 @@ def app_invite_form_v2(request, crush_username):
             logger.debug("finding mutual friends failed with exception: " + str(e))
             raise  
         logger.debug( "Length of mutual_friend json: "+ str(len(mutual_friend_json)) )
-        form = AppInviteForm2(mutual_friend_json=mutual_friend_json,crush_pronoun=crush_pronoun)
+        form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email)
 
     mf_friend_count=len(mutual_friend_json)
     return render(request, 'app_invite_form_v2.html', {'form':form, 'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count})
