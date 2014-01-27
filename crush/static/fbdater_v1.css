@@ -3756,7 +3756,7 @@ ul.bxslider_element #slide_overlay {
 	font-size:9px;
 	margin-right:5px;
 	text-align:center;
-	vertical-align:middle;
+	vertical-align:top;
 	color:white;
 	display:inline-block;
 }
