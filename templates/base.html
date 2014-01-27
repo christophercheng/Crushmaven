@@ -209,7 +209,6 @@ jQuery(document).ready(function($) {
 			window.app_invite_modal = $("#app_invite_modal").dialog({dialogClass:"app_invite_dialog", draggable:false,resizable:false, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
 		window.app_invite_modal.html('<div id="site-loading"></div>');
 		$(".app_invite_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
-
 		
 		window.wait_modal_open();
 		var crush_username=$(this).attr('crush_username');	
@@ -226,7 +225,7 @@ jQuery(document).ready(function($) {
 					$(this).html("{{ajax_error}}");
 			}
 			else{
-				window.app_invite_modal.dialog("option","title", "<img style='display:inline-block;margin-right:7px;margin-bottom:-4px;' src='http://graph.facebook.com/" + crush_username + "/picture?width=20&height=20'>Anonymously Invite " + crush_firstname + " (3 options)");
+				window.app_invite_modal.dialog("option","title", "<img style='display:inline-block;margin-right:7px;margin-bottom:-4px;' src='http://graph.facebook.com/" + crush_username + "/picture?width=20&height=20'>Anonymously Invite " + crush_firstname + "<span class='title_options_label'>3 options</span>");
 				window.app_invite_modal.dialog('open');
 				$(':focus').blur();
 			}

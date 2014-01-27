@@ -3736,6 +3736,17 @@ ul.bxslider_element #slide_overlay {
 	font-weight:normal;
 
 }
+
+.app_invite_dialog .title_options_label {
+	background:#2E8AE6;
+	font-size:10px;
+	padding:2px 6px;
+	color:white;
+	border-radius:5px;
+	margin-left:10px;
+	vertical-align:middle;
+}
+
 #attraction_email_input_section .invite_option_label{
 	background:#2E8AE6;
 	border-radius:50%;
