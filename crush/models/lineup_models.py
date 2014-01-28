@@ -734,7 +734,7 @@ class LineupMemberManager(models.Manager):
     # Fail Handler - 2-4: user won't be able to try again, 5:user can try again later
     # ================================================================
     def initialize_fail(self,relationship,status=2):
-        logger.error( "REL_ID: " + str(relationship.id) + " Initialize_fail called with status: " + str(status) )
+        logger.error( "REL_ID: " + str(relationship.id) + " Initialize_fail called with status: " + str(status) + settings.LINEUP_STATUS_CHOICES[status])
         relationship.lineup_initialization_status=status
         relationship.save(update_fields=['lineup_initialization_status'])
         self.cleanup_initialization_memory(relationship)
