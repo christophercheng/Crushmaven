@@ -347,7 +347,8 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
         # make sure the crush relationship object's date_lineup_started field is set
         if (admirer_rel.date_lineup_started == None):
             admirer_rel.date_lineup_started = datetime.datetime.now()
-            admirer_rel.save(update_fields=['date_lineup_started'])
+            admirer_rel.target_status=3 # target status is now: started lineup
+            admirer_rel.save(update_fields=['date_lineup_started,target_status'])
     except FacebookUser.DoesNotExist:
         logger.error( "failed to add lineup member: " + facebook_id )
         return HttpResponse("Server Error: Could not add given lineup user")  
