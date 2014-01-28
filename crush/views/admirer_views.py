@@ -114,7 +114,7 @@ def ajax_display_lineup_block(request, display_id):
     rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
-    if relationship.lineup_initialization_status>0 or not crush_id in g_init_dict:
+    if relationship.lineup_initialization_status>1 or not crush_id in g_init_dict:
             if not crush_id in g_init_dict and relationship.lineup_initialization_status<1: #special case handling
                 relationship.lineup_initialization_status = 5
                 relationship.save(update_fields=['lineup_initialization_status'])
@@ -348,7 +348,7 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
         if (admirer_rel.date_lineup_started == None):
             admirer_rel.date_lineup_started = datetime.datetime.now()
             admirer_rel.target_status=3 # target status is now: started lineup
-            admirer_rel.save(update_fields=['date_lineup_started,target_status'])
+            admirer_rel.save(update_fields=['date_lineup_started','target_status'])
     except FacebookUser.DoesNotExist:
         logger.error( "failed to add lineup member: " + facebook_id )
         return HttpResponse("Server Error: Could not add given lineup user")  
