@@ -115,7 +115,7 @@ def ajax_display_lineup_block(request, display_id):
     # wait for a certain amount of time before returning a response
     counter = 0
     if relationship.lineup_initialization_status>0 or not crush_id in g_init_dict:
-            if not crush_id in g_init_dict and relationship.lineup_initialization_status<2:
+            if not crush_id in g_init_dict and relationship.lineup_initialization_status<1: #special case handling
                 relationship.lineup_initialization_status = 5
                 relationship.save(update_fields=['lineup_initialization_status'])
     else:
