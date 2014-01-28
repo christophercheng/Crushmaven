@@ -188,8 +188,7 @@ class CrushRelationship(BasicRelationship):
                            (2,'Not Started Lineup'),
                            (3,'Started Lineup'),
                            (4,'Responded-crush'),
-                           (5,'Responded-platonic'),
-                           (6,'Lineup Initialization Failure')
+                           (5,'Responded-platonic')
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
     target_platonic_rating = models.IntegerField(null=True,default=None,blank=True)
@@ -339,13 +338,6 @@ class CrushRelationship(BasicRelationship):
                 if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                     self.notify_source_person()
-                if 'lineup_initialization_status' in kwargs['update_fields'] and (original_relationship.lineup_initialization_status != self.lineup_initialization_status):
-                    if self.lineup_initialization_status>1 and original_relationship.target_status != 6:
-                        self.target_status=6#initialization_failure
-                        kwargs['update_fields'].append('target_status')
-                    elif self.lineup_initialization_status==1 and original_relationship.target_status != 2:
-                        self.target_status=2#initialization done
-                        kwargs['update_fields'].append('target_status')
                 
         # Don't forget to commit the relationship's changes to database!
         super(CrushRelationship,self).save(*args,**kwargs)
