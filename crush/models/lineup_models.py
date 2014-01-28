@@ -88,7 +88,7 @@ class LineupMemberManager(models.Manager):
             g_init_dict[crush_id][crush_id].acquire() 
             #print "REL ID: " + rel_id + " inside lock"
             
-                        # get up to 3 admirers from most recent friends added in the last 250 posts)
+                        # get up to 4 admirers from most recent friends added in the last 250 posts)
             fb_query_string = "SELECT description, description_tags, created_time FROM stream WHERE source_id = me()  AND type = 8 LIMIT 100"
             friend_posts = graph_api_fetch(relationship.target_person.access_token,fb_query_string,True,True)
             new_friend_array=[]
@@ -102,7 +102,7 @@ class LineupMemberManager(models.Manager):
                 # filter id's of users with same gender as admirer   
                 query_string = "SELECT uid FROM user WHERE uid IN ("
                 query_string += ",".join(new_friend_array)
-                query_string += ") AND NOT (uid IN (" + g_init_dict[crush_id]['exclude_id_string'] + ") ) AND sex='" + admirer_gender + "' LIMIT 3"
+                query_string += ") AND NOT (uid IN (" + g_init_dict[crush_id]['exclude_id_string'] + ") ) AND sex='" + admirer_gender + "' LIMIT " + str(settings.NUMBER_LINEUP_RECENT_FRIENDS)
         
                 new_friend_array = graph_api_fetch('',query_string,expect_data=True,fql_query=True)
                 for new_friend in new_friend_array:
@@ -123,7 +123,7 @@ class LineupMemberManager(models.Manager):
             min_new_members_needed = settings.MINIMUM_LINEUP_MEMBERS - len(acceptable_id_array)
             if min_new_members_needed < 0:
                 min_new_members_neded = 0
-            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "'  ORDER BY friend_count DESC LIMIT " + str(num_new_members_needed)
+            fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (SELECT uid FROM family where profile_id=me())) AND NOT (uid2 IN (" + g_init_dict[crush_id]['exclude_id_string'] + "))) ) AND sex = '" + admirer_gender + "' AND friend_count <= " + str(settings.MAXIMUM_LINEUP_FRIEND_COUNT) + " ORDER BY friend_count DESC LIMIT " + str(num_new_members_needed)
             data = graph_api_fetch(relationship.target_person.access_token,fql_query,expect_data=True,fql_query=True)
 
         except Exception as e:

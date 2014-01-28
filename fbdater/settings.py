@@ -264,6 +264,8 @@ CRUSH_RESPONSE_DELAY_END = 2160 # 2160 default = 36 hours x 60 minutes = 2160
 STARTING_CREDITS=0 # changed to 0 in production on 1/14/14
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself
+MAXIMUM_LINEUP_FRIEND_COUNT=1100 # lineup users cannot have more than this number of friends - this is a hack to prevent users in lineups that are businesses
+NUMBER_LINEUP_RECENT_FRIENDS = 4 # number of lineup friends that come from recently added friends
 FRIENDS_WITH_ADMIRERS_SEARCH_DELAY=1# 0 # default is = 1 hours
 MINIMUM_DELETION_DAYS_SINCE_ADD=7# 7 is default
 MINIMUM_DELETION_DAYS_SINCE_RESPONSE_VIEW=7#7 is default
