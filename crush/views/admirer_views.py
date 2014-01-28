@@ -33,19 +33,27 @@ def admirers(request,show_lineup=None):
         for relationship in error_relationships: 
             if relationship.lineup_initialization_status==0:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0):
+                    relationship.lineup_initialization_status=0 # reset intilization status
+                    relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
                     continue
                 #else: # need to tell user that relationship is in process of being initialized and they should wait
             elif relationship.lineup_initialization_status==2:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(hours=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_2):
+                    relationship.lineup_initialization_status=0 # reset intilization status
+                    relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
                     continue
             elif relationship.lineup_initialization_status == 3:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_3):
+                    relationship.lineup_initialization_status=0 # reset intilization status
+                    relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
                     continue
             else:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5): 
+                    relationship.lineup_initialization_status=0 # reset intilization status
+                    relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
                     continue
  
@@ -106,29 +114,29 @@ def ajax_display_lineup_block(request, display_id):
     rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
-    while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
-        #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
+    if relationship.lineup_initialization_status>0 or not crush_id in g_init_dict:
+            if not crush_id in g_init_dict and relationship.lineup_initialization_status<2:
+                relationship.lineup_initialization_status = 5
+                relationship.save(update_fields=['lineup_initialization_status'])
+    else:
+        while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
+            #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
+            if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
+                break
+            elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
+                logger.warning("giving up on initialization of admirer relationship:" + str(relationship.id))
+                relationship.lineup_initialization_status = 5
+                relationship.save(update_fields=['lineup_initialization_status'])
+                break
+            time.sleep(1) # wait a second
+            counter+=1
         
-        if not crush_id in g_init_dict:
-            relationship.lineup_initialization_status = 5
-            relationship.save(update_fields=['lineup_initialization_status'])
-            break
-        if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
-            break
-        elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
-            logger.warning("giving up on initialization of admirer relationship:" + str(relationship.id))
-            relationship.lineup_initialization_status = 5
-            relationship.save(update_fields=['lineup_initialization_status'])
-            break
-        time.sleep(1) # wait a second
-        counter+=1
-        
-    # refetch the relationship to get updated initialization status
-    try:    
-        relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
-    except CrushRelationship.DoesNotExist:
-        ajax_response += settings.LINEUP_STATUS_CHOICES[4]
-        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
+        # refetch the relationship to get updated initialization status
+        try:    
+            relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
+        except CrushRelationship.DoesNotExist:
+            ajax_response += settings.LINEUP_STATUS_CHOICES[4]
+            return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
 
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
