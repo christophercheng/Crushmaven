@@ -26,6 +26,9 @@ class FacebookUserManager(UserManager):
         if ('is_active' in fb_profile and facebook_user.is_active!=fb_profile['is_active']):
             facebook_user.is_active = fb_profile['is_active']
             new_fields.append('is_active')
+            if 'date_joined' in fb_profile:
+                facebook_user.date_joined = datetime.datetime.now()
+                new_fields.append('date_joined')
         if ('access_token' in fb_profile and facebook_user.access_token!=fb_profile['access_token']):
             facebook_user.access_token = fb_profile['access_token']
             new_fields.append('access_token')
@@ -105,6 +108,7 @@ class FacebookUserManager(UserManager):
             if (is_this_for_me):    
                 if user.is_active==False:# if the user was previously created (on someone else's crush list, but they are logging for first time)
                     fb_profile['is_active']=True
+                    fb_profile['date_joined'] = '' # datetime.datetime.now will be filled in later
                     thread.start_new_thread(self.handle_activated_user,(user,fb_profile)) 
                     # dont' run update_user as a thread the first time
                 self.update_user(user,fb_profile)
@@ -143,6 +147,9 @@ class FacebookUserManager(UserManager):
         return user
     
     def handle_activated_user(self,user,fb_profile):
+        # reset their date_joined field
+        
+        
         # look for any admirers at this point so their relationships can get updated
         admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
         for relation in admirer_relationships:
