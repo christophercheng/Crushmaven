@@ -342,10 +342,10 @@ class CrushRelationship(BasicRelationship):
                 if 'lineup_initialization_status' in kwargs['update_fields'] and (original_relationship.lineup_initialization_status != self.lineup_initialization_status):
                     if self.lineup_initialization_status>1 and original_relationship.target_status != 6:
                         self.target_status=6#initialization_failure
-                        kwargs.append('target_status')
+                        kwargs['update_fields'].append('target_status')
                     elif self.lineup_initialization_status==1 and original_relationship.target_status != 2:
                         self.target_status=2#initialization done
-                        kwargs.append('target_status')
+                        kwargs['update_fields'].append('target_status')
                 
         # Don't forget to commit the relationship's changes to database!
         super(CrushRelationship,self).save(*args,**kwargs)
