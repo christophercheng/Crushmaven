@@ -340,10 +340,10 @@ class CrushRelationship(BasicRelationship):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                     self.notify_source_person()
                 if 'lineup_initialization_status' in kwargs['update_fields'] and (original_relationship.lineup_initialization_status != self.lineup_initialization_status):
-                    if self.lineup_initialization_status>1:
+                    if self.lineup_initialization_status>1 and original_relationship.target_status != 6:
                         self.target_status=6#initialization_failure
                         kwargs.append('target_status')
-                    elif self.lineup_initialization_status==1:
+                    elif self.lineup_initialization_status==1 and original_relationship.target_status != 2:
                         self.target_status=2#initialization done
                         kwargs.append('target_status')
                 
