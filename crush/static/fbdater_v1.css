@@ -2756,6 +2756,10 @@ ul.bxslider_element #slide_overlay {
 	color:#707090;
 }
 
+.slide_container .lineup_mugshot_link{
+	display:inline-block!important;
+}
+
 .lineup_mugshot{
 	width:125px;
 	height:125px;
