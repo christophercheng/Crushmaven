@@ -135,7 +135,7 @@ def ajax_display_lineup_block(request, display_id):
                 break
             time.sleep(1) # wait a second
             counter+=1
-            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + g_init_dict[crush_id][rel_id_state])
+            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
         
         # refetch the relationship to get updated initialization status
         try:    
