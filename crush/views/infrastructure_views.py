@@ -9,6 +9,7 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
+from django.views.decorators.csrf import csrf_exempt
 
 import urllib,json
 # import the logging library
@@ -26,6 +27,10 @@ def crushlist(request):
     for relationship in relevant_relationship_list:
         response += relationship.source_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + "</a>)    ----->    " + relationship.target_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
     return HttpResponse(response)
+
+@csrf_exempt
+def crush_response(request):
+    return HttpResponse("Hi Facebook User")
     
 @login_required
 def notify_testing(request):
@@ -35,7 +40,7 @@ def notify_testing(request):
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?access_token=" + str(me.access_token)
-    notify_url+="&href=http://apps.facebook.com/crushmavenqa/"
+    notify_url+="&href=crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     try:
         fb_result = urllib.urlopen(notify_url)
