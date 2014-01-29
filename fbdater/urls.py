@@ -51,7 +51,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^crushlist/$','crushlist'),
     
     (r'^testing/$','testing'),
-    
+    (r'^notify_testing/$','notify_testing'),    
     (r'^testing2/$','testing2'),
     
     (r'^testing_prep/$','testing_prep'),

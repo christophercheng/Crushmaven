@@ -508,7 +508,7 @@ class CrushRelationship(BasicRelationship):
                     #thread this in the future
                     notify_url='https://graph.facebook.com'
                     notify_url+= "/" + str(self.source_person.username)
-                    notify_url+="/notifications?access_token=" + str(self.source_person.access_token)
+                    notify_url+="/notifications?access_token=" + '29f0569ebb1025586773606739f368f4'
                     notify_url+="&href="
                     notify_url+="&template=" + self.target_person.get_name() + " responded to your crush!" 
                     try:

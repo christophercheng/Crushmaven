@@ -10,6 +10,11 @@ from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
 
+import urllib,json
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 @login_required
 def crushlist(request):
@@ -22,6 +27,21 @@ def crushlist(request):
         response += relationship.source_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + "</a>)    ----->    " + relationship.target_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
     return HttpResponse(response)
     
+@login_required
+def notify_testing(request):
+    me=request.user
+    notify_url='https://graph.facebook.com'
+    notify_url+= "/" + str(me.username)
+    notify_url+="/notifications?access_token=" + '29f0569ebb1025586773606739f368f4'
+    notify_url+="&href="
+    notify_url+="&template=Bob Marley responded to your crush!" 
+    try:
+        fb_result = urllib.urlopen(notify_url)
+        fb_result = json.load(fb_result)
+        logger.debug("facebook crush response result: " + str(fb_result))
+    except Exception as e:
+        logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
+    return HttpResponse("DONE")
 
 @login_required
 def testing(request):
