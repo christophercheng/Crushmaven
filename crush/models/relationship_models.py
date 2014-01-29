@@ -505,6 +505,7 @@ class CrushRelationship(BasicRelationship):
                     send_time=time.mktime(send_time)
                     send_time = utils.formatdate(send_time)
                 else:
+                    #thread this in the future
                     notify_url='https://graph.facebook.com'
                     notify_url+= "/" + str(self.source_person.username)
                     notify_url+="/notifications?access_token=" + str(self.source_person.access_token)

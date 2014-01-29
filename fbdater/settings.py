@@ -240,7 +240,7 @@ AUTH_USER_MODEL = 'crush.FacebookUser'
 FACEBOOK_APP_ID = '563185300424922' # CrushMaven App on Facebook
 FACEBOOK_APP_SECRET = '4a0d7982f553640cbb2c4dde20d6e2b8'
 #FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,user_birthday, friends_birthday, user_location, friends_location'
-FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email'
+FACEBOOK_SCOPE = 'user_about_me, friends_about_me, user_relationship_details, user_relationships, friends_relationships, friends_relationship_details, email,manage_notifications'
 
 
 AUTHENTICATION_BACKENDS = (
