@@ -777,13 +777,15 @@ class LineupMemberManager(models.Manager):
 
         relationship.lineup_initialization_status=1
         relationship.save(update_fields=['lineup_initialization_status'])
-        self.cleanup_initialization_memory(relationship)
         logger.debug ( "rel_id: " + str(relationship.id) + " saved initialization status: " + str(relationship.lineup_initialization_status) )
+        self.cleanup_initialization_memory(relationship)
+
 
     def cleanup_initialization_memory(self,relationship):
         global g_init_dict
         crush_id=relationship.target_person.username
         g_init_dict[crush_id][str(relationship.id) + '_initialization_state']=2
+        logger.debug ( "rel_id: " + str(relationship.id) + " set initialization_state to 2")
         g_init_dict[crush_id]['initialization_count']-=1
         if g_init_dict[crush_id]['initialization_count']==0:
             # wait 25 seconds for rest of threads to finish their work
