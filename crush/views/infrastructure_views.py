@@ -54,8 +54,8 @@ def notify_testing(request):
     notify_url+="&template=Bob Marley responded to your crush!" 
     logger.debug("notify facebook with url: " +  notify_url)
     try:
-        #fb_result = urllib.urlopen(notify_url)
-        fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
+        fb_result = urllib.urlopen(notify_url)
+        #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
         logger.debug("facebook crush response result: " + str(fb_result))
     except Exception as e:
         logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
