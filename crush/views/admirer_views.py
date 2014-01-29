@@ -102,7 +102,7 @@ def admirers(request,show_lineup=None):
 def ajax_display_lineup_block(request, display_id):
     global g_init_dict
     int_display_id=int(display_id)
-    logger.debug("ajax initialize lineup with display id: " + str(int_display_id))
+    logger.debug("ajax_initialize_lineup_block called with display id: " + str(int_display_id))
     ajax_response = ""
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
@@ -115,6 +115,7 @@ def ajax_display_lineup_block(request, display_id):
     # wait for a certain amount of time before returning a response
     counter = 0
     if relationship.lineup_initialization_status==0: # only loop if initialization status is 0 (in progress)
+        logger.debug("staring while initialization loop")
         while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
             #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
             if crush_id not in g_init_dict: #special case handling
@@ -125,22 +126,25 @@ def ajax_display_lineup_block(request, display_id):
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 break;
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
+                logger.debug("initializatin was either a success or failure, breaking out of while loop")
                 break
             elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
-                logger.warning("giving up on initialization of admirer relationship:" + str(relationship.id))
+                logger.debug("giving up on initialization of admirer relationship:" + str(relationship.id))
                 relationship.lineup_initialization_status = 5
                 relationship.save(update_fields=['lineup_initialization_status'])
                 break
             time.sleep(1) # wait a second
             counter+=1
+            logger.debug("waiting for " + str(counter) + " seconds")
         
         # refetch the relationship to get updated initialization status
         try:    
             relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
         except CrushRelationship.DoesNotExist:
             ajax_response += settings.LINEUP_STATUS_CHOICES[4]
+            logger.debug("could not refetch crush relationship object during initialization")
             return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
-
+    logger.debug("finisehd with while initialization loop")
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
