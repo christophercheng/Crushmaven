@@ -533,7 +533,8 @@ class CrushRelationship(BasicRelationship):
             fb_result = urllib.urlopen(notify_url,{})
             #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
             fb_result = json.load(fb_result)
-            logger.debug("Facebook notification unsuccessfully sent to : " + target_first_name + " " + target_last_name)
+            if 'success' not in fb_result or fb_result['success'] != True:
+                logger.debug("Facebook notification unsuccessfully sent to : " + self.source_person.first_name + " " + self.source_person.last_name)
         except Exception as e:
             logger.debug("ERROR: could not send facebook crush response notification to " + target_first_name + " " + target_last_name + " because of exception: " + str(e))            
         
