@@ -8,10 +8,14 @@ from django.db.models import F
 from email import utils
 import time
 from django.db import transaction
-import crush.models.lineup_models
 import crush.utils_email
-import thread
 from django.utils.encoding import smart_text
+import urllib,json
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 # details about each unique crush 
 class BasicRelationship(models.Model):
     
@@ -500,6 +504,17 @@ class CrushRelationship(BasicRelationship):
                     send_time= send_time.timetuple()
                     send_time=time.mktime(send_time)
                     send_time = utils.formatdate(send_time)
+                else:
+                    notify_url='https://graph.facebook.com'
+                    notify_url+= "/" + str(self.source_person.username)
+                    notify_url+="/notifications?access_token=" + str(self.source_person.access_token)
+                    notify_url+="&href="
+                    notify_url+="&template=" + self.target_person.get_name() + " responded to your crush!" 
+                    try:
+                        fb_result = urllib.urlopen(notify_url)
+                        fb_result = json.load(fb_result)
+                    except Exception as e:
+                        logger.debug("ERROR: could not send facebook crush response notification to " + self.source_person.get_name() + " because of exception: " + str(e))
                 crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
                 
         
