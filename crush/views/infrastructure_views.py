@@ -41,11 +41,11 @@ def notify_testing(request):
     app_token=''
     try:
         fb_result = urllib.urlopen(obtain_app_access_token_url)
-        fb_result = json.load(fb_result)
+        fb_result = fb_result.read()
         logger.debug("facebook obtain access token result: " + str(fb_result))
         app_token=fb_result
     except Exception as e:
-        logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
+        logger.debug("ERROR: problem obtaining access token " + me.get_name() + " because of exception: " + str(e))
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?access_token=" + app_token
