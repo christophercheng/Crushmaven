@@ -30,7 +30,7 @@ def crushlist(request):
 
 @csrf_exempt
 def crush_response(request,first_name,last_name):
-    return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name})
+    return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name,'facebook_canvas':True})
     
 @login_required
 def notify_testing(request):
