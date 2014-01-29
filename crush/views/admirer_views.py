@@ -121,7 +121,7 @@ def ajax_display_lineup_block(request, display_id):
                 
                 #if relationship.lineup_initialization_status == 0: # this is only a problem if the lineup is still in progressing status
                 #    relationship.lineup_initialization_status = 5
-                logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + relationship.lineup_initialization_status)
+                logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 break;
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
