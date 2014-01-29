@@ -51,7 +51,7 @@ def notify_testing(request):
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?"# + app_token
     notify_url += app_token
-    notify_url+="&href=crush_response"
+    notify_url+="&href="
     notify_url+="&template=Bob Marley responded to your crush!"
     logger.debug("notify facebook with url: " +  notify_url)
     try:
