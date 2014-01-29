@@ -48,7 +48,7 @@ def notify_testing(request):
         logger.debug("ERROR: problem obtaining access token " + me.get_name() + " because of exception: " + str(e))
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
-    notify_url+="/notifications?access_token=" + app_token
+    notify_url+="/notifications?" + app_token
     notify_url+="&href=/crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     logger.debug("notify facebook with url: " +  notify_url)
