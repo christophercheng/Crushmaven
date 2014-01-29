@@ -102,7 +102,7 @@ def admirers(request,show_lineup=None):
 def ajax_display_lineup_block(request, display_id):
     global g_init_dict
     int_display_id=int(display_id)
-    logger.debug("ajax_initialize_lineup_block called with display id: " + str(int_display_id))
+    #logger.debug("ajax_initialize_lineup_block called with display id: " + str(int_display_id))
     ajax_response = ""
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
@@ -120,20 +120,20 @@ def ajax_display_lineup_block(request, display_id):
             #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
             if crush_id not in g_init_dict: #special case handling            
                 #initialization hasn't started yet so wait another second before restarting loope
-                logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
+                #logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 time.sleep(1) # wait a second
                 counter+=1 
                 continue
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
-                logger.debug("initialization was either a success or failure, breaking out of while loop")
+                #logger.debug("initialization was either a success or failure, breaking out of while loop")
                 break
             elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
-                logger.debug("giving up on initialization of admirer relationship:" + str(relationship.id))
+                logger.debug("giving up on server initialization of admirer relationship:" + str(relationship.id))
                 relationship.lineup_initialization_status = 5
                 relationship.save(update_fields=['lineup_initialization_status'])
                 break
-            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
+            #logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
             time.sleep(1) # wait a second
             counter+=1
         
@@ -144,12 +144,12 @@ def ajax_display_lineup_block(request, display_id):
             ajax_response += settings.LINEUP_STATUS_CHOICES[4]
             logger.debug("could not refetch crush relationship object during initialization")
             return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
-    logger.debug("finisehd with while initialization loop")
+    #logger.debug("finisehd with while initialization loop")
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
         return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
-    logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
+    #logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
     return render(request,'lineup_block.html', {'relationship':relationship,
                                                 'fail_status_5':settings.LINEUP_STATUS_CHOICES[5],
                                                 'fail_status_2':settings.LINEUP_STATUS_CHOICES[2],
