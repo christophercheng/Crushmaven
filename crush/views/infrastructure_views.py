@@ -39,7 +39,7 @@ def notify_testing(request):
     me=request.user
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
-    notify_url+="/notifications?access_token=" + str(me.access_token)
+    notify_url+="/notifications?access_token=" + settings.FACEBOOK_APP_ID + "|" + settings.FACEBOOK_APP_SECRET
     notify_url+="&href=crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     try:
