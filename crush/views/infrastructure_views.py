@@ -37,9 +37,18 @@ def notify_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
     me=request.user
+    obtain_app_access_token_url="https://graph.facebook.com/oauth/access_token?client_id=" + settings.FACEBOOK_APP_ID + "&client_secret=" + settings.FACEBOOK_APP_SECRET + "&grant_type=client_credentials"
+    app_token=''
+    try:
+        fb_result = urllib.urlopen(obtain_app_access_token_url)
+        fb_result = json.load(fb_result)
+        logger.debug("facebook obtain access token result: " + str(fb_result))
+        app_token=fb_result
+    except Exception as e:
+        logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
-    notify_url+="/notifications?access_token=" + me.access_token
+    notify_url+="/notifications?access_token=" + app_token
     notify_url+="&href=/crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     logger.debug("notify facebook with url: " +  notify_url)
