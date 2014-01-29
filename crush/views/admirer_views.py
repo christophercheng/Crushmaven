@@ -145,7 +145,7 @@ def ajax_display_lineup_block(request, display_id):
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
         logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
         return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
-    logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineup_member_set.count()))
+    logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
     return render(request,'lineup_block.html', {'relationship':relationship,
                                                 'fail_status_5':settings.LINEUP_STATUS_CHOICES[5],
                                                 'fail_status_2':settings.LINEUP_STATUS_CHOICES[2],
