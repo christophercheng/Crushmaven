@@ -29,8 +29,8 @@ def crushlist(request):
     return HttpResponse(response)
 
 @csrf_exempt
-def crush_response(request):
-    return render(request, 'crush_response.html',{}) 
+def crush_response(request,first_name,last_name):
+    return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name})
     
 @login_required
 def notify_testing(request):
@@ -46,19 +46,17 @@ def notify_testing(request):
         app_token=fb_result
     except Exception as e:
         logger.debug("ERROR: problem obtaining access token " + me.get_name() + " because of exception: " + str(e))
-    param ={'href':'/crush/response/','template':'Bob Marley responded to your crush!'}
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?"# + app_token
     notify_url += app_token
-    notify_url+="&href="
+    notify_url+="&href=Bob/Marley"
     notify_url+="&template=Bob Marley responded to your crush!"
-    logger.debug("notify facebook with url: " +  notify_url)
     try:
         fb_result = urllib.urlopen(notify_url,{})
         #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
         fb_result = json.load(fb_result)
-        logger.debug("facebook crush response result: " + str(fb_result))
+        logger.debug("facebook notification sent: " + str(fb_result))
     except Exception as e:
         logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
     return HttpResponse("DONE")

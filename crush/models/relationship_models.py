@@ -505,20 +505,37 @@ class CrushRelationship(BasicRelationship):
                     send_time=time.mktime(send_time)
                     send_time = utils.formatdate(send_time)
                 else:
-                    #thread this in the future
-                    notify_url='https://graph.facebook.com'
-                    notify_url+= "/" + str(self.source_person.username)
-                    notify_url+="/notifications?access_token=" + '29f0569ebb1025586773606739f368f4'
-                    notify_url+="&href="
-                    notify_url+="&template=" + self.target_person.get_name() + " responded to your crush!" 
-                    try:
-                        fb_result = urllib.urlopen(notify_url)
-                        fb_result = json.load(fb_result)
-                        logger.debug("facebook crush response result: " + str(fb_result))
-                    except Exception as e:
-                        logger.debug("ERROR: could not send facebook crush response notification to " + self.source_person.get_name() + " because of exception: " + str(e))
+                    #send facebook notification
+                    self.notify_source_person_on_facebook()
                 crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
-                
+   
+   
+    def notify_source_person_on_facebook(self):
+
+        obtain_app_access_token_url="https://graph.facebook.com/oauth/access_token?client_id=" + settings.FACEBOOK_APP_ID + "&client_secret=" + settings.FACEBOOK_APP_SECRET + "&grant_type=client_credentials"
+        app_token=''
+        try:
+            fb_result = urllib.urlopen(obtain_app_access_token_url)
+            fb_result = fb_result.read()
+            logger.debug("facebook obtain access token result: " + str(fb_result))
+            app_token=fb_result
+        except Exception as e:
+            logger.debug("ERROR: couldn't obtain app token to notify facebook user " + self.source_person.get_name() + " because of exception: " + str(e))
+        notify_url='https://graph.facebook.com'
+        notify_url+= "/" + self.source_person.username
+        notify_url+="/notifications?"# + app_token
+        notify_url += app_token
+        target_first_name=self.target_person.first_name
+        target_last_name=self.target_person.last_name
+        notify_url+="&href=" + target_first_name + "/" + target_last_name
+        notify_url+="&template=" + target_first_name + " " + target_last_name + " responded to your crush!"
+        try:
+            fb_result = urllib.urlopen(notify_url,{})
+            #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
+            fb_result = json.load(fb_result)
+            logger.debug("Facebook notification unsuccessfully sent to : " + target_first_name + " " + target_last_name)
+        except Exception as e:
+            logger.debug("ERROR: could not send facebook crush response notification to " + target_first_name + " " + target_last_name + " because of exception: " + str(e))            
         
     def notify_source_person_bad_invite_email(self,bad_email_address):      
         target_person=self.target_person
