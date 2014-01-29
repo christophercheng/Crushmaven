@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
+        logger.debug("Running Daily Maintenance")
         if datetime.now().day == 1: 
+            logger.debug("Running Monthly Invite Maintenance")
             monthly_invite_reminder()
         notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
         return
