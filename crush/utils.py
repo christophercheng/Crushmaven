@@ -131,7 +131,7 @@ def monthly_invite_reminder():
 def notify_missed_crush_targets():
     # go through and grab any crush relationships where the target_status is responded_crush and date_target_responded is in past AND the date_source_last_notified is empty
     current_date=datetime.now()
-    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(target_status=4,date_target_responded__lt = current_date,date_source_last_notified=None)
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(target_status=4,date_target_responded__lt = current_date,date_source_last_notified=None,is_results_paid=False)
     for relationship in relevant_relationships:
         relationship.notify_source_person()
     # for each grabbed relationship 
