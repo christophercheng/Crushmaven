@@ -30,7 +30,7 @@ def crushlist(request):
 
 @csrf_exempt
 def crush_response(request):
-    return HttpResponse("Hi Facebook User")
+    return render(request, 'crush_response.html',{}) 
     
 @login_required
 def notify_testing(request):
