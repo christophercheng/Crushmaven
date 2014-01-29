@@ -513,6 +513,7 @@ class CrushRelationship(BasicRelationship):
                     try:
                         fb_result = urllib.urlopen(notify_url)
                         fb_result = json.load(fb_result)
+                        logger.debug("facebook crush response result: " + str(fb_result))
                     except Exception as e:
                         logger.debug("ERROR: could not send facebook crush response notification to " + self.source_person.get_name() + " because of exception: " + str(e))
                 crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
