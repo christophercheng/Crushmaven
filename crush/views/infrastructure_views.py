@@ -55,7 +55,7 @@ def notify_testing(request):
     logger.debug("notify facebook with url: " +  notify_url)
     try:
         #fb_result = urllib.urlopen(notify_url)
-        fb_result=urllib.urlopen('https://graph.facebook.com/' + me.username + '/notes/',param)
+        fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
         fb_result = json.load(fb_result)
         logger.debug("facebook crush response result: " + str(fb_result))
     except Exception as e:
