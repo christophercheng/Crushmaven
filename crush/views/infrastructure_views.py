@@ -49,7 +49,8 @@ def notify_testing(request):
     param ={'href':'/crush/response/','template':'Bob Marley responded to your crush!'}
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
-    notify_url+="/notes?" + app_token
+    notify_url+="/notes?"# + app_token
+    notify_url += "access_token=" + me.access_token
     notify_url+="&href=/crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     logger.debug("notify facebook with url: " +  notify_url)
