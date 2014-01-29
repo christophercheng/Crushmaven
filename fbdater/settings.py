@@ -258,9 +258,10 @@ INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5=2 #minutes to wait to restart initi
 
 INITIALIZATION_THREADING=True
  
-# auto delay the response between the start time and end time (in seconds)
+# auto delay the response between the start time and end time (in minutes)
 CRUSH_RESPONSE_DELAY_START = 180 # 180 default = 3hours x 60 minutes =  180
-CRUSH_RESPONSE_DELAY_END = 2160 # 2160 default = 36 hours x 60 minutes = 2160
+CRUSH_RESPONSE_DELAY_END = 2880 # 2160 default = 48 hours x 60 minutes = 2880
+CRUSH_RESPONSE_MINIMUM_AUTO_WAIT = 4320 # give original admirer at least this much time (in hours) to view resopnse and thus auto notify original target 72 hours x 60 minutes = 4320
 STARTING_CREDITS=0 # changed to 0 in production on 1/14/14
 MINIMUM_LINEUP_MEMBERS=4 # change to 4 in production = this value excludes the secret admirer themself
 IDEAL_LINEUP_MEMBERS=9 # change to 9 in production = this value excludes the secret admirer themself

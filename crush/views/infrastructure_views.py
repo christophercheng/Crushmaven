@@ -9,14 +9,16 @@ from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
 from django.core.cache import cache
+# to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
 
-import urllib,json
+import hashlib, hmac
+# for mail testing 
 # import the logging library
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
+from crush.utils import notify_missed_crush_targets
 @login_required
 def crushlist(request):
     if request.user.username != '651900292':
@@ -36,30 +38,9 @@ def crush_response(request,first_name,last_name):
 def notify_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
-    me=request.user
-    obtain_app_access_token_url="https://graph.facebook.com/oauth/access_token?client_id=" + settings.FACEBOOK_APP_ID + "&client_secret=" + settings.FACEBOOK_APP_SECRET + "&grant_type=client_credentials"
-    app_token=''
-    try:
-        fb_result = urllib.urlopen(obtain_app_access_token_url)
-        fb_result = fb_result.read()
-        logger.debug("facebook obtain access token result: " + str(fb_result))
-        app_token=fb_result
-    except Exception as e:
-        logger.debug("ERROR: problem obtaining access token " + me.get_name() + " because of exception: " + str(e))
-    notify_url='https://graph.facebook.com'
-    notify_url+= "/" + str(me.username)
-    notify_url+="/notifications?"# + app_token
-    notify_url += app_token
-    notify_url+="&href=Bob/Marley"
-    notify_url+="&template=Bob Marley responded to your crush!"
-    try:
-        fb_result = urllib.urlopen(notify_url,{})
-        #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
-        fb_result = json.load(fb_result)
-        logger.debug("facebook notification sent: " + str(fb_result))
-    except Exception as e:
-        logger.debug("ERROR: could not send facebook crush response notification to " + me.get_name() + " because of exception: " + str(e))
+    notify_missed_crush_targets()
     return HttpResponse("DONE")
+    
 
 @login_required
 def testing(request):
@@ -87,19 +68,6 @@ def testing_prep(request):
        return HttpResponse("nu uhhhh")
     cache.set(settings.FB_FETCH_COOKIE,"137%3AyoNXnPd5mpliVA%3A2%3A1389009777%3A14734")
     return HttpResponse("done")
-        
-# import the logging library
-import logging
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
-# end imports for testing
-
-#from django.contrib.auth.models import Use
-# to allow app to run in facebook canvas without csrf error:
-from django.views.decorators.csrf import csrf_exempt 
-import hashlib, hmac
-# for mail testing 
 
 # -- Home Page --
 # handles both member and guest home page

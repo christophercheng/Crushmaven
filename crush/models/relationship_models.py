@@ -224,6 +224,7 @@ class CrushRelationship(BasicRelationship):
     date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of when the crush responded
     date_target_responded = models.DateTimeField(default=None,null=True,blank=True)   
+    date_source_last_notified = models.DateTimeField(default=None,null=True,blank=True) 
     date_results_paid = models.DateTimeField(default=None,null=True,blank=True) 
     # ths is the count of the target person's total admirers (past and present).  It acts as a visual display id for the secret admirer. Set it when the crush is first created.   
     display_id = models.IntegerField(default=0, max_length=60) #previously known as display_id
@@ -273,6 +274,8 @@ class CrushRelationship(BasicRelationship):
                 reciprocal_relationship.date_target_responded=datetime.now()
                 # both relationships should show the 'updated' or 'new' signs when first displayed to their respective users
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
+                response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT, settings.CRUSH_RESPONSE_DELAY_END + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT)
+                self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
                 self.updated_flag = True #show 'new' or 'updated' on crush relation block
                 # save the reciprocal crush relationship to database
                 reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
@@ -326,10 +329,11 @@ class CrushRelationship(BasicRelationship):
                     try:                     
                         # find the reciprocal crush relationship if it exists ( but only if the reciprocal relationship doesn't already know - use date_target_responded to figure that out)
                         reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)#,date_target_responded=None)
-                        if reciprocal_crush_relationship.date_target_responded==None:
+                        if reciprocal_crush_relationship.date_source_last_notified==None:
                             # set the reciprocal crush relationship date_target_responded field
                             reciprocal_crush_relationship.date_target_responded=datetime.now()
-                            reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
+                            reciprocal_crush_relationship.date_source_last_notified=datetime.now()
+                            reciprocal_crush_relationship.save(update_fields=['date_target_responded','date_source_last_notified'])
                             # send the other relationship's admirer a notification
                             reciprocal_crush_relationship.notify_source_person()
                             
@@ -468,12 +472,10 @@ class CrushRelationship(BasicRelationship):
             
     def notify_source_person(self):
        
-        print "notifying the source person of a change in target status: " + str(self.target_status)
+        #print "notifying the source person of a change in target status: " + str(self.target_status)
         target_status=self.target_status
         source_person=self.source_person
         source_person_email=source_person.email
-        if (not source_person_email):
-                return
         target_person=self.target_person
         full_name = target_person.first_name + " " + target_person.last_name
         short_name = target_person.first_name + " " + target_person.last_name[0]
@@ -492,6 +494,7 @@ class CrushRelationship(BasicRelationship):
         #    subject= target_person_name + " started your secret admirer lineup!"
         #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
         if (target_status > 3): # user responded
+            source_notified=False
             if self.is_results_paid == True: # target person changed their mind
                 if target_status ==4:
                     crush.utils_email.send_mail_changed_attraction_response(True,full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
@@ -507,8 +510,14 @@ class CrushRelationship(BasicRelationship):
                 else:
                     #send facebook notification
                     self.notify_source_person_on_facebook()
-                crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
-   
+                    source_notified=True
+                
+                if (source_person_email):
+                    crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
+                    source_notified=True
+                if source_notified:
+                    self.date_source_last_notified=datetime.now()
+                    self.save(update_fields=['date_source_last_notified'])
    
     def notify_source_person_on_facebook(self):
 
