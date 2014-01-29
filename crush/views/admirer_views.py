@@ -117,6 +117,8 @@ def ajax_display_lineup_block(request, display_id):
     if relationship.lineup_initialization_status==0: # only loop if initialization status is 0 (in progress)
         logger.debug("staring while initialization loop")
         while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
+            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
+
             #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
             if crush_id not in g_init_dict: #special case handling
                 
@@ -124,7 +126,7 @@ def ajax_display_lineup_block(request, display_id):
                 #    relationship.lineup_initialization_status = 5
                 logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
                 #    relationship.save(update_fields=['lineup_initialization_status'])
-                break;
+                break
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
                 logger.debug("initialization was either a success or failure, breaking out of while loop")
                 break
@@ -135,7 +137,6 @@ def ajax_display_lineup_block(request, display_id):
                 break
             time.sleep(1) # wait a second
             counter+=1
-            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
         
         # refetch the relationship to get updated initialization status
         try:    
