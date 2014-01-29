@@ -40,8 +40,9 @@ def notify_testing(request):
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?access_token=" + me.access_token
-    notify_url+="&href=crush_response/"
+    notify_url+="&href=/crush_response/"
     notify_url+="&template=Bob Marley responded to your crush!" 
+    logger.debug("notify facebook with url: " +  notify_url)
     try:
         fb_result = urllib.urlopen(notify_url)
         fb_result = json.load(fb_result)
