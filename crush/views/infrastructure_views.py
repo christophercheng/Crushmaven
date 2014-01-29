@@ -54,6 +54,7 @@ def notify_testing(request):
     notify_url+="&href=crush_response"
     notify_url+="&template=Bob Marley responded to your crush!"
     notify_url+="&message=BoB really responded!" 
+    notify_url+="&subject=crush response"
     logger.debug("notify facebook with url: " +  notify_url)
     try:
         fb_result = urllib.urlopen(notify_url,{})
