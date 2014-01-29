@@ -126,7 +126,7 @@ def ajax_display_lineup_block(request, display_id):
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 break;
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
-                logger.debug("initializatin was either a success or failure, breaking out of while loop")
+                logger.debug("initialization was either a success or failure, breaking out of while loop")
                 break
             elif counter>=settings.INITIALIZATION_TIMEOUT: # if 25 seconds have passed then give up
                 logger.debug("giving up on initialization of admirer relationship:" + str(relationship.id))

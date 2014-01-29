@@ -794,6 +794,7 @@ class LineupMemberManager(models.Manager):
             try:
                 if g_init_dict[crush_id]['initialization_count']==0:
                     del g_init_dict[crush_id]
+                    logger.debug("deleting crush_id: " + str(crush_id) + " from g_init_dict")
             except:
                 pass
 class BasicLineupMember(models.Model):
