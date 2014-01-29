@@ -143,6 +143,7 @@ def ajax_display_lineup_block(request, display_id):
 
     if relationship.lineup_initialization_status > 1: # show error message
         ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
+        logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
         return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
 
     return render(request,'lineup_block.html', {'relationship':relationship,
