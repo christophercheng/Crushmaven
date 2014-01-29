@@ -33,7 +33,7 @@ def notify_testing(request):
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + str(me.username)
     notify_url+="/notifications?access_token=" + str(me.access_token)
-    notify_url+="&href="
+    notify_url+="&href=http://crushmaven-qa.herokuapp.com/"
     notify_url+="&template=Bob Marley responded to your crush!" 
     try:
         fb_result = urllib.urlopen(notify_url)
