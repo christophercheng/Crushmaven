@@ -3716,13 +3716,26 @@ ul.bxslider_element #slide_overlay {
 	display:none;
 }
 
-.confirm_close_invite_dialog .ui-dialog-content{
+.confirm_close_lineup_dialog .ui-dialog-content{
 	padding:25px 15px!important;
 	line-height:24px!important;
 	color:#333333!important;	
 	font-size:14px;
 }
 
+.confirm_close_lineup_dialog{
+	width:440px!important;
+}
+.confirm_close_invite_dialog .ui-dialog-content{
+	padding:25px 15px!important;
+	line-height:24px!important;
+	color:#333333!important;	
+	font-size:14px;
+}
+.confirm_close_lineup_dialog .lineup_expiration_msg{
+	font-weight:bold!important;
+	margin-bottom:10px!important;
+}
 /* ===========================   App Invite Dialog ========================= */
 
 #app_invite_form{
