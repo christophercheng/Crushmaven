@@ -494,8 +494,8 @@ $(document).ready(function() // handling for the slider
 		confirmation_close_lineup_modal.html("<div class='lineup_expiration_msg'>Your lineup expires on {{ member.relationship.date_lineup_expires }}</div>  Afterward, undecided lineup members will automatically be marked as 'Not Interested'.  Complete your lineup beforehand to avoid sending the wrong message to someone you may like by ");
 		{% endwith %}
 
-	   confirmation_close_lineup_modal.dialog({dialogClass:'confirm_close_lineup_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".lineup_modal_dialog").show();confirmation_close_lineup_modal.dialog("close");}},
-	                                                                                                                                                          {text: "Finish Lineup Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(".confirm_close_lineup_dialog").hide();window.close_lineup_dialog(num_new_attractions,num_new_platonics,attraction_json,redirect_url);confirmation_close_lineup_modal.dialog("close");}}],
+	   confirmation_close_lineup_modal.dialog({dialogClass:'confirm_close_lineup_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".lineup_modal_dialog").show();confirmation_close_lineup_modal.dialog("destroy");}},
+	                                                                                                                                                          {text: "Finish Lineup Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(".confirm_close_lineup_dialog").hide();window.close_lineup_dialog(num_new_attractions,num_new_platonics,attraction_json,redirect_url);confirmation_close_lineup_modal.dialog("destroy");}}],
 		   							beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });}});
 	   confirmation_close_lineup_modal.dialog("open");
 	   $(':focus').blur();
