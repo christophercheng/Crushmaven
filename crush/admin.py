@@ -24,7 +24,7 @@ class CrushRelationshipAdmin(admin.ModelAdmin):
     list_filter = ('target_status','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','is_platonic_rating_paid','target_platonic_rating','lineup_initialization_date_started','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_source_last_notified','date_lineup_finished','date_results_paid','date_messaging_expires','updated_flag')
+    fields=('target_status','friendship_type','lineup_initialization_status','is_lineup_paid','is_results_paid','is_platonic_rating_paid','target_platonic_rating','lineup_initialization_date_started','date_lineup_expires','lineup_auto_completed','date_invite_last_sent','date_target_signed_up','date_lineup_started','date_target_responded','date_source_last_notified','date_lineup_finished','date_results_paid','date_messaging_expires','updated_flag')
 class PlatonicRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','rating','date_added',) # what columns to display
     search_fields = ('source_person__last_name', 'target_person__last_name') # what the search box searches against

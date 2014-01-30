@@ -220,6 +220,10 @@ class CrushRelationship(BasicRelationship):
     date_lineup_started = models.DateTimeField(default=None, null=True,blank=True)
     
     date_lineup_finished = models.DateTimeField(default=None, null=True,blank=True)
+    
+    #after this date, all undecided members should default to not interested
+    date_lineup_expires = models.DateTimeField(default=None, null=True,blank=True)
+    lineup_auto_completed=models.NullBooleanField()
         # keeps track of when the crush signed up
     date_target_signed_up = models.DateTimeField(default=None,null=True,blank=True)
     # keeps track of when the crush responded

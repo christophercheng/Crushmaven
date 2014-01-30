@@ -776,7 +776,9 @@ class LineupMemberManager(models.Manager):
         logger.debug ("number lineup members: " + str(relationship.lineupmember_set.count()) )
 
         relationship.lineup_initialization_status=1
-        relationship.save(update_fields=['lineup_initialization_status'])
+        # set the lineup expiration date (the point at which undecided members are automatically made platonic
+        relationship.date_lineup_expires = datetime.datetime.now() + datetime.timedelta(hours=settings.LINEUP_EXPIRATION_HOURS)
+        relationship.save(update_fields=['lineup_initialization_status','date_lineup_expires'])
         logger.debug ( "rel_id: " + str(relationship.id) + " saved initialization status: " + str(relationship.lineup_initialization_status) )
         self.cleanup_initialization_memory(relationship)
 

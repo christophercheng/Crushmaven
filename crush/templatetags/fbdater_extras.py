@@ -6,7 +6,7 @@ Created on Nov 1, 2012
 # for my version of timesince
 from datetime import datetime, timedelta
 from django import template
-from django.utils.timesince import timesince
+from django.utils.timesince import timesince,timeuntil
 from django.conf import settings
 
 register = template.Library()
@@ -43,6 +43,21 @@ def datetime_since(value):
 #    if difference <= timedelta(minutes=1):
 #        return 'just now'
     return_value = '%(time)s' % {'time': timesince(value).split(', ')[0]}
+    if '0 minutes' in return_value:
+        return '1 minute'
+    else:
+        return return_value
+# don't return any value if less than 2 minutes have not passed
+@register.filter
+def datetime_until(value): 
+    #   now = datetime.now()
+#   try:
+#       difference = now - value
+#   except:
+#       return value
+#    if difference <= timedelta(minutes=1):
+#        return 'just now'
+    return_value = '%(time)s' % {'time': timeuntil(value).split(', ')[0]}
     if '0 minutes' in return_value:
         return '1 minute'
     else:

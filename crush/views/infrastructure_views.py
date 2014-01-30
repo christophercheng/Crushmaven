@@ -18,7 +18,7 @@ import hashlib, hmac
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-from crush.utils import notify_missed_crush_targets
+
 @login_required
 def crushlist(request):
     if request.user.username != '651900292':
@@ -35,10 +35,10 @@ def crush_response(request,first_name,last_name):
     return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name,'facebook_canvas':True})
     
 @login_required
-def notify_testing(request):
+def new_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
-    notify_missed_crush_targets()
+    #lineup_expiration_warning()
     return HttpResponse("DONE")
     
 

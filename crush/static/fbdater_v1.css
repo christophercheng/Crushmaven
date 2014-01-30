@@ -93,6 +93,7 @@ a.button {
 	text-align:center!important;
 	font-weight:normal!important;
 	#text-shadow:1px 1px 0px #000!important;
+	text-shadow:none;
 	padding-left:1px;
 }
 
@@ -2358,7 +2359,7 @@ ul.attraction_status_bar li.past_status_animated{
 
 .admirer_lineup_block .lineup_error{
 	margin-top:65px;
-	margin-bottom:13px;
+	margin-bottom:20px;
 }
 
 .lineup_block .lineup_block_line .lineup_block_lineup_pic{
@@ -2512,18 +2513,29 @@ ul.attraction_status_bar li.past_status_animated{
 	display:inline-block;
 	float:left;
 	#font-style:italic;
-	font-size:11px;
-	line-height:16px;
+	font-size:10px;
 	vertical-align:bottom;
 	
 }
 .lineup_block_footer .lineup_block_statistic {
-	color:white;
+	color:#C8C8C8;
 	display:inline-block;
-	font-size:12px;
+	font-size:10px;
 	font-style:italic;
 	margin-right:1px;
 	vertical-align:bottom;	
+}
+.lineup_expiration_warning{
+	position:relative;
+	color:#C61236;
+	margin-right:9px;
+}
+.lineup_expiration_warning .help_icon {
+	top:0px;
+	right:-20px;
+	background: #909090!important;
+	background:#C61236!important;
+	padding-right:1px;
 }
 
 /* ===========================   Admirer Lineup ========================= */
@@ -2822,19 +2834,19 @@ ul.bxslider_element #slide_overlay {
 
 .lineup_decision .lineup_decision_button{
 	height:52px;
-	width:120px;
-	padding:9px 0px 6px 21px;
+	width:124px;
+	padding:7px 9px 8px 8px;
 	line-height:18px;
-	text-align:left;
+	text-align:center;
 	border-radius:8px;
 	font-size:17px;
 	font-weight:normal;
 	position:absolute;
-	#font-style:italic;
+	font-style:normal;
 	left:7px;
 }
 .lineup_decision .lineup_decision_button:active{
-	padding:9px 0px 5px 18px;
+	#padding:9px 0px 5px 18px;
 }
 
 .lineup_decision a.decision[add_type='crush']{
@@ -2842,7 +2854,8 @@ ul.bxslider_element #slide_overlay {
 	background:#5252A3;
 	background:#09abe8;
 	background:#ED1939;
-	padding-right:5px;
+	border:1px solid #D51633;
+	#padding-right:5px;
 	position:relative;
 }
 .lineup_decision a.decision[add_type='crush'] .thumbs_up_icon{
@@ -2853,23 +2866,31 @@ ul.bxslider_element #slide_overlay {
 	background-size:auto;
 	height:20px;
 	width:20px;
-	top:15px;
-	right:20px;
+	top:28px;
+	right:52px;
 	background-position:0px -31px;
 }
 
 .lineup_decision a.decision[add_type='crush']:hover{
 	background:#D51633;
 }
+.lineup_decision a.decision[add_type='crush']:active{
+	border:1px solid #6A0B1A;
+}
 .lineup_decision a.decision[add_type='platonic']{
 	top:14px;
 	color:white;
-	background:#E2E2E2;
+	background:#D6D6D6;
+	border:1px solid #D6D6D6;
 }
 
-.lineup_decision a.decision[add_type='platonic']:hover{
-	background:#C5C5C5;
 
+.lineup_decision a.decision[add_type='platonic']:hover{
+	background:#c5c5c5;
+	border:1px solid #c5c5c5;
+}
+.lineup_decision a.decision[add_type='platonic']:active{
+	border:1px solid #9A9A9A;
 }
 
 .lineup_decision span.crush{
@@ -3102,11 +3123,38 @@ ul.bxslider_element #slide_overlay {
 
 #footer-msg {
 	display:inline-block;
-	margin-top:5px;
-	margin-left:130px;
+	margin-top:-2px;
+	margin-left:100px;
 	font-weight:normal;
-	font-size:12px!important;
-	color:#707070;
+	font-size:10px!important;
+	color:#9B9B9B;
+	line-height:15px;
+	font-style:italic;
+	position:relative;
+	width:320px;
+}
+#footer-msg span.note{
+	font-weight:bold;
+	margin-right:2px;
+	position:absolute;
+	left:-36px;
+	top:0px;
+}
+#footer-msg span.alert_icon{
+	position:absolute;
+	background:#9B9B9B;
+	font-style:normal;
+	color:white;
+	border-radius:50%;
+	vertical-align:top;
+	width:16px;
+	height:16px;
+	font-size:14px;
+	font-weight:normal;
+	top:2px;
+	left:-22px;
+	padding-top:1px;
+	padding-left:1px;
 }
 
 /* ===========================  Credit Sufficient Dialog ========================= */
@@ -4377,6 +4425,7 @@ ul.bxslider_element #slide_overlay {
  font-weight:normal;
  line-height:21px;
 }
+
 #no_email_container span.alert_icon{
 	background:white;
 	color:red;

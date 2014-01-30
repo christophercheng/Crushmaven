@@ -107,8 +107,9 @@ def ajax_display_lineup_block(request, display_id):
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
-        ajax_response += settings.LINEUP_STATUS_CHOICES[4]
-        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
+        return render(request,'lineup_blockadmirer_lineup_preview_block.html', {'relationship':None,
+                                                    'error':settings.LINEUP_STATUS_CHOICES[4]})
+        #return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
     
     crush_id = relationship.target_person.username
     rel_id_state=str(relationship.id) + '_initialization_state'
@@ -142,20 +143,18 @@ def ajax_display_lineup_block(request, display_id):
         try:    
             relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
         except CrushRelationship.DoesNotExist:
-            ajax_response += settings.LINEUP_STATUS_CHOICES[4]
             logger.debug("could not refetch crush relationship object during initialization")
-            return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
+            return render(request,'admirer_lineup_preview_block.html', {'relationship':None,
+                                                    'error':settings.LINEUP_STATUS_CHOICES[4]})
     #logger.debug("finisehd with while initialization loop")
     if relationship.lineup_initialization_status > 1: # show error message
-        ajax_response += settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]
-        logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
-        return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
-    #logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
-    return render(request,'lineup_block.html', {'relationship':relationship,
-                                                'fail_status_5':settings.LINEUP_STATUS_CHOICES[5],
-                                                'fail_status_2':settings.LINEUP_STATUS_CHOICES[2],
-                                                'fail_status_3':settings.LINEUP_STATUS_CHOICES[3],})
 
+        logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
+        return render(request,'admirer_lineup_preview_block.html', {'relationship':relationship,
+                                                    'error':settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]})
+    #logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
+    return_data = render(request,'admirer_lineup_preview_block.html', {'relationship':relationship})
+    return return_data
 # called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason.
 @login_required
 def ajax_initialization_failed(request, display_id):
@@ -220,22 +219,22 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
     # obtain the actual user:
     lineup_member = lineup_member_set.get(position=lineup_position)
     # find or create a new user for the lineup member
-    lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
-    # if the lineup member user was not found for whatever reason, then we need to modify the lineup and strip out this member
+    lineup_member_user = lineup_member.user
     if lineup_member_user == None:
-        logger.error (" facebook lineup user not found")
-        ajax_response += '<div class="slide_container">'
-        ajax_response +='<span class="lineup_name">user not available</span>'
-        ajax_response +='<span class="lineup_mugshot view_facebook_widget"><img src="http://www.crushmaven.com/static/images/fb_unknown_user_pic.jpg"></span>'
-        ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + str(lineup_member.username) + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
-        ajax_response +='<span class="lineup_decision" username="' + str(lineup_member.username) + '" style="margin-top:5px">'
-        ajax_response += "<span class=' choice crush existing_choice'>Sorry, this lineup member is no longer available...</span>"
-        lineup_member.decision=1
-        lineup_member.save(update_fields=['decision'])
-        ajax_response += '</span></div>'
-        return HttpResponse(ajax_response)
-    
-    if lineup_member.user==None: 
+        lineup_member_user=FacebookUser.objects.find_or_create_user(lineup_member.username, me.access_token, False, fb_profile=None)
+        # if the lineup member user was not found for whatever reason, then we need to modify the lineup and strip out this member
+        if lineup_member_user == None:
+            logger.error (" facebook lineup user not found")
+            ajax_response += '<div class="slide_container">'
+            ajax_response +='<span class="lineup_name">user not available</span>'
+            ajax_response +='<span class="lineup_mugshot view_facebook_widget"><img src="http://www.crushmaven.com/static/images/fb_unknown_user_pic.jpg"></span>'
+            ajax_response +='<span class="lineup_facebook_link"><a href="http://www.facebook.com/' + str(lineup_member.username) + '" target="_blank"><span class="view_facebook_icon"></span>view profile</a></span>'
+            ajax_response +='<span class="lineup_decision" username="' + str(lineup_member.username) + '" style="margin-top:5px">'
+            ajax_response += "<span class=' choice crush existing_choice'>Sorry, this lineup member is no longer available...</span>"
+            lineup_member.decision=1
+            lineup_member.save(update_fields=['decision'])
+            ajax_response += '</span></div>'
+            return HttpResponse(ajax_response)
         lineup_member.user=lineup_member_user
         lineup_member.save(update_fields=['user'])
     
@@ -276,8 +275,8 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         lineup_member.save(update_fields=['decision'])
     else:    
         if lineup_member.decision == None:
-            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">Add as Crush<span class="thumbs_up_icon">&nbsp;</span></a>' 
-            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position + '">Not Interested</a>'        
+            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="crush" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position +  '">Interested<span class="thumbs_up_icon">&nbsp;</span></a>' 
+            ajax_response += '<a href="#" class="decision button lineup_decision_button" add_type="platonic" username="' + lineup_member_user.username + '" name="' + lineup_member_user.first_name + ' ' + lineup_member_user.last_name + '" member_gender= "' + lineup_member_user.gender + '" lineup_position="' + lineup_position + '">Not&nbsp; Interested</a>'        
        
         elif lineup_member.decision == 0:
             ajax_response += '<span class="crush choice" >Added as a Crush!</span>'

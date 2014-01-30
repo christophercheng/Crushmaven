@@ -20,7 +20,6 @@ $(document).ready(function()
 	    {% endif %}
 		$(".lineup_modal_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 
-
 		$(".lineup_modal_dialog .ui-dialog-titlebar .help_icon").qtip({
 			content:{
 				text:$('#lineup_dialog_help_content'),
@@ -40,6 +39,7 @@ $(document).ready(function()
 				}
 			}
 		});	
+
 	    $("#lineup_modal").load(load_url,function(responseText,textStatus,XHR){
 
 			if (textStatus!='success'){
@@ -62,8 +62,9 @@ $(document).ready(function()
     $('.ajax_display_lineup_block').each(function(){
 
         var display_id=$(this).attr("display_id");
-        var lineup_block_div = $(this).parent('.lineup_previews');
-        $(this).html('<div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few minutes</span></div>');
+        var lineup_block_parent = $(this).parent();
+        $(this).replaceWith('<div class="lineup_block_line lineup_previews"><div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few minutes</span></div></div>');
+        var lineup_block_div = lineup_block_parent.children('.lineup_previews');
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
         
@@ -72,14 +73,37 @@ $(document).ready(function()
    				timeout: {{lineup_block_timeout}}, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
    				success: function (data) {
    					if (data == ""){
+   						alert("no data");
    						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
    	   					$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
    					}
    					else{
-   						lineup_block_div.html(data);
+ 
+   						lineup_block_div.replaceWith(data);
+   						$(".admirer_lineup_block .lineup_expiration_warning .help_icon").qtip({
+   							content:{
+   								text:$('#lineup_dialog_expiration_help_content'),
+   								title:'What happens after my lineup expires?'
+   							},
+   							show:{
+   								delay:0,
+   							},
+   							hide:{
+   								delay:500,
+   								fixed:true,
+   							},
+   							style:{
+   								classes: 'qtip-blue qtip-rounded qtip-shadow',
+   								tip:{
+   									corner:true
+   								}
+   							}
+   						});	
+   						
    					}
    				},
    				error: function(){
+   					alert("error");
    					lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
    					$.get(ajax_fail_url + '?reason=ajax_initialization_call_returned_error');
    				} 
@@ -103,6 +127,44 @@ $(document).ready(function()
 		content:{
 			text:$('#lineup_dialog_help_content'),
 			title:'How do admirer lineups work?'
+		},
+		show:{
+			delay:0,
+		},
+		hide:{
+			delay:500,
+			fixed:true,
+		},
+		style:{
+			classes: 'qtip-blue qtip-rounded qtip-shadow',
+			tip:{
+				corner:true
+			}
+		}
+	});	
+	$(".admirer_lineup_block .lineup_expiration_warning .help_icon").qtip({
+		content:{
+			text:$('#lineup_dialog_expiration_help_content'),
+			title:'What happens after my lineup expires?'
+		},
+		show:{
+			delay:0,
+		},
+		hide:{
+			delay:500,
+			fixed:true,
+		},
+		style:{
+			classes: 'qtip-blue qtip-rounded qtip-shadow',
+			tip:{
+				corner:true
+			}
+		}
+	});	
+	$(".admirer_lineup_block .auto_expiration_lineup .help_icon").qtip({
+		content:{
+			text:$('#lineup_dialog_auto_completion_help_content'),
+			title:'Why was my lineup auto-completed?'
 		},
 		show:{
 			delay:0,
@@ -157,44 +219,9 @@ $(document).ready(function()
 {% if admirer_relationships %}
 
 {% for admirer_rel in admirer_relationships %}
-	<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
-		<span class="help_icon"></span>
-		<div class="lineup_block_line lineup_block_first_line">
-			<div class="lineup_title">
-				<span class="lineup_block_source_name">Secret Admirer #{{admirer_rel.display_id}}:</span>
-				{% if admirer_rel.friendship_type == 0 %} 
-					<span class="lineup_subtitle">a friend of yours</span> 
-				{% elif admirer_rel.friendship_type == 1 %}
-					<span class="lineup_subtitle">has mutual Facebook friend(s)</span>
-				{% else %}
-					<span class="lineup_subtitle">has no Facebook friends in common with you</span>
-				{% endif %}
-			</div><!-- close off lineup title -->
-		</div><!-- close off lineup_block line -->
-		{% with admirer_rel.date_lineup_finished as date_lineup_finished %}
-			{% include "lineup_block_background.html" %}
-		{% endwith %}
-		<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">
-			
-			{% if admirer_rel.lineup_initialization_status == 1 %}
-					{% with admirer_rel as relationship %}
-					 	{% include "lineup_block.html" %}
-					{% endwith %}
-			{% else %}
-			     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
-			{% endif %}
-		</div><!-- close off admirer_block line -->
-		<div class="lineup_block_line lineup_block_footer">
-		{% if admirer_rel.lineup_initialization_status == 1 %}
-			<span class="lineup_block_statistics">You've assessed <span class="lineup_block_statistic">{{admirer_rel|lineup_statistics}}</span> lineup members</span>
-		{% endif %}
-		{% if admirer_rel.date_lineup_finished != None %}
-			lineup completed {{admirer_rel.date_lineup_finished}}
-		{% else %}
-			admirer added {{admirer_rel.date_added|datetime_since}} ago
-		{% endif %}
-		</div><!-- close off admirer_block line -->
-	</div><!--  close off admirer block -->
+	{% with admirer_rel as admirer_rel %}
+	 	{% include "admirer_lineup_block.html" %}
+	{% endwith %}
 {% endfor %}
 
 {% else %}
@@ -217,44 +244,9 @@ $(document).ready(function()
 <! -- End of crush type navigation widget --> 
 
 {% for admirer_rel in past_admirer_relationships %}
-<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
-	<span class="help_icon"></span>
-	<div class="lineup_block_line lineup_block_first_line">
-		<div class="lineup_title">
-			<span class="lineup_block_source_name">Secret Admirer #{{admirer_rel.display_id}}:</span>
-			{% if admirer_rel.friendship_type == 0 %} 
-				<span class="lineup_subtitle">a friend of yours</span> 
-			{% elif admirer_rel.friendship_type == 1 %}
-				<span class="lineup_subtitle">has mutual Facebook friend(s)</span>
-			{% else %}
-				<span class="lineup_subtitle">has no Facebook friends in common with you</span>
-			{% endif %}
-		</div><!-- close off lineup title -->
-	</div><!-- close off lineup_block line -->
-	{% with admirer_rel.date_lineup_finished as date_lineup_finished %}
-		{% include "lineup_block_background.html" %}
+	{% with admirer_rel as admirer_rel %}
+		{% include "admirer_lineup_block.html" %}
 	{% endwith %}
-	<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">
-		
-		{% if admirer_rel.lineup_initialization_status == 1 %}
-				{% with admirer_rel as relationship %}
-				 	{% include "lineup_block.html" %}
-				{% endwith %}
-		{% else %}
-		     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
-		{% endif %}
-	</div><!-- close off admirer_block line -->
-	<div class="lineup_block_line lineup_block_footer">
-	{% if admirer_rel.lineup_initialization_status == 1 %}
-		<span class="lineup_block_statistics">You've assessed <span class="lineup_block_statistic">{{admirer_rel|lineup_statistics}}</span> lineup members</span>
-	{% endif %}
-	{% if admirer_rel.date_lineup_finished != None %}
-		lineup completed {{admirer_rel.date_lineup_finished}}
-	{% else %}
-		admirer added {{admirer_rel.date_added|datetime_since}} ago
-	{% endif %}
-	</div><!-- close off admirer_block line -->
-</div><!--  close off admirer block -->
 {% endfor %}
 
 {% if past_admirers_count == 0 %}
@@ -262,6 +254,21 @@ $(document).ready(function()
 {% endif %}
 
 <div id="lineup_modal" title="Admirer Lineup"></div>
+
+<span class="help_dialog_content" id="lineup_dialog_expiration_help_content">
+	<span class="tooltip_content tooltip_maincontent">
+After your lineup expires, all undecided lineup members are automatically marked as 'Not Interested'.  Complete the lineup beforehand to avoid sending the wrong message to someone you may like.
+	</span>
+	<span class="tooltip_close">close</span>
+</span>
+
+<span class="help_dialog_content" id="lineup_dialog_auto_completion_help_content">
+<span class="tooltip_content tooltip_maincontent">
+Since your lineup expired, we automatically marked your undecided lineup members as 'Not Interested'.  In case you want to change any of these decisions, you can still do so.  If your admirer was one of these lineup members, they have already been notified, but we can tell them you changed your mind.  
+</span>
+<span class="tooltip_close">close</span>
+</span>
+
 
 <span class="help_dialog_content" id="lineup_dialog_help_content">
 <span class="tooltip_content tooltip_maincontent">

@@ -1,0 +1,26 @@
+<div class="lineup_block admirer_lineup_block" display_id="{{admirer_rel.display_id}} ">
+		<span class="help_icon"></span>
+		<div class="lineup_block_line lineup_block_first_line">
+			<div class="lineup_title">
+				<span class="lineup_block_source_name">Secret Admirer #{{admirer_rel.display_id}}:</span>
+				{% if admirer_rel.friendship_type == 0 %} 
+					<span class="lineup_subtitle">a friend of yours</span> 
+				{% elif admirer_rel.friendship_type == 1 %}
+					<span class="lineup_subtitle">has mutual Facebook friend(s)</span>
+				{% else %}
+					<span class="lineup_subtitle">has no Facebook friends in common with you</span>
+				{% endif %}
+			</div><!-- close off lineup title -->
+		</div><!-- close off lineup_block line -->
+		{% with admirer_rel.date_lineup_finished as date_lineup_finished %}
+			{% include "lineup_block_background.html" %}
+		{% endwith %}
+		{% if admirer_rel.lineup_initialization_status == 1 %}
+				{% with admirer_rel as relationship %}
+				 	{% include "admirer_lineup_preview_block.html" %}
+				{% endwith %}
+		{% else %}
+		     <div class="ajax_display_lineup_block" display_id="{{admirer_rel.display_id}}"></div>		
+		{% endif %}
+
+</div><!--  close off admirer block -->

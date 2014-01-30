@@ -12,8 +12,8 @@ import crush.models.user_models
 import crush.models.relationship_models
 from django.db.models import Q
 from django.db.models import Min
-from crush.utils_email import send_mail_invite_reminder
-from datetime import  datetime
+from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning
+from datetime import  datetime,timedelta
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -138,105 +138,43 @@ def notify_missed_crush_targets():
         # call notify source person
         # update date_source_last_notified
     return
-    
-#def send_mailgun_email(from_string, email_address,subject,message,send_time=None):
-#        try:
-#            data_dict={"from": from_string,\
-#                           "to": email_address,"subject": subject,"text": message}
-#            if send_time != None:
-#                data_dict["o:deliverytime"]=str(send_time) 
-#            print "sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject + " and message: " + message
-#            #result= requests.post("https://api.mailgun.net/v2/attractedto.mailgun.org/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
-#            #print "MailGun Response: " + str(result)
-#        except Exception as e:
-#            print "MAIL PROBLEM! " + str(e)
 
-#@login_required
-#def testing(request):
-#    return
-#
-#    fetch_response=''
-#    #data = urllib.urlencode({'email':'schmackforever@yahoo.com','pass':'carmel1','login':'Log+In'})
-#    #jar = cookielib.FileCookieJar("cookies")
-#    #fetch_url = "https://www.locationary.com/index.jsp?ACTION_TOKEN=tile_loginBar_jsp$JspView$LoginAction"
-#    mobile_fb_url = "https://m.facebook.com/friends/?id=1090&f=30"
-#    #fetch_url = "https://m.facebook.com/marizdluna?v=friends&mutual&startindex=24&refid=17&ref=bookmark"
-#    fetch_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__user=651900292&__a=1&start=0"
-#    curl_url="https://www.facebook.com/ajax/browser/list/allfriends/?uid=721521885&__a=1&start=0"
-#    my_url="http://127.0.0.1:8000"
-#    #fetch_url="https://m.facebook.com"
-#    #fetch_url = "https://www.facebook.com/lauren.douglass1"
-#    cnn_url="http://www.cnn.com"
-#    nytimes_url="http://www.nytimes.com"
-#    #fetch_url = "https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&infinitescroll=1&location=friends_tab_tl&start=38&__req=8&__a=1"
-#    #fetch_url = "https://www.facebook.com/lauren.douglass1/friends?ft_ref=mni"
-#    #opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(jar))
-#    opener = urllib2.build_opener()
-#    #opener.addheaders.append(('Host', 'https://m.facebook.com'))
-#    opener.addheaders.append(('USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-#    opener.addheaders.append(('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0'))
-#    opener.addheaders.append( ('Accept', '*/*') )
-#    #opener.addheaders.append(('Accept-Language','en-US,en;q=0.5'))
-#    opener.addheaders.append(('Accept-Encoding',''))
-#    #opener.addheaders.append(('Referer','https://www.facebook.com/lauren.douglass1/friends?ft_ref=mni'))
-#    #opener.addheaders.append(('Cookie', 'datr=atZ4UP1OShGVTlI-gWc21Y6h; fr=0LuO085IH0hedIzMv.AWWVHBCH6pzzhxGVVijmCO89cGM.BQeNZy.8f.AWVQP6kG; lu=Tgq-cy2cDQY2fDF37z_DtD6A; locale=en_US; c_user=651900292; csm=2; s=Aa6_YK1OD7K68gms.BRBqGN; xs=3%3A2mTnN98BEEYpPQ%3A2%3A1359389069; act=1359425131617%2F0%3A1; p=150; presence=EM359426408EuserFA2651900292A2EstateFDsb2F1359411227605Et2F_5b_5dElm2FnullEuct2F1359410437BEtrFA2loadA2EtwF1968483593EatF1359425934120EwmlFDfolderFA2inboxA2Ethread_5fidFA2user_3a637474179A2CG359426408564CEchFDp_5f651900292F58CC; sub=67108864; wd=1235x638'))
-#    opener.addheaders.append(('Connection', ''))
-#    
-#    #fetch_request = urllib2.Request(curl_url)
-#    #fetch_request = opener.open(fetch_request)
-#    #fetch_response = fetch_request.read()
-#    
-#    #proc = subprocess.Popen(["curl", "--head", "https://www.facebook.com/ajax/browser/list/allfriends/?uid=33303361&__user=651900292&__a=1&start=0"], stdout=subprocess.PIPE)
-#    #(out, err) = proc.communicate()
-#    
-#
-#    # CURL FETCHING
-##    c = pycurl.Curl()
-##    fetch_response=''
-##    fql_query = "SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me())) ORDER BY friend_count DESC LIMIT 100"
-##    fql_query_results = urllib.urlopen('https://graph.facebook.com/fql?q=%s&access_token=%s' % (fql_query,request.user.access_token))
-##    data_array = json.load(fql_query_results)['data']
-##    start_position=random.randint(0, len(data_array)-11) 
-##    end_position=start_position + 10
-##    counter = 0
-##    for fql_user in data_array[start_position:end_position]:
-##        counter = counter + 1
-##        for_url = "https://www.facebook.com/ajax/browser/list/allfriends/?__a=1&start=0&uid=" + str(fql_user['uid'])
-##        #for_url="http://www.google.com"
-##        storage = StringIO()
-##        c.setopt(c.URL, curl_url)
-##        c.setopt(pycurl.SSL_VERIFYPEER, 0)
-##        c.setopt(pycurl.SSL_VERIFYHOST, 0)
-##        c.setopt(c.WRITEFUNCTION, storage.write)
-##        c.perform()
-##        fetch_response = fetch_response + "Attempt:" + str(counter) + " " + storage.getvalue() 
-##
-##    c.close()
-#    cookie=''
-#    for key in request.COOKIES.keys():
-#        response_key = key
-#        response_value = request.COOKIES[key]
-#        cookie = cookie + key + "=" + request.COOKIES[key] + ";"
-#
-#    fetch_response = "hey"
-#    return render(request,'testing.html', {'fetch_response':fetch_response,'cookie':cookie})
+def lineup_expiration_warning():
+    current_date=datetime.now() + timedelta(days=1)
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
+    for relationship in relevant_relationships:
+        email_address = relationship.target_person.email
+        if email_address!='':
+            send_mail_lineup_expiration_warning(email_address,relationship.date_lineup_expires)
+            logger.debug("admirer lineup warning sent: " + str(relationship))
+    if relevant_relationships.count() == 0:
+        logger.debug('no relationships to warn of lineup expiration')
+    return
+  
+def auto_complete_expired_lineups():
+    current_date=datetime.now()
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
+    for relationship in relevant_relationships:
+        logger.debug("Auto complete this relationship: " + str(relationship))
+        relevant_lineup_members= relationship.lineupmember_set.filter(decision=None)
+        for member in relevant_lineup_members:
+            updated_fields=[]
+            lineup_member_user = member.user
+            if lineup_member_user==None:
+                lineup_member_user=crush.models.user_models.FacebookUser.objects.find_or_create_user(member.username, member.relationship.target_person.access_token, False, fb_profile=None)
+                # if the lineup member user was not found for whatever reason, then we need to modify the lineup and strip out this member
+                if lineup_member_user == None:
+                    continue
+                member.user=lineup_member_user
+                updated_fields.append('user')
+            member.decision=1
+            updated_fields.append('decision')
+            member.save(update_fields=updated_fields)
+            crush.models.relationship_models.PlatonicRelationship.objects.create(source_person=member.relationship.target_person, target_person=lineup_member_user,rating=1)
 
-
-#import mechanize
-
-# def xs_fetch():
-#     br = mechanize.Browser()
-#     br.set_handle_robots(False)
-#     cookies = mechanize.CookieJar()
-#     br.set_cookiejar(cookies)
-#     br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')]
-# 
-#     br.open("http://www.facebook.com/")
-#     br.select_form(nr = 0)
-#     br.form['email'] = "i.am.not.spammer.i.swear@gmail.com"
-#     br.form['pass'] = 'iamnotspammeriswear"'
-#     response = br.submit()
-#     br.open("https://www.facebook.com/")
-#     print response.read()
-#     print " -------------- "
-#     print response.info()  # headers
+        relationship.date_lineup_finished=current_date
+        relationship.lineup_auto_completed=True
+        relationship.save(update_fields=['date_lineup_finished','lineup_auto_completed'])
+    if relevant_relationships.count() == 0:
+        logger.debug('no relationships to auto complete')
+    return

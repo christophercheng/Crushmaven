@@ -40,6 +40,7 @@ $(document).ready(function() // handling for the slider
 	*		FUNCTION - UPDATE FOOTER MESSAGE
   *		called everytime a slide load is completed
 	*  ---------------------------------------------------------------------- */
+	/*
 		var updateFooterMsg = function(){
 		footer_msg_element=$('.lineup-footer #footer-msg');
 		// number of evaluated members
@@ -48,8 +49,9 @@ $(document).ready(function() // handling for the slider
 		// total members
 		var total_members="{{member_set.count}}";
 	  footer_msg_element.html('<div id="progressing">evaluated ' + total_decisions + ' of ' + total_members + ' members</div>');
+	
 	};
-
+*/
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - LAUNCH SLIDER
   *		Launch the slider at a parameterized position
@@ -80,7 +82,7 @@ $(document).ready(function() // handling for the slider
 				handleLineupMemberPointer();
 				$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();
 			}
-			updateFooterMsg();
+			//updateFooterMsg();
 
 		}); // close off getScript
 	};	
@@ -141,13 +143,13 @@ $(document).ready(function() // handling for the slider
 	*		FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
   *		handle click to 'add member' as crush or platonic friend
 	*  ---------------------------------------------------------------------- */
-	window.added_lineup_attraction=null;// set whenever attraction is added - used to know when at least one attraction added
+	//window.added_lineup_attraction=null;// set whenever attraction is added - used to know when at least one attraction added
 	var attraction_dialog = $("#dialog_attraction_add");
 	attraction_dialog.dialog({modal: true, autoOpen: false,width:400, resizable:false,dialogClass:'decision_confirmation_dialog blacktop',close: function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();}});		
 
 	var dialog_attraction_html ='';
 	dialog_attraction_html += '<div class="dialog_content_wrapper">';
-		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">After adding <span class="attractor_first_name"></span> as a crush, we\'ll try to get <span class="attractor_pronoun_object"></span> signed up, so <span class="attractor_pronoun_subject"></span> can take a similar lineup with you in it. We\'ll notify you when <span class="attractor_pronoun_subject"></span> responds.</p>';
+		dialog_attraction_html += '<p class ="attractor_text first_attractor_text">You\'ll be adding <span class="attractor_first_name"></span> as a crush.  What does that mean? We\'ll provide <span class="attractor_first_name"></span> with a different anonymous lineup - with you in it - and let you know how <span class="attractor_pronoun_subject"></span> responds.</p>';
 		dialog_attraction_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		//dialog_attraction_html += '<p class="attractor_text second_attractor_text"><i>Note:</i>&nbsp;&nbsp;Neither you nor <span class="attractor_first_name"></span> may know for sure who initiated the original attraction. <i>hmm...</i></p>';
 		dialog_attraction_html += '<span id = "attractor_agreement"><input class="attractor_agreement_checkbox" type="checkbox" checked><span id = "attractor_agreement_text">I agree to the </span><a href="/help_terms" target="_blank">terms & conditions</a></input></span>';
@@ -155,7 +157,7 @@ $(document).ready(function() // handling for the slider
   var platonic_dialog = $("#dialog_platonic_add");
 	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog blacktop',close: function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();}});
   var dialog_platonic_html = '<div class="dialog_content_wrapper">';
- 		dialog_platonic_html += '<span class="attractor_text">Although you\'re not attracted to <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
+ 		dialog_platonic_html += '<span class="attractor_text">Although you\'re not interested in <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
 		dialog_platonic_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		dialog_platonic_html += '<div id="platonic_rating_group">';
 		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"checked><span class="rating_description">{{rating5}}</span></span>';
@@ -199,9 +201,9 @@ $(document).ready(function() // handling for the slider
 	  	url = "/ajax_add_lineup_member/crush/{{admirer_rel.display_id}}/" +  username + "/"; 
 	  	decision_dialog = attraction_dialog;
 	  	decision_dialog.html(dialog_attraction_html);
-	  	if (window.added_lineup_attraction){
-	  			decision_dialog.find('.attractor_text').remove();
-	  		}
+	  	//if (window.added_lineup_attraction){ this logic hides the help text for secondary crush confirmation dialogs - not necessary
+	  	//		decision_dialog.find('.attractor_text').remove();
+	  	//	}
 	  	crush_decision=true;
 		  $(".decision_confirmation_dialog .ui-dialog-titlebar .help_icon").qtip({
 				content:{
@@ -280,7 +282,7 @@ $(document).ready(function() // handling for the slider
 						};
 						var lineup_member = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] span');
 						if (crush_decision==true){
-							window.added_lineup_attraction=true;
+							//window.added_lineup_attraction=true;
 							// show crush icon in the associated thumbnail
 							lineup_member.addClass('decision_crush');
 							lineup_member.html('YES');
@@ -327,7 +329,7 @@ $(document).ready(function() // handling for the slider
 
 		var next_position = parseInt(current_position) + 1;
 		if (next_position < {{member_set.count}})	{
-			updateFooterMsg();
+			//updateFooterMsg();
 			// if the slide that was just decided on was the second one and is_lineup_paid=false, then auto launch the check dialog 
 			if (current_position == 0 && !window.is_lineup_paid && {{member_set.count}} > 1)
 				setTimeout(window.launch_credit_check,1000);
@@ -559,12 +561,14 @@ $(document).ready(function() // handling for the slider
 </div>  <!--  close off lineup_container -->
 
 <div class="ui-dialog-buttonpane lineup-footer">
-	<span id="footer-msg"></span>
+	{% with member_set.all|first as member %}
+	<span id="footer-msg"><span class="note">Note:</span>This lineup expires {{member.relationship.date_lineup_expires|date:"SHORT_DATE_FORMAT"}}.  Afterward, undecided lineup members will be automatically marked 'Not Interested'.</span>
+	{% endwith %}
 	<div class="ui-dialog-buttonset">
 				<button id="finish-btn" class="site_dialog_button site_dialog_cancel_button" type="button">Finish Later</button>
 	</div><!-- close off buttonset -->
 </div><!-- close off buttonpane -->
-<div id="dialog_attraction_add" title="Crush Confirmation "></div>
+<div id="dialog_attraction_add" title="Interested Confirmation "></div>
 <div id="dialog_platonic_add" title="Not Interested Confirmation"></div>
 
 <span class="help_dialog_content" id="attraction_confirmation_dialog_help_content">

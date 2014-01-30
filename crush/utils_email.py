@@ -62,6 +62,12 @@ def send_mail_delivery_problem(full_name, short_name, first_name,invalid_email_a
     html=render_to_string('email_template_notify_delivery_problem.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'invalid_email_address':invalid_email_address,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_delivery_problem_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'invalid_email_address':invalid_email_address,'STATIC_URL':STATIC_URL})
     send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Unsuccessful invite delivery to ' + invalid_email_address,html,text)
+
+def send_mail_lineup_expiration_warning(email_address,expiration_date):
+    html=render_to_string('email_template_notify_lineup_expiration_warning.html',{'expiration_date':expiration_date,'STATIC_URL':STATIC_URL})
+    text=render_to_string('email_template_notify_lineup_expiration_warning_text.html',{'expiration_date':expiration_date,'STATIC_URL':STATIC_URL})
+    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Your admirer lineup is about to expire',html,text)
+    
     
 def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushes_count):
     html=render_to_string('email_template_invite_reminder.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})

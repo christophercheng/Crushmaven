@@ -1,5 +1,9 @@
 {% load fbdater_extras %}
-	{% if relationship.date_lineup_finished != None %}
+<div class="lineup_block_line lineup_previews" display_id="{{admirer_rel.display_id}}">	
+{% if error %}
+<div class="lineup_error">{{ error }}</div>
+{% else %}
+{% if relationship.date_lineup_finished != None %}
 		{% for member in relationship.lineupmember_set.all|slice:":10" %}
 			<span class="lineup_block_lineup_pic member_decided {% if member.decision == 0 %}member_picked{% endif %}"><img src="http://graph.facebook.com/{{member.username}}/picture?width=44&height=44"><span class="{% if member.decision == 0 %}admirer_picked{% elif member.decision > 0 %}admirer_not_picked{% endif %}"></span></span>
 		{% endfor %}
@@ -19,3 +23,22 @@
 	{% else %}	
 		<a href="#"  class="view_lineup button content_button" display_id="{{relationship.display_id}}">Start Admirer Lineup</a>
 	{% endif %}
+{% endif %}	
+</div><!-- close off admirer_block line -->
+
+{% if not error %}
+<div class="lineup_block_line lineup_block_footer">
+	{% if relationship.lineup_initialization_status == 1 %}
+		<span class="lineup_block_statistics"><span class="lineup_block_statistic">{{relationship|lineup_statistics}}</span> lineup members assessed</span>
+	{% endif %}
+	{% if relationship.date_lineup_finished != None %}
+		{% if relationship.lineup_auto_completed == True %}
+			<span class="lineup_expiration_warning auto_expiration_lineup">lineup auto-completed {{relationship.date_lineup_finished}}<span class="help_icon">!</span></span>
+		{% else %}
+			lineup completed {{relationship.date_lineup_finished}}
+		{% endif %}
+	{% else %}
+		<span class="lineup_expiration_warning">lineup expires {{relationship.date_lineup_expires|date}}<span class="help_icon">!</span></span>
+	{% endif %}
+</div><!-- close off admirer_block line -->
+{% endif %}
