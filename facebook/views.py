@@ -31,7 +31,7 @@ def authentication_callback(request,next_page=""):
     user = authenticate(token=code, request=request,next_page=next_page)
     if user!=None:
         auth_login(request, user)
-    thread.start_new_thread(send_mail_user_logged_in,(user,str(request.META)))
+        thread.start_new_thread(send_mail_user_logged_in,(user,str(request.META)))
     #RETURN back to home directory
     if next_page =="":
         return HttpResponseRedirect('/home/?signin=true')

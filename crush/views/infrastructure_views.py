@@ -11,6 +11,8 @@ import re
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
+from django.core.management import call_command
+
 
 import hashlib, hmac
 # for mail testing 
@@ -38,6 +40,7 @@ def crush_response(request,first_name,last_name):
 def new_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
+    call_command('daily_maintenance')
     #lineup_expiration_warning()
     return HttpResponse("DONE")
     

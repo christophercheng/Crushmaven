@@ -16,7 +16,7 @@ def friends_with_admirers(request):
 # -- Friends with Admirers Section (Ajax Content) --
 @login_required
 def ajax_friends_with_admirers_content(request,remove_username=None):
-    logger.debug (" called ajax friends-with-admirers-section with remove_username == " + str(remove_username))
+
     me=request.user
 
     try:
