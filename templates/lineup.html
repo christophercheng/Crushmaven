@@ -491,11 +491,11 @@ $(document).ready(function() // handling for the slider
 		$(".lineup_modal_dialog").hide();
 		var confirmation_close_lineup_modal=$("#confirm_close_lineup_modal");
 		{% with member_set|first as member %}
-		confirmation_close_lineup_modal.html("<div class='lineup_expiration_msg'>Your lineup expires on {{ member.relationship.date_lineup_expires }}</div>  Afterward, undecided lineup members will automatically be marked as 'Not Interested'.  Avoid sending the wrong message to someone you may like by completing your lineup beforehand.");
+		confirmation_close_lineup_modal.html("<div class='lineup_expiration_msg'>Your lineup expires on {{ member.relationship.date_lineup_expires }}</div>  Afterward, undecided lineup members will automatically be marked as 'Not Interested'.  Complete your lineup beforehand to avoid sending the wrong message to someone you may like by ");
 		{% endwith %}
 
 	   confirmation_close_lineup_modal.dialog({dialogClass:'confirm_close_lineup_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".lineup_modal_dialog").show();confirmation_close_lineup_modal.dialog("close");}},
-	                                                                                                                                                          {text: "Finish Lineup Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {window.close_lineup_dialog(num_new_attractions,num_new_platonics,attraction_json,redirect_url);confirmation_close_lineup_modal.dialog("close");}}],
+	                                                                                                                                                          {text: "Finish Lineup Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(".confirm_close_lineup_dialog").hide();window.close_lineup_dialog(num_new_attractions,num_new_platonics,attraction_json,redirect_url);confirmation_close_lineup_modal.dialog("close");}}],
 		   							beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });}});
 	   confirmation_close_lineup_modal.dialog("open");
 	   $(':focus').blur();
@@ -619,4 +619,4 @@ $(document).ready(function() // handling for the slider
 	In case this lineup member is your actual admirer, we'd like to provide them with a little more context surrounding your decision.  We hope this added insight will help them move on more easily.
 </span>
 </span>
-<div id="confirm_close_lineup_modal" title = "Lineup Expiration Warning"></div>
+<div id="confirm_close_lineup_modal" title = "Lineup Completion Deadline></div>
