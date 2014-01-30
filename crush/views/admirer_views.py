@@ -290,6 +290,25 @@ def ajax_get_lineup_slide(request, display_id,lineup_position):
         
     return HttpResponse(ajax_response)
 
+def process_new_crush_lineup_member(admirer_rel,source_user,target_user):
+    if admirer_rel.friendship_type==0:
+        new_relationship_friendship_type=0;
+    elif admirer_rel.friendship_type== 2: # admirer has no mutual friends, and his friends will be lineup members so they will not be friends or have mutual friends with target person
+        new_relationship_friendship_type=2;
+    else: # admirer has mutual friends, so new relationship friendship type will likely be FOF (1) or no F (2).  there is a chance the lineup member is a friend, but not likely
+        # test if there are mutual friends
+        try:
+            friend_profile=graph_api_fetch(source_user.access_token,source_user.username + '/mutualfriends/' + target_user.username)
+            if len(friend_profile) > 0:
+                new_relationship_friendship_type=1
+            else:
+                new_relationship_friendship_type=2
+        except:
+            # some error, so just assume not friends
+            new_relationship_friendship_type=2
+    CrushRelationship.objects.create(source_person=source_user, target_person=target_user,friendship_type=new_relationship_friendship_type)
+
+
 @login_required
 def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
     logger.debug("adding member to a list")
@@ -320,24 +339,10 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
            
         if add_type=='crush':
             # need to determine their friendship type
-
-            if admirer_rel.friendship_type==0:
-                new_relationship_friendship_type=0;
-            elif admirer_rel.friendship_type== 2: # admirer has no mutual friends, and his friends will be lineup members so they will not be friends or have mutual friends with target person
-                new_relationship_friendship_type=2;
-            else: # admirer has mutual friends, so new relationship friendship type will likely be FOF (1) or no F (2).  there is a chance the lineup member is a friend, but not likely
-                # test if there are mutual friends
-                try:
-                    friend_profile=graph_api_fetch(request.user.access_token,request.user.username + '/mutualfriends/' + facebook_id)
-                    if len(friend_profile) > 0:
-                        new_relationship_friendship_type=1
-                    else:
-                        new_relationship_friendship_type=2
-                except:
-                    # some error, so just assume not friends
-                    new_relationship_friendship_type=2
-            CrushRelationship.objects.create(source_person=request.user, target_person=target_user,friendship_type=new_relationship_friendship_type)
-                        
+            if settings.INITIALIZATION_THREADING:
+                thread.start_new_thread(process_new_crush_lineup_member,(admirer_rel,request.user,target_user))   
+            else:
+                process_new_crush_lineup_member(admirer_rel,source_user=request.user,target_user=target_user)                   
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as a crush</span>'
             lineup_member.decision=0
         else:
