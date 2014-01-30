@@ -8,8 +8,8 @@ import time
 from crush.utils_email import send_mailgun_email
 from selenium import webdriver
 import os
-from crush.models import user_models
-from crush.models import relationship_models
+import crush.models.user_models
+import crush.models.relationship_models
 from django.db.models import Q
 from django.db.models import Min
 from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning
@@ -108,7 +108,7 @@ def fb_fetch(fb_user_id,start_index):
         raise e # pass on the exception for the caller to handle
     
 def monthly_invite_reminder():
-    relevant_user_set = user_models.FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
+    relevant_user_set = crush.models.user_models.FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
     invite_sent_count=0
     for user in relevant_user_set:
         if user.email == '' or user.bNotify_crush_signup_reminder == False:
@@ -131,7 +131,7 @@ def monthly_invite_reminder():
 def notify_missed_crush_targets():
     # go through and grab any crush relationships where the target_status is responded_crush and date_target_responded is in past AND the date_source_last_notified is empty
     current_date=datetime.now()
-    relevant_relationships=relationship_models.CrushRelationship.objects.filter(target_status=4,date_target_responded__lt = current_date,date_source_last_notified=None,is_results_paid=False)
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(target_status=4,date_target_responded__lt = current_date,date_source_last_notified=None,is_results_paid=False)
     for relationship in relevant_relationships:
         relationship.notify_source_person()
     # for each grabbed relationship 
@@ -141,7 +141,7 @@ def notify_missed_crush_targets():
 
 def lineup_expiration_warning():
     current_date=datetime.now() + timedelta(days=1)
-    relevant_relationships=relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
     for relationship in relevant_relationships:
         email_address = relationship.target_person.email
         if email_address!='':
@@ -153,7 +153,7 @@ def lineup_expiration_warning():
   
 def auto_complete_expired_lineups():
     current_date=datetime.now()
-    relevant_relationships=relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
+    relevant_relationships=crush.models.relationship_models.CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
     for relationship in relevant_relationships:
         logger.debug("Auto complete this relationship: " + str(relationship))
         relevant_lineup_members= relationship.lineupmember_set.filter(decision=None)
@@ -161,7 +161,7 @@ def auto_complete_expired_lineups():
             updated_fields=[]
             lineup_member_user = member.user
             if lineup_member_user==None:
-                lineup_member_user=user_models.FacebookUser.objects.find_or_create_user(member.username, member.relationship.target_person.access_token, False, fb_profile=None)
+                lineup_member_user=crush.models.user_models.FacebookUser.objects.find_or_create_user(member.username, member.relationship.target_person.access_token, False, fb_profile=None)
                 # if the lineup member user was not found for whatever reason, then we need to modify the lineup and strip out this member
                 if lineup_member_user == None:
                     continue
@@ -170,7 +170,7 @@ def auto_complete_expired_lineups():
             member.decision=1
             updated_fields.append('decision')
             member.save(update_fields=updated_fields)
-            relationship_models.PlatonicRelationship.objects.create(source_person=member.relationship.target_person, target_person=lineup_member_user,rating=1)
+            crush.models.relationship_models.PlatonicRelationship.objects.create(source_person=member.relationship.target_person, target_person=lineup_member_user,rating=1)
 
         relationship.date_lineup_finished=current_date
         relationship.lineup_auto_completed=True
