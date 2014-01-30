@@ -40,7 +40,7 @@ def crush_response(request,first_name,last_name):
 def new_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
-    call_command('daily_maintenance')
+    #call_command('daily_maintenance')
     #lineup_expiration_warning()
     return HttpResponse("DONE")
     
