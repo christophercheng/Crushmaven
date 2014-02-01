@@ -80,7 +80,6 @@ def lineup_expiration_warning():
         try:
             fb_result = urllib.urlopen(obtain_app_access_token_url)
             fb_result = fb_result.read()
-            logger.debug("facebook obtain access token result: " + str(fb_result))
             app_token=fb_result  
         except Exception as e:
             logger.debug("ERROR: couldn't obtain app token to notify facebook users of lineup expiration, because of exception: " + str(e))         
@@ -106,7 +105,6 @@ def notify_target_of_lineup_expiration_on_facebook(app_token,relationship,expira
     notify_url+="&href=lineup_expiration/" + str(relationship.target_person.username) + "/" + str(relationship.display_id) + "/"
     notify_url+="&template=Your admirer's lineup is about to expire (on " + str(expiration_datetime) + ") Afterward, undecided lineup members will default to 'Not Interested'"
     try:
-        logger.debug("notify_url: " + str(notify_url))
         fb_result = urllib.urlopen(notify_url,{})
         #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
         fb_result = json.load(fb_result)
