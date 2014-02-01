@@ -102,7 +102,7 @@ def notify_target_of_lineup_expiration_on_facebook(app_token,relationship,expira
     notify_url+="/notifications?"# + app_token
     notify_url += app_token
     notify_url+="&href=lineup_expiration/" + str(relationship.target_person.username) + "/" + str(relationship.display_id) + "/"
-    notify_url+="&template=Your admirer's lineup is about to expire (on " + str(expiration_datetime) + ")"
+    notify_url+="&template=Your admirer's lineup is about to expire (on " + str(expiration_datetime) + " Afterward, undecided lineup members will default to 'Not Interested')"
     try:
         logger.debug("notify_url: " + str(notify_url))
         fb_result = urllib.urlopen(notify_url,{})
