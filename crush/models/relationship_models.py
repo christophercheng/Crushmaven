@@ -540,7 +540,7 @@ class CrushRelationship(BasicRelationship):
         notify_url += app_token
         target_first_name=self.target_person.first_name
         target_last_name=self.target_person.last_name
-        notify_url+="&href=" + target_first_name + "/" + target_last_name + "/"
+        notify_url+="&href=crush_response/" + target_first_name + "/" + target_last_name + "/"
         notify_url+="&template=" + target_first_name + " " + target_last_name + " responded to your crush!"
         try:
             fb_result = urllib.urlopen(notify_url,{})

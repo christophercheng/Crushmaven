@@ -33,6 +33,13 @@ def crushlist(request):
     return HttpResponse(response)
 
 @csrf_exempt
+def facebook_notification(request,function_name,first_arg,second_arg):
+    if function_name=="crush_response":
+        return crush_response(request,first_arg,second_arg)
+    elif function_name=="lineup_expiration":
+        return lineup_expiration(request,first_arg,second_arg)
+
+@csrf_exempt
 def crush_response(request,first_name,last_name):
     return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name,'facebook_canvas':True})
 
