@@ -244,6 +244,7 @@ class FacebookUser(AbstractUser):
     
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
+    bNotify_lineup_expiration_warning = models.BooleanField(default=True) 
     
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.

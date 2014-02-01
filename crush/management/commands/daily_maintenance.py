@@ -86,11 +86,13 @@ def lineup_expiration_warning():
             logger.debug("ERROR: couldn't obtain app token to notify facebook users of lineup expiration, because of exception: " + str(e))         
         for relationship in relevant_relationships:
             expiration_datetime=relationship.date_lineup_expires
+            if relationship.target_person.bNotify_lineup_expiration_warning == False:
+                continue
             if app_token!='':
                 notify_target_of_lineup_expiration_on_facebook(app_token,relationship,expiration_datetime)
             email_address = relationship.target_person.email
-            #if email_address!='':
-            #    send_mail_lineup_expiration_warning(email_address,expiration_datetime)
+            if email_address!='':
+                send_mail_lineup_expiration_warning(email_address,expiration_datetime)
             logger.debug("admirer lineup warning sent: " + str(relationship))
 
     return

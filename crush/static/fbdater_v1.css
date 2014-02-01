@@ -4324,7 +4324,7 @@ ul.bxslider_element #slide_overlay {
 	margin-top:2px;
 }
 .preferences_settings_form #settings_label_notifications{
-	margin-bottom:89px;
+	margin-bottom:120px;
 }
 
 .settings_form #settings_fields{
@@ -4349,9 +4349,6 @@ ul.bxslider_element #slide_overlay {
 	#margin-top:25px;
 }
 
-.preferences_settings_form #id_bNotify_new_admirer{
-	margin-bottom:46px;
-}
 .preferences_settings_form #settings_fields p label {
 	display:inline-block;
 	float:right;
@@ -4365,6 +4362,7 @@ ul.bxslider_element #slide_overlay {
 }
 
 .settings_form  #id_email{
+	margin-top:13px!important;
 	width:280px;
 }
 

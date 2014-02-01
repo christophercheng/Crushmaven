@@ -45,6 +45,14 @@ def settings_preferences(request):
                     if me.bNotify_crush_signup_reminder != False:
                         me.bNotify_crush_signup_reminder = False
                         updated_fields.append('bNotify_crush_signup_reminder')
+                if 'bNotify_lineup_expiration_warning' in data:
+                    if me.bNotify_lineup_expiration_warning != True:
+                        me.bNotify_lineup_expiration_warning = True
+                        updated_fields.append('bNotify_lineup_expiration_warning')
+                else:
+                    if me.bNotify_lineup_expiration_warning != False:
+                        me.bNotify_lineup_expiration_warning = False
+                        updated_fields.append('bNotify_lineup_expiration_warning')
                 if len(updated_fields)>0:
                     updated=True
                 me.save(update_fields=updated_fields)
