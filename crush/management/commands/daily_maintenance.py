@@ -16,7 +16,8 @@ from django.db.models import Q
 from django.db.models import Min
 from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning
 from datetime import  datetime,timedelta
-from datetime import  datetime
+import urllib,json
+from django.conf import settings
 import logging
 logger = logging.getLogger(__name__)
 
@@ -71,14 +72,46 @@ def notify_missed_crush_targets():
 def lineup_expiration_warning():
     current_date=datetime.now() + timedelta(days=1)
     relevant_relationships=CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
-    for relationship in relevant_relationships:
-        email_address = relationship.target_person.email
-        if email_address!='':
-            send_mail_lineup_expiration_warning(email_address,relationship.date_lineup_expires)
-            logger.debug("admirer lineup warning sent: " + str(relationship))
     if relevant_relationships.count() == 0:
         logger.debug('no relationships to warn of lineup expiration')
+    else: # get an access token to send facebook notifications
+        obtain_app_access_token_url="https://graph.facebook.com/oauth/access_token?client_id=" + settings.FACEBOOK_APP_ID + "&client_secret=" + settings.FACEBOOK_APP_SECRET + "&grant_type=client_credentials"
+        app_token=''
+        try:
+            fb_result = urllib.urlopen(obtain_app_access_token_url)
+            fb_result = fb_result.read()
+            logger.debug("facebook obtain access token result: " + str(fb_result))
+            app_token=fb_result  
+        except Exception as e:
+            logger.debug("ERROR: couldn't obtain app token to notify facebook users of lineup expiration, because of exception: " + str(e))         
+        for relationship in relevant_relationships:
+            expiration_datetime=relationship.date_lineup_expires
+            if app_token!='':
+                notify_target_of_lineup_expiration_on_facebook(app_token,relationship,expiration_datetime)
+            email_address = relationship.target_person.email
+            #if email_address!='':
+            #    send_mail_lineup_expiration_warning(email_address,expiration_datetime)
+            logger.debug("admirer lineup warning sent: " + str(relationship))
+
     return
+  
+def notify_target_of_lineup_expiration_on_facebook(app_token,relationship,expiration_datetime):
+    #expiration_datetime = urllib.urlencode(expiration_datetime)
+    notify_url='https://graph.facebook.com'
+    notify_url+= "/" + relationship.target_person.username
+    notify_url+="/notifications?"# + app_token
+    notify_url += app_token
+    notify_url+="&href=" + str(relationship.target_person.username) + "/" + str(relationship.display_id) + "/"
+    notify_url+="&template=Your admirer's lineup is about to expire (on " + str(expiration_datetime) + ")"
+    try:
+        logger.debug("notify_url: " + str(notify_url))
+        fb_result = urllib.urlopen(notify_url,{})
+        #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
+        fb_result = json.load(fb_result)
+        if 'success' not in fb_result or fb_result['success'] != True:
+            logger.debug("Facebook notification for lineup expiration warning unsuccessfully sent to : " + relationship.target_person.get_name() + "| actual result: " + str(fb_result))
+    except Exception as e:
+        logger.debug("ERROR: could not send facebook lineup warning notification to " + relationship.target_person.get_name() + " because of exception: " + str(e))        
   
 def auto_complete_expired_lineups():
     current_date=datetime.now()

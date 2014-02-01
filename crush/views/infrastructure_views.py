@@ -11,7 +11,7 @@ import re
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
-from django.core.management import call_command
+import datetime
 
 
 import hashlib, hmac
@@ -35,6 +35,14 @@ def crushlist(request):
 @csrf_exempt
 def crush_response(request,first_name,last_name):
     return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name,'facebook_canvas':True})
+
+@csrf_exempt
+def lineup_expiration(request,target_person_username,display_id):
+    try:
+        relationship = CrushRelationship.objects.get(target_person__username = target_person_username,display_id=display_id)
+    except:
+        return render(request,'email_template_notify_lineup_expiration_warning.html',{'expiration_date':datetime.datetime.now(),'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
+    return render(request,'email_template_notify_lineup_expiration_warning.html',{'expiration_date':relationship.date_lineup_expires,'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
     
 @login_required
 def new_testing(request):
