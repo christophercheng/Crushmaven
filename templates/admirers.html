@@ -73,7 +73,6 @@ $(document).ready(function()
    				timeout: {{lineup_block_timeout}}, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
    				success: function (data) {
    					if (data == ""){
-   						alert("no data");
    						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
    	   					$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
    					}
@@ -103,7 +102,6 @@ $(document).ready(function()
    					}
    				},
    				error: function(){
-   					alert("error");
    					lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
    					$.get(ajax_fail_url + '?reason=ajax_initialization_call_returned_error');
    				} 
