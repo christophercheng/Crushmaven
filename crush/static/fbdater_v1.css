@@ -3762,8 +3762,9 @@ ul.bxslider_element #slide_overlay {
 
 .generic_email_errors {
 	margin-left: 46px;
-	margin-top: -16px;
+	margin-top: -30px;
 	margin-bottom: 10px!important;
+	
 }
 
 #email_input_section{
@@ -3848,9 +3849,9 @@ ul.bxslider_element #slide_overlay {
 
 #id_facebook_invite{
 	width:20px;
-	height:20px;
+	height:16px;
 	margin-left:1px;
-	margin-top:4px;
+	margin-top:3px;
 	margin-bottom:45px;
 }
 
@@ -3869,11 +3870,12 @@ ul.bxslider_element #slide_overlay {
 }
 
 #show_secondary_options{
-	margin-left:50px;
+	margin-left:63px;
 	color:#0077cc!important;
 	font-size:13px!important;
 	margin-bottom:25px;	
-	margin-top:-10px;
+	margin-top:-15px;
+	padding:15px 5px;
 	letter-spacing:-1px;
 }
 #show_secondary_options:hover{
@@ -4080,7 +4082,7 @@ ul.bxslider_element #slide_overlay {
 .sub_label{
 	font-size:9px;
 	color:#909090;
-	margin-bottom:30px;
+	margin-bottom:26px;
 }
 
 #app_invite_form .ui-dialog-buttonpane{
@@ -4132,7 +4134,7 @@ ul.bxslider_element #slide_overlay {
 }
 
 .fb_invite_icon{
-	top:1px;
+	top:2px;
 	left:-26px;
 	vertical-align:-1px!important;
 	background-position:-66px -154px!important;
