@@ -35,8 +35,14 @@ $(document).ready(function()
                     	else { // some sort of error
          					$("#app_invite_form .site_dialog_button").removeAttr('disabled');
            					$("#sendbutton").attr('value','Send');
-                    		if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
-  
+           					
+           					if ($('#app_invite_form .mf_generic_emails_fieldWrapper .errorlist').length)
+                    			$('#show_secondary_options').trigger('click');
+           					if ($('#app_invite_form .twitter_fieldWrapper .errorlist').length)
+                    			$('#show_secondary_options').trigger('click');
+           					
+           					if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
+                    			$('#show_secondary_options').trigger('click');
                     			$('#app_invite_form #mutual_friend_input_section').show();
                     			section_offset=$('#mutual_friend_input_section').offset().top + 26; // this is the pixel top position of the first input
                     			offsetTop = $('#mutual_friend_input_section .errorlist').first().children('li').offset().top-section_offset;
@@ -270,10 +276,11 @@ $(".tooltip_subtitle").click(function(){
       {% endif %}
       
       <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">2</span>via {{ crush_pronoun}} Email</span></label> 
-      <div class="fieldWrapper"><span class="email_icon">&nbsp;</span>
+      <div class="fieldWrapper crush_email_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
+         <span class="email_separator sub_label">separate multiple emails with commas</span>
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
-      		<span class="email_separator sub_label">separate multiple emails with commas</span>
+      		
       </div>
      <div id="show_secondary_options">show invite options 3 & 4</div>
      <div class="secondary_options">

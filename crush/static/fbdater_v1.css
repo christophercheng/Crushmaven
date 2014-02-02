@@ -3873,8 +3873,8 @@ ul.bxslider_element #slide_overlay {
 	margin-left:63px;
 	color:#0077cc!important;
 	font-size:13px!important;
-	margin-bottom:25px;	
-	margin-top:-15px;
+	margin-bottom:20px;	
+	margin-top:-20px;
 	padding:15px 5px;
 	letter-spacing:-1px;
 }
@@ -4047,11 +4047,18 @@ ul.bxslider_element #slide_overlay {
 .email_input_error_section {
 	display:block;
 	float:left;
-	margin-bottom:4px;
+	margin-bottom:-20px;
 	list-style:none;
 	width:100%;
 }
 
+.crush_email_fieldWrapper .email_input_error_section{
+	margin-top:-26px;
+}
+
+.mf_generic_emails_fieldWrapper .email_input_error_section{
+	margin-bottom:5px;
+	}
 .email_input_error_section .errorlist{
 	display:inline-block;
 	background:red;
