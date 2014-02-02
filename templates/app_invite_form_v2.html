@@ -365,114 +365,113 @@ $(".tooltip_subtitle").click(function(){
 </div><!-- close off ajaxwrapper -->
 </form>
 
-<span class="help_dialog_content"><span id="invite_dialog_twob_help_content">
-<span class="tooltip_content tooltip_maincontent">
-If you know the email address of your crush's friends, we can send them our anonymous invite.  We'll let them know what's up and request that they forward the invite to your crush. 
+<span class="help_dialog_content" id="invite_dialog_twob_help_content">
+	<span class="tooltip_content tooltip_maincontent">
+	If you know the email address of your crush's friends, we can send them our anonymous invite.  We'll let them know what's up and request that they forward the invite to your crush. 
+	</span>
+	<span class="tooltip_close">close</span>
 </span>
-<span class="tooltip_close">close</span>
-</span></span>
 
-	<span class="help_dialog_content"><span id="invite_dialog_two_help_content">
-			<span class="tooltip_content tooltip_maincontent">
-				To determine if your crush feels the same, we must first get them signed into our app.
-				We do this by sending them an anonymous email notifying them of their secret admirer.
-			</span>
-		<span class="related_subsections">related q&a:</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				What if I don't know my crush's email address?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-			 If you don't know your crush's email, but you know the email address of your crush's friends, 
-			 we can send them our anonymous invite and request that they forward it to your crush. 
-			 You can also just wait and hope that your crush signs up on their own. We don't recommend that.
-			</span>
+<span class="help_dialog_content" id="invite_dialog_two_help_content">
+	<span class="tooltip_content tooltip_maincontent">
+		To determine if your crush feels the same, we must first get them signed into our app.
+		We do this by sending them an anonymous email notifying them of their secret admirer.
+	</span>
+	<span class="related_subsections">related q&a:</span>
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			What if I don't know my crush's email address?
 		</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				How are email invites anonymous?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-			Our email invites are sent from our crushmaven.com email address - not from yours.
-			</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+		 If you don't know your crush's email, but you know the email address of your crush's friends, 
+		 we can send them our anonymous invite and request that they forward it to your crush. 
+		 You can also just wait and hope that your crush signs up on their own. We don't recommend that.
 		</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				Why don't you just send an anonymous invite through Facebook?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-			We could indirectly send a Facebook invite (with you as sender), but that would reveal your identity - fail.
-			We could send a Facebook invite directly from us, but if your crush is not an existing CrushMaven user, then our Facebook invite will only appear in their 'other' inbox. Hardly anyone knows what or where that is - fail. 
-			Email is the best way to go.
-			</span>
+	</span>
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			How are email invites anonymous?
 		</span>
-		<span class ="tooltip_subsection">
-			<span class="tooltip_subtitle">
-				Will you use my crush and mutual friend email addresses for anything else?
-			</span>
-			<span class="tooltip_content tooltip_relatedcontent">
-				Absolutely not!
-			</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+		Our email invites are sent from our crushmaven.com email address - not from yours.
 		</span>
-		<span class="tooltip_close">close</span>
-	</span></span>
+	</span>
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			Why don't you just send an anonymous invite through Facebook?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+		We could indirectly send a Facebook invite (with you as sender), but that would reveal your identity - fail.
+		We could send a Facebook invite directly from us, but if your crush is not an existing CrushMaven user, then our Facebook invite will only appear in their 'other' inbox. Hardly anyone knows what or where that is - fail. 
+		Email is the best way to go.
+		</span>
+	</span>
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			Will you use my crush and mutual friend email addresses for anything else?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+			Absolutely not!
+		</span>
+	</span>
+	<span class="tooltip_close">close</span>
+</span>
 	
-
-	<span class="help_dialog_content"><span id="invite_dialog_twoc_help_content">
+<span class="help_dialog_content" id="invite_dialog_twoc_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 	If you know the twitter username of your crush, we can send them an anonymous tweet from our CrushMaven twitter account.  We'll let them know what's up and ask them to sign in. 
 	</span>
 	<span class="tooltip_close">close</span>
-	</span></span>
+</span>
 	
-	<span class="help_dialog_content" id="invite_dialog_fb_invite_help_content">
+<span class="help_dialog_content" id="invite_dialog_fb_invite_help_content">
 	<span class="tooltip_content tooltip_maincontent">
 	Credits are 'virtual currency' that you can spend on certain features of the site.  
 	We charge a credit for this option only because Facebook charges us to send messages (from our account) to someone not directly connected to us.
 	</span>
 	<span class="related_subsections">related q&a:</span>
 	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		How many credits do I have?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	 You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		Why do we charge credits for certain features?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-		Charging credits is the primary way that we make money from this service and put food on our tables.  
-		We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
-	</span>
+		<span class="tooltip_subtitle">
+			How many credits do I have?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+		 You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
+		</span>
 	</span>
 	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		What if I run out of credits?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-	You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
-	</span>
-	</span>
-	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		How much do credits cost?
-	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-		Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
-	</span>
+		<span class="tooltip_subtitle">
+			Why do we charge credits for certain features?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+			Charging credits is the primary way that we make money from this service and put food on our tables.  
+			We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
+		</span>
 	</span>
 	<span class ="tooltip_subsection">
-	<span class="tooltip_subtitle">
-		What if I don't have a Paypal account or credit card to purchase more credits?
+		<span class="tooltip_subtitle">
+			What if I run out of credits?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+		You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
+		</span>
 	</span>
-	<span class="tooltip_content tooltip_relatedcontent">
-		We are considering developing a feature that will allow you to transfer credits from another user.  
-		Please provide us with your feedback to let us know if you think this is useful.  
-		Our feedback tab is located on the bottom right hand corner of the site.
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			How much do credits cost?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+			Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
+		</span>
 	</span>
+	<span class ="tooltip_subsection">
+		<span class="tooltip_subtitle">
+			What if I don't have a Paypal account or credit card to purchase more credits?
+		</span>
+		<span class="tooltip_content tooltip_relatedcontent">
+			We are considering developing a feature that will allow you to transfer credits from another user.  
+			Please provide us with your feedback to let us know if you think this is useful.  
+			Our feedback tab is located on the bottom right hand corner of the site.
+		</span>
 	</span>
 	<span class="tooltip_close">close</span>
-	</span>
+</span>

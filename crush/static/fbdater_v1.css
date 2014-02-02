@@ -3854,7 +3854,7 @@ ul.bxslider_element #slide_overlay {
 
 .fb_invite_checkbox_label{
 	margin-top:2px;
-	margin-left:-3px;
+	margin-left:-1px;
 	color:#4D4D4D;
 	color:#737373;
 }
@@ -4016,7 +4016,7 @@ ul.bxslider_element #slide_overlay {
 .reliable_option_label{
 	position:absolute;
 	bottom:-15px;
-	left:21px;
+	left:20px;
 	color:#2E8AE6;
 	font-size:8px;
 	display:inline-block;
