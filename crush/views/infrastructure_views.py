@@ -64,7 +64,10 @@ def new_testing(request):
 def testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
-    fetch_response = fb_fetch("1050",0)
+    try:
+        fetch_response = fb_fetch("1050",0)
+    except Exception as e:
+        return HttpResponse(str(e))
     extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
         # remove duplicates in extracted_list
     extracted_id_list = list(set(extracted_id_list))
