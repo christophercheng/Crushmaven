@@ -64,7 +64,7 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	if (input_section_element.is(':visible')){
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','1px solid #E2E2E2');
 		$('#mutual_friend_help_section #mutual_friend_input_section_show  .help_icon').show();
-		label_element.html("hide mutual friends")
+		label_element.html("hide mutual friends who can help ({{mf_friend_count}})")
 	}
 	else{
 		//$('#app_invite_form #mutual_friend_help_section').css('border-top','0px');
