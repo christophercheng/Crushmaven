@@ -102,7 +102,7 @@ class AppInviteForm2(forms.Form):
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldHelp(required=False,label='Friends:',help_text='Enter one or more email addresses')
         #else:
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
-    facebook_invite=forms.BooleanField(required=False,label='agree to be charged 1 credit for this option',help_text="agree")
+    facebook_invite=forms.BooleanField(required=False,label='crush_field',help_text="agree")
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
     mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
