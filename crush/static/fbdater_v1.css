@@ -3774,15 +3774,16 @@ ul.bxslider_element #slide_overlay {
 }
 
 #attraction_email_input_section{
-	padding-top:30px;
+	padding-top:40px;
 }
 
 #attraction_email_input_section .crush_email_name {
-	font-size:13px;
+	font-size:14px;
 	display:inline-block;
 	color:#4D4D4D;
 	padding-top:4px;
-	width:125px;
+	width:135px;
+	letter-spacing:-1px;
 }
 
 .email_field_input{
@@ -3826,7 +3827,7 @@ ul.bxslider_element #slide_overlay {
 }
 
 .twitter_fieldWrapper{
-	margin-bottom:15px;
+	margin-bottom:20px;
 }
 
 .mf_generic_emails_fieldWrapper{
@@ -3847,14 +3848,17 @@ ul.bxslider_element #slide_overlay {
 
 #id_facebook_invite{
 	width:20px;
-	margin-left:-5px;
-	margin-top:6px;
-	margin-bottom:40px;
+	height:20px;
+	margin-left:1px;
+	margin-top:4px;
+	margin-bottom:45px;
 }
 
 .fb_invite_checkbox_label{
-	margin-top:2px;
-	margin-left:-1px;
+	display:inline-block;
+	vertical-align:top;
+	margin-top:4px;
+	margin-left:-2px;
 	color:#4D4D4D;
 	color:#737373;
 }
@@ -3862,6 +3866,22 @@ ul.bxslider_element #slide_overlay {
 	margin-top:5px;
 	margin-bottom:40px;
 	color:#737373;
+}
+
+#show_secondary_options{
+	margin-left:50px;
+	color:#0077cc!important;
+	font-size:13px!important;
+	margin-bottom:25px;	
+	margin-top:-10px;
+	letter-spacing:-1px;
+}
+#show_secondary_options:hover{
+	text-decoration:underline;
+	cursor:pointer;
+}
+.secondary_options{
+	display:none;
 }
 
 #mutual_friend_help_section {
@@ -3993,7 +4013,7 @@ ul.bxslider_element #slide_overlay {
 
 .email_field_input .fieldWrapper{
 	display:inline-block;
-	width:328px;
+	width:320px;
 	position:relative;
 }
 .email_field_input .fieldWrapper input{
@@ -4006,7 +4026,7 @@ ul.bxslider_element #slide_overlay {
 	background-color:#cccccc!important;
 }
 .fb_invite_checkbox_label .help_icon{
-	top:2px!important;
+	top:1px!important;
 	right:-20px!important;	
 }
 
@@ -4060,7 +4080,7 @@ ul.bxslider_element #slide_overlay {
 .sub_label{
 	font-size:9px;
 	color:#909090;
-	margin-bottom:20px;
+	margin-bottom:30px;
 }
 
 #app_invite_form .ui-dialog-buttonpane{
@@ -4081,45 +4101,43 @@ ul.bxslider_element #slide_overlay {
 	position:relative!important;
 }
 
-#app_invite_form .twitter_icon, #app_invite_form .email_icon{
-	margin-right:-4px;
+#app_invite_form .twitter_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
+	margin-right:-5px;
 	margin-left:6px;
 	color:#B2B2B2;
 	text-align:right;
+	position:absolute;
+	display:inline-block!important;
+		background-image:url('/static/images/full_sprite.png')!important;
+	background-repeat:no-repeat;
+	background-size:auto!important;
+	width:20px!important;
+	height:30px!important;
+	border:none!important;
 }
 #app_invite_form .twitter_icon{
 	margin-left:-20px;
 }
 .email_icon{
-	position:absolute;
 	top:7px;
 	left:-27px;
-	display:inline-block!important;
-	background-image:url('/static/images/full_sprite.png')!important;
-	background-repeat:no-repeat;
-	background-size:auto!important;
-	width:20px!important;
 	vertical-align:-1px!important;
-	height:30px!important;
-	border:none!important;
 	background-position:-66px -94px!important;
-	border:none!important;
 }
 .twitter_icon{
-	position:absolute;
 	top:5px;
 	left:-2px;
-	display:inline-block!important;
-	background-image:url('/static/images/full_sprite.png')!important;
-	background-repeat:no-repeat;
-	background-size:auto!important;
-	width:20px!important;
 	vertical-align:-1px!important;
-	height:30px!important;
-	border:none!important;
 	background-position:-66px -124px!important;
-	border:none!important;
 }
+
+.fb_invite_icon{
+	top:1px;
+	left:-26px;
+	vertical-align:-1px!important;
+	background-position:-66px -154px!important;
+}
+
 #preview_invite_button{
 	margin-right:15px!important;
 	color:#fff!important;
