@@ -368,7 +368,7 @@ $(".tooltip_subtitle").click(function(){
 
   <div class="ui-dialog-buttonpane">
           <div class="ui-dialog-buttonset">
-          	<button type='button' class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>
+          	<button type='button' {% if no_track != True %}onclick="ga('send', 'event', 'button', 'click', 'view_example_lineup_button');"{% endif %} class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>
           	<button type='button' onclick="window.app_invite_modal.dialog('close');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
           	<input id="sendbutton" class="site_dialog_button" type="submit" value="Send"/>
           </div><!-- close off buttonset -->
