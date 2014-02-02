@@ -247,7 +247,7 @@ $(".tooltip_subtitle").click(function(){
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
 
-      <label for="id_facebook_invite" class="facebook_invite_label"><span class="crush_email_name"><span class="invite_option_label">1</span>via Facebook</span></label> 
+      <label for="id_facebook_invite" class="facebook_invite_label"><span class="crush_email_name"><span class="invite_option_label">1</span>via Facebook</span>{% if send_facebook_invite != True %}<span class="reliable_option_label">(most reliable option)</span>{% endif %}</label> 
       {% if send_facebook_invite != True %}
 	      <div class="fieldWrapper">
 	         {{ form.facebook_invite }}<span class="fb_invite_checkbox_label">I agree to be charged 1 credit for this option<span class="help_icon">?</span></span>

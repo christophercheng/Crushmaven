@@ -4010,6 +4010,18 @@ ul.bxslider_element #slide_overlay {
 	right:-20px!important;	
 }
 
+.facebook_invite_label{
+	position:relative;
+}
+.reliable_option_label{
+	position:absolute;
+	bottom:-15px;
+	left:21px;
+	color:#2E8AE6;
+	font-size:9px;
+	display:inline-block;
+}
+
 .email_input_error_section {
 	display:block;
 	float:left;
