@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import F
 from django.conf import settings
-from crush.utils_email import send_mail_crush_invite,send_mail_mf_invite
+from crush.utils_email import send_mail_crush_invite,send_mail_mf_invite,send_mail_user_bought_credit
 from django.utils.encoding import smart_text
 # for mail testing 
 #from django.core.mail import send_mail
@@ -118,6 +118,7 @@ class Purchase(models.Model):
             current_user = self.purchaser
             current_user.site_credits = F('site_credits') + self.credit_total     
             current_user.save(update_fields = ['site_credits']) 
+            send_mail_user_bought_credit(current_user, str(self.credit_total))
         return super(Purchase, self).save(*args,**kwargs)
     
 # store additional twitter usernames to prevent bad user behavior

@@ -28,6 +28,12 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
         except Exception as e:
             print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
 
+def send_mail_user_bought_credit(user, credit_total):
+    #if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
+    send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','admin@crushmaven.com',user.get_name() + ' bought ' + str(credit_total) + 'credits!: ',"it's true")
+    send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','6465732737@vmobl.com',user.get_name() + ' bought ' + str(credit_total) + ' credits!',"It's true")
+   
+
 def send_mail_user_logged_in(user, header_string):
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','admin@crushmaven.com',user.get_name() + ' logged in!','http://www.facebook.com/' + str(user.username) + " " + header_string,'http://www.facebook.com/' + str(user.username) + " " + header_string)

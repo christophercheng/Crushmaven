@@ -202,6 +202,8 @@ class CrushRelationship(BasicRelationship):
     date_messaging_expires = models.DateField(default=None,null=True,blank=True)
     is_platonic_rating_paid=models.BooleanField(default=False)
 
+    send_facebook_invite = models.NullBooleanField()
+    date_facebook_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     
     LINEUP_INITIALIZATION_STATUS_CHOICES = (                                       
@@ -350,6 +352,7 @@ class CrushRelationship(BasicRelationship):
                 if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                     self.notify_source_person()
+                    
                 
         # Don't forget to commit the relationship's changes to database!
         super(CrushRelationship,self).save(*args,**kwargs)

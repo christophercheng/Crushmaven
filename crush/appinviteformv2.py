@@ -10,6 +10,8 @@ from django.forms import ValidationError
 import requests
 from django.conf import settings
 import json
+from crush.models.relationship_models import CrushRelationship
+from django.utils.safestring import mark_safe
 
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
@@ -86,6 +88,7 @@ class AppInviteForm2(forms.Form):
     def __init__(self,*args,**kwargs):
         mutual_friend_json=kwargs.pop('mutual_friend_json',None)
         self.source_person_email = kwargs.pop('source_person_email',None)
+        self.source_person_site_credits=kwargs.pop('source_person_site_credits',None)
         super(AppInviteForm2, self).__init__(*args,**kwargs)
         mutual_friend_count=0
         for i,friend in enumerate(mutual_friend_json):
@@ -99,22 +102,35 @@ class AppInviteForm2(forms.Form):
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldHelp(required=False,label='Friends:',help_text='Enter one or more email addresses')
         #else:
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
+    facebook_invite=forms.BooleanField(required=False,label='agree to be charged 1 credit for this option',help_text="agree")
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
     mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
     source_person_email=''
+    source_person_site_credits=''
 
     def clean(self):
         print "clean called"
         if len(self._errors) == 0:
             at_least_one_data=False
+            
+            # facebook credit check for invite checkbox must be done first. if this fails, nothing else matters.
+            if self.cleaned_data['facebook_invite'] == True:
+                if self.source_person_site_credits=='0':
+                    raise forms.ValidationError(mark_safe("You do not have enough credits to send a Facebook invite <a target='_blank' href='/settings_credits'>Purchase Credits</a>"))
+            
             for name,value in self.cleaned_data.items():
-                if len(value['cleaned_email_list']) > 0:
-                    at_least_one_data=True
-                    break;
+                if type( value ) == dict:
+                    if len(value['cleaned_email_list']) > 0:
+                        at_least_one_data=True
+                        break;
+                else:
+                    if value == True:
+                        at_least_one_data=True;
+                        break;
 
             if not at_least_one_data:
-                raise forms.ValidationError("Enter at least one email address or twitter username")
+                raise forms.ValidationError("Choose at least one invite option")
             # check that user has entered his or her email in the crush email field
             crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
             if self.source_person_email in crush_emails:

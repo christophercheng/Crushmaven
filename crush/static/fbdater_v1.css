@@ -3782,9 +3782,8 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	color:#4D4D4D;
 	padding-top:4px;
-	width:120px;
+	width:125px;
 }
-
 
 .email_field_input{
 	display:inline-block;
@@ -3838,6 +3837,33 @@ ul.bxslider_element #slide_overlay {
 	margin-top:15px;
 }
 
+.fb_invite_checkbox_label{
+	margin-top:2px;
+	margin-left:-3px;
+	color:#4D4D4D;
+	color:#737373;
+	position:relative;
+}
+
+#id_facebook_invite{
+	width:20px;
+	margin-left:-5px;
+	margin-top:6px;
+	margin-bottom:40px;
+}
+
+.fb_invite_checkbox_label{
+	margin-top:2px;
+	margin-left:-3px;
+	color:#4D4D4D;
+	color:#737373;
+}
+.fb_invite_sent_label{
+	margin-top:5px;
+	margin-bottom:40px;
+	color:#737373;
+}
+
 #mutual_friend_help_section {
 	line-height:18px;
 	position:relative;
@@ -3860,7 +3886,7 @@ ul.bxslider_element #slide_overlay {
 	display:none;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show {
-	left:166px;
+	left:172px;
 	top:-11px;
 	color:#0077cc!important;
 	font-size:13px!important;	
@@ -3979,6 +4005,10 @@ ul.bxslider_element #slide_overlay {
 	top:6px;
 	background-color:#cccccc!important;
 }
+.fb_invite_checkbox_label .help_icon{
+	top:2px!important;
+	right:-20px!important;	
+}
 
 .email_input_error_section {
 	display:block;
@@ -3998,6 +4028,13 @@ ul.bxslider_element #slide_overlay {
 	line-height:15px;
 	font-size:11px;
 	}
+.email_input_error_section .errorlist a{
+	color:#fff!important;
+	font-size:12px!important;
+	margin-left:3px;
+	padding-right:4px;
+	font-weight:bold;
+}
 
 .email_separator{
 	display:inline-block;

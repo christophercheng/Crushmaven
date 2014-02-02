@@ -69,7 +69,7 @@ def update_fb_fetch_cookie():
         driver.get('http://www.facebook.com')
         fb_fetch_username = os.environ.get('FB_FETCH_USERNAME', '')
         fb_fetch_password=os.environ.get('FB_FETCH_PASSWORD','')
-        time.sleep(10)
+        time.sleep(5)
         driver.find_element_by_id("email").send_keys(fb_fetch_username)
         driver.find_element_by_id("pass").send_keys(fb_fetch_password)
         driver.find_element_by_id("loginbutton").click()

@@ -24,7 +24,7 @@ $(document).ready(function()
                     	if (responseStatus!='success'){
            					window.alert_modal("Email Validation Problem","One of your emails isn't jiving with our email validation process.  If you copy/pasted an email from somewhere else, try typing in that email directly.  Sorry for the trouble!")
            					$("#app_invite_form .site_dialog_button").removeAttr('disabled')
-           					$("#sendbutton").attr('value','Wait')
+           					$("#sendbutton").attr('value','Send')
                     	}
                     	else if (responseText=="_GOOD"){
                     		if (window.invite_interstitial_modal && window.invite_interstitial_modal.dialog("isOpen"))
@@ -126,6 +126,31 @@ $('.sent_from_us').css('opacity',0);
 });
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
+
+	$(".app_invite_dialog .fb_invite_checkbox_label .help_icon").qtip({
+		content:{
+			text:$('#invite_dialog_fb_invite_help_content'),
+			title:"What is a credit and why am I being charged for a Facebook Invite?"
+		},
+		position: {
+	        my: 'left top',  
+	        at:'top left'
+		},
+		show:{
+			delay:0,
+		},
+		hide:{
+			delay:500,
+			fixed:true,
+		},
+		style:{
+			classes: 'qtip-blue qtip-rounded qtip-shadow',
+			tip:{
+				corner:true
+			}
+		}
+	});		
+	
 	$(".app_invite_dialog .email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon, #mutual_friend_help_section #mutual_friend_input_section_show .help_icon").qtip({
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
@@ -221,18 +246,30 @@ $(".tooltip_subtitle").click(function(){
 
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
-      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun }} Emails</span></label> 
+
+      <label for="id_facebook_invite" class="facebook_invite_label"><span class="crush_email_name"><span class="invite_option_label">1</span>via Facebook</span></label> 
+      {% if send_facebook_invite != True %}
+	      <div class="fieldWrapper">
+	         {{ form.facebook_invite }}<span class="fb_invite_checkbox_label">I agree to be charged 1 credit for this option<span class="help_icon">?</span></span>
+	      </div>
+      {% else %}
+	      <div class="fieldWrapper">
+	      	<div class="fb_invite_sent_label">(already processed)</div>
+	      </div>
+      {% endif %}
+      
+      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Emails</span></label> 
       <div class="fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
       		<span class="email_separator sub_label">separate multiple emails with commas</span>
       </div>
-      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Twitter </span></label> 
+      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Twitter </span></label> 
       <div class="fieldWrapper twitter_fieldWrapper"><span class="twitter_icon">&nbsp;</span>
 	      {{ form.twitter_username }}<span class="help_icon">?</span>
 	      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
       </div>
-      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
+      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">4</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
       <div class="fieldWrapper mf_generic_emails_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.mf_generic_emails }}<span class="help_icon">?</span>
          <div class="email_input_error_section">{{ form.mf_generic_emails.errors }}</div>
@@ -387,3 +424,55 @@ If you know the email address of your crush's friends, we can send them our anon
 	</span>
 	<span class="tooltip_close">close</span>
 	</span></span>
+	
+	<span class="help_dialog_content" id="invite_dialog_fb_invite_help_content">
+	<span class="tooltip_content tooltip_maincontent">
+	Credits are 'virtual currency' that you can spend on certain features of the site.  
+	We charge a credit for this option only because Facebook charges us to send messages (from our account) to someone not directly connected to us.
+	</span>
+	<span class="related_subsections">related q&a:</span>
+	<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		How many credits do I have?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+	 You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
+	</span>
+	</span>
+	<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		Why do we charge credits for certain features?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+		Charging credits is the primary way that we make money from this service and put food on our tables.  
+		We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
+	</span>
+	</span>
+	<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		What if I run out of credits?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+	You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
+	</span>
+	</span>
+	<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		How much do credits cost?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+		Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
+	</span>
+	</span>
+	<span class ="tooltip_subsection">
+	<span class="tooltip_subtitle">
+		What if I don't have a Paypal account or credit card to purchase more credits?
+	</span>
+	<span class="tooltip_content tooltip_relatedcontent">
+		We are considering developing a feature that will allow you to transfer credits from another user.  
+		Please provide us with your feedback to let us know if you think this is useful.  
+		Our feedback tab is located on the bottom right hand corner of the site.
+	</span>
+	</span>
+	<span class="tooltip_close">close</span>
+	</span>

@@ -4,25 +4,27 @@
 <script type="text/javascript">
 
   $(document).ready(function() {
-	$("#settings_label_credits_available .help_icon").qtip({
-		content:{
-			text:$('#credits_help_content'),
-			title:'What are credits?'
-		},
-		show:{
-			delay:0,
-		},
-		hide:{
-			delay:500,
-			fixed:true,
-		},
-		style:{
-			classes: 'qtip-blue qtip-rounded qtip-shadow',
-			tip:{
-				corner:true
+	$.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
+		$(".settings_form .help_icon").qtip({
+			content:{
+				text:$('#credits_help_content'),
+				title:'What are credits?'
+			},
+			show:{
+				delay:0,
+			},
+			hide:{
+				delay:500,
+				fixed:true,
+			},
+			style:{
+				classes: 'qtip-blue qtip-rounded qtip-shadow',
+				tip:{
+					corner:true
+				}
 			}
-		}
-	});	
+		});	
+	});//end of getScript
 	
   });
 </script>
@@ -86,7 +88,6 @@
 <span class="tooltip_content tooltip_maincontent">
 Credits are 'virtual currency' that you can spend on certain features of the site.  
 For example, if we get your crush to respond, you will need to spend credits to see their response.  
-<i>Note:</i> we give all new users 1 credit to start.
 </span>
 <span class="related_subsections">related q&a:</span>
 <span class ="tooltip_subsection">
