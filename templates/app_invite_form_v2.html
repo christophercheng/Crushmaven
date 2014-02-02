@@ -44,6 +44,7 @@ $(document).ready(function()
                     				scrollTop:offsetTop
                     			},0);
                     		}
+                    		setup_qtips();
          					
                     	}
                     	});
@@ -124,6 +125,7 @@ $('.sent_from_us').css('opacity',0);
 	$('.sent_from_us').animate({opacity:1},1);
 	
 });
+setup_qtips=function(){
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 
 
@@ -218,7 +220,10 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 		}
 	});	
 	
-});
+}); // close of getscrxipt
+};//close off setup_qtips();
+
+setup_qtips();
 /*  TOOLTIP SUPPORT */
 
 $(".tooltip_close").click(function(){
