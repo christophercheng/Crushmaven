@@ -79,10 +79,11 @@ def update_fb_fetch_cookie():
             fb_fetch_cookie=''
         if fb_fetch_cookie == "":
             logger.debug("Cookie Fetch Failed")
-            if settings.DEBUG==False:
-                send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
-        logger.debug("Obtained Daily Cookie: " + fb_fetch_cookie)
-        cache.set(settings.FB_FETCH_COOKIE,fb_fetch_cookie)
+            #if settings.DEBUG==False:
+            #    send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"UPDATE_FB_FETCH_COOKIE HAS FAILED","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!","UPDATE_FB_FETCH_COOKIE has failed. Fix immediately!")
+        else:
+            logger.debug("Obtained Daily Cookie: " + fb_fetch_cookie)
+            cache.set(settings.FB_FETCH_COOKIE,fb_fetch_cookie)
         driver.close()
         
 def fb_fetch(fb_user_id,start_index):
