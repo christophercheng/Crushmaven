@@ -46,6 +46,7 @@ class MultiEmailField(forms.Field):
             if email == '':
                 raise ValidationError ("Are you missing an email address?")
             if not email_re.match(email):
+                logger.error("unable to validate email through regex" + str(email))
                 raise ValidationError(('%s is not a valid email address') % email)
             try:
                 mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
