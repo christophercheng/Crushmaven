@@ -133,7 +133,7 @@ class AppInviteForm2(forms.Form):
 
             if not at_least_one_data:
                 logger.debug("Invite Error: User tried to submit invite form without any contact information")
-                raise forms.ValidationError("Choose at least one invite option")
+                raise forms.ValidationError("Choose at least one invite option. (Facebook invite requires checkbox agreement)")
             # check that user has entered his or her email in the crush email field
             crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
             if self.source_person_email in crush_emails:
