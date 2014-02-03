@@ -12,7 +12,8 @@ from django.conf import settings
 import json
 from crush.models.relationship_models import CrushRelationship
 from django.utils.safestring import mark_safe
-
+import logging
+logger = logging.getLogger(__name__)# Get an instance of a logger
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
 class MultiEmailField(forms.Field):
@@ -40,7 +41,6 @@ class MultiEmailField(forms.Field):
         
         # use the parent's handling of required fields, etc.
         super(MultiEmailField,self).validate(value)
-        print "----VALIDATION PROCESS: " + str(value) + "---------" 
         for email in value['cleaned_email_list']:
 
             if email == '':
@@ -49,11 +49,12 @@ class MultiEmailField(forms.Field):
                 raise ValidationError(('%s is not a valid email address') % email)
             try:
                 mailgun_result= requests.get("https://api.mailgun.net/v2/address/validate?api_key=" + settings.MAILGUN_PUBLIC_API_KEY + "&address=" + email)
-                print str(mailgun_result.text)
                 dictionary_result = json.loads(mailgun_result.text)
             except Exception as e:
+                logger.error("unable to validate email through mailgun " + str(email) + " exception: " + str(e))
                 raise ValidationError("Please try again.  We're having issues :(")
             if not dictionary_result['is_valid']:
+                logger.debug("Invite Error: User tried to submit invite form with email not validated by Mailgun: " + str(email))
                 raise ValidationError(('%s is not a valid email address') % email)
 
 
@@ -110,13 +111,13 @@ class AppInviteForm2(forms.Form):
     source_person_site_credits=''
 
     def clean(self):
-        print "clean called"
         if len(self._errors) == 0:
             at_least_one_data=False
             
             # facebook credit check for invite checkbox must be done first. if this fails, nothing else matters.
             if self.cleaned_data['facebook_invite'] == True:
                 if self.source_person_site_credits=='0':
+                    logger.debug("Invite Error: User does not have enough credits to send a Facebook Invite")
                     raise forms.ValidationError(mark_safe("You do not have enough credits to send a Facebook invite <a target='_blank' href='/settings_credits'>Purchase Credits</a>"))
             
             for name,value in self.cleaned_data.items():
@@ -130,10 +131,12 @@ class AppInviteForm2(forms.Form):
                         break;
 
             if not at_least_one_data:
+                logger.debug("Invite Error: User tried to submit invite form without any contact information")
                 raise forms.ValidationError("Choose at least one invite option")
             # check that user has entered his or her email in the crush email field
             crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
             if self.source_person_email in crush_emails:
+                logger.debug("Invite Error: User tried to submit their own email as crush email invite")
                 raise forms.ValidationError("Please enter your crush's email - not your own")
         
         return super(AppInviteForm2,self).clean()

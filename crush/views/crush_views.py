@@ -334,7 +334,6 @@ def app_invite_form_v2(request, crush_username):
         except Exception as e:
             logger.debug("finding mutual friends failed with exception: " + str(e))
             raise  
-        logger.debug( "Length of mutual_friend json: "+ str(len(mutual_friend_json)) )
         form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email)
 
     mf_friend_count=len(mutual_friend_json)
