@@ -111,12 +111,18 @@ def your_crushes(request, reveal_crush_id=None):
         check_fb_privacy = True
     else:
         check_fb_privacy = False
-    
+    invite_crush_id=reveal_crush_id 
     if reveal_crush_id:
         try:
             CrushRelationship.objects.completed_crushes(me).get(target_person__username=reveal_crush_id)
         except CrushRelationship.DoesNotExist:
             reveal_crush_id = None
+            # other use of reveal_crush_id is to auto launch invite dialog
+            try: 
+                CrushRelationship.objects.progressing_crushes(me).get(target_person__username=invite_crush_id)
+            except CrushRelationship.DoesNotExist:
+                invite_crush_id=None
+                pass
             
     responded_relationships = CrushRelationship.objects.visible_responded_crushes(me).order_by('target_person__first_name')
 
@@ -142,6 +148,7 @@ def your_crushes(request, reveal_crush_id=None):
                                'lineup_status_choice_5':settings.LINEUP_STATUS_CHOICES[5],
                                'check_fb_privacy_setting':check_fb_privacy,
                                'reveal_crush_id':reveal_crush_id,
+                               'invite_crush_id':invite_crush_id,
                                'show_help_popup':show_help_popup,
                                'email_exists':email_exists
                                })    

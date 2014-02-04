@@ -491,7 +491,7 @@ $(document).ready(function() // handling for the slider
 		$(".lineup_modal_dialog").hide();
 		var confirmation_close_lineup_modal=$("#confirm_close_lineup_modal");
 		{% with member_set|first as member %}
-		confirmation_close_lineup_modal.html("<div class='lineup_expiration_msg'>Your lineup expires on {{ member.relationship.date_lineup_expires }}</div>  Afterward, undecided lineup members will automatically be marked as 'Not Interested'.  Complete your lineup beforehand to avoid sending the wrong message to someone you may like by ");
+		confirmation_close_lineup_modal.html("<div class='lineup_expiration_msg'>Your lineup must be completed by {{ member.relationship.date_lineup_expires }}</div>  Afterward, undecided lineup members will automatically be marked as 'Not Interested'.  Complete your lineup beforehand to avoid sending the wrong message to someone you may actually like.");
 		{% endwith %}
 
 	   confirmation_close_lineup_modal.dialog({dialogClass:'confirm_close_lineup_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".lineup_modal_dialog").show();confirmation_close_lineup_modal.dialog("destroy");}},

@@ -15,8 +15,8 @@ $(document).ready(function()
 			$(this).prop('checked', false);
 			data = {};
 			data['csrfmiddlewaretoken']="{{csrf_token}}";
-			data['success_path'] = 'http://www.crushmaven.com/your_crushes/';	
-			data['cancel_url'] =  'http://www.crushmaven.com/your_crushes/';	
+			data['success_path'] = 'http://www.crushmaven.com/your_crushes/{{crush_username}}/';	
+			data['cancel_url'] =  'http://www.crushmaven.com/your_crushes/{{crush_username}}/';	
 			var unique_id = '{{request.user.username}}';
 			data['unique_id'] = unique_id;
 			data['feature_id']='5';

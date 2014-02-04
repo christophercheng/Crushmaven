@@ -105,6 +105,10 @@ $(document).ready(function()
  	{% if reveal_crush_id %}
  		display_response_modal('{{reveal_crush_id}}');
  	{% endif %}
+ 	// auto launch invite dialog if there is a corresponding template argument
+ 	{% if invite_crush_id %}
+		$('.app_invite[crush_username="{{invite_crush_id}}"]').trigger('click');
+	{% endif %}
 
  /* ---------------------------------------------
  	
