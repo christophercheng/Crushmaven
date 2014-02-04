@@ -117,7 +117,7 @@ $(document).ready(function() // handling for the slider
 			img_element.attr('src', new_src).attr('title','');	
 			img_element.qtip('destroy',true);//don't show a tooltip for the current lineup member
 			img_element.parents('div.locked_lineup_member').removeClass('locked_lineup_member');
-			img_element.next('.lineup_member_board').andSelf().wrapAll('<a data-slide-index="' + next_position + '" href="#">');
+			img_element.next('.innerds').andSelf().wrapAll('<a data-slide-index="' + next_position + '" href="#">');
 			callback(next_position);
 
 				// add the fake next button if we're not at the last slide
@@ -280,7 +280,7 @@ $(document).ready(function() // handling for the slider
 							window.alert_modal('Lineup Decision', "{{generic_error_message}}", decision_dialog);
 							return false;
 						};
-						var lineup_member = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] span');
+						var lineup_member = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] span.lineup_member_board');
 						if (crush_decision==true){
 							//window.added_lineup_attraction=true;
 							// show crush icon in the associated thumbnail
@@ -293,7 +293,7 @@ $(document).ready(function() // handling for the slider
 							lineup_member.html('NO');
 						}
 						// change lineup_member picture to that of light gray image
-						var lineup_member_pic = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] img');
+						var lineup_member_pic = $('#bx-pager-container #bx-pager div a[data-slide-index="' + slide_number + '"] img.locked_lineup_pic');
 						lineup_member_pic.attr("src","{{ STATIC_URL }}images/lineup_character_male_darkgray.png");
 
 						if (this_element.attr('class') != 'platonic_reconsider')
@@ -553,9 +553,20 @@ $(document).ready(function() // handling for the slider
 		{% for member in member_set|slice:":10" %}
 		
 			{% if member.decision != None %}
-					<div><a data-slide-index="{{forloop.counter0}}" href="#"><img src="{{ STATIC_URL }}images/lineup_character_male_darkgray.png" /><span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span></a></div>
+					<div><a data-slide-index="{{forloop.counter0}}" href="#">
+							<img src="{{ STATIC_URL }}images/lineup_character_male_darkgray.png" />
+							<span class="lineup_member_board{% if member.decision == 0 %} decision_crush">YES{% elif member.decision > 0 %} decision_platonic">NO{% endif %}</span>
+							<span class="lineup_block_lineup_pic_head"><img src="http://graph.facebook.com/{{member.username}}/picture?width=20&height=20"></span>
+
+					</a></div>
 			{% else %}
-					<div class="locked_lineup_member"><img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/lineup_character_male_gray.png"/><span class="lineup_member_board">{{ forloop.counter}}</span></div>
+					<div class="locked_lineup_member">
+						<img class="locked_lineup_pic" lineup_position={{forloop.counter0}} title="you cannot jump ahead in the lineup" src="{{ STATIC_URL }}images/lineup_character_male_gray.png"/>
+						<span class="innerds">
+							<span class="lineup_member_board">{{ forloop.counter}}</span>
+							<span class="lineup_block_lineup_pic_head"><img src="http://graph.facebook.com/{{member.username}}/picture?width=20&height=20"></span>
+						</span>
+					</div>
 			{% endif %}
 			
 		{% endfor %}
