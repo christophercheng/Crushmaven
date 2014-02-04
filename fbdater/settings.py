@@ -315,6 +315,10 @@ FEATURES = {
         'NAME':"Converse with your crush over the next 2 weeks for 2 credits",
         'COST': 2,
     },
+    '5': {
+        'NAME':"Invite Crush via Facebook for 1 credit",
+        'COST': 1,
+    },
 }
 
 AJAX_ERROR = "Sorry, there is a problem with our servers.  We are working to fix this problem a.s.a.p."

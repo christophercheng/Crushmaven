@@ -7,6 +7,25 @@
 $(document).ready(function() 
 {
 
+	$('#id_facebook_invite').click(function(){
+		if (!$(this).is(':checked'))
+			return;
+		var source_person_site_credits={{ request.user.site_credits}};
+		if (source_person_site_credits == 0){
+			$(this).prop('checked', false);
+			data = {};
+			data['csrfmiddlewaretoken']="{{csrf_token}}";
+			data['success_path'] = 'http://www.crushmaven.com/your_crushes/';	
+			data['cancel_url'] =  'http://www.crushmaven.com/your_crushes/';	
+			var unique_id = '{{request.user.username}}';
+			data['unique_id'] = unique_id;
+			data['feature_id']='5';
+			data['purchase_callback_name'] = 'window.display_response_modal(' + unique_id + ')';// not relevant here cause user has 0 credits
+			data['ajax_error']='{{ajax_error}}';
+			window.purchase_feature(data);	
+		}
+	});
+	
 	{% if mf_friend_count > 0 %}
 		$('#mutual_friend_help_section').css('min-height','55px');
 	{% endif %}
@@ -51,9 +70,26 @@ $(document).ready(function()
                     			},0);
                     		}
                     		setup_qtips();
-         					
-                    	}
-                    	});
+
+	                		  $("a.check_credit").click(function(e) {
+	                				data = {};
+	                				data['csrfmiddlewaretoken']="{{csrf_token}}";
+	                				data['success_path'] = $(this).attr('success_path');	
+	                				data['cancel_url'] =  $(this).attr('cancel_url');
+	                				var unique_id = $(this).attr('unique_id');
+	                				data['unique_id'] = unique_id;
+	                				data['feature_id'] = $(this).attr('feature_id');
+	                				data['purchase_callback_name'] = 'window.display_response_modal(' + unique_id + ')';
+	                				data['ajax_error']='{{ajax_error}}';
+	                				window.purchase_feature(data);
+	                				
+	                		   }); // close off a.check_credit.click 
+	                		  //trigger purchase dialog if user doesn't have credit to send facebook invite
+	                		  if ($('#app_invite_form .generic_email_errors .errorlist li .check_credit').length){
+	                			  $("a.check_credit").trigger('click');
+	                		  }
+                    	}// close off else - some sort of error
+                    });
                 
                e.preventDefault();
                });// close off submit function

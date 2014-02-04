@@ -229,7 +229,7 @@ def app_invite_form_v2(request, crush_username):
     if 'posted_form' in request.POST:  # if the form has been submitted...
         update_field_list=[]
         mutual_friend_json=eval(request.POST['mutual_friend_json'])
-        form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json,source_person_email=source_person_email,source_person_site_credits=str(request.user.site_credits))
+        form = AppInviteForm2(request.POST,mutual_friend_json=mutual_friend_json,source_person_email=source_person_email,source_person_site_credits=str(request.user.site_credits),source_person_username=request.user.username)
         if form.is_valid():
             # send out the emails here
             facebook_invite=form.cleaned_data['facebook_invite']
@@ -334,7 +334,7 @@ def app_invite_form_v2(request, crush_username):
         except Exception as e:
             logger.debug("finding mutual friends failed with exception: " + str(e))
             raise  
-        form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email)
+        form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email,source_person_site_credits=str(request.user.site_credits),source_person_username=request.user.username)
 
     mf_friend_count=len(mutual_friend_json)
     return render(request, 'app_invite_form_v2.html', {'form':form, 'send_facebook_invite':crush_relationship.send_facebook_invite,'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count})

@@ -91,6 +91,7 @@ class AppInviteForm2(forms.Form):
         mutual_friend_json=kwargs.pop('mutual_friend_json',None)
         self.source_person_email = kwargs.pop('source_person_email',None)
         self.source_person_site_credits=kwargs.pop('source_person_site_credits',None)
+        self.source_person_username=kwargs.pop('source_person_username',None)
         super(AppInviteForm2, self).__init__(*args,**kwargs)
         mutual_friend_count=0
         for i,friend in enumerate(mutual_friend_json):
@@ -110,6 +111,7 @@ class AppInviteForm2(forms.Form):
     mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
     source_person_email=''
     source_person_site_credits=''
+    source_person_username=''
 
     def clean(self):
         if len(self._errors) == 0:
@@ -119,7 +121,7 @@ class AppInviteForm2(forms.Form):
             if self.cleaned_data['facebook_invite'] == True:
                 if self.source_person_site_credits=='0':
                     logger.debug("Invite Error: User does not have enough credits to send a Facebook Invite")
-                    raise forms.ValidationError(mark_safe("You do not have enough credits to send a Facebook invite <a target='_blank' href='/settings_credits'>Purchase Credits</a>"))
+                    raise forms.ValidationError(mark_safe("You do not have enough credits to send a Facebook invite <a class='check_credit' feature_id='5' unique_id='" + self.source_person_username + "' cancel_url='http://www.crushmaven.com/your_crushes/' success_path='http://www.crushmaven.com/your_crushes/' href='#'>Purchase Credits</a>"))
             
             for name,value in self.cleaned_data.items():
                 if type( value ) == dict:
@@ -133,7 +135,7 @@ class AppInviteForm2(forms.Form):
 
             if not at_least_one_data:
                 logger.debug("Invite Error: User tried to submit invite form without any contact information")
-                raise forms.ValidationError("Choose at least one invite option. (Facebook invite requires checkbox agreement)")
+                raise forms.ValidationError("Choose at least one invite option (Facebook option requires checkbox agreement)")
             # check that user has entered his or her email in the crush email field
             crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
             if self.source_person_email in crush_emails:

@@ -11,7 +11,6 @@ $(document).ready(function()
 	*  ---------------------------------------------------------------------- */    
  	
   $("a.check_credit").click(function(e) {
-
 		data = {};
 		data['csrfmiddlewaretoken']="{{csrf_token}}";
 		data['success_path'] = $(this).attr('success_path');	
