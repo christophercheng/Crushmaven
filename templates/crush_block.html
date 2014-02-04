@@ -58,6 +58,9 @@
 		{% if not crush.is_results_paid %}
 		
 			<div class="crush_block_name">{{crush.target_person.get_name}}</div>
+			<div class="crush_name_link_date_responded">
+				responded {{crush.date_target_responded|datetime_since}} ago
+			</div>
 			<a href="#" class="check_credit crush_block_button" feature_id="2" unique_id="{{crush.target_person.username}}" cancel_url="{{request.build_absolute_uri}}" success_path="{{request.build_absolute_uri}}{{crush.target_person.username}}">View Response</a> 
 		{% else %}<!-- responded & results paid -->
 			<div class="crush_block_name">

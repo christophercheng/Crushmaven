@@ -1720,6 +1720,15 @@ ul.nav_bar li#nav_bar_options{
 	right:5px;
 	font-style:italic;
 }
+.crush_name_link_date_responded{
+	display:block;
+	color:gray;
+	font-size:10px;
+	text-align:center;	
+	margin-bottom:10px;
+	margin-top:-10px;
+}
+
 
 .crush_response_body .crush_block_button{
 	display:inline-block!important;
