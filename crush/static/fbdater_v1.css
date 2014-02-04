@@ -2551,7 +2551,6 @@ ul.attraction_status_bar li.past_status_animated{
 .lineup_block_footer .lineup_block_statistics {
 	display:inline-block;
 	float:left;
-	#font-style:italic;
 	font-size:10px;
 	vertical-align:bottom;
 	
@@ -2560,7 +2559,6 @@ ul.attraction_status_bar li.past_status_animated{
 	color:#C8C8C8;
 	display:inline-block;
 	font-size:10px;
-	font-style:italic;
 	margin-right:1px;
 	vertical-align:bottom;	
 }
