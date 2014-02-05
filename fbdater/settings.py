@@ -284,8 +284,8 @@ MAXIMUM_CRUSHES=50
 #                     }
 PLATONIC_RATINGS = {
                     1:'Just interested in friendship',
-                    2:'Not physically attracted',
-                    3:'Not interested in any relations w/you', 
+                    2:'Not physically attracted to ',
+                    3:'Not interested in any relations w/', 
                     4:"Bad timing - I'm in a relationship",
                     5:'Other',
                      }
