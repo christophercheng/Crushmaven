@@ -182,15 +182,13 @@ def ajax_load_response_dialog_content(request, crush_id):
         ajax_response += "<div id='response_container'>"
         ajax_response += "<span class='response_message'>We're sorry, " + crush.get_name() + " did not express a mutual interest in you." + "</span>"
         ajax_response += '<span class="attractor_image"><img src="http://graph.facebook.com/' + crush_id + '/picture?width=60&height=60" /><span class="decision_icon" id="decision_icon_no"></span></span>';
-        if relationship.target_platonic_rating != None:
-            ajax_response += "<span class='response_message'></span>"
-            ajax_response += "<span class='response_view_rating'>"
-            if relationship.is_platonic_rating_paid:
-                rating = relationship.target_platonic_rating
-                ajax_response += '"' + relationship.objects.get_target_platonic_rating_display() + '"'
-            else:
-                ajax_response += "<a href='#' unique_id='" + crush_id + "'>view " + crush.get_gender_pronoun() + " reason</a>"
-                ajax_response += "<span class='help_icon'>?</span>"
+        ajax_response += "<span class='response_message'></span>"
+        ajax_response += "<span class='response_view_rating'>"
+        if relationship.is_platonic_rating_paid:
+            ajax_response += '"' + relationship.objects.get_target_platonic_rating_display() + '"'
+        else:
+            ajax_response += "<a href='#' unique_id='" + crush_id + "'>view " + crush.get_gender_pronoun() + " reason</a>"
+            ajax_response += "<span class='help_icon'>?</span>"
         ajax_response += "</span></div>"   
     return HttpResponse(ajax_response)
 

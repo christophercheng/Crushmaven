@@ -105,9 +105,8 @@ class PlatonicRelationship(BasicRelationship):
                 # if there is a reciprocal relationship, then update both relationships' target_status
                 reciprocal_relationship.target_status=5 # responded-crush status
                 reciprocal_relationship.date_target_responded=datetime.now()
-                reciprocal_relationship.target_platonic_rating = self.rating
                 reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','target_platonic_rating','updated_flag']);
+                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag']);
     
             except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
                 pass
@@ -196,7 +195,6 @@ class CrushRelationship(BasicRelationship):
                            (5,'Responded-platonic')
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
-    target_platonic_rating = models.IntegerField(null=True,default=None,blank=True)
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
@@ -383,18 +381,19 @@ class CrushRelationship(BasicRelationship):
             return True
     
     def get_target_platonic_rating_display(self):
-        if self.target_platonic_rating!=None:
-            description = settings.PLATONIC_RATINGS[self.target_platonic_rating]
-            if self.target_platonic_rating==2 or self.target_platonic_rating==3:
+        description="Sorry, we had a problem getting the reason.  Please email support@crushmaven.com to get a credit refund."  
+        try:
+            relationship = self.target_person.crush_platonicrelationship_set_from_source.get(target_person=self.source_person)
+        except Exception as e:
+            logger.error("couldn't find reciprocal relationship to print out reason why not interested - exception: " + str(e))
+            return description  
+        rating=relationship.rating
+        if rating != None:
+            description = settings.PLATONIC_RATINGS[relationship.rating]
+            if rating==2 or rating==3:
                 description += " you"
-            if self.target_platonic_rating==5:
-                # get reciprocal crush relationship
-                try:
-                    reciprocal_relationship = self.target_person.crush_platonicrelationship_set_from_source.get(target_person=self.source_person)
-                    description = reciprocal_relationship.rating_comment
-                except Exception as e:
-                    logger.error("couldn't find reciprocal relationship to print out reason why not interested - exception: " + str(e))
-                    description="Sorry, we had a problem getting the reason.  Please email support@crushmaven.com to get a credit refund."
+            if rating==5 and relationship.rating_comment!=None:
+                description = relationship.rating_comment
             return description
         
     def handle_lineup_paid(self): 
