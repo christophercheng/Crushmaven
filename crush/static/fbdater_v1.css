@@ -3120,7 +3120,20 @@ ul.bxslider_element #slide_overlay {
 	margin-top:15px;
 	#border-left:1px solid rgb(0,0,70);
 	padding-left:10px;
+	position:relative;
 }
+#platonic_rating_group #comment_rating_error{
+	position:absolute;
+	background:red;
+	color:white;
+	font-size:10px;
+	vertical-align:middle;
+	bottom:-17px;
+	left:73px;
+	padding:0px 3px;
+	display:none;
+}
+
 #platonic_rating_group .platonic_rating {
 	display:block;
 	text-align:left;

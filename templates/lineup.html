@@ -145,8 +145,10 @@ $(document).ready(function() // handling for the slider
   		rating = $(this).val();
   		if (rating == '5')
   			$('#dialog_platonic_add .platonic_rating #other_rating').focus();
-  		else 
+  		else {
   			$('#dialog_platonic_add .platonic_rating #other_rating').val("");
+  			$('#dialog_platonic_add #comment_rating_error').hide();
+  		}
   	});
   	
   	$('#dialog_platonic_add').on('click','.platonic_rating input:text',function(){
@@ -181,6 +183,7 @@ $(document).ready(function() // handling for the slider
 		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="3"><span class="rating_description">{{rating3}}</span></span>';
 		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="4"><span class="rating_description">{{rating4}}</span></span>';
 	  	dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"><span class="rating_description rating_description_5">{{rating5}}</span><input type="text" id="other_rating" maxlength="100"></span>';
+	  	dialog_platonic_html += '<span id="comment_rating_error">please enter a brief explanation</span>';
 	  dialog_platonic_html += '</div>';
  	dialog_platonic_html += '</div>';
   
@@ -279,7 +282,10 @@ $(document).ready(function() // handling for the slider
 					$(this).dialog("close");
 				}, // end of cancel handler
 				"Confirm": function() {
+					data={};
+					data['csrfmiddlewaretoken']="{{csrf_token}}";
 					if (crush_decision==true){
+						confirm_url=url;
 						var closest_ui_dialog = $(this).closest(".ui-dialog");
 					 	if (closest_ui_dialog.find('.attractor_agreement_checkbox').attr('checked') != 'checked'){
 							window.alert_modal('Terms & Conditions Agreement', "You must agree to the terms and conditions before continuing.", decision_dialog);
@@ -287,16 +293,19 @@ $(document).ready(function() // handling for the slider
 						}
 					}
 					else {
-						rating = decision_dialog.find('input:radio[name="rating"]:checked').val()
-						url += rating + "/";
+						rating = decision_dialog.find('input:radio[name="rating"]:checked').val();
+						if (rating=='5'){
+							var other_rating = decision_dialog.find('input:text').val();
+							if (other_rating.length < 5){
+								decision_dialog.find('#comment_rating_error').show();
+								return;
+							}
+							data['rating_comment'] = other_rating;
+						}
+						confirm_url = url + rating + "/";
 					}	
 					decision_div.prev().show();decision_div.hide();
-					data={};
-					data['csrfmiddlewaretoken']="{{csrf_token}}";
-					if (rating=='5')
-						var other_rating = decision_dialog.find('input:text').val();
-						data['rating_comment'] = other_rating;
-					decision_div.load(url, data,function(responseText,textStatus,XHR){
+					decision_div.load(confirm_url, data,function(responseText,textStatus,XHR){
 						decision_div.prev().hide();decision_div.show()
 						if (textStatus!='success'){					
 							window.alert_modal('Lineup Decision', "{{generic_error_message}}", decision_dialog);
