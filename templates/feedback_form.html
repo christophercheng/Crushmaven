@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	    <meta http-equiv="Content-type" content="text/html"; charset="UTF-8" />
+	    <meta name="description" content="More than just friends?  Discover anonymously if the person you're attracted to feels the same at crushmaven.com." />
+	    <meta name="robots" content="NOINDEX,NOFOLLOW" />
+	    <meta name="Revisit-After" content="30 Days" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
+		<title>CrushMaven - Feedback Form</title>    	
+
+	    <link type="text/css" href="{{ STATIC_URL }}fbdater_guest_v1.css" rel="stylesheet" />  
+	    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
+	    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
+	</head>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+  
+  $(document).ready(function() 
+{	  
+	  
+	
+});
+</script>
+
+<body id="guest_page">
+<div class="guest_header how_it_works authenticated">
+	<div class="center_container">
+		<a class="logo" href="/home"><img src={% if request.user.is_authenticated %}"{{ STATIC_URL }}images/cm_logo_sm.png"{% else %}"{{ STATIC_URL }}images/cm_logo_sm.png"{% endif %}></a>
+			<span id="top_links"><a id="how_it_works_anchor" href="#how_it_works_section" class="">How It Works</a><a id="who_it_works_on_anchor" href="#who_it_works_on_section" class="">Who It Works On</a><a id="who_will_know_anchor" href="#who_will_know_section" class="">Who Will Know</a><a id="faq_anchor" href="#faq_section" class="">FAQ</a></span>
+	</div>
+</div>
+
+<div class="guest_page feedback_form">
+<div class="center_container">
+<div class="legal">
+<h1>Your Feedback</h1>
+
+<h2 class="subtitle">Your feedback is extremely valuable to us.  Please complete this form and instantly recieve one free credit to use anywhere on the site.</h2>
+{% for question in questions %}
+	{% for question_text,choices in question.items %}
+		<div class="question_line">
+			<span class="question_number">{{forloop.parentloop.counter}}</span>
+			<span class="question_question">{{question_text}}</span>
+		</div>
+		{% for choice in choices %}
+			{% for choice_item,choice_value in choice.items %}
+				<div class="radio_button_choice"><input type="radio" name="question_group_{{forloop.parentloop.parentloop.parentloop.counter}}" value="{{choice_item}}">{{choice_item}}</input>
+				{% if choice_value != None %}
+					<div class="explanation">{{choice_value}}<input type="text"></input></div>
+				{% endif %}
+				</div>
+			{% endfor %}
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+<button>Submit Feedback</button>
+</div><!-- close off legal -->
+</div><!-- close off center_container -->
+</div><!-- close off guest page -->
+</body>
+
