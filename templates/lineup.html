@@ -139,6 +139,22 @@ $(document).ready(function() // handling for the slider
 		//},1000);
 	}; // close off resetAndAdvanceSlider
 
+	/* ==== handle the other rating click which should enable the other text input box ===== */
+  	//dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"><span class="rating_description rating_description_5">{{rating5}}</span><input type="text" id="other_rating" disabled="true" maxlength="100"></span>';
+  	$('#dialog_platonic_add').on('click','.platonic_rating input:radio',function(){
+  		rating = $(this).val();
+  		if (rating == '5')
+  			$('#dialog_platonic_add .platonic_rating #other_rating').focus();
+  		else 
+  			$('#dialog_platonic_add .platonic_rating #other_rating').val("");
+  	});
+  	
+  	$('#dialog_platonic_add').on('click','.platonic_rating input:text',function(){
+  		$('#dialog_platonic_add').find('input:radio[name="rating"]:checked').prop('checked',false);
+  		$('#dialog_platonic_add').find('input:radio[value="5"]').prop('checked',true);
+  	});
+	
+	
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - HANDLE ADD ATTRACTION/Platonic CLICK
   *		handle click to 'add member' as crush or platonic friend
@@ -157,14 +173,14 @@ $(document).ready(function() // handling for the slider
   var platonic_dialog = $("#dialog_platonic_add");
 	platonic_dialog.dialog({modal: true, autoOpen: false,resizable:false,width:410,dialogClass:'decision_confirmation_dialog blacktop',close: function(){$('#lineup_container #site-loading').hide();$('#lineup_container #slide_overlay').hide();}});
   var dialog_platonic_html = '<div class="dialog_content_wrapper">';
- 		dialog_platonic_html += '<span class="attractor_text">Although you\'re not interested in <span class="attractor_first_name"></span>, please let us know how you would rate <span class="attractor_pronoun_object"></span> attractiveness to a friend:</span>';
+ 		dialog_platonic_html += '<span class="attractor_text">Please let us know why you\'re not interested in <span class="attractor_first_name"></span>:</span>';
 		dialog_platonic_html += '<span class="attractor_name_block"><span class="attractor_image"></span><span class="attractor_full_name"></span><span class="decision_icon"></span></span>';
 		dialog_platonic_html += '<div id="platonic_rating_group">';
-		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"checked><span class="rating_description">{{rating5}}</span></span>';
-		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="4"><span class="rating_description">{{rating4}}</span></span>';
-		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="3"><span class="rating_description">{{rating3}}</span></span>';
+		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="1"checked><span class="rating_description">{{rating1}}</span></span>';
 		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="2"><span class="rating_description">{{rating2}}</span></span>';
-	  	dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="1"><span class="rating_description">{{rating1}}</span></span>';
+		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="3"><span class="rating_description">{{rating3}}</span></span>';
+		dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="4"><span class="rating_description">{{rating4}}</span></span>';
+	  	dialog_platonic_html += '<span class="platonic_rating"><input type="radio" name="rating" value="5"><span class="rating_description rating_description_5">{{rating5}}</span><input type="text" id="other_rating" maxlength="100"></span>';
 	  dialog_platonic_html += '</div>';
  	dialog_platonic_html += '</div>';
   
@@ -233,7 +249,7 @@ $(document).ready(function() // handling for the slider
 	  		$(".decision_confirmation_dialog .ui-dialog-titlebar .help_icon").qtip({
 					content:{
 						text:$('#platonic_confirmation_dialog_help_content').clone(),
-						title:"Why am I being asked to assess my lineup members' attractiveness?"
+						title:"Why am I being asked why I'm not interested?"
 					},
 					show:{
 						delay:0,
@@ -271,10 +287,16 @@ $(document).ready(function() // handling for the slider
 						}
 					}
 					else {
-						url += decision_dialog.find('input:radio[name="rating"]:checked').val();
+						rating = decision_dialog.find('input:radio[name="rating"]:checked').val()
+						url += rating + "/";
 					}	
 					decision_div.prev().show();decision_div.hide();
-					decision_div.load(url, function(responseText,textStatus,XHR){
+					data={};
+					data['csrfmiddlewaretoken']="{{csrf_token}}";
+					if (rating=='5')
+						var other_rating = decision_dialog.find('input:text').val();
+						data['rating_comment'] = other_rating;
+					decision_div.load(url, data,function(responseText,textStatus,XHR){
 						decision_div.prev().hide();decision_div.show()
 						if (textStatus!='success'){					
 							window.alert_modal('Lineup Decision', "{{generic_error_message}}", decision_dialog);

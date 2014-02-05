@@ -3014,6 +3014,11 @@ ul.bxslider_element #slide_overlay {
 	left:-6px;
 	background-color:transparent;
 }
+
+#dialog_platonic_add .attractor_text {
+	margin-left:-35px;
+}
+
 .attractor_text{
 	font-size:12px;
 	text-align:left;
@@ -3122,12 +3127,18 @@ ul.bxslider_element #slide_overlay {
 	position:relative;
 	margin-bottom:5px;
 }
-
+#platonic_rating_group .platonic_rating #other_rating{
+	margin-left:40px;
+	width:175px;
+}
 #platonic_rating_group .platonic_rating .rating_description{
 	display:inline-block;
 	position:absolute;
 	top:1px;
 	left:25px;
+}
+#platonic_rating_group .platonic_rating .rating_description_5{
+	margin-top:3px;	
 }
 
 #dialog_attraction_add{

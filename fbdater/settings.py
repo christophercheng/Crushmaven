@@ -282,6 +282,13 @@ PLATONIC_RATINGS = {
                     2:'Slightly unattractive',
                     1:'Very unattractive',
                      }
+PLATONIC_RATINGS = {
+                    1:'Just interested in friendship',
+                    2:'Not physically attracted',
+                    3:'Not interested in any relations w/you', 
+                    4:"Bad timing - I'm in a relationship",
+                    5:'Other',
+                     }
 
 DELETION_ERROR = {
                   0:'To prevent users from gaming the system i.e. figuring out what your feelings are without revealing their own, crushes may only be removed once ' + str(MINIMUM_DELETION_DAYS_SINCE_ADD) + ' days have passed since they were first added.',

@@ -31,7 +31,7 @@ class PlatonicRelationshipAdmin(admin.ModelAdmin):
     list_filter = ('rating','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
-    fields=('source_person','target_person','friendship_type','rating',)
+    fields=('source_person','target_person','friendship_type','rating','rating_comment')
 
 class LineupMemberAdmin(admin.ModelAdmin):
     list_display = ('relationship','username','user','decision','position')

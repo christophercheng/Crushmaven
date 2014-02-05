@@ -336,7 +336,6 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
                 # user changed their mind about platonic lineup member so exit out of here
                 # break;
                 #ajax_response = "<span id=\"choice\" class='platonic existing_choice'>You previously decided - Not Interested</span>"
-           
         if add_type=='crush':
             # need to determine their friendship type
             if settings.INITIALIZATION_THREADING:
@@ -346,10 +345,16 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
             ajax_response = '<span class="choice crush new_crush" username="' + target_user.username + '" fullname="' + target_user.get_name() + '">Added as a crush</span>'
             lineup_member.decision=0
         else:
-            PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
+            lineup_member.decision=rating
+            if rating=='5':
+                post_data=request.POST
+                input_other_rating=str(post_data['rating_comment'])
+                PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating,rating_comment=input_other_rating)
+            else:
+                PlatonicRelationship.objects.create(source_person=request.user, target_person=target_user,rating=rating)
             ajax_response = '<span class="choice platonic new_platonic">Not Interested</span>'
             ajax_response += '<a href="#" class="platonic_reconsider" add_type="crush" username="' + target_user.username + '" name="' + target_user.first_name + ' ' + target_user.last_name + '" member_gender= "' + target_user.gender + '" lineup_position="' + str(lineup_member.position) + '">change your mind?</a>'
-            lineup_member.decision=1
+        
         lineup_member.save(update_fields=['decision'])
         lineup_member_set = admirer_rel.lineupmember_set
         
