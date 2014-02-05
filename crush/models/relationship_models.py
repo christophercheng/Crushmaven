@@ -387,6 +387,14 @@ class CrushRelationship(BasicRelationship):
             description = settings.PLATONIC_RATINGS[self.target_platonic_rating]
             if self.target_platonic_rating==2 or self.target_platonic_rating==3:
                 description += " you"
+            if self.target_platonic_rating==5:
+                # get reciprocal crush relationship
+                try:
+                    reciprocal_relationship = self.target_person.crush_platonicrelationship_set_from_source.get(target_person=self.source_person)
+                    description = reciprocal_relationship.rating_comment
+                except Exception as e:
+                    logger.error("couldn't find reciprocal relationship to print out reason why not interested - exception: " + str(e))
+                    description="Sorry, we had a problem getting the reason.  Please email support@crushmaven.com to get a credit refund."
             return description
         
     def handle_lineup_paid(self): 
