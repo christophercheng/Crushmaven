@@ -1,6 +1,12 @@
 <script>
 $(document).ready(function() 
 {
+	
+	window.survey_user = function(reason){
+		{% if completed_survey != True %}
+			var survey_dialog = $("#survey_modal_div").dialog({dialogClass:'survey_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+	   {% endif %}
+	};
 	window.morph_dialog = function(){
 		window.purchase_dialog_div.dialog('close');
 		window.wait_modal_open("Redirecting to Paypal");
@@ -143,5 +149,15 @@ You can always purchase more credits from within the settings menu (in the top r
 </span>
 <span class="tooltip_close">close</span>
 </span>
+<div id="survey_modal_div" title="Your Feedback Is Important!">
+	<div class="modal_container">Would you like to earn a free credit to use on any feature?  Simply complete our feedback form, and we'll instantly update your account.
+	</div><!-- close off buttonpane -->	
+	<div class="ui-dialog-buttonpane">
+	<div class="ui-dialog-buttonset">
+		<button type='button' onclick="$('#survey_modal_div').dialog('close');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">No Thanks</span></button> 
+		<button type='button' onclick="$('#survey_modal_div').dialog('close');location.href='/feedback_form';" class="site_dialog_button" ><span class="ui-button-text">Let's Do It!</span></button> 
+	</div><!-- close off buttonset -->
+	</div><!-- close off buttonpane -->
+</div>
 
 

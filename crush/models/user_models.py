@@ -242,6 +242,8 @@ class FacebookUser(AbstractUser):
     # For inactive users - friends of theirs who have already sent them a fb invite (clear out this field during activation)
     friends_that_invited_me = models.ManyToManyField('self', symmetrical=False,related_name='friends_that_invited_me_set',blank=True)
     
+    bCompletedSurvey=models.NullBooleanField()
+    
     bNotify_crush_signup_reminder = models.BooleanField(default=True)
     bNotify_new_admirer = models.BooleanField(default=True)    
     bNotify_lineup_expiration_warning = models.BooleanField(default=True) 

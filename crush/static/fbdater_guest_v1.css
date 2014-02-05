@@ -1321,3 +1321,10 @@ div.legal{
 	-moz-transition: 100ms;
 	transition: 100ms;	
 }
+
+/* feeedback form */
+.feedback_form .subtitle{
+	margin-top:-5px;
+	font-size:14px;
+}
+

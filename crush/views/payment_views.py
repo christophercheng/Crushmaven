@@ -57,6 +57,7 @@ def credit_checker(request):
                        'paypal_email': settings.PAYPAL_EMAIL, 
                        'paypal_success_url': paypal_success_url,
                        'paypal_cancel_url': cancel_url,
+                       'completed_survey':request.user.bCompletedSurvey,
                        'paypal_notify_url':paypal_notify_url})
     else:
         return render(request,'dialog_credit_sufficient.html',{

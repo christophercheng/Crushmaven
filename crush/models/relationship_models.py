@@ -384,7 +384,10 @@ class CrushRelationship(BasicRelationship):
     
     def get_target_platonic_rating_display(self):
         if self.target_platonic_rating!=None:
-            return settings.PLATONIC_RATINGS[self.target_platonic_rating]
+            description = settings.PLATONIC_RATINGS[self.target_platonic_rating]
+            if self.target_platonic_rating==2 or self.target_platonic_rating==3:
+                description += " you"
+            return description
         
     def handle_lineup_paid(self): 
         feature_cost=int(settings.FEATURES['1']['COST'])

@@ -315,7 +315,7 @@ FEATURES = {
         'COST': 1,
     },
     '3': {
-        'NAME':"View your crush's assessment of you for 1 credit",
+        'NAME':"See why your crush said they weren't interested in you for 1 credit",
         'COST': 1,
     },
     '4': {

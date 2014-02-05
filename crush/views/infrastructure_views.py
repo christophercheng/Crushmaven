@@ -215,43 +215,6 @@ def facebook_channel_file(request):
     return render(request,'channel.html')
 
 
-
-# fake page used to create custom content for fb send dialog (from setup create form)
-def setup_by(request,first_name = "",last_initial = ""):
- 
-    if first_name == "" and last_initial=="":
-        return render(request, 'guest_home.html',
-                          {
-                           'change_title': 'Your friend recommended someone for you', 
-                           'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
-                           })    
-    else:
-            return render(request, 'guest_home.html',
-                              {
-                               'change_title': first_name + " " + last_initial  + '. recommended someone for you!', 
-                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Log in now to see who " + first_name + " is trying to set you up with.",
-                               'change_url':"http://www.crushmaven.com/setup_by/" + first_name + "/" + last_initial + "/"
-                               })    
-    return HttpResponse("")
-
-# fake page used to create custom content for fb send dialog (from setup request)
-def setup_for(request,first_name = "",last_initial = ""):
- 
-    if first_name == "" and last_initial=="":
-        return render(request, 'guest_home.html',
-                          {
-                           'change_title': 'Your friend desires your matchmaking help!', 
-                           'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at crushmaven.com.",
-                           })    
-    else:
-            return render(request, 'guest_home.html',
-                              {
-                               'change_title': first_name + " " + last_initial  + '. desires your matchmaking help!', 
-                               'change_description': "CrushMaven is a new matchmaking service for people who already have someone in mind - for themselves or friends of theirs.  Help " + first_name + " out at crushmaven.com.",
-                                'change_url':"http://www.crushmaven.com/setup_for/" + first_name + "/" + last_initial + "/"
-                               })    
-    return HttpResponse("")
-
 # fake page used to create custom content for fb send dialog (from friends-with-admirer sidebar)
 def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
@@ -262,3 +225,33 @@ def admirer_for(request,first_name,last_initial):
                                'facebook_app_id':settings.FACEBOOK_APP_ID
                                })    
     return HttpResponse("")
+
+# fake page used to create custom content for fb send dialog (from friends-with-admirer sidebar)
+def feedback_form(request):
+    if request.user.bCompletedSurvey:
+        return HttpResponseRedirect('/your_crushes/') # only allow form to be filled out once
+    questions=[
+               {'Do you think this site is useful?': [{'Yes': None},{'No':'Why Not?'}]},
+               {'Would you recommend this site to a friend?': [{'Yes': None},{'No':'Why Not?'}]},
+               {'Do you understand how this site works?': [{'Yes': None},{'Kind of':'What part of site is not clear to you?'},{'No':'Why not?'}]},
+               {'Do you trust that your identity as an admirer will be kept private if you use this site?': [{'Yes': None},{'No':'Why not?'}]},
+              { 'Would you use this site for someone you really liked?': [{'Yes': None},{'No':'Please explain why not'}]},
+               {'How would you describe your relationship with your crush(s)?': [{'Close friends': None},{'We are acquaintances':None},{'They know of me': None},{'They don\'t know me at all': None},]},
+               {'Would you pay $1 to see how your crush responded?': [{'Yes': None},{'No':'Please explain why not'}]},
+               {'Would you pay $5 to see how your crush responded?': [{'Yes': None},{'No':'Please explain why not'}]},
+               {'Do you understand how credits work?': [{'yes': None},{'No':None}]},
+               {'Would you use your PayPal account to purchase credits': [{'Yes': None},{'I don\'t have a PayPal account':None},{'No':'Why not?'}]},
+               {'Would you use your credit card to purchase credits?': [{'Yes': None},{'I don\'t have a credit card',None},{'No':'Why not?'}]},
+               {'Did you send your crush an invitation using our invite dialog?': [{'Yes': None},{'No':'Why not?'}]}, 
+               {'Do you understand why we ask you for your crush\'s contact information to send invites?': [{'Yes': None},{'No':None}]},  
+               {'How difficult was our invite dialog to use?': [{'Not difficult at all': None},{'A bit difficult':'Please explain why'},{'Very difficult':'Please explain why'}]},              
+               {'Do you usually know the email address of your crushes?': [{'Yes': None},{'No':None}]},
+               {'Do you usually know the twitter username of your crushes?': [{'Yes': None},{'No':None}]},
+               {'Would you pay $1 to send an anonymous invite through facebook (which increases the chances of receiving a response)?': [{'Yes': None},{'No':'Why not?'}]},
+                {'Did you know we can send an invitation to mutual friends of your crush and ask them to forward it to your crush?': [{'Yes': None},{'No':None}]},
+                {'Would you send invitations through mutual friends of your crush?': [{'Yes': None},{'No':'Why not?'}]},
+                {'Can we make our site more useful for you': [{'No, it\'s perfect as is':None},{'Yes':'How so?'}]},
+                ]
+
+    return render(request, 'feedback_form.html',{'questions':questions})    
+

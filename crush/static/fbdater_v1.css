@@ -3336,6 +3336,18 @@ ul.bxslider_element #slide_overlay {
 #credit_check_modal{
 	border-radius:0 0 6px 6px!important;
 }
+#credit_check_modal #survey_modal_div{
+	display:none;
+}
+.survey_dialog #survey_modal_div .modal_container{
+	padding:15px 17px;
+	line-height:28px;
+	font-size:14px;
+}
+
+.survey_dialog #survey_modal_div .ui-dialog-buttonpane{
+	padding-right:70px!important;
+}
 .mobile_warning_dialog{
 	width:100%;
 	height:100%;
@@ -3351,6 +3363,7 @@ ul.bxslider_element #slide_overlay {
 
 #response_no_match {
 	background:gray!important;
+	padding-left:16px;
 }
 
 #response_container{
