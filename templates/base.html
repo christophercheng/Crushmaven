@@ -24,6 +24,24 @@
 
 	    	  ga('create', 'UA-46806664-1', 'crushmaven.com');
 	    	  ga('send', 'pageview');
+	    	  
+	    	  {% if 'signin' in request.GET %}
+		    	  <!-- Facebook Conversion Code for Signup -->
+		    	  var fb_param = {};
+		    	  fb_param.pixel_id = '6011693977194';
+		    	  fb_param.value = '0.01';
+		    	  fb_param.currency = 'USD';
+		    	  (function(){
+		    	  var fpw = document.createElement('script');
+		    	  fpw.async = true;
+		    	  fpw.src = '//connect.facebook.net/en_US/fp.js';
+		    	  var ref = document.getElementsByTagName('script')[0];
+		    	  ref.parentNode.insertBefore(fpw, ref);
+		    	  })();
+	    	  {% endif %}
+	    	  
+	    	  
+	    	  
 	    </script>
 	    {% endif %}
 		<link type="text/css" href="/static/fbdater_v1.css?version=1" rel="stylesheet"  />    
