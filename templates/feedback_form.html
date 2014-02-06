@@ -21,7 +21,71 @@
   $(document).ready(function() 
 {	  
 	  
+	var submit_feedback_form=function(){
+		// build form questions and answers into some sort of letter that can be sent via email
+		var number_questions = {{ questions|length }};
+		html='Feedback Form Submitted by: <a target="_blank" href="http://www.facebook.com/{{request.user.username}}">{{request.user.get_name}}</a><BR>';
+		html+='Submitted: {% now "F jS Y H:i" %}<BR><BR><BR>';
+		for (var question_number=1;question_number<=number_questions;question_number++){
+			var question_text = $('.question_question_' + question_number).html();
+			html += "<b>Q" + question_number + ":</b> " + question_text + "<BR><BR>";
+			var answer = $('.question_line_' + question_number).find('input:radio:checked');
+			// look for an associated text field answer
+			var explanation = answer.parent().find('input:text');
+			if (explanation.length > 0)
+				html += "<b>A:</b> " + answer.val() + " | " + explanation.val() + "<BR><BR><BR>";
+			else
+				html += "<b>A:</b> " + answer.val() + "<BR><BR><BR>";
+		}
+		// ajax post this form to a view that will send off email and give user credit (but only if they haven't already been given credit
+		var data = {}
+		data['message'] = html;
+		data['csrfmiddlewaretoken']="{{csrf_token}}";
+		$.post("/post_feedback_form/",data, function(){
+			// success
+			// show alert message dialog
+			$('.submit_feedback_form_btn').after("<span class='submit_response'>Thank you for your feedback!  Your account has been given an extra credit.</span>");
+			$('.submit_feedback_form_btn').prop('disabled',true).addClass('disabled_submit_btn');
+			setInterval(function(){location.href="/your_crushes/";},4000);
+			// change page back to crushes after 3 seconds
+		}).fail(function(error){
+			// fail
+			// show error message
+			$('.submit_feedback_form_btn').after("<span class='submit_response feedback_error_text'>We could not proces your feedback.  Please try again or contact support@crushmaven.com</span>");
+		});
+		
+	};
 	
+	$('.submit_feedback_form_btn').click(function(){
+		// clear out existing errors:
+		$('.feedback_form .feedback_error_line').remove();
+		var error_count = 0;
+		var number_questions = {{ questions|length }};
+		for (var question_number=1;question_number<=number_questions;question_number++){
+			// check that at least one radio button is checked
+			var checked_radio = $('input:radio[name="question_group_' + question_number + '"]:checked');
+			if (checked_radio.length < 1){
+				$('.question_line_' + question_number).prepend('<div class="feedback_error_line feedback_question_error"><span class="feedback_error_text">You forgot select an answer for this question</span></div>');
+				error_count++;
+			}
+		}
+		var checked_choices=$('input:radio:checked');
+		checked_choices.each(function(){
+			// look for its' parents text input field
+			explanation_element=$(this).parent().find('input:text');
+			if (explanation_element.length>0)
+				if(explanation_element.val().length < 5 ){
+					error_count++;
+					explanation_element.parent().parent().append('<div class="feedback_error_line feedback_question_error"><span class="feedback_error_text feedback_explanation_error">You forgot to provide an explanation</span></div>');
+			}
+		});
+		if (error_count > 0){
+			$(window).scrollTop(0);
+			$('h1').before('<div class="feedback_error_line feedback_question_error"><span class="feedback_error_text feedback_error_overview">You have ' + error_count + ' form errors below - please correct them before resubmitting form</span></div>');
+		}	
+		else
+			submit_feedback_form();
+	});
 });
 </script>
 
@@ -36,27 +100,27 @@
 <div class="guest_page feedback_form">
 <div class="center_container">
 <div class="legal">
-<h1>Your Feedback</h1>
+<h1>Your Feedback <span class="sub_h1">(20 questions)</span></h1>
 
-<h2 class="subtitle">Your feedback is extremely valuable to us.  Please complete this form and instantly recieve one free credit to use anywhere on the site.</h2>
+<h2 class="subtitle">Your feedback is extremely valuable to us. Instantly recieve one free credit - to use anywhere on the site - when you complete & submit the form.</h2>
 {% for question in questions %}
 	{% for question_text,choices in question.items %}
-		<div class="question_line">
+		<div class="question_line question_line_{{forloop.parentloop.counter}}">
 			<span class="question_number">{{forloop.parentloop.counter}}</span>
-			<span class="question_question">{{question_text}}</span>
-		</div>
+			<span class="question_question question_question_{{forloop.parentloop.counter}}">{{question_text}}</span>
 		{% for choice in choices %}
 			{% for choice_item,choice_value in choice.items %}
 				<div class="radio_button_choice"><input type="radio" name="question_group_{{forloop.parentloop.parentloop.parentloop.counter}}" value="{{choice_item}}">{{choice_item}}</input>
 				{% if choice_value != None %}
-					<div class="explanation">{{choice_value}}<input type="text"></input></div>
+				- <div class="explanation">{{choice_value}}<input type="text"></input></div>
 				{% endif %}
 				</div>
 			{% endfor %}
 		{% endfor %}
+		</div>
 	{% endfor %}
 {% endfor %}
-<button>Submit Feedback</button>
+<button class="submit_feedback_form_btn">Submit Feedback</button>
 </div><!-- close off legal -->
 </div><!-- close off center_container -->
 </div><!-- close off guest page -->

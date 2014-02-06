@@ -1323,8 +1323,90 @@ div.legal{
 }
 
 /* feeedback form */
+.feedback_form h1 .sub_h1{
+	font-size:16px;
+}
 .feedback_form .subtitle{
 	margin-top:-5px;
 	font-size:14px;
+	margin-bottom:25px;
+}
+.feedback_form .question_line{
+	margin-top:25px;
+	margin-bottom:10px;
+}
+.feedback_form .question_line .question_question{
+	margin-bottom:10px;
+	display:inline-block;
+}
+.feedback_form .radio_button_choice {
+	margin-left:20px;
+	padding-bottom:12px;
 }
 
+.feedback_form .radio_button_choice input{
+	margin-right:8px;
+	}
+
+.feedback_form .radio_button_choice .explanation {
+	display:inline-block;
+}
+.feedback_form .radio_button_choice .explanation input{
+	margin-left:10px;
+	width:550px;
+
+}
+
+.feedback_form .submit_feedback_form_btn{
+	margin-top:35px;
+	height:40px;
+	width:200px;
+	margin-bottom:70px;
+	background: #242434;
+	color:white;
+	font-size:16px;
+	border:0px;
+	border-radius:10px;
+}
+.feedback_form .disabled_submit_btn{
+	background:#B2B2B2;
+	color:#CCCCCC;
+}
+
+.feedback_form .submit_feedback_form_btn:hover{
+	cursor:pointer;
+}
+
+.feedback_form .feedback_error_line{
+}
+.feedback_form .feedback_error_text{
+	display:inline-block;
+	background:red;
+	color:white;
+	font-size:13px;
+	border-radius:10px;
+	padding:3px 12px;
+	#margin-left:20px;
+	margin-bottom:5px;
+}
+.feedback_form .feedback_error_overview{
+	font-weight:bold;
+	font-size:16px;
+	margin-bottom:15px;
+}
+.feedback_form .feedback_explanation_error{
+	margin-top:3px;
+	margin-left:23px;
+	padding:1px 5px;
+	border-radius:5px;
+	background:#FF3333;
+}
+
+.feedback_form .submit_response{
+	background:orange;
+	color:white;
+	display:inline-block;
+	padding:5px 10px;
+	font-size:14px;
+	margin-left:15px;
+}

@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -231,27 +231,40 @@ def feedback_form(request):
     if request.user.bCompletedSurvey:
         return HttpResponseRedirect('/your_crushes/') # only allow form to be filled out once
     questions=[
-               {'Do you think this site is useful?': [{'Yes': None},{'No':'Why Not?'}]},
-               {'Would you recommend this site to a friend?': [{'Yes': None},{'No':'Why Not?'}]},
-               {'Do you understand how this site works?': [{'Yes': None},{'Kind of':'What part of site is not clear to you?'},{'No':'Why not?'}]},
+               {'Do you think this site is useful?': [{'Yes': None},{'No':'Why not?'}]},
+               {'Would you recommend this site to a friend?': [{'Yes': None},{'No':'Why not?'}]},
+               {'Do you understand how this site works?': [{'Yes': None},{'Kind of':'What is not clear to you?'},{'No':'What is not clear to you?'}]},
                {'Do you trust that your identity as an admirer will be kept private if you use this site?': [{'Yes': None},{'No':'Why not?'}]},
-              { 'Would you use this site for someone you really liked?': [{'Yes': None},{'No':'Please explain why not'}]},
-               {'How would you describe your relationship with your crush(s)?': [{'Close friends': None},{'We are acquaintances':None},{'They know of me': None},{'They don\'t know me at all': None},]},
-               {'Would you pay $1 to see how your crush responded?': [{'Yes': None},{'No':'Please explain why not'}]},
-               {'Would you pay $5 to see how your crush responded?': [{'Yes': None},{'No':'Please explain why not'}]},
-               {'Do you understand how credits work?': [{'yes': None},{'No':None}]},
-               {'Would you use your PayPal account to purchase credits': [{'Yes': None},{'I don\'t have a PayPal account':None},{'No':'Why not?'}]},
-               {'Would you use your credit card to purchase credits?': [{'Yes': None},{'I don\'t have a credit card',None},{'No':'Why not?'}]},
+              { 'Would you use this site for someone you really liked?': [{'Yes': None},{'No':'Why not?'}]},
+               {'How would you describe your relationship with your crush(s)?': [{'Close friends': None},{'We are acquaintances':None},{'They know of me': None},{'They don\'t know me at all': None},{'Other': 'Explain'}]},
+               {'Would you pay $1 to see how your crush responded?': [{'Yes': None},{'No':'Why not?'}]},
+               {'Would you pay $5 to see how your crush responded?': [{'Yes': None},{'No':'Why not?'}]},
+               {'Do you understand how credits work?': [{'Yes': None},{'No':None}]},
+               {'Would you use your PayPal account to purchase credits?': [{'Yes': None},{'I don\'t have a PayPal account':None},{'No':'Why not?'}]},
+               {'Would you use your credit card to purchase credits?': [{'Yes': None},{'I don\'t have a credit card':None},{'No':'Why not?'}]},
                {'Did you send your crush an invitation using our invite dialog?': [{'Yes': None},{'No':'Why not?'}]}, 
                {'Do you understand why we ask you for your crush\'s contact information to send invites?': [{'Yes': None},{'No':None}]},  
-               {'How difficult was our invite dialog to use?': [{'Not difficult at all': None},{'A bit difficult':'Please explain why'},{'Very difficult':'Please explain why'}]},              
-               {'Do you usually know the email address of your crushes?': [{'Yes': None},{'No':None}]},
-               {'Do you usually know the twitter username of your crushes?': [{'Yes': None},{'No':None}]},
-               {'Would you pay $1 to send an anonymous invite through facebook (which increases the chances of receiving a response)?': [{'Yes': None},{'No':'Why not?'}]},
+               {'How difficult was our invite dialog to use?': [{'Not difficult at all': None},{'A bit difficult':'Explain'},{'Very difficult':'Explain'}]},              
+               {'Do you know the email address of your crushes?': [{'Yes': None},{'No':None}]},
+               {'Do you know the twitter username of your crushes?': [{'Yes': None},{'No':None}]},
+               {'Would you pay $1 to send an anonymous invite through facebook (which increases your chances of receiving a response)?': [{'Yes': None},{'No':'Why not?'}]},
                 {'Did you know we can send an invitation to mutual friends of your crush and ask them to forward it to your crush?': [{'Yes': None},{'No':None}]},
                 {'Would you send invitations through mutual friends of your crush?': [{'Yes': None},{'No':'Why not?'}]},
-                {'Can we make our site more useful for you': [{'No, it\'s perfect as is':None},{'Yes':'How so?'}]},
+                {'How can we improve our site for you?': [{'It\'s perfect - no suggestions':None},{'My suggestions':''}]},
                 ]
 
     return render(request, 'feedback_form.html',{'questions':questions})    
 
+def post_feedback_form(request):
+    
+    if request.user.bCompletedSurvey != True:
+        request.user.bCompletedSurvey=True;
+        current_credits=request.user.site_credits
+        current_credits += 1
+        request.user.site_credits = current_credits
+        request.user.save(update_fields=['bCompletedSurvey','site_credits'])
+        ajax_submit_feedback(request)
+        
+        return HttpResponse("Good")
+    else:
+        return HttpResponseForbidden("Already Submitted Form")
