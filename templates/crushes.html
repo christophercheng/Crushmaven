@@ -249,7 +249,7 @@ $(".response_view_rating .help_icon").qtip({
 	}
 });	
 
-{% if 'signin' in request.GET  and no_track != True %}
+{% if 'signin' in request.GET  %}
 	// facebook conversion pixel
 	var fb_param = {};
 	fb_param.pixel_id = '6011693977194';
