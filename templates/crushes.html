@@ -249,6 +249,22 @@ $(".response_view_rating .help_icon").qtip({
 	}
 });	
 
+{% if 'signin' in request.GET %}
+	// facebook conversion pixel
+	var fb_param = {};
+	fb_param.pixel_id = '6011693977194';
+	fb_param.value = '0.01';
+	fb_param.currency = 'USD';
+	(function(){
+	var fpw = document.createElement('script');
+	fpw.async = true;
+	fpw.src = '//connect.facebook.net/en_US/fp.js';
+	var ref = document.getElementsByTagName('script')[0];
+	ref.parentNode.insertBefore(fpw, ref);
+	})();
+	
+{% endif %}
+
 });
 </script>
 
@@ -374,7 +390,7 @@ When your crush told us that they weren't interested in you, we asked them why.
 </span>
 </span>
 <script type="text/javascript" src="{{ STATIC_URL }}qtip/jquery.qtip.min.js"></script>
-{% if 'signin' in request.GET %}
+{% comment %}
 	<!-- Bing Code For Signup Conversion Page -->
 	<script type="text/javascript"> if (!window.mstag) mstag = {loadTag : function(){},time : (new Date()).getTime()};</script> <script id="mstag_tops" type="text/javascript" src="//flex.msn.com/mstag/site/8584f04c-0e0b-4612-9968-ab2ab721e37d/mstag.js"></script> <script type="text/javascript"> mstag.loadTag("analytics", {dedup:"1",domainId:"2809881",type:"1",actionid:"209971"})</script> <noscript> <iframe src="//flex.msn.com/mstag/tag/8584f04c-0e0b-4612-9968-ab2ab721e37d/analytics.html?dedup=1&domainId=2809881&type=1&actionid=209971" frameborder="0" scrolling="no" width="1" height="1" style="visibility:hidden;display:none"> </iframe> </noscript>
 	<!-- Google Code for Signup Conversion Page -->
@@ -396,7 +412,7 @@ When your crush told us that they weren't interested in you, we asked them why.
 		<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/975240435/?value=0&amp;label=sytPCO2_pQcQ8_mD0QM&amp;guid=ON&amp;script=0"/>
 		</div>
 	</noscript>
-{% endif %}
+{% endcomment %}
 
 {% endblock %}
 
