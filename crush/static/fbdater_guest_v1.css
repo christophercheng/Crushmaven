@@ -517,9 +517,9 @@ div#how_it_works_section .info_section_title{
 	color:#fff;
 	text-shadow:1px 1px 0 #21073D;
 	margin-left:-108px;
-	margin-top:40px;
+	margin-top:55px;
 	text-align:center;
-	margin-bottom:45px;
+	margin-bottom:50px;
 	font-size:39px;
 }
 
@@ -536,10 +536,11 @@ div#how_it_works_section .info_section_subtitle{
 	white-space:nowrap;
 	text-shadow:1px 1px 0 #21073D;
 	font-weight:600;
+	margin-top:10px;
 	}
 
 div#how_it_works_section .info_section_text {
-	margin-top:10px;
+	margin-top:5px;
 	color:white;
 	color:#E9E9E9;
 	padding-bottom:11px;
@@ -1254,7 +1255,7 @@ div.legal{
 #show_lineup_screenshot{
 	position:relative;	
 	display:block;
-	margin-top:10px;
+	margin-top:20px;
 	margin-bottom:-10px;
 }
 #show_lineup_screenshot .open_btn:hover{
