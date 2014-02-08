@@ -556,7 +556,7 @@ div#who_it_works_on_section {
 	#background:#F2F2F2;
 	background-color:rgb(242,242,242)!important;
 	background: url("/static/images/repeat-bg-transparent.png") repeat scroll left top rgb(231, 227, 219);
-	padding-bottom:30px;
+	padding-bottom:45px;
 }
 
 div#who_it_works_on_section .icon{
@@ -579,8 +579,6 @@ div#who_it_works_on_section .icon2{
 div#who_it_works_on_section .icon3{
 	margin-left:367px;
 }
-
-
 
 div#who_it_works_on_section .info_section_subtitle {
 	display:block;
@@ -615,10 +613,16 @@ div#who_it_works_on_section .info_section_text{
 	width:494px;
 	margin-left:220px;
 	line-height:36px;
-	padding:20px 14px 25px 18px;
+	padding:20px 14px 35px 18px;
 	font-size:15px;
 	border-bottom:1px solid #DADADA;
 	box-shadow:0px 1px 1px #fff;
+}
+
+div#who_it_works_on_section .info_row3 .info_section_text{
+	border:0px;
+	box-shadow:none;
+	margin-bottom:0px;
 }
 
 div#who_will_know_section {
