@@ -353,13 +353,13 @@ div.info_section_subtitle{
 
 div.info_section_text {
 	font-size:16px;
-	line-height:28px;
+	line-height:30px;
 	color:#333333;
 }
 
-/*
 
-#qa_section .info_column:hover .icon,#qa_section .info_column2 .icon.spinme{
+
+#qa_section .use_case_circle:hover {
 -webkit-animation-name: spin;
     -webkit-animation-duration: 300ms;
     -webkit-animation-iteration-count: 1;
@@ -377,6 +377,7 @@ div.info_section_text {
     animation-duration: 300ms;
     animation-iteration-count: 1;
     animation-timing-function: linear;
+    cursor:default;
 }
 @-ms-keyframes spin {
     from { -ms-transform: rotate(0deg); }
@@ -399,7 +400,6 @@ div.info_section_text {
     }
 }
 
-*/
 div#qa_section{
 	background-color:#fff;
 	padding-top:50px;
@@ -588,8 +588,8 @@ div#who_it_works_on_section .info_section_subtitle {
 	border-radius:15px 15px 2px 2px;
 	padding:1px 25px 0px 15px;
 	text-align:center;
-	width:494px!important;
-	margin-left:220px!important;
+	width:504px!important;
+	margin-left:225px!important;
 	margin-top:15px;
 }
 
@@ -610,12 +610,11 @@ div#who_it_works_on_section .info_section_text{
 	margin-bottom:55px;
 	margin-top:-6px;
 	-webkit-font-smoothing: antialiased;
-	width:494px;
-	margin-left:220px;
-	#line-height:36px;
+	width:504px;
+	margin-left:225px;
+	line-height:32px;
 	height:130px;
-	padding:20px 18px;
-	font-size:15px;
+	padding:20px 16px;
 	border-bottom:1px solid #DADADA;
 	box-shadow:0px 1px 1px #fff;
 }
