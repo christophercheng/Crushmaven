@@ -359,52 +359,8 @@ div.info_section_text {
 	line-height:28px;
 	color:#333333;
 }
-div#qa_section{
-	background-color:#fff;
-	margin-top:1px;
-	border-top:1px solid rgb(212,212,212);
-	border-bottom:1px solid rgb(212,212,212);
-}
 
-div#qa_section .icon {
-	height:48px;
-}
-div#qa_section .info_section_title{
-	color:red;
-	color:#3b5998;
-	font-size:28px;
-	width:280px;
-	line-height:33px;
-	margin-bottom:7px;
-}
-
-#qa_section .info_section_subtitle {
-	color:red;
-	color:#3b5998;
-	font-size:22px;
-
-}
-
-#qa_section .info_section_text {
-	margin-top:7px;
-}
-
-#qa_section .info_column1 .info_section_text {
-	#font-weight:700;
-	color:black;
-}
-
-
-.purple_triangle{
-	display:inline-block;
-	width: 0px;
-height: 0px;
-border-style: solid;
-border-width: 4px 0 4px 6px;
-border-color: transparent transparent transparent #9b4294;
-margin-right:10px;
-}
-
+/*
 
 #qa_section .info_column:hover .icon,#qa_section .info_column2 .icon.spinme{
 -webkit-animation-name: spin;
@@ -446,77 +402,84 @@ margin-right:10px;
     }
 }
 
+*/
+div#qa_section{
+	background-color:#fff;
+	padding-top:0px;
+	padding-bottom:0px;
+	background-color:rgb(242,242,242)!important;
+	background: url("/static/images/repeat-bg-transparent.png") repeat scroll left top rgb(231, 227, 219);
+	border-bottom:1px solid black;
+	border-top:1px solid black;
+}
+#qa_section .info_section_content {
+	padding-left:100px;
+	padding-bottom:0px;
+	margin-top:-10px;
+}
 
-.use_case {
+.use_case_outer_border{
+	vertical-align:top;
+	position:relative;
 	display:inline-block;
-	#border-radius:15px;
-	color:#9A3F98;
-	#border:1px solid #9A3F98;
-	#padding:2px 10px;
-	#color:#9A3F98;
-	#color:white;
-	#font-size:14px;
-	#line-height:20px;
-	cursor:default;
-	white-space:nowrap;
+	height:158px;
+	width:158px;
+	background:#372050;
+	border-radius:50%;
+	margin-right:45px;
+	box-shadow:1px 1px 15px #372050;
+	z-index:1;
 }
 
-.use_case:hover{
-	color:#7B327A;
-	font-size:17px;
+.use_case_border{
+	position:absolute;
+	display:inline-block;
+	height:156px;
+	width:156px;
+	top:1px;
+	left:1px;
+	background:#fff;
+	border-radius:50%;
+}
+.use_case_inner_border{
+	display:inline-block;
+	position:absolute;
+	top:2px;
+	left:2px;
+	height:152px;
+	width:152px;
+	border-radius:50%;
+	background:#372050;
+		z-index:1;
 }
 
-.use_case:hover .purple_triangle{
-	border-color: transparent transparent transparent #7B327A;
-}
-.use_case.always_16_font{
-	font-size:16px!important;
+.use_case_circle {
+	position:absolute;
+	top:1px;
+	left:1px;
+	display:inline-block;
+	height:150px;
+	width:150px;
+	color:	#372050;
+	background:white;
+	font-size:18px;
+	line-height:26px;
+	text-align:center;
+	border-radius:50%;
+	padding:37px 23px;
+	z-index:1;
 }
 
 div#how_it_works_section {
 
 	color:#fff!important;
-	margin-top:-4px;
-	#margin-bottom:1px;
+	margin-top:-15px;
 	-webkit-font-smoothing: antialiased;
 	border-top:1px solid #000;
 	border-bottom:1px solid #000;
 	background:#372050;
 }
-/*
-div#qa_section:after{
-    content: " ";
-    display:block;
-    position: relative;
-    bottom:-312px;
-    left:0px;
-    width:100%;
-    height:14px;
-    background: linear-gradient(#FFF 0%, transparent 0%), linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
-    background: -webkit-linear-gradient(#FFF 0%, transparent 0%), -webkit-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -webkit-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
-    background: -o-linear-gradient(#FFF 0%, transparent 0%), -o-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -o-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
-    background: -moz-linear-gradient(#FFF 0%, transparent 0%), -moz-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -moz-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
-        background: -ms-linear-gradient(#FFF 0%, transparent 0%), -ms-linear-gradient(125deg, #372050 33.33%, transparent 33.33%) 0 0%, #372050 -ms-linear-gradient(55deg, #372050 33.33%, #FFF 33.33%) 0 0%;
-    background-repeat: repeat-x;
-    background-size: 0px 100%, 13px 14px, 13px 14px;
-}
-div#how_it_works_section:after{
-    content: " ";
-    display:block;
-    position: relative;
-    bottom:-377px;
-    left:0px;
-    width:100%;
-    height:14px;
-    background: linear-gradient(#372050 0%, transparent 0%), linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
-    background: -webkit-linear-gradient(#372050 0%, transparent 0%), -webkit-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -webkit-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
-    background: -o-linear-gradient(#372050 0%, transparent 0%), -o-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -o-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
-    background: -moz-linear-gradient(#372050 0%, transparent 0%), -moz-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -moz-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
-        background: -ms-linear-gradient(#372050 0%, transparent 0%), -ms-linear-gradient(125deg, #F2F2F2 33.33%, transparent 33.33%) 0 0%, #F2F2F2 -ms-linear-gradient(55deg, #F2F2F2 33.33%, #372050 33.33%) 0 0%;
-    background-repeat: repeat-x;
-    background-size: 0px 100%, 13px 14px, 13px 14px;
-}
-*/
+
 #guest_page #how_it_works_section{
 	background:#fff;
 	padding-top:90px;
@@ -564,18 +527,11 @@ div#how_it_works_section .step_number{
 }
 
 div#how_it_works_section .info_section_subtitle{
-	#color:#9A3F98;
 	color:#fff;
 	white-space:nowrap;
-	#border-bottom:1px solid #9A3F98;
-	#border-bottom:1px solid white;
-	#border-color:#532f83;
-	#border-color:darkGray;
-	#padding-bottom:14px;
 	text-shadow:1px 1px 0 #21073D;
 	font-weight:600;
 	}
-	
 
 div#how_it_works_section .info_section_text {
 	margin-top:10px;
@@ -591,10 +547,9 @@ div#how_it_works_section .info_column2 .icon {
 }
 
 div#who_it_works_on_section {
-	
-	background:#F2F2F2;
-	#background:white;
-	#border-top:1px solid rgb(212,212,212);
+	#background:#F2F2F2;
+	background-color:rgb(242,242,242)!important;
+	background: url("/static/images/repeat-bg-transparent.png") repeat scroll left top rgb(231, 227, 219);
 }
 
 div#who_it_works_on_section .icon{
