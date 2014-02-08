@@ -446,6 +446,7 @@ div#qa_section{
 	width:152px;
 	border-radius:50%;
 	background:#372050;
+	background:#000;
 		z-index:1;
 }
 
@@ -466,6 +467,7 @@ div#qa_section{
 	border-radius:50%;
 	padding:38px 23px;
 	z-index:1;
+
 }
 
 div#how_it_works_section {
