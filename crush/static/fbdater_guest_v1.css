@@ -1228,7 +1228,7 @@ div.legal{
 	margin-bottom:-10px;
 }
 #show_lineup_screenshot .open_btn:hover{
-	opacity:1;
+	opacity:.9;
 }
 .close_btn:hover,.open_btn:hover{
 	cursor:pointer;
@@ -1239,7 +1239,6 @@ div.legal{
 	width:617px;
 	height:418px;
 	background:#000;
-	border-radius:20px;
 	position:absolute;
 	left:-195px;
 	top:-210px;
@@ -1250,9 +1249,9 @@ div.legal{
 #show_lineup_screenshot .open_btn {
 	display:inline-block;
 	padding:6px 15px 5px 15px;
-	border-radius:8px;
+	border-radius:10px;
 	background:#fff;
-	opacity:.8;
+	opacity:1;
 	color:#372050;
 	white-space:nowrap;
 }
