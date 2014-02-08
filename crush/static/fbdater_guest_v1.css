@@ -421,6 +421,7 @@ div#qa_section{
 	height:158px;
 	width:158px;
 	background:#372050;
+	background:#fff;
 	border-radius:50%;
 	margin-right:45px;
 	box-shadow:1px 1px 25px #372050;
@@ -446,7 +447,7 @@ div#qa_section{
 	width:152px;
 	border-radius:50%;
 	background:#372050;
-	background:#000;
+	#background:#9A3F98;
 		z-index:1;
 }
 
