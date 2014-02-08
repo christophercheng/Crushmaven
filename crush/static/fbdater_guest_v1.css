@@ -6,7 +6,8 @@ margin: 0; padding: 0; border: 0;
 }
 
 body {
-	font-family:"Houschka Rounded Medium","varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
+	#font-family:"Houschka Rounded Medium","varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
+	font-family:"varela round","helvetica neue","lucida grande",helvetica,arial,verdana,sans-serif;  
 	font-weight:normal;
   	color: #333333;  
  	overflow-x: auto;	
