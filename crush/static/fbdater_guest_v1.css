@@ -612,8 +612,9 @@ div#who_it_works_on_section .info_section_text{
 	-webkit-font-smoothing: antialiased;
 	width:494px;
 	margin-left:220px;
-	line-height:36px;
-	padding:20px 14px 35px 18px;
+	#line-height:36px;
+	height:130px;
+	padding:20px 18px;
 	font-size:15px;
 	border-bottom:1px solid #DADADA;
 	box-shadow:0px 1px 1px #fff;
