@@ -401,8 +401,8 @@ div.info_section_text {
 */
 div#qa_section{
 	background-color:#fff;
-	padding-top:40px;
-	padding-bottom:35px;
+	padding-top:50px;
+	padding-bottom:0px;
 	background-color:rgb(242,242,242)!important;
 	background: url("/static/images/repeat-bg-transparent.png") repeat scroll left top rgb(231, 227, 219);
 	border-bottom:1px solid black;
@@ -469,7 +469,7 @@ div#qa_section{
 div#how_it_works_section {
 
 	color:#fff!important;
-	#margin-top:-15px;
+	margin-top:-75px;
 	-webkit-font-smoothing: antialiased;
 	border-top:1px solid #000;
 	border-bottom:1px solid #000;
@@ -508,7 +508,7 @@ div#how_it_works_section .info_section_title{
 	color:#fff;
 	text-shadow:1px 1px 0 #21073D;
 	margin-left:-108px;
-	margin-top:-15px;
+	margin-top:40px;
 	text-align:center;
 	margin-bottom:45px;
 	font-size:39px;
