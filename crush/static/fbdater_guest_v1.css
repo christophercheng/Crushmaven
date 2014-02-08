@@ -457,7 +457,9 @@ div#qa_section{
 	height:150px;
 	width:150px;
 	color:	#372050;
+	color:#fff;
 	background:white;
+	background:#372050;
 	font-size:18px;
 	line-height:26px;
 	text-align:center;
