@@ -480,6 +480,7 @@ div#how_it_works_section {
 	border-top:1px solid #000;
 	border-bottom:1px solid #000;
 	background:#372050;
+	padding-bottom:100px
 }
 
 #guest_page #how_it_works_section{
@@ -552,47 +553,72 @@ div#who_it_works_on_section {
 	#background:#F2F2F2;
 	background-color:rgb(242,242,242)!important;
 	background: url("/static/images/repeat-bg-transparent.png") repeat scroll left top rgb(231, 227, 219);
+	padding-bottom:30px;
 }
 
 div#who_it_works_on_section .icon{
 	height:52px;
+	height:82px;
 	margin-bottom:5px;
-	display:inline;
+	display:block;
 	margin-right:15px;
 	vertical-align:bottom;
+	text-align:center;
+	margin-left:392px;
 }
+div#who_it_works_on_section .icon1{
+	margin-left:405px;
+}
+div#who_it_works_on_section .icon2{
+	margin-left:390px;
+}
+
+div#who_it_works_on_section .icon3{
+	margin-left:367px;
+}
+
+
 
 div#who_it_works_on_section .info_section_subtitle {
-	display:inline;
-	#color:#09abe8;
-	#color:#3b5998;
+	display:block;
 	background:#3b5998;
 	color:#fff;
-	border-radius:4px 15px 15px 4px;
-	padding:2px 15px 0px 7px;
-}
-
-div#who_it_works_on_section .info_row2 .info_section_subtitle{
-	margin-left:12px;
-}
-div#who_it_works_on_section .info_row3 .info_section_subtitle{
-	margin-left:18px;
+	#border-radius:4px 15px 15px 4px;
+	border-radius:15px 15px 2px 2px;
+	padding:1px 25px 0px 15px;
+	text-align:center;
+	width:494px!important;
+	margin-left:220px!important;
+	margin-top:15px;
 }
 
 div#who_it_works_on_section .info_section_title {
 	color:#3b5998;
-	#color:#09abe8;
 	font-size:39px;
 		margin-top:-15px;
 		margin-bottom:45px;
+		
+	margin-left:-74px;
+	text-align:center;
+	font-size:39px;
+	margin-top:-15px;
+	margin-bottom:45px;
 }
+
 div#who_it_works_on_section .info_section_text{
-	margin-bottom:36px;
-	margin-top:8px;
+	margin-bottom:50px;
+	margin-top:15px;
 	-webkit-font-smoothing: antialiased;
+	width:494px;
+	margin-left:220px;
+	padding-bottom:50px;
+	border-bottom:1px solid #DADADA;
+	box-shadow:0px 1px 1px #fff;
 }
 div#who_it_works_on_section .info_row3 .info_section_text {
 	margin-bottom:0px;
+	border:0px;
+	box-shadow:none;
 }
 
 div#who_will_know_section {
