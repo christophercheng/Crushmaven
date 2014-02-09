@@ -3857,8 +3857,12 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	color:#4D4D4D;
 	padding-top:4px;
-	width:135px;
+	width:111px;
 	letter-spacing:-1px;
+}
+
+#attraction_email_input_section .crush_email_name.single_crush_email_name {
+	width:101px;
 }
 
 .email_field_input{
@@ -3947,17 +3951,21 @@ ul.bxslider_element #slide_overlay {
 	margin-left:63px;
 	color:#0077cc!important;
 	font-size:13px!important;
-	margin-bottom:20px;	
 	margin-top:-20px;
-	padding:15px 5px;
+	padding:10px 5px 15px 5px;
 	letter-spacing:-1px;
+}
+#show_secondary_options #down_arrow{
+	font-size:11px!important;
+	margin-left:3px;
+	
 }
 #show_secondary_options:hover{
 	text-decoration:underline;
 	cursor:pointer;
 }
 .secondary_options{
-	display:none;
+	#display:none;
 }
 
 #mutual_friend_help_section {
@@ -3982,7 +3990,7 @@ ul.bxslider_element #slide_overlay {
 	display:none;
 }
 #mutual_friend_help_section #mutual_friend_input_section_show {
-	left:172px;
+	left:159px;
 	top:-11px;
 	color:#0077cc!important;
 	font-size:13px!important;	
@@ -4059,17 +4067,13 @@ ul.bxslider_element #slide_overlay {
 }
 
 .mf_email_field_input label{
-	width:163px;
+	width:153px;
 	font-size:11px!important;
 	margin-left:10px;
 	text-align:right;
 	margin-right:1px!important;
 }
 
-.mf_email_field_input .fieldWrapper{
-	display:inline-block;
-	width:328px!important;
-}
 
 .email_field_input label img{
 	margin-left:5px;
@@ -4089,7 +4093,7 @@ ul.bxslider_element #slide_overlay {
 
 .email_field_input .fieldWrapper{
 	display:inline-block;
-	width:320px;
+	width:330px;
 	position:relative;
 }
 .email_field_input .fieldWrapper input{
@@ -4106,7 +4110,7 @@ ul.bxslider_element #slide_overlay {
 	right:-20px!important;	
 }
 
-.facebook_invite_label{
+#email_invite_label{
 	position:relative;
 }
 .reliable_option_label{

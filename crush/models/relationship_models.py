@@ -201,8 +201,6 @@ class CrushRelationship(BasicRelationship):
     date_messaging_expires = models.DateField(default=None,null=True,blank=True)
     is_platonic_rating_paid=models.BooleanField(default=False)
 
-    send_facebook_invite = models.NullBooleanField()
-    date_facebook_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     date_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
     
     LINEUP_INITIALIZATION_STATUS_CHOICES = (                                       

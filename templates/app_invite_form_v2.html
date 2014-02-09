@@ -7,24 +7,6 @@
 $(document).ready(function() 
 {
 
-	$('#id_facebook_invite').click(function(){
-		if (!$(this).is(':checked'))
-			return;
-		var source_person_site_credits={{ request.user.site_credits}};
-		if (source_person_site_credits == 0){
-			$(this).prop('checked', false);
-			data = {};
-			data['csrfmiddlewaretoken']="{{csrf_token}}";
-			data['success_path'] = 'http://www.crushmaven.com/your_crushes/{{crush_username}}/';	
-			data['cancel_url'] =  'http://www.crushmaven.com/your_crushes/{{crush_username}}/';	
-			var unique_id = '{{request.user.username}}';
-			data['unique_id'] = unique_id;
-			data['feature_id']='5';
-			data['purchase_callback_name'] = 'window.display_response_modal(' + unique_id + ')';// not relevant here cause user has 0 credits
-			data['ajax_error']='{{ajax_error}}';
-			window.purchase_feature(data);	
-		}
-	});
 	
 	{% if mf_friend_count > 0 %}
 		$('#mutual_friend_help_section').css('min-height','55px');
@@ -55,13 +37,14 @@ $(document).ready(function()
          					$("#app_invite_form .site_dialog_button").removeAttr('disabled');
            					$("#sendbutton").attr('value','Send');
            					
+           					{% comment %}
            					if ($('#app_invite_form .mf_generic_emails_fieldWrapper .errorlist').length)
                     			$('#show_secondary_options').trigger('click');
            					if ($('#app_invite_form .twitter_fieldWrapper .errorlist').length)
                     			$('#show_secondary_options').trigger('click');
-           					
+           					{% endcomment %}
            					if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
-                    			$('#show_secondary_options').trigger('click');
+                    			//$('#show_secondary_options').trigger('click');
                     			$('#app_invite_form #mutual_friend_input_section').show();
                     			section_offset=$('#mutual_friend_input_section').offset().top + 26; // this is the pixel top position of the first input
                     			offsetTop = $('#mutual_friend_input_section .errorlist').first().children('li').offset().top-section_offset;
@@ -70,24 +53,6 @@ $(document).ready(function()
                     			},0);
                     		}
                     		setup_qtips();
-
-	                		  $("a.check_credit").click(function(e) {
-	                				data = {};
-	                				data['csrfmiddlewaretoken']="{{csrf_token}}";
-	                				data['success_path'] = $(this).attr('success_path');	
-	                				data['cancel_url'] =  $(this).attr('cancel_url');
-	                				var unique_id = $(this).attr('unique_id');
-	                				data['unique_id'] = unique_id;
-	                				data['feature_id'] = $(this).attr('feature_id');
-	                				data['purchase_callback_name'] = 'window.display_response_modal(' + unique_id + ')';
-	                				data['ajax_error']='{{ajax_error}}';
-	                				window.purchase_feature(data);
-	                				
-	                		   }); // close off a.check_credit.click 
-	                		  //trigger purchase dialog if user doesn't have credit to send facebook invite
-	                		  if ($('#app_invite_form .generic_email_errors .errorlist li .check_credit').length){
-	                			  $("a.check_credit").trigger('click');
-	                		  }
                     	}// close off else - some sort of error
                     });
                 
@@ -98,11 +63,13 @@ $(document).ready(function()
 
 // calculate height of the preview section container
 
-		
+{% comment %}		
 $('#app_invite_form').on('click','#show_secondary_options', function(){
 	$('.secondary_options').show();
+	$('#attraction_email_input_section .first_crush_email_name').removeClass('single_crush_email_name');
 	$(this).hide();
 });
+{% endcomment %}
 
 		
 $('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
@@ -175,31 +142,6 @@ $('.sent_from_us').css('opacity',0);
 });
 setup_qtips=function(){
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
-
-
-	$(".app_invite_dialog .fb_invite_checkbox_label .help_icon").qtip({
-		content:{
-			text:$('#invite_dialog_fb_invite_help_content'),
-			title:"What is a credit and why am I being charged for a Facebook Invite?"
-		},
-		position: {
-	        my: 'left top',  
-	        at:'top left'
-		},
-		show:{
-			delay:0,
-		},
-		hide:{
-			delay:500,
-			fixed:true,
-		},
-		style:{
-			classes: 'qtip-blue qtip-rounded qtip-shadow',
-			tip:{
-				corner:true
-			}
-		}
-	});		
 	
 	$(".app_invite_dialog .email_field_input .fieldWrapper.mf_generic_emails_fieldWrapper .help_icon, #mutual_friend_help_section #mutual_friend_input_section_show .help_icon").qtip({
 		content:{
@@ -292,40 +234,29 @@ $(".tooltip_subtitle").click(function(){
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">Invites sent <i>anonymously</i> via CrushMaven facebook, email & twitter accounts</div>
+   <div class="modal_instructions">Help us get your crush signed in, so we can get their response.<BR>(invites are sent <i>anonymously</i> via CrushMaven email & twitter accounts)</div>
 
    {% csrf_token %}
 
 
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
-
-      <label for="id_facebook_invite" class="facebook_invite_label"><span class="crush_email_name"><span class="invite_option_label">1</span>via Facebook</span>{% if send_facebook_invite != True %}<span class="reliable_option_label">(most reliable option)</span>{% endif %}</label> 
-      {% if send_facebook_invite != True %}
-	      <div class="fieldWrapper"><span class="fb_invite_icon">&nbsp;</span>
-	         {{ form.facebook_invite }}<span class="fb_invite_checkbox_label">I agree to be charged 1 credit for this option<span class="help_icon">?</span></span>
-	      </div>
-      {% else %}
-	      <div class="fieldWrapper">
-	      	<div class="fb_invite_sent_label">(already processed)</div>
-	      </div>
-      {% endif %}
       
-      <label for="id_crush_emails"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">2</span>via {{ crush_pronoun}} Email</span></label> 
+      <label for="id_crush_emails" id="email_invite_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun}} Email</span><span class="reliable_option_label">(best option)</span></label> 
       <div class="fieldWrapper crush_email_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
          <span class="email_separator sub_label">separate multiple emails with commas</span>
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
       		
       </div>
-     <div id="show_secondary_options">show invite options 3 & 4</div>
+     {% comment %}<div id="show_secondary_options">show invite options 2 & 3<span id="down_arrow" class="arrow">&#x25BC;</span></div>{% endcomment %}
      <div class="secondary_options">
-      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">3</span>via {{ crush_pronoun }} Twitter </span></label> 
+      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Twitter </span></label> 
       <div class="fieldWrapper twitter_fieldWrapper"><span class="twitter_icon">&nbsp;</span>
 	      {{ form.twitter_username }}<span class="help_icon">?</span>
 	      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
       </div>
-      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">4</span>via {{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
+      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
       <div class="fieldWrapper mf_generic_emails_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.mf_generic_emails }}<span class="help_icon">?</span>
          <div class="email_input_error_section">{{ form.mf_generic_emails.errors }}</div>
@@ -481,54 +412,3 @@ $(".tooltip_subtitle").click(function(){
 	<span class="tooltip_close">close</span>
 </span>
 	
-<span class="help_dialog_content" id="invite_dialog_fb_invite_help_content">
-	<span class="tooltip_content tooltip_maincontent">
-	Credits are 'virtual currency' that you can spend on certain features of the site.  
-	We charge a credit for this option because Facebook charges us to send messages (from our account) to someone not directly connected to us.
-	</span>
-	<span class="related_subsections">related q&a:</span>
-	<span class ="tooltip_subsection">
-		<span class="tooltip_subtitle">
-			How many credits do I have?
-		</span>
-		<span class="tooltip_content tooltip_relatedcontent">
-		 You currently have {{ request.user.site_credits}} {% if request.user.site_credits == 1 %}credit{% else %} credits{% endif %}.  You can always check your available credits under the settings menu (in the top right hand corner of the site).
-		</span>
-	</span>
-	<span class ="tooltip_subsection">
-		<span class="tooltip_subtitle">
-			Why do we charge credits for certain features?
-		</span>
-		<span class="tooltip_content tooltip_relatedcontent">
-			Charging credits is the primary way that we make money from this service and put food on our tables.  
-			We will only charge you when we have performed a valuable service on your behalf, for example if we determine if your crush feels the same or not.
-		</span>
-	</span>
-	<span class ="tooltip_subsection">
-		<span class="tooltip_subtitle">
-			What if I run out of credits?
-		</span>
-		<span class="tooltip_content tooltip_relatedcontent">
-		You can always purchase more credits from within the settings menu (in the top right hand corner of the site).  We accept payment via Paypal and most major credit cards (also via our Paypal service).
-		</span>
-	</span>
-	<span class ="tooltip_subsection">
-		<span class="tooltip_subtitle">
-			How much do credits cost?
-		</span>
-		<span class="tooltip_content tooltip_relatedcontent">
-			Each credit currently costs $1 USD.  However, we provide volume purchase discounts - the more you purchase at one time, the greater the discount you will receive.
-		</span>
-	</span>
-	<span class ="tooltip_subsection">
-		<span class="tooltip_subtitle">
-			What if I don't have a Paypal account or credit card to purchase more credits?
-		</span>
-		<span class="tooltip_content tooltip_relatedcontent">
-			We are considering developing a feature that will allow you to transfer credits from another user.  
-			Please provide us with your feedback to let us know if you think this is useful.  
-			Our feedback tab is located on the bottom right hand corner of the site.
-		</span>
-	</span>
-	<span class="tooltip_close">close</span>
-</span>
