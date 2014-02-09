@@ -66,6 +66,11 @@ class MF_MultiEmailFieldHelp(MultiEmailField):
     widget=forms.TextInput(attrs={'placeholder':'enter any email addresses','maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
 
+# any friends
+class AF_MultiEmailField(MultiEmailField):
+    widget=forms.TextInput(attrs={'placeholder':'emails','maxlength':'100'})
+# same as mutliemailfield but placeholder text is not crush specific
+
 class TwitterField(forms.Field):
     widget=forms.TextInput(attrs={'placeholder':'username','maxlength':'15'})
     
@@ -105,7 +110,7 @@ class AppInviteForm2(forms.Form):
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
-    mf_generic_emails = MF_MultiEmailFieldNoHelp(required=False,label='crush_field',help_text="HEHEHEH")
+    mf_generic_emails = AF_MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     source_person_email=''
     source_person_site_credits=''
     source_person_username=''
