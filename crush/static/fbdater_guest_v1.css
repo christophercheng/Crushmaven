@@ -560,14 +560,14 @@ div#who_it_works_on_section .icon{
 	margin-left:392px;
 }
 div#who_it_works_on_section .icon1{
-	margin-left:403px;
+	margin-left:402px;
 }
 div#who_it_works_on_section .icon2{
-	margin-left:390px;
+	margin-left:383px;
 }
 
 div#who_it_works_on_section .icon3{
-	margin-left:367px;
+	margin-left:353px;
 }
 
 div#who_it_works_on_section .info_section_subtitle {
@@ -578,18 +578,17 @@ div#who_it_works_on_section .info_section_subtitle {
 	border-radius:15px 15px 2px 2px;
 	padding:1px 25px 0px 15px;
 	text-align:center;
-	width:504px!important;
-	margin-left:225px!important;
+	width:495px!important;
+	margin-left:220px!important;
 	margin-top:15px;
 }
 
 div#who_it_works_on_section .info_section_title {
 	color:#3b5998;
 	font-size:39px;
-		margin-top:-15px;
-		margin-bottom:45px;
-		
-	margin-left:-74px;
+	margin-top:-15px;
+	margin-bottom:45px;	
+	margin-left:-70px;
 	text-align:center;
 	font-size:39px;
 	margin-top:-15px;
@@ -600,8 +599,8 @@ div#who_it_works_on_section .info_section_text{
 	margin-bottom:55px;
 	margin-top:-6px;
 	-webkit-font-smoothing: antialiased;
-	width:504px;
-	margin-left:225px;
+	width:495px;
+	margin-left:220px;
 	line-height:32px;
 	height:130px;
 	padding:20px 16px;
@@ -634,6 +633,7 @@ div#who_will_know_section .info_section_title {
 	color:#ff0000;
 	#color:#09abe8;
 	color:#9A3F98;
+	color:#6F40A0;
 	margin-left:-74px;
 	text-align:center;
 	font-size:39px;
@@ -644,6 +644,7 @@ div#who_will_know_section .info_section_subtitle {
 	color:#ff0000;
 	#color:#09abe8;
 	color:#9A3F98;
+	color:#6F40A0;
 	margin-right:8px;
 	font-size:20px;
 }
@@ -888,39 +889,38 @@ color:#000;
 }
 .footer_section .center_container {
 	padding-top:50px;
-	font-size:16px;
-	padding-bottom:55px;
+	font-size:14px;
+	padding-bottom:85px;
 	#font-family:"helvetica neue",arial;
-	letter-spacing:1px;
+	letter-spacing:0px;
 	text-align:center;
 	color:#fff;
 }
 .footer_section .center_container .first_footer_line{
 	display:inline-block;
 	margin-left:-40px;
+	opacity:.6;
 }
 
-.hidden_text{
 
-	color:#141432;
+#bottom_links{
+	margin-top:15px;
+	display:block;
+	margin-left:-90px;
 }
 
 #bottom_links a{
-	font-size:14px;
+	font-size:13px;
 	display:inline-block;
-	margin-left:20px;
+	margin-left:40px;
 	font-weight:normal;
 	color:#fff;
+	opacity:.8;
 }
 
-a#bottom_link_contact:hover {
-	color:#ED1939;
-}
-a#bottom_link_terms:hover {
-	color:#9A3F98;
-}
-a#bottom_link_privacy:hover {
-	color:#09ABE8;
+#bottom_links a:hover {
+	opacity:1;
+	text-decoration:underline;
 }
 
 /*  ----------- GUEST PAGES ------------ */
