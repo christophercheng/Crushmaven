@@ -234,7 +234,7 @@ $(".tooltip_subtitle").click(function(){
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">To get a quick response from {{ crush_firstname}}, please help us get {{ crush_pronoun | lower }} signed in.<BR>Provide us with as many ways to reach her as you can below.</div>
+   <div class="modal_instructions">For a quick response, we need your help getting {{ crush_firstname }} signed in.<BR>Provide us with as many ways to reach {{ crush_pronoun | lower}} as you can below.</div>
 
    {% csrf_token %}
 
