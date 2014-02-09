@@ -454,11 +454,11 @@ div#qa_section{
 
 .use_case_circle {
 	position:absolute;
-	top:1px;
-	left:1px;
+	top:2px;
+	left:2px;
 	display:inline-block;
-	height:150px;
-	width:150px;
+	height:148px;
+	width:148px;
 	color:	#372050;
 	color:#fff;
 	background:white;
