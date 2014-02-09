@@ -419,8 +419,8 @@ div#qa_section{
 	vertical-align:top;
 	position:relative;
 	display:inline-block;
-	height:162px;
-	width:162px;
+	height:160px;
+	width:160px;
 	background:#372050;
 	background:#fff;
 	border-radius:50%;
@@ -432,8 +432,8 @@ div#qa_section{
 .use_case_inner_border{
 	display:inline-block;
 	position:absolute;
-	top:6px;
-	left:6px;
+	top:5px;
+	left:5px;
 	height:150px;
 	width:150px;
 	border-radius:50%;
