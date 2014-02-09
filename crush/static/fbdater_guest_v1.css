@@ -419,8 +419,8 @@ div#qa_section{
 	vertical-align:top;
 	position:relative;
 	display:inline-block;
-	height:158px;
-	width:158px;
+	height:162px;
+	width:162px;
 	background:#372050;
 	background:#fff;
 	border-radius:50%;
@@ -429,33 +429,23 @@ div#qa_section{
 	z-index:1;
 }
 
-.use_case_border{
-	position:absolute;
-	display:inline-block;
-	height:156px;
-	width:156px;
-	top:1px;
-	left:1px;
-	background:#fff;
-	border-radius:50%;
-}
 .use_case_inner_border{
 	display:inline-block;
 	position:absolute;
-	top:2px;
-	left:2px;
-	height:152px;
-	width:152px;
+	top:6px;
+	left:6px;
+	height:150px;
+	width:150px;
 	border-radius:50%;
-	background:#fff;
+	background:#000;
 	#background:#9A3F98;
 		z-index:1;
 }
 
 .use_case_circle {
 	position:absolute;
-	top:2px;
-	left:2px;
+	top:1px;
+	left:1px;
 	display:inline-block;
 	height:148px;
 	width:148px;
@@ -469,7 +459,7 @@ div#qa_section{
 	line-height:26px;
 	text-align:center;
 	border-radius:50%;
-	padding:38px 23px;
+	padding:36px 23px;
 	z-index:1;
 
 }
