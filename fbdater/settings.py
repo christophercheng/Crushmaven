@@ -115,7 +115,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = 'https://www.crushmaven.com/static/'
+STATIC_URL = '/static/'
 
 # HEROKU ADD-ON SUMO CDN:
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
@@ -165,6 +165,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'crush.ssl.SSLRedirect',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
