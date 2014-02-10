@@ -8,9 +8,11 @@ class FacebookBackend:
 
     # Reads in Fb code and asks Fb if it's valid and what user it points to
     def authenticate(self, token=None, request=None,next_page=""):
+        redirect_uri = request.build_absolute_uri('/facebook/authentication_callback' + next_page)
+        redirect_uri.replace('https','http') # let's only use https for guest home page - for simplicity sake
         args = {
             'client_id': settings.FACEBOOK_APP_ID,
-            'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback' + next_page),
+            'redirect_uri': redirect_uri,
             'client_secret': settings.FACEBOOK_APP_SECRET,
             'code': token,
 
