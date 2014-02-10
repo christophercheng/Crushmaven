@@ -115,7 +115,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'../staticfiles')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = 'https://www.crushmaven.com/static/'
 
 # HEROKU ADD-ON SUMO CDN:
 # had lots of problems concatenating environment variable with strings!!!! this finally worked
