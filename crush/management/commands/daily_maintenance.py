@@ -57,30 +57,7 @@ def missed_invite_question():
     for notify_person in notify_list_data:
         send_mail_missed_invite_question(notify_person['email'], notify_person['first_name'], notify_person['crush_full_name'])
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
-    # loop through each crush relationship and grab the source_person of the relationship
-    
-    # check to see if that source_person hasn't already been added to notify list, if not, add them to the list
-    
-    # send out the email to them...
-    
 
-    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
-    invite_sent_count=0
-    for user in relevant_user_set:
-        if user.email == '' or user.bNotify_crush_signup_reminder == False:
-            continue
-        crush_list=[]
-        more_crushes_count=0
-        # get all crush relationships for this user
-        relevant_crush_list=user.crush_crushrelationship_set_from_source.filter(target_status__lt=1)[:5]
-        for relevant_crush in relevant_crush_list:
-            crush_list.append(relevant_crush.target_person.get_name())
-        if len(relevant_crush_list)>4: # calculate number of other relationships
-            more_crushes_count = user.crush_crushrelationship_set_from_source.filter(target_status__lt=1).count() - 5
-
-        send_mail_invite_reminder(user.first_name, user.email, crush_list, more_crushes_count)
-        invite_sent_count+=1
-    logger.debug("Django Command: sent " + str(invite_sent_count) + " email invite reminders out!")
     return
    
 def monthly_invite_reminder():
