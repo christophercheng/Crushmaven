@@ -12,10 +12,11 @@ def login(request,next_page=""):
     # if user tries to access a page when not logged in, we'll get a next Get parameter.  add it as a parameter to the fb redirect URI so we can redirect later
     if next_page != "":
         next_page = "/" + next_page + "/"
+    redirect_uri = request.build_absolute_uri('/facebook/authentication_callback' + next_page).replace('https','http'),
     args = {
         'client_id': settings.FACEBOOK_APP_ID,
         'scope': settings.FACEBOOK_SCOPE,
-        'redirect_uri': request.build_absolute_uri('/facebook/authentication_callback' + next_page),
+        'redirect_uri': redirect_uri,
         }
     # call facebook with the above settings; expect to receive http response with the access code as a GET parameter
     return HttpResponseRedirect('https://www.facebook.com/dialog/oauth?'
