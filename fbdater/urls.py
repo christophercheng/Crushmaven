@@ -31,9 +31,9 @@ urlpatterns += patterns('crush.views.infrastructure_views',
         
     url(r'^sitemap\.xml', 'sitemap'),
     
-    (r'^$', 'home', name="home_short"),
+    url(r'^$', 'home', name="home_short"),
     
-    (r'^home/$', 'home',name="home_medium"),  
+    url(r'^home/$', 'home',name="home_medium"),  
     
    # (r'^no_track/$','home'), 
    # to turn off tracking in anonymous pages, then add ?no_track to end of URL
