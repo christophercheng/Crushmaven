@@ -28,7 +28,7 @@ class Command(NoArgsCommand):
             logger.debug("Running Monthly Invite Maintenance")
             monthly_invite_reminder()
         logger.debug("Running Missed Invite Emails")
-        missed_invite_question()
+        #missed_invite_question()
         logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
         notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
         logger.debug("Running Lineup Expiration Warning Notifications")
