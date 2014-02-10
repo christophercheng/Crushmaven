@@ -14,7 +14,7 @@ from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
 from django.db.models import Q
 from django.db.models import Min
-from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning
+from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_question
 from datetime import  datetime,timedelta
 import urllib,json
 from django.conf import settings
@@ -27,6 +27,8 @@ class Command(NoArgsCommand):
         if datetime.now().day == 1: 
             logger.debug("Running Monthly Invite Maintenance")
             monthly_invite_reminder()
+        logger.debug("Running Missed Invite Emails")
+        missed_invite_question()
         logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
         notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
         logger.debug("Running Lineup Expiration Warning Notifications")
@@ -36,6 +38,50 @@ class Command(NoArgsCommand):
         return
     
     
+# for all users who created a crush but didn't invite them - in the last 24 hours, send email questionaire
+def missed_invite_question():
+    
+    # create an empty list of source persons to notify
+    notify_list_data = [] # list of { email_address: xxxxx, first_name: xxxxx, crush_full_name: xxxxx}
+    notify_persons=[] # temporary list of source persons
+    
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    last_cutoff_date=datetime.now()-timedelta(days=45) #(minutes=1440)
+    relevant_relationships = CrushRelationship.objects.filter(target_status=0,date_added__gt=last_cutoff_date)
+    for relationship in relevant_relationships:
+        source_person=relationship.source_person
+        source_person_email=source_person.email
+        if source_person not in notify_persons and source_person_email != "":
+            notify_persons.append(source_person)
+            notify_list_data.append({'email':source_person_email,'first_name':source_person.first_name,'crush_full_name':relationship.target_person.get_name()}) 
+    for notify_person in notify_list_data:
+        send_mail_missed_invite_question(notify_person['email'], notify_person['first_name'], notify_person['crush_full_name'])
+    logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
+    # loop through each crush relationship and grab the source_person of the relationship
+    
+    # check to see if that source_person hasn't already been added to notify list, if not, add them to the list
+    
+    # send out the email to them...
+    
+
+    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
+    invite_sent_count=0
+    for user in relevant_user_set:
+        if user.email == '' or user.bNotify_crush_signup_reminder == False:
+            continue
+        crush_list=[]
+        more_crushes_count=0
+        # get all crush relationships for this user
+        relevant_crush_list=user.crush_crushrelationship_set_from_source.filter(target_status__lt=1)[:5]
+        for relevant_crush in relevant_crush_list:
+            crush_list.append(relevant_crush.target_person.get_name())
+        if len(relevant_crush_list)>4: # calculate number of other relationships
+            more_crushes_count = user.crush_crushrelationship_set_from_source.filter(target_status__lt=1).count() - 5
+
+        send_mail_invite_reminder(user.first_name, user.email, crush_list, more_crushes_count)
+        invite_sent_count+=1
+    logger.debug("Django Command: sent " + str(invite_sent_count) + " email invite reminders out!")
+    return
    
 def monthly_invite_reminder():
     relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)

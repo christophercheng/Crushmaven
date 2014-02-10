@@ -78,3 +78,8 @@ def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushe
     html=render_to_string('email_template_invite_reminder.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_invite_reminder_text.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)
+    
+def send_mail_missed_invite_question(email_address, source_first_name, target_full_name):
+    #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
+    text=render_to_string('email_template_missed_invite_question_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})
+    send_mailgun_email('CrushMaven Support <support@crushmaven.com>',email_address,target_full_name + '\'s invitation to CrushMaven',None,text)
