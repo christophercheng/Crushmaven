@@ -46,7 +46,7 @@ def missed_invite_question():
     notify_persons=[] # temporary list of source persons
     
     # grab all crush relationships added in the last 24 hours that status is not_invited
-    last_cutoff_date=datetime.now()-timedelta(days=45) #(minutes=1440)
+    last_cutoff_date=datetime.now()-timedelta(minutes=1440)
     relevant_relationships = CrushRelationship.objects.filter(target_status=0,date_added__gt=last_cutoff_date)
     for relationship in relevant_relationships:
         source_person=relationship.source_person
