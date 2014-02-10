@@ -155,7 +155,7 @@ def ajax_display_lineup_block(request, display_id):
     #logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
     return_data = render(request,'admirer_lineup_preview_block.html', {'relationship':relationship})
     return return_data
-# called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason.
+# called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason (usually heroku shits)
 @login_required
 def ajax_initialization_failed(request, display_id):
     int_display_id=int(display_id)

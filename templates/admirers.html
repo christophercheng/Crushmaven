@@ -59,22 +59,27 @@ $(document).ready(function()
     /** AUTOMATIC FUNCTION - WAIT FOR INITIALIZATION BEFORE RENDERING LINEUP BLOCK
     *
     */
-    $('.ajax_display_lineup_block').each(function(){
 
-        var display_id=$(this).attr("display_id");
-        var lineup_block_parent = $(this).parent();
-        $(this).replaceWith('<div class="lineup_block_line lineup_previews"><div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few minutes</span></div></div>');
+   	function initiate_lineup_initialization(element,num_times){
+        var display_id=element.attr("display_id");
+        var lineup_block_parent = element.parent();
+        if (num_times==0)
+        	element.replaceWith('<div class="lineup_block_line lineup_previews"><div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few minutes</span></div></div>');
         var lineup_block_div = lineup_block_parent.children('.lineup_previews');
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';
         
         $.ajax(ajax_url, {
         
-   				timeout: {{lineup_block_timeout}}, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
+   				timeout: {{ lineup_block_timeout }}, // 240 seconds (4 minutes) - purposely set high so the server can time out by itself
    				success: function (data) {
    					if (data == ""){
-   						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
-   	   					$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
+   						if (num_times==0) // try to reinitialize the lineup one more time (could be heroku shitting)
+   							initiate_lineup_initialization(lineup_block_div,1);
+   						else {
+   	   						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
+   							$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
+   						}
    					}
    					else{
  
@@ -102,12 +107,22 @@ $(document).ready(function()
    					}
    				},
    				error: function(){
-   					lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
-   					$.get(ajax_fail_url + '?reason=ajax_initialization_call_returned_error');
+						if (num_times==0) { // try to reinitialize the lineup one more time (could be heroku shitting)
+   							initiate_lineup_initialization(element,1);
+						}
+   						else {
+   	   						lineup_block_div.html("<div class='lineup_error'>{{fof_fail_status}}</div>");
+   							$.get(ajax_fail_url + '?reason=no_data_returned_from_ajax_call');
+   						}
    				} 
 				});
 				
+    };
+    
+    $('.ajax_display_lineup_block').each(function(){
+		initiate_lineup_initialization($(this),0);
     });
+
     
 	// auto show lineup if one given
 	var show_lineup_number = '{{show_lineup}}';   
