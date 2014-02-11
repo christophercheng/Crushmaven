@@ -87,12 +87,16 @@ class InviteEmail(models.Model):
         if self.is_for_crush: # don't send this email to a user who is already an active user (CrushMaven takes care of that)
             subject = crush_short_name + ", you have an admirer!"
             send_mail_crush_invite(self.relationship.friendship_type,crush_full_name,crush_short_name,crush_first_name,self.email,crush_user.username)
+
         else:
             subject = 'Your friend, ' + crush_short_name + ', has an admirer!'
             crush_pronoun_subject = crush_user.get_gender_pronoun_subject()
             crush_pronoun_possessive = crush_user.get_gender_pronoun_possessive()
             send_mail_mf_invite(crush_full_name,crush_short_name,crush_first_name,crush_pronoun_subject, crush_pronoun_possessive,self.email,self.mf_recipient_first_name,self.mf_recipient_fb_username)
- 
+        if self.date_last_sent == None or (datetime.datetime.now() - self.date_last_sent) > datetime.timedelta(hours=1):
+            # save current date
+            self.date_last_sent = datetime.datetime.now()
+            self.save(update_fields=['date_last_sent'])
 class Purchase(models.Model):
 
     class Meta:
