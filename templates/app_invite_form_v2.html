@@ -92,6 +92,7 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	
 });
 
+{% comment %}
 		
 /* ---------------- PREVIEW INVITE HANDLING ---------------- */
 
@@ -120,6 +121,8 @@ $('#app_invite_form').on('click','#preview_invite_button',function(){
 		$('#app_invite_form #sendbutton').attr('disabled','true');
 	}
 });// close off #preview_invite_button
+
+{% endcomment %}
 
 $('#app_invite_form').on('click', '.inactive_tab',function(){
 $('.sent_from_us').css('opacity',0);
@@ -234,7 +237,7 @@ $(".tooltip_subtitle").click(function(){
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">To get a response, you MUST provide at least one invite option below:</div>
+   <div class="modal_instructions">In order to get a response, provide at least one invite option below...</div>
 
    {% csrf_token %}
 
@@ -242,7 +245,7 @@ $(".tooltip_subtitle").click(function(){
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
       
-      <label for="id_crush_emails" id="email_invite_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun}} Email</span><span class="reliable_option_label">(best option)</span></label> 
+      <label for="id_crush_emails" class="invite_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun}} Email</span><span class="reliable_option_label">(best option)</span></label> 
       <div class="fieldWrapper crush_email_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
          <span class="email_separator sub_label">separate multiple emails with commas</span>
@@ -251,7 +254,7 @@ $(".tooltip_subtitle").click(function(){
       </div>
      {% comment %}<div id="show_secondary_options">show invite options 2 & 3<span id="down_arrow" class="arrow">&#x25BC;</span></div>{% endcomment %}
      <div class="secondary_options">
-      <label for="id_phone"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Phone </span></label>
+      <label for="id_phone" class="invite_label"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Phone </span><span class="reliable_option_label">(good option)</span></label>
       <div class="fieldWrapper phone_fieldWrapper"><span class="phone_icon">&nbsp;</span>
 	      {{ form.phone }}
 	      <div class="email_input_error_section">{{ form.phone.errors }}</div>
@@ -290,7 +293,7 @@ $(".tooltip_subtitle").click(function(){
 	</div> <!--  close off mutual_friend_input_section -->
 </div><!-- close of mutual friend help section -->
 </div><!-- close of secondary help options -->
-
+{% comment %}
 <div id="preview_section">
 	<span class="preview_tab active_tab" id="preview_attraction_tab">Email Invite Preview</span><span class="preview_tab inactive_tab" id="preview_mf_tab">Mutual Friend's Invite Preview</span>
 	<div class="preview_body">
@@ -344,10 +347,11 @@ $(".tooltip_subtitle").click(function(){
 		</div>  <!-- close off mf_email_preview_content -->
 	</div> <!--  close off preview_body_mf -->
 </div> <!--  close off #preview_section -->
+{% endcomment %}
 
   <div class="ui-dialog-buttonpane">
           <div class="ui-dialog-buttonset">
-          	<button type='button' {% if no_track != True %}onclick="ga('send', 'event', 'button', 'click', 'preview_email_button');"{% endif %} class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>
+          	{% comment %}<button type='button' {% if no_track != True %}onclick="ga('send', 'event', 'button', 'click', 'preview_email_button');"{% endif %} class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>{% endcomment %}
           	<button type='button' onclick="window.app_invite_modal.dialog('close');" class="site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
           	<input id="sendbutton" class="site_dialog_button" type="submit" value="Send"/>
           </div><!-- close off buttonset -->

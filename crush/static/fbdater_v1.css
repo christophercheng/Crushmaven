@@ -4159,13 +4159,13 @@ ul.bxslider_element #slide_overlay {
 	right:-20px!important;	
 }
 
-#email_invite_label{
+.invite_label{
 	position:relative;
 }
 .reliable_option_label{
 	position:absolute;
-	bottom:-15px;
-	left:20px;
+	bottom:-16px;
+	left:21px;
 	color:#2E8AE6;
 	font-size:8px;
 	display:inline-block;
