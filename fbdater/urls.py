@@ -47,6 +47,9 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^logout_view/$', 'logout_view'),
     
     (r'^failed_email_send/$','failed_email_send'),
+    
+    (r'^facebook_notification/$','home'),   
+
 
     (r'^facebook_notification/(?P<function_name>\w+)/(?P<first_arg>\w+)/(?P<second_arg>\w+)/$','facebook_notification'),   
 
