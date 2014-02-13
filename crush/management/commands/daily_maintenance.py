@@ -24,18 +24,18 @@ logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
-        #logger.debug("Running Daily Maintenance")
-        #if datetime.now().day == 1: 
-        #    logger.debug("Running Monthly Invite Maintenance")
-        #    monthly_invite_reminder()
+        logger.debug("Running Daily Maintenance")
+        if datetime.now().day == 1: 
+            logger.debug("Running Monthly Invite Maintenance")
+            monthly_invite_reminder()
         logger.debug("Running Missed Invite Emails")
         send_missed_invite_tips()
-        #logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
-        #notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
-        #logger.debug("Running Lineup Expiration Warning Notifications")
-        #lineup_expiration_warning() # send warning email to crush targets that their lineup is about to expire
-        #logger.debug("Running Expired Lineup Auto Completion Process")
-        #auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
+        logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
+        notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
+        logger.debug("Running Lineup Expiration Warning Notifications")
+        lineup_expiration_warning() # send warning email to crush targets that their lineup is about to expire
+        logger.debug("Running Expired Lineup Auto Completion Process")
+        auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
         return
     
     
@@ -47,7 +47,7 @@ def send_missed_invite_tips():
     notify_persons=[] # temporary list of source persons
     
     # grab all crush relationships added in the last 24 hours that status is not_invited
-    last_cutoff_date=datetime.now()-timedelta(days=50)#minutes=1440)
+    last_cutoff_date=datetime.now()-timedelta(minutes=1440)
     relevant_relationships = CrushRelationship.objects.filter(target_status=0,date_added__gt=last_cutoff_date)
     for relationship in relevant_relationships:
         source_person=relationship.source_person
