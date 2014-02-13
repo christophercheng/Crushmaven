@@ -92,7 +92,7 @@ class PhoneField(forms.Field):
     widget=forms.TextInput(attrs={'placeholder':'enter only numbers','maxlength':'20'})
     
     def to_python(self,value):
-        
+        value = value.replace(' ','')
         return {'cleaned_email_list':value}
     
     def validate(self,value):
@@ -100,7 +100,7 @@ class PhoneField(forms.Field):
         original_value=value['cleaned_email_list']
         filtered_value = non_decimal.sub('', original_value)
         if filtered_value!=original_value:
-            raise ValidationError ("Enter only numbers (no characters, spaces, punctuation)")
+            raise ValidationError ("Enter only numbers (no characters or punctuation)")
         length=len(filtered_value)
         if length > 0 and length < 9:
             raise ValidationError ("Enter a complete phone number")
