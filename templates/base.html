@@ -570,20 +570,6 @@ $('body').on('click',".popup_link",function(e){
   e.stopPropagation();
 });
 
-/* ---------------------------------------------
- 	
-		Help Popup Animation
-	
-* -------------------------------------------- */
-	
-	//handle help icon show and hide
-	$('.new_user_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	$('.new_user_sub_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	$('.new_user_instructions .help_icon').click(function(){
-		$(this).parent().hide(500);
-		$('.new_user_sub_instructions').hide(500);
-	});
-
 window.handle_window_resize=function(){
 	$('.ui-dialog-content:visible').each(function(){
 		var dialog = $(this).data("dialog");

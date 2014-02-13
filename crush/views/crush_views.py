@@ -137,6 +137,11 @@ def your_crushes(request, reveal_crush_id=None):
         email_exists=False
     else:
         email_exists=True
+    show_invite_help_popup=False
+    #determine whether to show invite help popup
+    number_noninvited_crushes = crush_progressing_relationships.filter(target_status__lt=4,date_invite_last_sent=None).count()
+    if number_noninvited_crushes>0:
+        show_invite_help_popup=True
     return render(request, 'crushes.html',
                               {
                                'responded_relationships':responded_relationships,
@@ -150,7 +155,8 @@ def your_crushes(request, reveal_crush_id=None):
                                'reveal_crush_id':reveal_crush_id,
                                'invite_crush_id':invite_crush_id,
                                'show_help_popup':show_help_popup,
-                               'email_exists':email_exists
+                               'email_exists':email_exists,
+                               'show_invite_help_popup':show_invite_help_popup,
                                })    
 @login_required
 def ajax_load_response_dialog_content(request, crush_id):

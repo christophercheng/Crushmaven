@@ -1167,20 +1167,66 @@ a.logo img{
 	border-color:#CFCFD4;
 }
 
+.new_user_instructions.invite_instructions .show_more{
+	border-color:#F50000;
+	background:#F50000;
+	text-shadow:none;
+	color:white;
+	padding-left:10px;
+	padding-right:10px;
+	left:175px;
+}
+.new_user_instructions.invite_instructions .show_more:hover{
+	background:#B80000;
+	border-color:#B80000;
+}
+
 .new_user_instructions span.instructions_title{
 	display:inline-block;
-	font-size:18px;
 	font-weight:bold;
 	margin-bottom:20px;
 	text-shadow: 1px 1px 0 #FFFFFF;
-	color:#4A4AAB;
-	color:#404054;
 	color:#2E8AE6!important;
 	font-size:24px!important;
 }
-.new_user_instructions span.instructions_subtitle{
+
+.new_user_instructions.invite_instructions {
+	border:1px solid #CC0000;
+	margin-bottom:40px!important;
+}
+.new_user_instructions.invite_instructions span.instructions_title{
+	color:red!important;
+}
+.new_user_instructions span.instructions_subtitle1{
+	display:block;
+	font-weight:bold;
+	margin-top:-7px;
+	margin-bottom:15px;
+	text-shadow: 1px 1px 0 #FFFFFF;
+	#color:red!important;
+	font-size:19px!important;	
+}
+.new_user_instructions span.instructions_subtitle2{
+	display:block;
 	font-weight:normal;
-	font-style:italic;
+	margin-top:-12px;
+	margin-bottom:20px;
+	#text-shadow: 1px 1px 0 #FFFFFF;
+	#color:#115292!important;
+	font-size:13px!important;	
+}
+.new_user_instructions.invite_instructions .second_instruction_section{
+	padding-top:0px!important;
+	margin-top:-5px;
+}
+.new_user_instructions ul{
+	margin-top:5px;
+}
+.new_user_instructions.invite_instructions .first_instruction_section{
+	border:0px!important;
+}
+.new_user_instructions.invite_instructions .help_icon2{
+	background:red!important;
 }
 .new_user_instructions .help_icon{
 	top:-7px;
