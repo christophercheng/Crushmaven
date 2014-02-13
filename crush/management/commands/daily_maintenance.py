@@ -56,7 +56,11 @@ def send_missed_invite_tips():
             notify_persons.append(source_person)
             notify_relationships.append(relationship)
     for relationship in notify_relationships:
-        send_mail_missed_invite_tip(relationship)
+        #send_mail_missed_invite_tip(relationship)
+        notify_person_username=relationship.source_person.username
+        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/"
+        message="You forgot to email invite your crush. Let us show you how to get their email address from Facebook."
+        notify_person_on_facebook(notify_person_username,destination_url,message)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")
 
     return

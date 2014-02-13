@@ -38,6 +38,8 @@ def facebook_notification(request,function_name,first_arg,second_arg):
         return crush_response(request,first_arg,second_arg)
     elif function_name=="lineup_expiration":
         return lineup_expiration(request,first_arg,second_arg)
+    elif function_name=="missed_invite_tip":
+        return missed_invite_tip(request,first_arg,second_arg)
 
 @csrf_exempt
 def crush_response(request,first_name,last_name):
@@ -50,6 +52,11 @@ def lineup_expiration(request,target_person_username,display_id):
     except:
         return render(request,'email_template_notify_lineup_expiration_warning.html',{'expiration_date':datetime.datetime.now(),'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
     return render(request,'email_template_notify_lineup_expiration_warning.html',{'expiration_date':relationship.date_lineup_expires,'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
+
+@csrf_exempt
+def missed_invite_tip(request,source_person_username,source_person_first_name):
+    return render(request,'email_template_missed_invite_tip.html',{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
+ 
     
 @login_required
 def new_testing(request):
