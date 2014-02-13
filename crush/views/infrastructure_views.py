@@ -102,7 +102,7 @@ def testing_prep(request):
 
 def sitemap(request):
     return HttpResponseRedirect('/static/sitemap.xml',mimetype='application/xml')
-
+@csrf_exempt # for canvas app center facebook 
 def home(request):
     get_parameter_string=""
     if request.GET.__contains__('signin'): # in the facebook authentication process, we append signin as GET parameter so we know when we just logged in
