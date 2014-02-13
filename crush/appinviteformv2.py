@@ -101,7 +101,8 @@ class PhoneField(forms.Field):
         filtered_value = non_decimal.sub('', original_value)
         if filtered_value!=original_value:
             raise ValidationError ("Enter only numbers (no characters, spaces, punctuation)")
-        if len(filtered_value) < 9:
+        length=len(filtered_value)
+        if length > 0 and length < 9:
             raise ValidationError ("Enter a complete phone number")
 
 
