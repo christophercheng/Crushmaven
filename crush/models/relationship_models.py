@@ -311,8 +311,11 @@ class CrushRelationship(BasicRelationship):
                         self.target_status = 2 
                         # notify the target_person that they have a new admirer
                         self.notify_target_person()
+                        self.notify_target_person()
                     else: # admirer is not an existing user (or is a user but not activated yet)
                         self.target_status = 0
+                    
+                        
                         # see if any active users are friends with this new inactive crush - solicit their help
                         #self.target_person.find_active_friends_of_inactivated_crush()         
             # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,
@@ -480,11 +483,12 @@ class CrushRelationship(BasicRelationship):
         short_name = target_person.first_name + ' ' + target_person.last_name[0]
         first_name = target_person.first_name
         target_person_email=target_person.email
-        if (not target_person_email):
-                return
-        if (target_person.bNotify_new_admirer== True):
-            crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)
-
+        if target_person_email != None and target_person.bNotify_new_admirer == True:
+            crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)        
+        # else: # target person is not active
+            # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
+        #    crush.utils_email.send_facebook_crush_invite(self.friendship_type,full_name,short_name, first_name, self.target_person.username)
+                        
             
     def notify_source_person(self):
        

@@ -14,7 +14,8 @@ from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
 from django.db.models import Q
 from django.db.models import Min
-from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_question
+from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_question,send_facebook_crush_invite
+from crush.utils import graph_api_fetch
 from datetime import  datetime,timedelta
 import urllib,json
 from django.conf import settings
@@ -28,7 +29,7 @@ class Command(NoArgsCommand):
             logger.debug("Running Monthly Invite Maintenance")
             monthly_invite_reminder()
         logger.debug("Running Missed Invite Emails")
-        #missed_invite_question()
+        missed_invite_question()
         logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
         notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
         logger.debug("Running Lineup Expiration Warning Notifications")
@@ -59,6 +60,7 @@ def missed_invite_question():
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
 
     return
+      
    
 def monthly_invite_reminder():
     relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
