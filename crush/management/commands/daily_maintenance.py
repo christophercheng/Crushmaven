@@ -24,18 +24,18 @@ logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
-        logger.debug("Running Daily Maintenance")
-        if datetime.now().day == 1: 
-            logger.debug("Running Monthly Invite Maintenance")
-            monthly_invite_reminder()
+        #logger.debug("Running Daily Maintenance")
+        #if datetime.now().day == 1: 
+        #    logger.debug("Running Monthly Invite Maintenance")
+        #    monthly_invite_reminder()
         logger.debug("Running Missed Invite Emails")
         send_missed_invite_tips()
-        logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
-        notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
-        logger.debug("Running Lineup Expiration Warning Notifications")
-        lineup_expiration_warning() # send warning email to crush targets that their lineup is about to expire
-        logger.debug("Running Expired Lineup Auto Completion Process")
-        auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
+        #logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
+        #notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
+        #logger.debug("Running Lineup Expiration Warning Notifications")
+        #lineup_expiration_warning() # send warning email to crush targets that their lineup is about to expire
+        #logger.debug("Running Expired Lineup Auto Completion Process")
+        #auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
         return
     
     
@@ -59,7 +59,7 @@ def send_missed_invite_tips():
         #send_mail_missed_invite_tip(relationship)
         notify_person_username=relationship.source_person.username
         destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/"
-        message="You forgot to email invite your crush. Let us show you how to get their email address from Facebook."
+        message="You forgot to email invite your crush. Click to see how to get their email address from Facebook."
         notify_person_on_facebook(notify_person_username,destination_url,message)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")
 
