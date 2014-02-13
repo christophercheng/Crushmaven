@@ -12,9 +12,9 @@ from crush.models.lineup_models import LineupMember
 from postman.models import Message
 
 class FacebookUserAdmin(admin.ModelAdmin):
-    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email') # what columns to display
+    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email','twitter_username') # what columns to display
     search_fields = ('first_name', 'last_name', 'username') # what the search box searches against
-    list_filter = ('date_joined','is_active','gender','is_single','gender_pref') # right column auto-filter links
+    list_filter = ('date_joined','is_active','gender','is_single','gender_pref','twitter_username') # right column auto-filter links
     ordering = ('-is_active','-date_joined','-last_name')
     fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','twitter_username','date_twitter_invite_last_sent','is_staff','is_superuser','password','bCompletedSurvey')
 
