@@ -9,6 +9,7 @@ from email import utils
 import time
 from django.db import transaction
 import crush.utils_email
+from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
 import urllib,json
 # import the logging library
@@ -522,12 +523,12 @@ class CrushRelationship(BasicRelationship):
                     crush.utils_email.send_mail_changed_attraction_response(False,full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
                 return
             else:
-                if self.date_target_responded > datetime.now():
+                if self.date_target_responded > datetime.now():# schedule the send time to a future date
                     send_time=self.date_target_responded
                     send_time= send_time.timetuple()
                     send_time=time.mktime(send_time)
                     send_time = utils.formatdate(send_time)
-                else:
+                else: # can't send fb notifications in future yet, so just send the ones we can, now
                     #send facebook notification
                     self.notify_source_person_on_facebook()
                     source_notified=True
@@ -538,35 +539,16 @@ class CrushRelationship(BasicRelationship):
                 if source_notified:
                     self.date_source_last_notified=datetime.now()
                     self.save(update_fields=['date_source_last_notified'])
-   
-    def notify_source_person_on_facebook(self):
 
-        obtain_app_access_token_url="https://graph.facebook.com/oauth/access_token?client_id=" + settings.FACEBOOK_APP_ID + "&client_secret=" + settings.FACEBOOK_APP_SECRET + "&grant_type=client_credentials"
-        app_token=''
-        try:
-            fb_result = urllib.urlopen(obtain_app_access_token_url)
-            fb_result = fb_result.read()
-            logger.debug("facebook obtain access token result: " + str(fb_result))
-            app_token=fb_result
-        except Exception as e:
-            logger.debug("ERROR: couldn't obtain app token to notify facebook user " + self.source_person.get_name() + " because of exception: " + str(e))
-        notify_url='https://graph.facebook.com'
-        notify_url+= "/" + self.source_person.username
-        notify_url+="/notifications?"# + app_token
-        notify_url += app_token
+    def notify_source_person_on_facebook(self):
+      
+        notify_person_username = self.source_person.username
         target_first_name=self.target_person.first_name
         target_last_name=self.target_person.last_name
-        notify_url+="&href=crush_response/" + target_first_name + "/" + target_last_name + "/"
-        notify_url+="&template=" + target_first_name + " " + target_last_name + " responded to your crush!"
-        try:
-            fb_result = urllib.urlopen(notify_url,{})
-            #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
-            fb_result = json.load(fb_result)
-            if 'success' not in fb_result or fb_result['success'] != True:
-                logger.debug("Facebook notification unsuccessfully sent to : " + self.source_person.first_name + " " + self.source_person.last_name)
-        except Exception as e:
-            logger.debug("ERROR: could not send facebook crush response notification to " + target_first_name + " " + target_last_name + " because of exception: " + str(e))            
-        
+        destination_url ="crush_response/" + target_first_name + "/" + target_last_name + "/"
+        message = target_first_name + " " + target_last_name + " responded to your crush!"
+        notify_person_on_facebook(notify_person_username,destination_url,message)
+
     def notify_source_person_bad_invite_email(self,bad_email_address):      
         target_person=self.target_person
         full_name = target_person.first_name + " " + target_person.last_name

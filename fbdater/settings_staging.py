@@ -9,7 +9,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Facebook settings are set via environment variables
 FACEBOOK_APP_ID = '711097435568407' # Crush Discovery App on Facebook
 FACEBOOK_APP_SECRET = '5fa571d36c1ec81500b3abeac016abe1'
-
+FACEBOOK_APP_TOKEN='711097435568407|pdB3Zxd_AtcyhtRAfAeq5VlUTp4'
 INITIALIZATION_THREADING=True
 
 MINIMUM_LINEUP_MEMBERS=1 # change to 4 in production = this value excludes the secret admirer themself
