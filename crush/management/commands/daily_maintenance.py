@@ -39,11 +39,11 @@ class Command(NoArgsCommand):
         return
     
     
-# for all users who created a crush but didn't invite them - in the last 24 hours, send email questionaire
+# for all users who created a crush but didn't invite them - in the last 24 hours, send email invite tip
 def missed_invite_question():
     
     # create an empty list of source persons to notify
-    notify_list_data = [] # list of { email_address: xxxxx, first_name: xxxxx, crush_full_name: xxxxx}
+    notify_relationships=[]
     notify_persons=[] # temporary list of source persons
     
     # grab all crush relationships added in the last 24 hours that status is not_invited
@@ -54,9 +54,9 @@ def missed_invite_question():
         source_person_email=source_person.email
         if source_person not in notify_persons and source_person_email != "":
             notify_persons.append(source_person)
-            notify_list_data.append({'email':source_person_email,'first_name':source_person.first_name,'crush_full_name':relationship.target_person.get_name()}) 
-    for notify_person in notify_list_data:
-        send_mail_missed_invite_question(notify_person['email'], notify_person['first_name'], notify_person['crush_full_name'])
+            notify_relationships.append(relationship)
+    for relationship in notify_relationships:
+        send_mail_missed_invite_question(relationship)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
 
     return
