@@ -428,6 +428,9 @@ div#qa_section{
 	box-shadow:1px 1px 25px #372050;
 	z-index:1;
 }
+.use_case_outer_border:hover{
+	box-shadow:1px 1px 40px #372050;
+}
 
 .use_case_inner_border{
 	display:inline-block;
@@ -449,12 +452,9 @@ div#qa_section{
 	display:inline-block;
 	height:148px;
 	width:148px;
-	color:	#372050;
 	color:#fff;
-	background:white;
-	background:#9A3F98;
-	background:#372050;
 	background:#462966;
+	background:#502F75;
 	font-size:18px;
 	line-height:26px;
 	text-align:center;
