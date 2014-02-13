@@ -79,10 +79,9 @@ def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushe
     text=render_to_string('email_template_invite_reminder_text.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)
     
-def send_mail_missed_invite_question(relationship):
+def send_mail_missed_invite_tip(relationship):
     email_address = relationship.source_person.email
     source_first_name = relationship.source_person.first_name
-    target_full_name = relationship.target_person.get_name()
     recipient_fb_username=relationship.source_person.username
     #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_missed_invite_tip_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})

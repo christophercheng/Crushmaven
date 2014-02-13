@@ -14,7 +14,7 @@ from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
 from django.db.models import Q
 from django.db.models import Min
-from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_question,send_facebook_crush_invite
+from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_tip
 from crush.utils import graph_api_fetch
 from datetime import  datetime,timedelta
 import urllib,json
@@ -56,7 +56,7 @@ def missed_invite_question():
             notify_persons.append(source_person)
             notify_relationships.append(relationship)
     for relationship in notify_relationships:
-        send_mail_missed_invite_question(relationship)
+        send_mail_missed_invite_tip(relationship)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
 
     return
