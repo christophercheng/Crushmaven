@@ -4267,10 +4267,10 @@ ul.bxslider_element #slide_overlay {
 	background-position:-66px -124px!important;
 }
 .phone_icon{
-	top:5px;
+	top:-1px;
 	left:-2px;
 	vertical-align:-1px!important;
-	background-position:-66px -124px!important;
+	background-position:-66px -185px!important;
 }
 
 .fb_invite_icon{
