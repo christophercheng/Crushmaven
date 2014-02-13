@@ -88,6 +88,23 @@ class TwitterField(forms.Field):
         if ' ' in value['cleaned_email_list']:
             raise ValidationError ("invalid Twitter username (can't contain spaces)")
 
+class PhoneField(forms.Field):
+    widget=forms.TextInput(attrs={'placeholder':'enter only numbers','maxlength':'20'})
+    
+    def to_python(self,value):
+        
+        return {'cleaned_email_list':value}
+    
+    def validate(self,value):
+        non_decimal = re.compile(r'[^\d]+')
+        original_value=value['cleaned_email_list']
+        filtered_value = non_decimal.sub('', original_value)
+        if filtered_value!=original_value:
+            raise ValidationError ("Enter only numbers (no characters, spaces, punctuation)")
+        if len(filtered_value) < 9:
+            raise ValidationError ("Enter a complete phone number")
+
+
     
 class AppInviteForm2(forms.Form):
 
@@ -110,6 +127,7 @@ class AppInviteForm2(forms.Form):
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
+    phone=PhoneField(required=False,label='crush_field',help_text="HEHEHE")
     mf_generic_emails = AF_MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     source_person_email=''
     source_person_site_credits=''
@@ -131,7 +149,7 @@ class AppInviteForm2(forms.Form):
 
             if not at_least_one_data:
                 logger.debug("Invite Error: User tried to submit invite form without any contact information")
-                raise forms.ValidationError("Choose at least one invite option")
+                raise forms.ValidationError("Provide at least one invite option")
             # check that user has entered his or her email in the crush email field
             crush_emails = self.cleaned_data['crush_emails']['cleaned_email_list']
             if self.source_person_email in crush_emails:

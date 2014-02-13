@@ -9,5 +9,6 @@ from miscellaneous_models import InviteEmail
 from miscellaneous_models import Purchase
 from user_models import FacebookUser
 from miscellaneous_models import PastTwitterUsername
+from miscellaneous_models import PastPhone
 
 

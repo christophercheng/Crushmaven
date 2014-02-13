@@ -220,6 +220,10 @@ class FacebookUser(AbstractUser):
     # Twitter handle used to invite inactive crush targets
     twitter_username = models.CharField(max_length=15,blank=True,null=True,default=None)
     date_twitter_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
+
+    # Phone number used to invite inactive crush targets
+    phone = models.CharField(max_length=20,blank=True,null=True,default=None)
+    date_phone_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
   
     # by default give every user 1 credit ($1) so that they can acquaint themselves with the crush lineup process
     site_credits = models.IntegerField(default=settings.STARTING_CREDITS) 

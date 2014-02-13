@@ -7,16 +7,16 @@ Created on Mar 4, 2013
 from django.contrib import admin
 from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
-from crush.models.miscellaneous_models import Purchase,InviteEmail,PastTwitterUsername
+from crush.models.miscellaneous_models import Purchase,InviteEmail,PastTwitterUsername,PastPhone
 from crush.models.lineup_models import LineupMember
 from postman.models import Message
 
 class FacebookUserAdmin(admin.ModelAdmin):
-    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email','twitter_username') # what columns to display
+    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email','twitter_username','phone') # what columns to display
     search_fields = ('first_name', 'last_name', 'username') # what the search box searches against
     list_filter = ('date_joined','is_active','gender','is_single','gender_pref') # right column auto-filter links
     ordering = ('-is_active','-date_joined','-last_name')
-    fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','twitter_username','date_twitter_invite_last_sent','is_staff','is_superuser','password','bCompletedSurvey')
+    fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','phone','date_phone_invite_last_sent','twitter_username','date_twitter_invite_last_sent','is_staff','is_superuser','password','bCompletedSurvey')
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','target_status','lineup_initialization_status','date_added') # what columns to display
@@ -61,8 +61,15 @@ class PastTwitterUsernameAdmin(admin.ModelAdmin):
     list_display = ('user','twitter_username','date_twitter_invite_last_sent')
     search_fields = ('user','twitter_username')
     list_filter = ('date_twitter_invite_last_sent',)
-    ordering=('-user','-date_twitter_invite_last_sent')
+    ordering=('-date_twitter_invite_last_sent','-user')
     fields=('twitter_username','date_twitter_invite_last_sent')
+    raw_id_fields=('user',)
+class PastPhoneAdmin(admin.ModelAdmin):
+    list_display = ('user','phone','date_phone_invite_last_sent')
+    search_fields = ('user','phone')
+    list_filter = ('date_phone_invite_last_sent',)
+    ordering=('-date_phone_invite_last_sent','-user')
+    fields=('phone','date_phone_invite_last_sent')
     raw_id_fields=('user',)
 
 admin.site.register(FacebookUser,FacebookUserAdmin)
@@ -72,3 +79,4 @@ admin.site.register(LineupMember,LineupMemberAdmin)
 admin.site.register(Purchase,PurchaseAdmin)
 admin.site.register(InviteEmail,InviteEmailAdmin)
 admin.site.register(PastTwitterUsername,PastTwitterUsernameAdmin)
+admin.site.register(PastPhone,PastPhoneAdmin)

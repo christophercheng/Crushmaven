@@ -234,7 +234,7 @@ $(".tooltip_subtitle").click(function(){
 
 <form id="app_invite_form" action="http://{{request.get_host}}{% url 'crush.views.app_invite_form_v2' crush_username %}" method="post">       
 <div id="ajaxwrapper">
-   <div class="modal_instructions">For a quick response, we need your help getting {{ crush_firstname }} signed in.<BR>Provide us with as many ways to reach {{ crush_pronoun | lower}} as you can below.</div>
+   <div class="modal_instructions">To get a response, you MUST provide at least one invite option below:</div>
 
    {% csrf_token %}
 
@@ -251,12 +251,17 @@ $(".tooltip_subtitle").click(function(){
       </div>
      {% comment %}<div id="show_secondary_options">show invite options 2 & 3<span id="down_arrow" class="arrow">&#x25BC;</span></div>{% endcomment %}
      <div class="secondary_options">
-      <label for="id_twitter_username"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Twitter </span></label> 
+      <label for="id_phone"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Phone </span></label>
+      <div class="fieldWrapper phone_fieldWrapper"><span class="phone_icon">&nbsp;</span>
+	      {{ form.phone }}
+	      <div class="email_input_error_section">{{ form.phone.errors }}</div>
+	  </div>
+      <label for="id_twitter_username" class="twitter_username_label"><span class="crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Twitter </span></label> 
       <div class="fieldWrapper twitter_fieldWrapper"><span class="twitter_icon">&nbsp;</span>
 	      {{ form.twitter_username }}<span class="help_icon">?</span>
 	      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
       </div>
-      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
+      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">4</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
       <div class="fieldWrapper mf_generic_emails_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.mf_generic_emails }}<span class="help_icon">?</span>
          <div class="email_input_error_section">{{ form.mf_generic_emails.errors }}</div>

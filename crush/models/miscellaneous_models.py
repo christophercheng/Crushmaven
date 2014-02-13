@@ -138,4 +138,19 @@ class PastTwitterUsername(models.Model):
     
     def __unicode__(self):
         return smart_text(self.twitter_username) 
+
+    
+# store additional twitter usernames to prevent bad user behavior
+class PastPhone(models.Model):
+    
+    class Meta: 
+    # this allows the models to be broken into separate model files
+        app_label = 'crush' 
+    # Twitter handle used to invite inactive crush targets
+    phone = models.CharField(max_length=20)# max number count is 15, but account for extra characters
+    date_phone_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True)      
+    user = models.ForeignKey('FacebookUser')   
+    
+    def __unicode__(self):
+        return smart_text(self.phone) 
   

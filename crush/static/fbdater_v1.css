@@ -3951,15 +3951,18 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 }
 
-.twitter_fieldWrapper{
+.twitter_fieldWrapper,.phone_fieldWrapper{
 	margin-bottom:20px;
+}
+.twitter_fieldWrapper{
+	margin-top:15px;
 }
 
 .mf_generic_emails_fieldWrapper{
 	margin-top:15px;
 	margin-bottom:15px
 }
-.mf_generic_emails_label{
+.mf_generic_emails_label,.twitter_username_label{
 	margin-top:15px;
 }
 
@@ -4234,7 +4237,7 @@ ul.bxslider_element #slide_overlay {
 	position:relative!important;
 }
 
-#app_invite_form .twitter_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
+#app_invite_form .phone_icon, #app_invite_form .twitter_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
 	margin-right:-5px;
 	margin-left:6px;
 	color:#B2B2B2;
@@ -4248,7 +4251,7 @@ ul.bxslider_element #slide_overlay {
 	height:30px!important;
 	border:none!important;
 }
-#app_invite_form .twitter_icon{
+#app_invite_form .twitter_icon, #app_invite_form .phone_icon{
 	margin-left:-20px;
 }
 .email_icon{
@@ -4258,6 +4261,12 @@ ul.bxslider_element #slide_overlay {
 	background-position:-66px -94px!important;
 }
 .twitter_icon{
+	top:5px;
+	left:-2px;
+	vertical-align:-1px!important;
+	background-position:-66px -124px!important;
+}
+.phone_icon{
 	top:5px;
 	left:-2px;
 	vertical-align:-1px!important;
