@@ -57,7 +57,7 @@ def missed_invite_question():
             notify_relationships.append(relationship)
     for relationship in notify_relationships:
         send_mail_missed_invite_tip(relationship)
-    logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite question emails!")
+    logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")
 
     return
       
