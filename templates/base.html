@@ -238,12 +238,14 @@ jQuery(document).ready(function($) {
 			// close the dialog
 	        window.app_invite_modal.dialog('close');
 	        //location.href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&message=Discover anonymously if the person you like feels the same!&redirect_uri=http://crushmaven-qa.herokuapp.com/facebook_notification/";
-	        location.hef="/your_crushes/"
+
 	        FB.ui({method: 'apprequests',
 	            message: "Discover anonymously if the person you're attracted to feels the same",
 
 	        }, function(Response response){
 	        	console.log("received facebook requests response: ",response);
+	        	alert("hey");
+		        location.href="/your_crushes/";
 	        });
 			return;
 		}
