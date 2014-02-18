@@ -227,11 +227,12 @@ jQuery(document).ready(function($) {
 		crush_dict[crush_username]=crush_fullname;
 		window.attraction_json={};
 		window.attraction_json[0]=crush_dict;
-		window.launch_app_invite_dialog(0,1);
+		window.launch_app_invite_dialog(0,1,true);
 	});// close .app_invite_link & #inite_interstitial_modal on click app_invite function
 	
-	window.launch_app_invite_dialog = function(current_crush_number,total_crushes){
-
+	window.launch_app_invite_dialog = function(current_crush_number,total_crushes,delayed_invite){
+		if (delayed_invite != true)
+			delayed_invite = false;
 		var crush_dict=window.attraction_json[current_crush_number];
 		if (crush_dict==undefined){
 			// close the dialog
@@ -260,7 +261,7 @@ jQuery(document).ready(function($) {
 		$(".app_invite_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 		window.wait_modal_open();
 		var load_url="/app_invite_form_v2/" + crush_username + "/";
-		window.app_invite_modal.load(load_url,{'crush_fullname':crush_fullname, 'current_crush_number':current_crush_number,'total_crushes_string':total_crushes,'csrfmiddlewaretoken':'{{csrf_token}}' },function(responseText,textStatus,XHR){
+		window.app_invite_modal.load(load_url,{'crush_fullname':crush_fullname, 'current_crush_number':current_crush_number,'total_crushes_string':total_crushes,'delayed_invite':delayed_invite,'csrfmiddlewaretoken':'{{csrf_token}}' },function(responseText,textStatus,XHR){
 			window.wait_modal_close();
 			if (textStatus!="success"){
 				if (!window.access_token_error(responseText))

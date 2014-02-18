@@ -226,6 +226,7 @@ def app_invite_form_v2(request, crush_username):
     crush_fullname=request.POST['crush_fullname']
     current_crush_number=request.POST['current_crush_number']
     total_crushes_string=request.POST['total_crushes_string']
+    delayed_invite=request.POST['delayed_invite']
     total_crushes_int=int(total_crushes_string)
     crush_pronoun="Her"
     if request.user.gender_pref==u'M':
@@ -362,7 +363,7 @@ def app_invite_form_v2(request, crush_username):
             raise  
         form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email,source_person_username=request.user.username)
     mf_friend_count=len(mutual_friend_json)
-    return render(request, 'app_invite_form_v2.html', {'form':form,'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count,'total_crushes_string':total_crushes_string,'total_crushes_int':total_crushes_int,'current_crush_number':str(current_crush_number)})
+    return render(request, 'app_invite_form_v2.html', {'form':form,'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count,'delayed_invite':delayed_invite,'total_crushes_string':total_crushes_string,'total_crushes_int':total_crushes_int,'current_crush_number':str(current_crush_number)})
 
 
 # called by the crush selector dialog
