@@ -237,7 +237,8 @@ jQuery(document).ready(function($) {
 		if (crush_dict==undefined){
 			// close the dialog
 	        window.app_invite_modal.dialog('close');
-			location.href="/your_crushes";
+	        location.href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&message=Discover anonymously if the person you like feels the same!&redirect_uri=http://www.crushmaven.com/your_crushes";
+
 			return;
 		}
 		var crush_username='';

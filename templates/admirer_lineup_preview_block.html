@@ -33,7 +33,7 @@
 
 {% if not error %}
 <div class="lineup_block_line lineup_block_footer">
-	{% if relationship.lineup_initialization_status == 1 %}
+	{% if relationship.lineup_initialization_status == 1 and relationship.date_lineup_started != None %}
 		<span class="lineup_block_statistics"><span class="lineup_block_statistic">{{relationship|lineup_statistics}}</span> lineup members assessed</span>
 	{% endif %}
 	{% if relationship.date_lineup_finished != None %}
