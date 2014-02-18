@@ -7,6 +7,7 @@ import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
+from urlparse import parse_qs
 
 from urllib2 import URLError, HTTPError
 import thread
@@ -223,6 +224,9 @@ def ajax_get_platonic_rating(request, crush_id):
 @login_required    
 def app_invite_form_v2(request, crush_username):
     crush_fullname=request.POST['crush_fullname']
+    current_crush_number=request.POST['current_crush_number']
+    total_crushes_string=request.POST['total_crushes_string']
+    total_crushes_int=int(total_crushes_string)
     crush_pronoun="Her"
     if request.user.gender_pref==u'M':
         crush_pronoun="His"
@@ -345,6 +349,8 @@ def app_invite_form_v2(request, crush_username):
                 crush_relationship.save(update_fields=update_field_list);        
             return HttpResponse("_GOOD") # special text tells app_invite_form_v2 js submission function that the function was a success
     else:
+        current_crush_number = int(current_crush_number) + 1
+
         # determine if they haven't surpassed the total number of users to send out emails to:
         
         # find mutual friends to pass to the app invite form
@@ -355,9 +361,8 @@ def app_invite_form_v2(request, crush_username):
             logger.debug("finding mutual friends failed with exception: " + str(e))
             raise  
         form = AppInviteForm2(mutual_friend_json=mutual_friend_json,source_person_email=source_person_email,source_person_username=request.user.username)
-
     mf_friend_count=len(mutual_friend_json)
-    return render(request, 'app_invite_form_v2.html', {'form':form,'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count})
+    return render(request, 'app_invite_form_v2.html', {'form':form,'crush_username':crush_username, 'crush_fullname':crush_fullname, 'crush_firstname':crush_firstname, 'crush_pronoun':crush_pronoun,'mutual_friend_json':mutual_friend_json,'mf_friend_count':mf_friend_count,'total_crushes_string':total_crushes_string,'total_crushes_int':total_crushes_int,'current_crush_number':str(current_crush_number)})
 
 
 # called by the crush selector dialog

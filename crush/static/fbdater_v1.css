@@ -1103,16 +1103,17 @@ a.logo img{
 
 .new_user_instructions{
 	font-weight:normal;
-	width:530px;
+	width:545px;
 	margin-left:auto;
 	margin-right:auto;
+	margin-top:10px;
 	display:inline-block;
 	background-color:white;
 	color:#7D7F94;
 	font-size:12px;
 	line-height:24px;
 	padding:15px 10px 15px 20px;
-	margin-bottom:30px;
+	margin-bottom:50px;
 	display:none;
 	color:#404054; 
 	border:1px solid #B1B1D0;
@@ -1120,9 +1121,6 @@ a.logo img{
 	border-radius:8px;
 }
 
-.crush_instructions {
-	margin-top:60px;
-}
 
 .new_user_instructions.expanded{
 	padding-bottom:18px;
@@ -1192,7 +1190,6 @@ a.logo img{
 
 .new_user_instructions.invite_instructions {
 	border:1px solid #CC0000;
-	margin-bottom:40px!important;
 }
 .new_user_instructions.invite_instructions span.instructions_title{
 	color:red!important;
@@ -1200,17 +1197,19 @@ a.logo img{
 .new_user_instructions span.instructions_subtitle1{
 	display:block;
 	font-weight:bold;
-	margin-top:-7px;
+	margin-top:-10px;
 	margin-bottom:15px;
 	text-shadow: 1px 1px 0 #FFFFFF;
 	#color:red!important;
-	font-size:19px!important;	
+	font-size:18px!important;	
 }
+.new_user_instructions span.instructions_subtitle1_subtext{
+	font-size:18px!important
+	}
 .new_user_instructions span.instructions_subtitle2{
 	display:block;
 	font-weight:normal;
-	margin-top:-12px;
-	margin-bottom:20px;
+	margin-bottom:24px;
 	#text-shadow: 1px 1px 0 #FFFFFF;
 	#color:#115292!important;
 	font-size:13px!important;	
@@ -1328,7 +1327,7 @@ a.logo img{
 }
 
 .new_user_instructions a.instruction_block_button{
-	padding: 5px 10px!important;
+	padding: 5px 15px!important;
 	border-radius:4px;
 	vertical-align:middle;
 	text-align:center;
@@ -1337,11 +1336,9 @@ a.logo img{
 	border-radius:5px;
 	color:white!important;
 	font-weight:bold;
-	font-size:13px;
-	text-decoration:none;
-	#font-family:arial;
-	text-shadow:1px 1px 0px #000;
-	letter-spacing:1px;
+	font-size:14px;
+	text-decoration:none; 
+	margin-right:13px;
 }
 
 .new_user_instructions a.instruction_block_button:hover{
@@ -3932,9 +3929,12 @@ ul.bxslider_element #slide_overlay {
 	font-size:10px;
 	padding:2px 6px;
 	color:white;
-	border-radius:5px;
+	border-radius:1px;
 	margin-left:10px;
 	vertical-align:middle;
+	position:absolute;
+	top:35px;
+	left:25px;
 }
 
 #attraction_email_input_section .invite_option_label{
@@ -4020,7 +4020,7 @@ ul.bxslider_element #slide_overlay {
 #mutual_friend_help_section {
 	line-height:18px;
 	position:relative;
-	min-height:30px;
+	margin-bottom:25px;
 	padding-top:10px;
 	margin-top:-10px;
 }
@@ -4228,6 +4228,23 @@ ul.bxslider_element #slide_overlay {
 
 #app_invite_form .site_dialog_button{
 	font-size:14px!important;
+}
+#app_invite_form .invite_dialog_cancel_button{
+	color:#36F!important;
+	border:1px solid #fff!important;
+}
+#app_invite_form .invite_dialog_cancel_button:hover{
+	color:#36F!important;
+	border:1px solid #C8C8C8!important;
+	background:none!important;
+}
+.app_invite_dialog .invite_subtitle{
+	font-size:13px!important;
+	#font-style:italic;
+}
+.app_invite_dialog .invite_dialog_btn_subtext{
+	font-size:12px!important;
+	margin-left:2px!important;
 }
 #app_invite_form .modal_instructions{
 	padding-left:47px;
