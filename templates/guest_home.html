@@ -26,6 +26,7 @@
 	
 	{% if no_track != True %}
 	 <script>
+ 
 	 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -183,7 +184,7 @@ jQuery(document).ready(function($) {
 <!-- ============ MIDDLE BUTTON(S) ============= -->	
 <div id="center_header_menu" class="drop_down_menu_link">
 
-<a class ="facebookbtn"><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
+<a class ="facebookbtn"{% if request.is_secure %} target="_blank" href="http://{{request.get_host}}/?fb_app_center_login=true"{% endif %}><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
 </div>
 
 
@@ -200,7 +201,7 @@ jQuery(document).ready(function($) {
 			<a id="who_will_know_link" class="logo_bar_links" href="#who_will_know_section">who will know</a>
 			
 			<h2 id="tagline1">discover anonymously if the person</BR>you're attracted to feels the same</h2>
-			<a class ="facebookbtn" {% if request.is_secure %}target="_blank" href="http://{{request.get_host}}/?login=true"{% endif %}><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
+			<a class ="facebookbtn"{% if not request.is_secure %} target="_blank" href="http://{{request.get_host}}/?fb_app_center_login=true"{% endif %}><img src="{{ STATIC_URL }}images/cm_facebook_btn.png"></a>
 			<div id="authentication_wait">authenticating<span id="authentication_dot">.</span></div>
 			<h2 id="tagline3">We never post to Facebook</h2>
 		</div>

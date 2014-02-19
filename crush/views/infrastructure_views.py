@@ -116,7 +116,10 @@ def home(request):
         else:
             return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', {})
+        if request.GET.__contains__('fb_app_center_login'):
+            return HttpResponseRedirect('/facebook/login')
+        else:
+            return render(request,'guest_home.html', {})
 
 #same as home but allows me to do special tracking
 def google_home(request):
