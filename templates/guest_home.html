@@ -55,17 +55,18 @@ jQuery(document).ready(function($) {
 	
 	/*-- ------ HANDLE FACEBOOK LOGIN BUTTON CLICK  -------- */
 	$('.facebookbtn').click(function(e){
-	    {% if no_track != True %}
-    		ga('send', 'event', 'button', 'click', 'login_button');
-    	{% endif %}
-		$('#tagline3').css('opacity',0);
-		$(this).fadeTo(0,.1,function(){$('#authentication_wait').show();$('#tagline3').hide();});
-		console.log("host: {{request.get_host}}");
-		setInterval(function(){shift_dot();},200); // animate the elipses
-		{% if request.is_secure %}
-		
-		{% else %}
+		{% if not request.is_secure %}
+			{% if no_track != True %}
+	    		ga('send', 'event', 'button', 'click', 'login_button');
+	    	{% endif %}
+			$('#tagline3').css('opacity',0);
+			$(this).fadeTo(0,.1,function(){$('#authentication_wait').show();$('#tagline3').hide();});
+			setInterval(function(){shift_dot();},200); // animate the elipses
 			window.location.href= "/facebook/login{{request.GET.next}}";
+		{% else %}
+			{% if no_track != True %}
+				ga('send', 'event', 'button', 'click', 'fb_app_center_login_button');
+			{% endif %}
 		{% endif %}
 	});
 	 
