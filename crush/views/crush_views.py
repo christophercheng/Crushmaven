@@ -230,6 +230,11 @@ def ajax_get_noinvite_crush_array(request):
     crush_array=[]
     for target in crush_targets:
         crush_array.append(target.username)
+    # get list of all friends of user and filter it by all users who are active users
+    fql_string="SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = " + request.user.username + ") AND is_app_user = 1"
+    friend_array = graph_api_fetch(request.user.access_token,fql_string, True,True)
+    for friend in friend_array:
+        crush_array.append(friend['uid'])
     return_data['data']=crush_array
     return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
 

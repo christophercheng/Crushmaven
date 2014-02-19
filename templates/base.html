@@ -232,8 +232,18 @@ jQuery(document).ready(function($) {
 		window.launch_app_invite_dialog(0,1,true);
 	});// close .app_invite_link & #inite_interstitial_modal on click app_invite function
 	
+	$("#app_referral_modal").on("click","#referral_cancel_btn", function(e){	
+        {% if no_track != True %}
+    		ga('send', 'event', 'button', 'click', 'invite_fb_friends_NO');
+    	{% endif %}
+		window.app_referral_modal.dialog('close');
+		location.href='/your_crushes/';
+	});
+	
 	$("#app_referral_modal").on("click","#referral_send_btn", function(e){
-
+        {% if no_track != True %}
+        	ga('send', 'event', 'button', 'click', 'invite_fb_friends_YES');
+        {% endif %}
 		// disable all buttons
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
 		// get excluded ids (of existing crushes)
@@ -641,7 +651,7 @@ $('.bt-fs-dialog').click(function(){
 	</div>
 	<div class="ui-dialog-buttonpane">
           <div class="ui-dialog-buttonset">
-          	<button type='button' onclick="window.app_referral_modal.dialog('close');location.href='/your_crushes/'" class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button> 
+          	<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button> 
           	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Invite Friends Through Facebook</span></button>
          </div><!-- close off buttonset -->
      </div><!-- close off buttonpane -->
