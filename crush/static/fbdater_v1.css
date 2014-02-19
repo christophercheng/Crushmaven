@@ -4508,6 +4508,12 @@ ul.bxslider_element #slide_overlay {
 	line-height:24px;
 	color:#474747!important;
 }
+#app_referral_modal .dialog_container_footnote{
+	font-size:11px!important;
+	margin-top:3px!important;
+	color:#8F8F8F!important;
+	font-style:italic!important;
+}
 
 #app_referral_modal .ui-dialog-buttonset {
 	#float:left!important;
