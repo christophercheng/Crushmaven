@@ -2,12 +2,12 @@ from django.http import HttpResponse,HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.utils import simplejson
 from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastTwitterUsername,PastPhone
 import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
-from urlparse import parse_qs
 
 from urllib2 import URLError, HTTPError
 import thread
@@ -220,6 +220,19 @@ def ajax_get_platonic_rating(request, crush_id):
         return HttpResponse(response)
     else:
         return HttpResponseForbidden("Error: You have not paid to see your attraction rating."); 
+
+# returns an array of crush username strings - used for fb inviting friends and excluding crushes from the list
+@login_required
+def ajax_get_crush_array(request):
+
+    crush_targets = request.user.crush_targets.all()
+    return_data = {}
+    crush_array=[]
+    for target in crush_targets:
+        crush_array.append(target.username)
+    return_data['data']=crush_array
+    return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
+
 
 @login_required    
 def app_invite_form_v2(request, crush_username):

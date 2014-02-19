@@ -4229,11 +4229,11 @@ ul.bxslider_element #slide_overlay {
 #app_invite_form .site_dialog_button{
 	font-size:14px!important;
 }
-#app_invite_form .invite_dialog_cancel_button{
+.invite_dialog_cancel_button{
 	color:#36F!important;
 	border:1px solid #fff!important;
 }
-#app_invite_form .invite_dialog_cancel_button:hover{
+.invite_dialog_cancel_button:hover{
 	color:#36F!important;
 	border:1px solid #C8C8C8!important;
 	background:none!important;
@@ -4498,6 +4498,22 @@ ul.bxslider_element #slide_overlay {
 	line-height:25px!important;
 	vertical-align:middle!important;
 	}
+
+#app_referral_modal {
+	display:none;
+}
+#app_referral_modal .dialog_container{
+	padding:20px 20px!important;
+	font-size:14px!important;
+	line-height:24px;
+	color:#474747!important;
+}
+
+#app_referral_modal .ui-dialog-buttonset {
+	#float:left!important;
+	float:none!important;
+	text-align:center!important;
+}
 
 /* ===========================   Remove Crush Dialog ========================= */
 

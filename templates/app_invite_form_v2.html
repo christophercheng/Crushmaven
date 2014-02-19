@@ -6,16 +6,13 @@
 <script>
 $(document).ready(function() 
 {
-
-	
         var form=$("#app_invite_form");
         
         window.send_invite_later = function(){
-        	console.log('delayed_invite: {{delayed_invite}}');
         	if ({{delayed_invite}}==true)
         		window.app_invite_modal.dialog('close');
         	else
-            	window.launch_app_invite_dialog({{current_crush_number}},{{total_crushes_string}});
+            	window.launch_app_invite_dialog({{current_crush_number}},{{total_crushes_string}},false);
         };
         
         
@@ -63,16 +60,6 @@ $(document).ready(function()
 
 		window.app_invite_modal.dialog("option","position","center");
 
-// calculate height of the preview section container
-
-{% comment %}		
-$('#app_invite_form').on('click','#show_secondary_options', function(){
-	$('.secondary_options').show();
-	$('#attraction_email_input_section .first_crush_email_name').removeClass('single_crush_email_name');
-	$(this).hide();
-});
-{% endcomment %}
-
 		
 $('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
 	input_section_element= $('#app_invite_form #mutual_friend_input_section');
@@ -94,57 +81,6 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	
 });
 
-{% comment %}
-		
-/* ---------------- PREVIEW INVITE HANDLING ---------------- */
-
-$('#app_invite_form').on('click','#preview_invite_button',function(){
-	var preview_element = $('#preview_section');
-	if ( preview_element.is(':visible') ){
-			
-			$(this).children('.ui-button-text').html('Preview Invites<span class="arrow">&#x25B2;</span>');
-			preview_element.slideToggle(250);
-			$(this).removeClass('preview_close');
-			$('.sent_from_us').fadeTo(0,0).css('left',450);
-			$('#app_invite_form #sendbutton').removeAttr('disabled');
-	}
-	else {
-		$('.sent_from_us').css('left',450);
-		var form_height = $('#app_invite_form').height();
-		var buttonpane_height = $('#app_invite_form .ui-dialog-buttonpane').height();
-		preview_element.css('bottom',buttonpane_height + 24 + 'px');
-		preview_element.height(form_height - buttonpane_height -20);
-		$(this).addClass('preview_close');
-		$(this).children('.ui-button-text').html('Close Preview<span class="arrow">&#x25BC;</span>');
-		$('.email_preview_content').height(form_height - buttonpane_height - 75);
-		$('.email_content_body').height(form_height - buttonpane_height - 165);
-		preview_element.slideToggle(750);
-		$('.sent_from_us').delay(1000).animate({opacity:1,left:"-=320"},1000);
-		$('#app_invite_form #sendbutton').attr('disabled','true');
-	}
-});// close off #preview_invite_button
-
-{% endcomment %}
-
-$('#app_invite_form').on('click', '.inactive_tab',function(){
-$('.sent_from_us').css('opacity',0);
-
-	$('#preview_section .active_tab').removeClass('active_tab').addClass('inactive_tab');
-	$(this).removeClass('inactive_tab').addClass('active_tab')
-	
-	if ($(this).attr('id') == 'preview_attraction_tab'){
-		$('#mf_email_preview_content').fadeOut(250)
-		$('#attraction_email_preview_content').delay(250).fadeIn(500);
-	}
-	else{
-		
-		$('#attraction_email_preview_content').fadeOut(250)
-		$('#mf_email_preview_content').delay(250).fadeIn(500);
-	}
-
-	$('.sent_from_us').animate({opacity:1},1);
-	
-});
 setup_qtips=function(){
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 	
@@ -294,61 +230,6 @@ $(".tooltip_subtitle").click(function(){
 	</div> <!--  close off mutual_friend_input_section -->
 </div><!-- close of mutual friend help section -->
 </div><!-- close of secondary help options -->
-{% comment %}
-<div id="preview_section">
-	<span class="preview_tab active_tab" id="preview_attraction_tab">Email Invite Preview</span><span class="preview_tab inactive_tab" id="preview_mf_tab">Mutual Friend's Invite Preview</span>
-	<div class="preview_body">
-         <div id="attraction_email_preview_content" class="email_preview_content">
-           <div class="email_header">
-	           <div class="email_content_header_labels">
-	                   From:<BR>
-	                   To:<BR>
-	                   Subject:
-	           </div>
-	           <div class="email_content_header_content">
-	                   <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>CrushMaven.com</span><BR>
-	                   <span class="email_address_holder">{{crush_firstname}}'s email address</span><BR>
-	                   <span class="subject_text">You have an admirer!</span>
-	           </div>
-           </div>
-           <div class="email_content_body">
-				<p>
-					One of our users, someone who knows you, is attracted to you and wants to know if you feel the same.  Sign in to CrushMaven.com (http://www.crushmaven.com) to find out whom. 
-				</p>
-				<p>
-					<b>What is CrushMaven?</b> It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
-				</p>				
-           </div><!-- close off email content body -->
-        </div>  <!-- close off attraction_email_preview_content -->
-    <div id="mf_email_preview_content" class="email_preview_content">
-        <div class="email_header">
-	        <div class="email_content_header_labels">
-	                From:<BR>
-	                To:<BR>
-	                Subject:<BR><BR>
-	        </div>
-	        <div class="email_content_header_content">
-	                <span class="anonymous_email_callout"><span class="sent_from_us"><span class="sent_from_us_pointer"></span>sent from us!</span>CrushMaven.com</span><BR>
-	                <span class="email_address_holder">mutual's friend email address</span><BR>
-	                <span class="subject_text">Your friend has an admirer!</span>
-	        </div>
-        </div> <!--  close off .email_header -->
-        <div class="email_content_body">
-        		<p>Someone at CrushMaven.com (http://www.crushmaven.com) is attracted to your friend, {{crush_firstname}}, and would like your help to determine if they feel the same.  Unfortunately, we can't tell you more than that.  {{crush_firstname}}'s admirer wishes to remain anonymous.
-        		</p>
-        		<p>
-        		Would you please take a second to forward this message to {{crush_firstname}}?     
-        		</p>
-        		<p>
-        		<b>What is CrushMaven?</b>  It's a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.
-        		</p>
-        		<p>And in case you're wondering: {{ crush_firstname}}'s admirer provided us with your email address.  We won't share it with anyone else, and we'll delete it once they sign up.
-        		</p>
-        </div>
-		</div>  <!-- close off mf_email_preview_content -->
-	</div> <!--  close off preview_body_mf -->
-</div> <!--  close off #preview_section -->
-{% endcomment %}
 
   <div class="ui-dialog-buttonpane">
           <div class="ui-dialog-buttonset">

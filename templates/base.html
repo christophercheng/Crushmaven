@@ -216,6 +216,8 @@ jQuery(document).ready(function($) {
 	 	
 	 * -------------------------------------------- */
 	window.app_invite_modal=null;
+	window.app_referral_modal=null;
+	
 	$(".app_invite_link").on("click", ".app_invite", function(e) {
 		e.preventDefault();
 	    {% if no_track != True %}
@@ -230,23 +232,39 @@ jQuery(document).ready(function($) {
 		window.launch_app_invite_dialog(0,1,true);
 	});// close .app_invite_link & #inite_interstitial_modal on click app_invite function
 	
+	$("#app_referral_modal").on("click","#referral_send_btn", function(e){
+
+		// disable all buttons
+		$("#app_referral_modal").html('<div id="site-loading"></div>');
+		// get excluded ids (of existing crushes)
+		$.get( "/ajax_get_crush_array/", function( data ) {
+				// call facebook requests dialog with excluded ids
+		        FB.ui({method: 'apprequests',
+		            message: "Discover anonymously if the person you're attracted to feels the same",
+		            filters: ['all'],
+		            exclude_ids:data['data'],
+
+		        }, function(response){
+		        	
+			        window.app_referral_modal.dialog('close');
+		        	// track how many invites were sent out through google events
+			        location.href="/your_crushes/";
+		        });
+			});
+	});
+	
 	window.launch_app_invite_dialog = function(current_crush_number,total_crushes,delayed_invite){
 		if (delayed_invite != true)
 			delayed_invite = false;
 		var crush_dict=window.attraction_json[current_crush_number];
 		if (crush_dict==undefined){
 			// close the dialog
-	        window.app_invite_modal.dialog('close');
-	        //location.href="https://www.facebook.com/dialog/apprequests?app_id={{facebook_app_id}}&message=Discover anonymously if the person you like feels the same!&redirect_uri=http://crushmaven-qa.herokuapp.com/facebook_notification/";
-
-	        FB.ui({method: 'apprequests',
-	            message: "Discover anonymously if the person you're attracted to feels the same",
-
-	        }, function(response){
-	        	console.log("received facebook requests response: ",response);
-	        	alert("hey");
-		        location.href="/your_crushes/";
-	        });
+			window.app_invite_modal.dialog('close');
+			// launch another dialog that asks if they would like to invite their friends to use CrushMaven - the more people aware of CrushMaven, the greater the chance that your crush will respond.
+			if (!window.app_referral_modal)
+				window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:400, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+			window.app_referral_modal.dialog('open');
+			$(':focus').blur();
 			return;
 		}
 		var crush_username='';
@@ -300,22 +318,6 @@ jQuery(document).ready(function($) {
 	
 	window.invite_interstitial_modal=null;
 	window.invite_interstitial_modal_redirect_url="";
-	
-	window.confirm_close_invite_interstitial=function(){
-		$(".invite_interstitial_dialog").hide();
-		var number_crushes=	$('#invite_interstitial_modal .modal_main_content .attraction_invite_row .attraction_invite_button').length;
-		var confirmation_modal=$("#confirm_invite_interstitial_modal");
-		if (number_crushes > 1)
-			confirmation_modal.html("You will not likely receive a response from your crushes unless you first send them an invite to sign into CrushMaven.");
-		else
-			confirmation_modal.html("You will not likely receive a response from your crush unless you first send them an invite to sign into CrushMaven.");
-
-	   confirmation_modal.dialog({dialogClass:'confirm_close_invite_dialog blacktop', draggable:false,resizable:false,width: '385px', modal:true,show:'fade',buttons: [{text: "Go Back", "class": 'site_dialog_button',click: function() { $(".invite_interstitial_dialog").show();$(this).dialog("close");}},
-	                                                                                                                                                          {text: "Send Invites Later","class":'site_dialog_button site_dialog_cancel_button',click: function() {$(this).dialog("close");window.invite_interstitial_modal.dialog("close");}}],
-		   							beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });}});
-	   confirmation_modal.dialog("open");
-	   $(':focus').blur();
-	  };  
 
 	// this function provides ability to launch one or a sequence app invite dialogs - depending on the number of added crushes 
 	// given crush_number corresponds to the particular crush number to launch - if the number is greater than the provided number of crushes, then we are done
@@ -632,6 +634,17 @@ $('.bt-fs-dialog').click(function(){
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>
+<div id="app_referral_modal" title="One Last Thing: Invite Your Friends!">
+	<div class="dialog_container">
+	With more people using CrushMaven, you'll increase your chances of receiving a response from your crushes.
+	</div>
+	<div class="ui-dialog-buttonpane">
+          <div class="ui-dialog-buttonset">
+          	<button type='button' onclick="window.app_referral_modal.dialog('close');location.href='/your_crushes/'" class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button> 
+          	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Invite Friends Through Facebook</span></button>
+         </div><!-- close off buttonset -->
+     </div><!-- close off buttonpane -->
+</div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>
 <div id="contactable"></div><!-- contactable html placeholder -->
