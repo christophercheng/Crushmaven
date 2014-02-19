@@ -240,10 +240,10 @@ jQuery(document).ready(function($) {
 		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
-		            message: "Discover anonymously if the person you're attracted to feels the same",
+		            message: "Discover anonymously if the person you're attracted to feels the same with CrushMaven.",
 		            filters: ['all','app_non_users'],
 		            exclude_ids:data['data'],
-		            title:'Increase your odds gf getting a response!'
+		            title:'Increase your odds of getting a response!'
 
 		        }, function(response){
 		        	
