@@ -223,7 +223,7 @@ def ajax_get_platonic_rating(request, crush_id):
 
 # returns an array of crush username strings - used for fb inviting friends and excluding crushes from the list
 @login_required
-def ajax_get_crush_array(request):
+def ajax_get_noinvite_crush_array(request):
 
     crush_targets = request.user.crush_targets.all()
     return_data = {}

@@ -237,11 +237,11 @@ jQuery(document).ready(function($) {
 		// disable all buttons
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
 		// get excluded ids (of existing crushes)
-		$.get( "/ajax_get_crush_array/", function( data ) {
+		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
 		            message: "Discover anonymously if the person you're attracted to feels the same",
-		            filters: ['all'],
+		            filters: ['all','app_non_users'],
 		            exclude_ids:data['data'],
 
 		        }, function(response){
