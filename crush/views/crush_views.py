@@ -238,6 +238,17 @@ def ajax_get_noinvite_crush_array(request):
     return_data['data']=crush_array
     return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
 
+# give user an extra credit if their current credit is zero - used if user comleted some sort of free credit offer e.g. invite minimum number of facebook friends to app
+@login_required
+def ajax_add_one_free_credit(request):
+    me=request.user
+    if me.site_credits == 0:
+        me.site_credits=1
+        me.save(update_fields=['site_credits'])
+        return HttpResponse("Good")
+    else:
+        return HttpResponseForbidden("You are not eligible to receive a free credit since you already have credits.")
+
 
 @login_required    
 def app_invite_form_v2(request, crush_username):

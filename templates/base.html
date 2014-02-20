@@ -250,13 +250,18 @@ jQuery(document).ready(function($) {
 		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
-		            message: "Discover anonymously if the person you're attracted to feels the same with CrushMaven.",
+		            message: "Check out CrushMaven, the intelligent (and anonymous) secret admirer app!",
 		            filters: ['all','app_non_users'],
 		            exclude_ids:data['data'],
 		            title:'Increase your odds of getting a response!'
 
 		        }, function(response){
-		        	
+		        	if (response.to != undefined){
+			        	var num_invites = response['to'].length;
+			            {% if no_track != True %}
+			            	ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_crush_addition:' + num_invites.toString());
+			            {% endif %}
+		        	}
 			        window.app_referral_modal.dialog('close');
 		        	// track how many invites were sent out through google events
 			        location.href="/your_crushes/";
@@ -427,9 +432,9 @@ jQuery(document).ready(function($) {
 	 		$('#wait_modal').dialog("close");
 	 };  
   
-	 window.alert_modal=function(title, message,calling_jquery_element){
+	 window.alert_modal=function(title, message,calling_jquery_element,callback_code){
 	   $("#alert_modal").html(message);
-	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop', draggable:false,title:title,show:'fade',beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
+	   $("#alert_modal").dialog({dialogClass:'alert_modal_dialog blacktop', draggable:false,title:title,show:'fade',close:function(){ if (callback_code != undefined) eval(callback_code);},beforeClose:function(){$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' });$(".ui-widget-overlay").css('z-index',old_overlay_z);window.wait_modal_close()}});
 		$('#alert_modal').dialog("open");
 		
 		if (typeof calling_jquery_element === 'undefined'){
@@ -505,8 +510,6 @@ $(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_w
 	if (xhr.status==405)
   			reauthorize_user();
   }); 
-// INITIALIZE FEEDBACK FORM 
- 
  
 // HANDLE SETTINGS MENU CLICK
 function openSubMenu() {

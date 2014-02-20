@@ -3379,16 +3379,16 @@ ul.bxslider_element #slide_overlay {
 #credit_check_modal{
 	border-radius:0 0 6px 6px!important;
 }
-#credit_check_modal #survey_modal_div{
+#credit_check_modal #credit_offer_modal {
 	display:none;
 }
-.survey_dialog #survey_modal_div .modal_container{
+.survey_dialog #survey_modal_div .modal_container,#credit_offer_modal .modal_container{
 	padding:15px 17px;
 	line-height:28px;
 	font-size:14px;
 }
 
-.survey_dialog #survey_modal_div .ui-dialog-buttonpane{
+.survey_dialog #survey_modal_div .ui-dialog-buttonpane,#credit_offer_modal .ui-dialog-buttonpane{
 	padding-right:70px!important;
 }
 .mobile_warning_dialog{

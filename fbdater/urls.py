@@ -91,7 +91,8 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_get_platonic_rating/(?P<crush_id>\w+)/$','ajax_get_platonic_rating'),
     
     (r'^ajax_get_noinvite_crush_array/$','ajax_get_noinvite_crush_array'),
-    
+
+    (r'^ajax_add_one_free_credit/$','ajax_add_one_free_credit'),
     
     # deletion handling
     (r'^ajax_can_crush_target_be_platonic_friend/(?P<crush_username>\w+)/$','ajax_can_crush_target_be_platonic_friend'),    

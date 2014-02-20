@@ -1,12 +1,47 @@
 <script>
 $(document).ready(function() 
 {
-	
-	window.survey_user = function(reason){
-		{% if completed_survey != True %}
-			var survey_dialog = $("#survey_modal_div").dialog({dialogClass:'survey_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-	   {% endif %}
+	window.offer_free_credit = function(){
+		{% comment %}
+			{% if completed_survey != True %}
+				var survey_dialog = $("#survey_modal_div").dialog({dialogClass:'survey_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+		   {% endif %}
+		{% endcomment %}
+		{% if request.user.site_credits = 0 %}
+				$("#credit_offer_modal").dialog({dialogClass:'credit_offer_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+				$(':focus').blur();
+		{% endif %}
 	};
+	$('#obtain_free_credit_btn').click(function(){
+		$('#credit_offer_modal').html('<div id=\'site-loading\'></div>');
+		// get excluded ids (of existing crushes)
+		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
+				// call facebook requests dialog with excluded ids
+		        FB.ui({method: 'apprequests',
+		            message: "Check out CrushMaven, the intelligent (and anonymous) secret admirer app!",
+		            filters: ['all','app_non_users'],
+		            exclude_ids:data['data'],
+		            title:'Invite ten friends or more to earn free credit'
+		        }, function(response){
+					$("#credit_offer_modal").dialog('close');
+		        	if (response.to == undefined){
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit.",undefined, "location.href='';");
+		        		return;
+		        	}
+		        	var num_invites = response['to'].length;
+		            {% if no_track != True %}
+		            	ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_credit_offer:' + num_invites.toString());
+		            {% endif %}
+		        	if (num_invites < 10)	
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited " + num_invites.toString() +")",undefined, "location.href='';");
+		        	else 
+		        		$.get( "/ajax_add_one_free_credit/", function( data ) {
+		        			window.alert_modal("Thank You","One credit has been added to your account. Thanks for supporting CrushMaven!");
+		        		});
+		        });
+			});
+	});
+
 	window.morph_dialog = function(){
 		window.purchase_dialog_div.dialog('close');
 		window.wait_modal_open("Redirecting to Paypal");
@@ -90,7 +125,7 @@ $(document).ready(function()
 		<!-- <span id="purchase_button_description">You will be directed to PayPal</span> -->
 		<div class="ui-dialog-buttonset paypal_redirect_buttonset">
 		<input type='image' id="credit_deduct_ok" onclick="window.morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" src="{{STATIC_URL}}images/paypal_buy_now_button.gif"</input> 
-		<button type='button' onclick="window.purchase_dialog_div.dialog('close');window.survey_user();" class="ui-button site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
+		<button type='button' onclick="window.purchase_dialog_div.dialog('close');window.offer_free_credit();" class="ui-button site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
 		</div>
 	</div><!-- close off button_bar -->
 </form>
@@ -149,6 +184,7 @@ You can always purchase more credits from within the settings menu (in the top r
 </span>
 <span class="tooltip_close">close</span>
 </span>
+{% comment %}
 <div id="survey_modal_div" title="Your Feedback Is Important!">
 	<div class="modal_container">Would you like to earn a free credit to use on any feature?  Simply complete our feedback form, and we'll instantly update your account.
 	</div><!-- close off buttonpane -->	
@@ -158,6 +194,17 @@ You can always purchase more credits from within the settings menu (in the top r
 		<button type='button' onclick="$('#survey_modal_div').dialog('close');location.href='/feedback_form';" class="site_dialog_button" ><span class="ui-button-text">Let's Do It!</span></button> 
 	</div><!-- close off buttonset -->
 	</div><!-- close off buttonpane -->
+</div>
+{% endcomment %}
+<div id="credit_offer_modal" title="Earn Free Credit!">
+<div class="modal_container">Would you like to earn a free credit to use on anywhere on the site?  Invite at least ten friends on Facebook, and we'll instantly update your account.
+</div><!-- close off buttonpane -->	
+<div class="ui-dialog-buttonpane">
+<div class="ui-dialog-buttonset">
+	<button type='button' onclick="location.href='';" class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button" ><span class="ui-button-text">No Thanks</span></button> 
+	<button id="obtain_free_credit_btn" type='button' class="site_dialog_button" ><span class="ui-button-text">Let's Do It!</span></button> 
+</div><!-- close off buttonset -->
+</div><!-- close off buttonpane -->
 </div>
 
 
