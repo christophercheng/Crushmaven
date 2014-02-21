@@ -1263,7 +1263,7 @@ a.logo img{
 }
 .new_user_instructions.invite_instructions .second_instruction_section{
 	padding-top:0px!important;
-	margin-top:-5px;
+	margin-top:-10px;
 }
 .new_user_instructions ul{
 	margin-top:5px;
@@ -1279,6 +1279,7 @@ a.logo img{
 	left:-7px;
 	cursor:pointer!important;
 }
+
 .new_user_instructions .instruction_step{
 	margin-bottom:12px;
 	display:block;
