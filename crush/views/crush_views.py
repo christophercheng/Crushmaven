@@ -48,8 +48,6 @@ def ajax_add_crush_targets(request):
                                                        friendship_type=friend_type, updated_flag=True)
             thread.start_new_thread(adjust_associated_lineup_members,(request.user,selected_user,True))
     if counter > 0:
-        if number_existing_progressing_crushes == 0:
-            request.user.send_verification_email()
         return HttpResponse('')
     else:
         return HttpResponseNotFound("Sorry, we were not able to add to your crushes.  Please try again.")

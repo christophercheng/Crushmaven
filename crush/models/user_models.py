@@ -111,9 +111,12 @@ class FacebookUserManager(UserManager):
                     fb_profile['is_active']=True
                     fb_profile['date_joined'] = '' # datetime.datetime.now will be filled in later
                     thread.start_new_thread(self.handle_activated_user,(user,fb_profile)) 
+                    self.update_user(user,fb_profile)
+                    user.send_verification_email()
                     # dont' run update_user as a thread the first time
-                self.update_user(user,fb_profile)
-
+                else:
+                    self.update_user(user,fb_profile)
+                    # don't send verification email
         # No existing user, create one (happens when someone adds a crush but that crush is not already a user
         except FacebookUser.DoesNotExist:
             logger.debug('user not found')
@@ -145,6 +148,7 @@ class FacebookUserManager(UserManager):
             #thread.start_new_thread(self.update_user,(user,fb_profile))     
             logger.debug("calling update_user with user: " + str(user))
             self.update_user(user,fb_profile)
+            user.send_verification_email()
         return user
     
     def handle_activated_user(self,user,fb_profile):

@@ -464,7 +464,7 @@ a.button {
 	-ms-user-select: none;
 	user-select: none;
 	background-color:#CC0000;
-	box-shadow: 0 -1px 1px #660000;
+	box-shadow: 0 -1px 5px #fff;
 	font-family:"helvetica neue",helvetica;
 		
 }

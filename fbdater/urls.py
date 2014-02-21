@@ -14,7 +14,6 @@ handler404 = 'crush.views.infrastructure_views.home'
 
 # Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
-    (r'^facebook/login/$', 'login'),
     (r'^facebook/login/(?P<next_page>\w+)/$', 'login'),
     (r'^facebook/authentication_callback/$', 'authentication_callback'), 
     (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
@@ -42,8 +41,8 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^bhome/$','bing_home'),
     (r'^fhome/$','facebook_home'),
     
-    (r'^verify_email/(?P<username>\w+)/','verify_email'),
-    (r'^ajax_resend_verification_email/','ajax_resend_verification_email'),
+    (r'^verify_email/(?P<username>\w+)/$','verify_email'),
+    (r'^ajax_resend_verification_email/$','ajax_resend_verification_email'),
     
     (r'^ajax_submit_feedback/$','ajax_submit_feedback'),
 
