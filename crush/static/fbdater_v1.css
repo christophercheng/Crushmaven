@@ -494,7 +494,7 @@ a.button {
 	font-family:helvetica;
 }
 
-.inner_footer_container a.resend_verify_email {
+.inner_footer_container a.footer_btn {
 	color:#143D66;
 	font-weight:bold;
 	background:white;
@@ -4651,50 +4651,6 @@ ul.bxslider_element #slide_overlay {
 
 .settings_form .preferences_settings_form .errorlist li{
 	margin-left:210px;
-}
-
-/* this is a warning box shown in the settings page if no email exists */
-#no_email_container{
-	width: 100%;
-	background: red;
-	border-radius: 7px;
-	padding: 12px 15px 12px 10px;
-	color: #fff;
-	line-height:24px;
-	margin-bottom: 25px;
-	font-weight: bold;
-	position:relative
-}
-#no_email_container a{
-	display:block;
-	background:white;
-	color:red;
-	width:180px;
-	font-weight:bold;
-	font-size:14px;
-	padding:3px 10px;
-	border-radius:7px;
-	margin-top:15px;
-	margin-bottom:5px;
-	text-align:center;
-	margin-left:auto;
-	margin-right:auto;
-}
-
-#no_email_message{
- margin-top:8px;
- margin-left:30px;
- font-weight:normal;
- line-height:21px;
-}
-
-#no_email_container span.alert_icon{
-	background:white;
-	color:red;
-	vertical-align:top;
-	width:20px;
-	height:20px;
-	font-size:16px;
 }
 
 #settings_label_credits_available {

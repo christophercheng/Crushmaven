@@ -264,15 +264,6 @@ $(".response_view_rating .help_icon").qtip({
 
 <!-- ALWAYS display responded crush relationships on top of page, if they exist -->
 
-{% if crush_relationships and not email_exists %}
-<div id="no_email_container">
-	<span class="alert_icon">!</span> We don't have your email address!
-	<div id="no_email_message">
-	We need your email address so we can notify you when your crushes respond - and when you have new admirers. <bR> <a href="/settings_preferences">Update Your Settings</a>
-	</div>
-</div>
-{% endif %}
-
 {% if responded_relationships %}
 
 <div id ="responses">

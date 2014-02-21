@@ -28,7 +28,9 @@ def settings_preferences(request):
                     updated_fields.append('gender_pref')
                 if 'email' in data and data['email'] != me.email:
                     me.email=data['email']
+                    me.is_email_verified = False
                     updated_fields.append('email')
+                    updated_fields.append('is_email_verified')
                 if 'bNotify_new_admirer' in data:
                     if me.bNotify_new_admirer != True:
                         me.bNotify_new_admirer = True

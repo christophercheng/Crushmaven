@@ -632,7 +632,7 @@ $('.bt-fs-dialog').click(function(){
 	//window.wait_modal_open();
 })
 	    	  
-{% if request.user.email != '' and not request.user.is_email_verified %}
+{% if request.user.email == '' or not request.user.is_email_verified %}
 	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},1500);
 	$('.resend_verify_email').click(function(){
 		$(this).replaceWith('&nbsp;(resent)');
@@ -666,11 +666,25 @@ $('.bt-fs-dialog').click(function(){
 	<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
 </div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
-{% if request.user.email != "" and not request.user.is_email_verified %}
+
+
+{% if request.user.email == "" %}
+	{% if 'settings_preferences' not in request.path %}
+	<div class="footer">
+	<div class="outer_footer_container">
+	<div class="inner_footer_container">
+	Please provide us with your email address <a href="/settings_preferences" class="footer_btn">Update Email Settings</a>
+	<div class="footer_subtext">We use it to send notifications when your crushes respond. </div>
+	</div>
+	</div>
+	</div><!-- close off footer div -->
+	{% endif %}
+
+{% elif not request.user.is_email_verified %}
 <div class="footer">
 <div class="outer_footer_container">
 <div class="inner_footer_container">
-Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="resend_verify_email">resend</a>
+Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="footer_btn resend_verify_email">resend</a>
 <div class="footer_subtext">Our email may be in your junk or spam folder.  If so, please move it to your inbox. </div>
 </div>
 </div>
