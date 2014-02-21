@@ -16,8 +16,10 @@ handler404 = 'crush.views.infrastructure_views.home'
 urlpatterns = patterns('facebook.views',
     (r'^facebook/login/$', 'login'),
     (r'^facebook/login/(?P<next_page>\w+)/$', 'login'),
+        (r'^facebook/login/(?P<next_page>\w+)/(?P<next_page_param>\w+)/$', 'login'),
     (r'^facebook/authentication_callback/$', 'authentication_callback'), 
-    (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
+    (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),   
+    (r'^facebook/authentication_callback/(?P<next_page>\w+)/(?P<next_page_param>\w+)/$', 'authentication_callback'),                       
 )
 
 urlpatterns += patterns('',

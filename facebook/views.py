@@ -8,10 +8,12 @@ from crush.utils_email import send_mail_user_logged_in
 import thread
 
 #First step of process, redirects user to Facebook, which redirects back to authentication_callback.
-def login(request,next_page=""):
+def login(request,next_page="",next_page_param=""):
     # if user tries to access a page when not logged in, we'll get a next Get parameter.  add it as a parameter to the fb redirect URI so we can redirect later
     if next_page != "":
         next_page = "/" + next_page + "/"
+    if next_page_param != "":
+        next_page += next_page_param + "/"
     redirect_uri = request.build_absolute_uri('/facebook/authentication_callback' + next_page)
     redirect_uri=redirect_uri.replace('https','http')
     args = {
@@ -25,9 +27,11 @@ def login(request,next_page=""):
     
     
 #Second step of the login process. It reads in a code from Facebook, then redirects back to the home page.
-def authentication_callback(request,next_page=""):
+def authentication_callback(request,next_page="",next_page_param=""):
     if next_page!="":
         next_page = "/" + next_page + "/"
+    if next_page_param != "":
+        next_page += next_page_param + "/"
     code = request.GET.get('code')
     # call the django authentication middleware function
     user = authenticate(token=code, request=request,next_page=next_page)
