@@ -639,7 +639,7 @@ $('.bt-fs-dialog').click(function(){
 		$.get('/ajax_resend_verification_email');
 	})
 {% else %}
-	{% if 'verified_email' in request.GET %}
+	{% if 'verified_email' in request.GET and request.user.is_email_verified != True %}
 
 		window.alert_modal('Email Verification','Your email, {{ request.user.email }}, has been verified.  Thank you!');
 	{% endif %}
