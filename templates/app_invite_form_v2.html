@@ -235,7 +235,7 @@ $(".tooltip_subtitle").click(function(){
           <div class="ui-dialog-buttonset">
           	{% comment %}<button type='button' {% if no_track != True %}onclick="ga('send', 'event', 'button', 'click', 'preview_email_button');"{% endif %} class="site_dialog_button site_dialog_cancel_button preview_button" id="preview_invite_button"><span class="ui-button-text">Preview Invites<span class="arrow">&#x25B2;</span></span></button>{% endcomment %}
           	{% comment %}{% if total_crushes_int > 1 %}<span class="invite_count">invitation #{{ current_crush_number }} of {{ total_crushes_string }}</span>{% endif %}{% endcomment %}
-          	<button type='button' onclick="window.send_invite_later();" class="site_dialog_button site_dialog_cancel_button{% if total_crushes_int > 1 %} invite_dialog_cancel_button{% endif %}" ><span class="ui-button-text">Invite Later</span></button> 
+          	<button type='button' onclick="window.send_invite_later();" class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button" ><span class="ui-button-text">Invite Later</span></button> 
           	<button id="sendbutton" class="site_dialog_button" type="submit">Send Invite {% if total_crushes_int > 1 %}<span class="invite_dialog_btn_subtext">(crush {{ current_crush_number }} of {{ total_crushes_string }})</span>{% endif %}</button>
           </div><!-- close off buttonset -->
   </div><!-- close off buttonpane -->

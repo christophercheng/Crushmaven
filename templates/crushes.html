@@ -334,6 +334,8 @@ $(".response_view_rating .help_icon").qtip({
 </div>		<!-- close off email_help instructional content -->
 {% endif %} 
 
+{% if crush_relationships %}
+
 <!-- Display the crush type navigation widget -->
 
 <ul class="title_bar" id="title_bar_new_crushes">
@@ -366,8 +368,11 @@ $(".response_view_rating .help_icon").qtip({
 		You have no <i>new</i> crushes.<span class="no_content_action"><a href="javascript:{}" class="bt-fs-dialog">Add one</a> to get started.</span>
 	</span>
 {% endif %}
+{% endif %}
 
-<ul class="title_bar second_title_bar" id="title_bar_responded_crushes">
+{% if completed_crush_relationships %}
+
+<ul class="title_bar second_title_bar" id="title_bar_responded_crushes" {% if not crush_relationships %}style="margin-top:0px;" {% endif %}>
 
 	<li class="title_bar_title">Responded Crushes<span class="title_bar_count">({{completed_crushes_count}})</span></li>
 	<li class="title_bar_page_links">
@@ -392,7 +397,7 @@ $(".response_view_rating .help_icon").qtip({
 	You have no crushes that have responded
 	</span>
 {% endif %}
-
+{% endif %}
 
 <! -- End of crush type navigation widget --> 
 
