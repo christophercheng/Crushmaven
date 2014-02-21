@@ -632,7 +632,7 @@ $('.bt-fs-dialog').click(function(){
 	//window.wait_modal_open();
 })
 	    	  
-{% if not request.user.is_email_verified %}
+{% if request.user.email != '' and not request.user.is_email_verified %}
 	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},1500);
 	$('.resend_verify_email').click(function(){
 		$(this).replaceWith('&nbsp;(resent)');
@@ -666,7 +666,7 @@ $('.bt-fs-dialog').click(function(){
 	<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
 </div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
-{% if not request.user.is_email_verified %}
+{% if request.user.email != "" and not request.user.is_email_verified %}
 <div class="footer">
 <div class="outer_footer_container">
 <div class="inner_footer_container">
