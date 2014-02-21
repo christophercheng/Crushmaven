@@ -464,7 +464,9 @@ a.button {
 	-ms-user-select: none;
 	user-select: none;
 	background-color:#CC0000;
-	box-shadow: 0 -1px 5px #fff;
+		background-color:#5A6372;
+	background-color:#256EB8;
+	box-shadow: 0px -1px 0px #143D66;
 	font-family:"helvetica neue",helvetica;
 		
 }
@@ -475,7 +477,7 @@ a.button {
 	margin-right:auto;
 }
 .inner_footer_container{
-	background-color:#CC0000;
+
 	padding-top:3px;
 	width:775px;
 	margin-left: 215px;
@@ -493,10 +495,11 @@ a.button {
 }
 
 .inner_footer_container a.resend_verify_email {
-	color:#7A0000;
+	color:#143D66;
+	font-weight:bold;
 	background:white;
 	display:inline-block;
-	padding:1px 5px;
+	padding:1px 7px;
 	padding-top:0px;
 	border-radius:5px;
 	margin-left:7px;
@@ -4515,10 +4518,11 @@ ul.bxslider_element #slide_overlay {
 	font-style:italic!important;
 }
 
-#app_referral_modal .ui-dialog-buttonset {
-	#float:left!important;
-	float:none!important;
+#app_referral_modal .ui-dialog-buttonpane{
 	text-align:center!important;
+}
+#app_referral_modal .ui-dialog-buttonset {
+	float:none!important;
 }
 
 /* ===========================   Remove Crush Dialog ========================= */
