@@ -44,6 +44,8 @@ class MultiEmailField(forms.Field):
 
             if email == '':
                 raise ValidationError ("Are you missing an email address?")
+            if 'facebook.com' in email:
+                raise ValidationError("We are unable to send invites to facebook.com emails")
             if not email_re.match(email):
                 logger.error("unable to validate email through regex" + str(email))
                 raise ValidationError(('%s is not a valid email address') % email)
