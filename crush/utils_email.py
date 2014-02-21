@@ -37,6 +37,14 @@ def send_mail_user_logged_in(user, header_string):
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','admin@crushmaven.com',user.get_name() + ' logged in!','http://www.facebook.com/' + str(user.username) + " " + header_string,'http://www.facebook.com/' + str(user.username) + " " + header_string)
         send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','6465732737@vmobl.com',user.get_name() + ' logged in!','http://www.facebook.com/'+str(user.username),'http://www.facebook.com/'+str(user.username))
+
+def send_mail_verify_email(user):
+    email_address=user.email
+    first_name=user.first_name
+    username=user.username
+    html=render_to_string('email_template_verify_email.html',{'first_name':first_name,'username':username,'STATIC_URL':STATIC_URL})
+    text=render_to_string('email_template_verify_email_text.html',{'STATIC_URL':STATIC_URL})
+    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Please verify your email address',html,text)
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address,recipient_fb_username=None):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL,'recipient_fb_username':recipient_fb_username})

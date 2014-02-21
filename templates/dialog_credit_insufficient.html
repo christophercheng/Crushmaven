@@ -25,7 +25,7 @@ $(document).ready(function()
 		        }, function(response){
 					$("#credit_offer_modal").dialog('close');
 		        	if (response.to == undefined){
-		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit.",undefined, "location.href='';");
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited no one)",undefined, "location.href='';");
 		        		return;
 		        	}
 		        	var num_invites = response['to'].length;

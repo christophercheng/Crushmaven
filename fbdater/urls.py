@@ -42,6 +42,9 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^bhome/$','bing_home'),
     (r'^fhome/$','facebook_home'),
     
+    (r'^verify_email/(?P<username>\w+)/','verify_email'),
+    (r'^ajax_resend_verification_email/','ajax_resend_verification_email'),
+    
     (r'^ajax_submit_feedback/$','ajax_submit_feedback'),
 
     (r'^logout_view/$', 'logout_view'),

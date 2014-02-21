@@ -59,6 +59,7 @@
 {% endif %}
 <script> 
 jQuery(document).ready(function($) {
+
 	{% if 'signin' in request.GET %}
 
 		$('#intro_overlay').fadeOut(2000);
@@ -622,7 +623,19 @@ $('.bt-fs-dialog').click(function(){
     {% endif %}
 	//window.wait_modal_open();
 })
+	    	  
+{% if num_total_crushes > 0 and not request.user.is_email_verified %}
+	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},{% if 'signin' in request.GET %}2000{% else %}1000{% endif %});
+	$('.resend_verify_email').click(function(){
+		$(this).replaceWith('&nbsp;(resent)');
+		$.get('/ajax_resend_verification_email');
+	})
+{% else %}
+	{% if 'verified_email' in request.GET %}
 
+		window.alert_modal('Email Verification','Your email, {{ request.user.email }}, has been verified.  Thank you!');
+	{% endif %}
+{% endif %}
 }); // close of jQuery(document).ready
 
 </script>
@@ -645,6 +658,16 @@ $('.bt-fs-dialog').click(function(){
 	<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
 </div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
+{% if num_total_crushes > 0 and not request.user.is_email_verified %}
+<div class="footer">
+<div class="outer_footer_container">
+<div class="inner_footer_container">
+Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="resend_verify_email">resend</a>
+<div class="footer_subtext">Our email may be in your junk or spam folders.  If so, please move it to your inbox. </div>
+</div>
+</div>
+</div><!-- close off footer div -->
+{% endif %}
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>

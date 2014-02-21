@@ -103,10 +103,15 @@ def testing_prep(request):
 def sitemap(request):
     return HttpResponseRedirect('/static/sitemap.xml',mimetype='application/xml')
 @csrf_exempt # for canvas app center facebook 
-def home(request):
+def home(request,source=''):
     get_parameter_string=""
     if request.GET.__contains__('signin'): # in the facebook authentication process, we append signin as GET parameter so we know when we just logged in
-        get_parameter_string = "?signin=true" #this is used to check if user is on mobile when signing in
+        get_parameter_string += "?signin=true" #this is used to check if user is on mobile when signing in
+    if source == 'verified_email':
+        if get_parameter_string == '':
+            get_parameter_string += '?verified_email=true'
+        else:
+            get_parameter_string += '&verified_email=true'
     if request.user.is_authenticated():
 
         if CrushRelationship.objects.visible_responded_crushes(request.user).count() > 0:
@@ -121,6 +126,25 @@ def home(request):
         else:
             return render(request,'guest_home.html', {})
 
+@login_required
+def verify_email(request,username):
+    me = request.user
+    if me.is_email_verified:
+        return home(request)
+    if me.username == username:
+        me.is_email_verified=True
+    me.save(update_fields=['is_email_verified'])
+    return home(request,'verified_email')
+
+@login_required
+def ajax_resend_verification_email(request):
+    me = request.user
+    if me.is_email_verified:
+        return HttpResponse('')
+    me.send_verification_email()
+    return HttpResponse('')
+    
+        
 #same as home but allows me to do special tracking
 def google_home(request):
     get_parameter_string=""

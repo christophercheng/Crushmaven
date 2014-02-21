@@ -6,6 +6,7 @@ from django.contrib.auth.models import (UserManager, AbstractUser)
 from django.conf import settings
 import crush.models.relationship_models
 from crush.utils import graph_api_fetch
+from crush.utils_email import send_mail_verify_email
 from crush.models.miscellaneous_models import InviteEmail
 import thread
 from django.db.models import Q
@@ -143,12 +144,10 @@ class FacebookUserManager(UserManager):
                 return super(FacebookUserManager, self).get_query_set().get(username=fb_id)
             #thread.start_new_thread(self.update_user,(user,fb_profile))     
             logger.debug("calling update_user with user: " + str(user))
-            self.update_user(user,fb_profile)     
+            self.update_user(user,fb_profile)
         return user
     
     def handle_activated_user(self,user,fb_profile):
-        # reset their date_joined field
-        
         
         # look for any admirers at this point so their relationships can get updated
         admirer_relationships = crush.models.relationship_models.CrushRelationship.objects.all_admirers(user)
@@ -186,6 +185,7 @@ class FacebookUserManager(UserManager):
             except FacebookUser.DoesNotExist:# FacebookUser.DoesNotExist:
                 pass
             
+        
 # Custom User Profile Class allows custom User fields to be associated with unique django user instance
 class FacebookUser(AbstractUser):
     
@@ -212,6 +212,7 @@ class FacebookUser(AbstractUser):
     is_single = models.BooleanField(default=True)
 
     is_underage = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
     
@@ -421,6 +422,10 @@ class FacebookUser(AbstractUser):
             return 'him'
         else:
             return 'hers'
+    
+    def send_verification_email(self):
+        if self.email != '' and not self.is_email_verified:
+            send_mail_verify_email(self)
     
     #=========  Debug Self Reference Function =========
     def __unicode__(self):

@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 def ajax_add_crush_targets(request):
     post_data = request.POST
     # ensure that user has not exceeded beta limits:
-    if request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()>settings.MAXIMUM_CRUSHES:
+    number_existing_progressing_crushes = request.user.crush_crushrelationship_set_from_source.filter(target_status__lt = 4).count()
+    if number_existing_progressing_crushes > settings.MAXIMUM_CRUSHES:
         return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_CRUSHES) + " ongoing crushes at a time.")
     # this is just for testing, remove later
     counter = 0
@@ -47,6 +48,8 @@ def ajax_add_crush_targets(request):
                                                        friendship_type=friend_type, updated_flag=True)
             thread.start_new_thread(adjust_associated_lineup_members,(request.user,selected_user,True))
     if counter > 0:
+        if number_existing_progressing_crushes == 0:
+            request.user.send_verification_email()
         return HttpResponse('')
     else:
         return HttpResponseNotFound("Sorry, we were not able to add to your crushes.  Please try again.")
