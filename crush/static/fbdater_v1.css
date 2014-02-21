@@ -27,7 +27,7 @@ body {
 	#background:url('/static/images/whitemaze_brighter_pattern.png');
 	#background:rgba(241,243,245,.5);
 	#background:url("http://www.mailgun.com/static/img/bg.png") repeat scroll 0 0 transparent;
-	font-family:"Lucida Grande", helvetica, arial!important;
+	font-family:"varela round","helvetica neue","Lucida Grande", helvetica, arial!important;
 }
 
 #intro_overlay {
@@ -241,7 +241,7 @@ a.button {
 	border-radius:8px 8px 0 0!important;
 	font-size:17px!important;
 	font-weight:bold!important;
-	font-family:"Lucida Grande", helvetica, arial!important;
+	#font-family:"Lucida Grande", helvetica, arial!important;
 }
 
 .ui-icon{
@@ -323,7 +323,7 @@ a.button {
 	padding:4px 12px 4px 12px!important;
 	text-align:center!important;
 	border-radius:5px!important;
-	font-family:arial!important;
+	#font-family:arial!important;
 	font-weight:normal!important;
 	font-size:14px!important;
 	line-height:14px!important;
@@ -475,6 +475,7 @@ a.button {
 	user-select: none;
 		background-color:#CC0000;
 	box-shadow: 0 -1px 1px #660000;
+	font-family:"helvetica neue",helvetica;
 		
 }
 
@@ -485,7 +486,6 @@ a.button {
 }
 .inner_footer_container{
 	background-color:#CC0000;
-	#border-radius:10px 10px 0px 0px;
 	padding-top:3px;
 	width:775px;
 	margin-left: 215px;
@@ -493,7 +493,7 @@ a.button {
 	position:relative;
 	height:100%;
 	line-height:16px;
-	letter-spacing:-1px;
+	cursor:default;
 }
 .inner_footer_container .footer_subtext{
 	font-size:11px;
@@ -509,6 +509,7 @@ a.button {
 	padding-top:0px;
 	border-radius:5px;
 	margin-left:7px;
+	font-size:11px;
 	opacity:.8;
 }
 .inner_footer_container a.resend_verify_email:hover {
@@ -623,7 +624,7 @@ a.logo img{
 	-webkit-transition-duration:200ms;
 	-webkit-transition-property:color;
 	font-weight:normal!important;
-	font-size:15px!important;
+	font-size:16px!important;
 	padding-right:15px;
 	line-height:50px;
 	height:100%;
@@ -633,7 +634,6 @@ a.logo img{
 	border-left:1px solid black;
 	border-right:1px solid black;
 	padding-top:5px;
-	font-family:"varela round","Lucida Grande",helvetica, arial;
 }
 #get_started_link .add_icon{
 	position:absolute;
@@ -730,11 +730,11 @@ a.logo img{
 	display:inline-block;
 	width:100%;
 	height:100%;
-	font-size:12px!important;
+	font-size:13px!important;
 	font-weight:normal!important;
 	letter-spacing:1px;
 	padding:7px 20px!important;
-	text-shadow:1px 1px 0px black;
+	#text-shadow:1px 1px 0px black;
 }
 
 .settings_menu a:hover {
@@ -823,7 +823,6 @@ a.logo img{
 	position:absolute;
 	display:block;
 	background-image:url('/static/images/full_sprite.png');	
-	#background-image:url('/static/images/full_sprite.png');
 	background-repeat:no-repeat;
 	background-size:auto;
 	height:20px;
@@ -850,17 +849,6 @@ a.logo img{
 .navbar li.inactive.messages:hover a .menu_icon,.navbar li.active.messages a .menu_icon{
 	background-position:0px -91px;
 }
-/*
-.navbar li.active.new_crushes:hover a .menu_icon{
-	background-position:-8px -41px;
-}
-.navbar li.active.new_admirers:hover a .menu_icon{
-	background-position:-9px -71px;	
-}
-.navbar li.active.messages:hover a .menu_icon{
-	background-position:-8px -100px;
-}
-*/
 
 .shrink_text{
 	letter-spacing:0px;
@@ -877,16 +865,14 @@ a.logo img{
 
 .navbar a {
 	display:block;
-	font-size:15px;
-	font-weight:bold;
+	font-size:17px;
 	text-decoration:none;
-	#border:1px solid #F1F3F5;
 	border-bottom:1px solid #C6C6CC;
 	padding:15px 0px 0px 30px;
 	width:195px;
 	white-space:nowrap;
 	overflow:hidden;
-	letter-spacing:1px;
+	letter-spacing:0px;
 }
 
 .navbar .menu_count{
@@ -901,8 +887,6 @@ a.logo img{
 }
 
 .navbar .new_menu_count{
-	#top:11px;
-	#right:-2px;
 	background-color:#DC143C;
 	color:white;
 	padding:0px 3px 0px 4px;
@@ -956,7 +940,6 @@ a.logo img{
 	color:rgb(51,51,51);
 	height:100%;
 	background:white;
-	text-shadow:1px 1px 0 #F5F7F8;
 	border-radius:6px;
 	border:1px solid #E9E9EB;
 	
@@ -965,13 +948,7 @@ a.logo img{
 .navbar li.inactive:hover a {
 	background:#2E8AE6;
 	color:white;
- 	#text-shadow: 1px 1px 1px #000;
- 	text-shadow:none;
- 	#border-radius:6px 1px 1px 6px;
  	border:1px solid #256EB8;
- 	#border-bottom:1px solid #2E8AE6;
- 	#border-top:1px solid #2E8AE6;
- 	#border-right:1px solid #2E8AE6;
  	transition-property:background,border-color;
 	transition-duration:150ms,150ms;
 	-webkit-transition-duration:150ms,150ms;
@@ -1031,13 +1008,8 @@ a.logo img{
  	line-height:56px;
  	vertical-align:middle;
  	text-align:center;
- 	font-style:italic;
- 	font-size:12px;
- 	#border:1px solid #F1F3F5;
+ 	font-size:11px;
 	border-bottom:1px solid #C6C6CC;
- 	#border-radius:0px 0px 5px 5px;
- 	#border-radius:0px;
- 	#margin-top:-3px;
  }
 
  
@@ -1124,6 +1096,8 @@ a.logo img{
 	font-size:12px;
 	color:gray;
 	padding-left:6px;
+	font-family:"helvetica neue", helvetica;
+	letter-spacing:1px;
 }
 .company_info .subtext{
 	display:block;
@@ -1133,6 +1107,8 @@ a.logo img{
 .company_info a{
 	font-size:11px;
 	color:gray;
+	font-family:"varela round";
+	letter-spacing:0px;
 }
 .company_info a:hover{
 	color:#0A0A14;
@@ -1159,7 +1135,7 @@ a.logo img{
 	color:#7D7F94;
 	font-size:12px;
 	line-height:24px;
-	padding:15px 10px 15px 20px;
+	padding:50px 10px 15px 20px;
 	margin-bottom:50px;
 	display:none;
 	color:#404054; 
@@ -1183,11 +1159,10 @@ a.logo img{
 	padding-left:5px;
 	padding-right:5px;
 	text-align:center;
-	#background-color:#F9F9F9;
 	bottom:-11px;
 	border-radius:4px;
-	font-weight:bold;
-	font-size:11px!important;
+	#font-weight:bold;
+	font-size:12px!important;
 	letter-spacing:0px;
 	border-radius:5px;
 	text-shadow:1px 1px 0 #fff;
@@ -1207,48 +1182,53 @@ a.logo img{
 }
 .new_user_instructions .show_less:hover,.new_user_instructions .show_more:hover{
 	text-decoration:none;
-	#background:#FBFBFB;
-	#background:white;
 	border-color:#CFCFD4;
 }
 
 .new_user_instructions.invite_instructions .show_more{
 	border-color:#F50000;
 	background:#F50000;
+	color:#fff!important;
 	text-shadow:none;
-	color:white;
 	padding-left:10px;
 	padding-right:10px;
 	left:175px;
+		background:#E00000;
+	border-color:#E00000;
 }
 .new_user_instructions.invite_instructions .show_more:hover{
-	background:#B80000;
-	border-color:#B80000;
+		border-color:#CC0000;
+	background:#CC0000;
 }
 
 .new_user_instructions span.instructions_title{
 	display:inline-block;
-	font-weight:bold;
-	margin-bottom:20px;
-	text-shadow: 1px 1px 0 #FFFFFF;
+	position:absolute;
 	color:#2E8AE6!important;
+	background:#fff!important;
 	font-size:24px!important;
+	padding:12px 10px 0px 20px;
+	border-radius:10px; 
+	top:0px;
+	left:0px;
+	width:100%;
 }
 
 .new_user_instructions.invite_instructions {
-	border:1px solid #CC0000;
+	border:1px solid #E00000;
 }
 .new_user_instructions.invite_instructions span.instructions_title{
-	color:red!important;
+	color:#E00000!important;
 }
 .new_user_instructions span.instructions_subtitle1{
 	display:block;
 	font-weight:bold;
-	margin-top:-10px;
-	margin-bottom:15px;
+	margin-top:-8px;
+	margin-bottom:8px;
 	text-shadow: 1px 1px 0 #FFFFFF;
 	#color:red!important;
 	font-size:18px!important;	
+
 }
 .new_user_instructions span.instructions_subtitle1_subtext{
 	font-size:18px!important
@@ -1259,7 +1239,8 @@ a.logo img{
 	margin-bottom:24px;
 	#text-shadow: 1px 1px 0 #FFFFFF;
 	#color:#115292!important;
-	font-size:13px!important;	
+	font-size:13px!important;
+		font-family:"helvetica neue",helvetica;	
 }
 .new_user_instructions.invite_instructions .second_instruction_section{
 	padding-top:0px!important;
@@ -1272,7 +1253,7 @@ a.logo img{
 	border:0px!important;
 }
 .new_user_instructions.invite_instructions .help_icon2{
-	background:red!important;
+	background:#E00000!important;
 }
 .new_user_instructions .help_icon{
 	top:-7px;
@@ -1291,20 +1272,19 @@ a.logo img{
 	display:inline-block;
 	margin-left:28px;
 	font-size:14px;
+	font-family:helvetica neue,"lucida grande", arial!important;
 }
 .new_user_instructions .instruction_sub_step{
-	margin-top:-12px;
-	#line-height:19px;
+	margin-top:-15px;
 	margin-bottom:12px;
 	display:block;
 	position:relative;
-	#font-style:italic;
 	color:#B3B3BB;
 	font-size:11px!important;
 }
 .new_user_instructions .instruction_sub_step .instruction_step_text{
 	font-size:12px!important;
-	font-style:italic;
+	#font-style:italic;
 }
 .new_user_instructions .help_icon2{
 	display:inline-block;
@@ -1354,10 +1334,6 @@ a.logo img{
 }
 
 .new_user_instructions a {
-	#font-size:13px!important;
-	#color:#2E8AE6;
-	#font-style:italic;
-	font-weight:bold;
 	color:inherit;
 	font-size:inherit;
 }
@@ -1375,7 +1351,7 @@ a.logo img{
 }
 
 .new_user_instructions a.instruction_block_button{
-	padding: 5px 15px!important;
+	padding: 5px 15px 3px 15px!important;
 	border-radius:4px;
 	vertical-align:middle;
 	text-align:center;
@@ -1383,8 +1359,8 @@ a.logo img{
 	background:#254AB8;
 	border-radius:5px;
 	color:white!important;
-	font-weight:bold;
-	font-size:14px;
+	#font-weight:bold;
+	font-size:16px;
 	text-decoration:none; 
 	margin-right:13px;
 }
@@ -1429,11 +1405,10 @@ ul.title_bar {
 	margin-bottom:25px;
 	background:#242434;
 	background:#2E8AE6;
-	#border:1px solid #000;
 	border-radius:4px 15px 15px 4px;
 	border-radius:12px;
 	display:inline-block;
-	padding-top:0px;    
+	padding-top:1px;    
 	width:100%;
 	font-size:12px;
 	color:white;
@@ -1442,8 +1417,6 @@ ul.title_bar {
 	height:21px;
 	position:relative;
 	border-bottom:1px solid #fff;
-	#border: 1px solid #09ABE8;
-	#border-left:5px solid #09ABE8;
 }
 
 ul.second_title_bar {
@@ -1458,13 +1431,10 @@ ul.title_bar > li {
 
 ul.title_bar li.title_bar_title{
 	font-size:13px;
+	#font-weight:bold;
 	padding-right:15px;
-	font-weight:bold;
 	vertical-align:middle;
-	#text-shadow: 1px 1px 1px #000;
 	padding-left:12px;
-	#padding-top:1px;
-	#margin-left:20px;
 	height:100%;
 	border-radius:0px 15px 15px 0px;
 	
@@ -1868,11 +1838,12 @@ ul.nav_bar li#nav_bar_options{
 	position:absolute;
 	bottom:2px;
 	left:27px;
-	font-size:10px;
-	font-weight:bold;
+	font-size:11px;
+	#font-weight:bold;
 	color:red;
 	z-index:9;
 	vertical-align:bottom;
+	font-family:"helvetica neue",helvetica!important;
 }
 span.alert_icon{
 	display:inline-block;
@@ -1888,6 +1859,7 @@ span.alert_icon{
 	font-size:14px;
 	margin-bottom:1px;
 	padding-left:1px;
+	font-family:"helvetica neue",helvetica!important;
 }
 
 .crush_response_body .app_invite_link_more a{
@@ -2145,7 +2117,7 @@ ul.attraction_status_bar li.past_status_animated{
 	left:0px;
 	top:0px;
 	height:28px;
-	font-family:arial;
+	#font-family:arial;
 	font-size:13px;
 	width:125px;
 }
@@ -2179,7 +2151,7 @@ ul.attraction_status_bar li.past_status_animated{
 	width:130px;
 	padding:7px 2px 0px 5px;
 	text-align:center;
-	font-family:arial;
+	#font-family:arial;
 	font-size:14px;
 	position:relative;
 }
@@ -2199,7 +2171,7 @@ ul.attraction_status_bar li.past_status_animated{
 	left:0px;
 	top:0px;
 	height:28px;
-	font-family:arial;
+	#font-family:arial;
 	font-size:13px;
 	width:125px;
 }
@@ -2410,8 +2382,7 @@ ul.attraction_status_bar li.past_status_animated{
 .lineup_block .lineup_title{
 	display:inline-block;
 	font-weight:normal;
-	font-size:20px;
-	#font-style:italic;
+	font-size:17px;
 	line-height:20px;
 	vertical-align:top;
 	margin-top:5px;

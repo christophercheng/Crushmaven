@@ -15,11 +15,7 @@ $(document).ready(function()
 	
 	//handle help icon show and hide
 	$('.new_user_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	//$('.new_user_sub_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	$('.new_user_instructions .help_icon').click(function(){
-		$(this).parent().hide(500);
-		$('.new_user_sub_instructions').hide(500);
-	});
+
     /** FUNCTION - HANDLE View Lineup Click
     *
     */
@@ -211,20 +207,6 @@ $(document).ready(function()
 }); // close off $(document).ready
 </script>
 
-<!-- Display the title widget -->  
-<ul class="title_bar" id="title_bar_new_admirers">
-
-		<li class="title_bar_title">New Admirers <span class="title_bar_count">({{progressing_admirers_count}})</span></li>
-		<li class="title_bar_page_links">
-			<a class="title_bar_page_link" href="#title_bar_past_admirers/">view past admirers</a>
-		</li>
-	
-		<li class="title_bar_option">
-			sort:
-		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
-	</li>
-</ul>
-<! -- End of crush type navigation widget -->  
 
 {% if show_help_popup == True %}
 <div class="new_user_instructions">
@@ -239,9 +221,23 @@ $(document).ready(function()
 		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">In turn, we provide each of your selections with a similar type of lineup - with you in it!</span></div>
 		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">We'll notify you if your selections like you back <i>or not</i>.  That's it!</span></div>
 	</div>
-<span class="help_icon" title="close help"></span>
 </div>		<!-- close off lineup_block line for instructional content -->
 {% endif %}
+
+<!-- Display the title widget -->  
+<ul class="title_bar" id="title_bar_new_admirers">
+
+		<li class="title_bar_title">New Admirers <span class="title_bar_count">({{progressing_admirers_count}})</span></li>
+		<li class="title_bar_page_links">
+			<a class="title_bar_page_link" href="#title_bar_past_admirers/">view past admirers</a>
+		</li>
+	
+		<li class="title_bar_option">
+			sort:
+		<a href="#">by status<span class="down_arrow">&#x25BC;</span></a>
+	</li>
+</ul>
+<! -- End of crush type navigation widget -->  
 
 {% if admirer_relationships %}
 

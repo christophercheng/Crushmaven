@@ -15,12 +15,6 @@ $(document).ready(function()
 	
 	//handle help icon show and hide
 	$('.new_user_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	//$('.new_user_sub_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
-	$('.new_user_instructions .help_icon').click(function(){
-		$(this).parent().hide(500);
-		$('.new_user_sub_instructions').hide(500);
-	});	
-	
 	
 	/* ----------------------------------------------------------------------
 	*		FUNCTION - LAUNCH_CREDIT_CHECK
@@ -292,12 +286,12 @@ $(".response_view_rating .help_icon").qtip({
 {% endif %} 
 {% if show_help_popup == True %}
 <div class="new_user_instructions crush_instructions">
-	<span class="instructions_title">It's Simple To Get Started!</span>
+	<span class="instructions_title">It's Simple Getting Started!</span>
 	<div class="first_instruction_section">
 		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Add a Facebook friend - or anyone on Facebook - as a crush</span></div>
 		<div class="instruction_sub_step"><span class="instruction_step_text">your selections are completely private - not even your friends will know</span></div>
 		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Send your crush an <i>anonymous</i> invite to sign into CrushMaven</span></div>
-		<div class="instruction_sub_step"><span class="instruction_step_text">this is essential to receiving a quick response (oftentimes within 24 hours)</span></div>
+		<div class="instruction_sub_step"><span class="instruction_step_text">this is essential to receiving a quick response (oftentimes within hours)</span></div>
 		<a class="show_more">what happens next</a><a class="show_less">show less</a> 
 		 
 	</div>
