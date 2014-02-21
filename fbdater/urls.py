@@ -14,6 +14,7 @@ handler404 = 'crush.views.infrastructure_views.home'
 
 # Facebook Backend Authentication URL's   
 urlpatterns = patterns('facebook.views',
+    (r'^facebook/login/$', 'login'),
     (r'^facebook/login/(?P<next_page>\w+)/$', 'login'),
     (r'^facebook/authentication_callback/$', 'authentication_callback'), 
     (r'^facebook/authentication_callback/(?P<next_page>\w+)/$', 'authentication_callback'),                    
