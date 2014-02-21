@@ -4851,6 +4851,9 @@ ul.bxslider_element #slide_overlay {
     .header, .left_sidebar, .right_sidebar {
         position:static;
     }
+    .footer{
+    	display:none;
+    }
     .main_container{
     margin-top:0px!important;
     }
@@ -4876,6 +4879,9 @@ ul.bxslider_element #slide_overlay {
     .header, .left_sidebar, .right_sidebar {
         position:static;
     }
+     .footer{
+    	display:none;
+    }
     .main_container{
     margin-top:0px!important;
     }
@@ -4899,7 +4905,9 @@ ul.bxslider_element #slide_overlay {
  	}   
     .header, .left_sidebar, .right_sidebar {
         position:static;
- 
+    }
+     .footer{
+    	display:none;
     }
     .main_container{
     margin-top:0px!important;
@@ -4926,6 +4934,9 @@ ul.bxslider_element #slide_overlay {
     .header,.left_sidebar, .right_sidebar {
         position:static;
     }
+    .footer{
+    	display:none;
+    }
     .left_sidebar,.center_panel{
     margin-left:0px;
     }	
@@ -4949,6 +4960,9 @@ ul.bxslider_element #slide_overlay {
  	}
     .header, .left_sidebar, .right_sidebar {
         position:static;
+    }
+    .footer{
+    	display:none;
     }
     .main_container{
     margin-top:0px!important;
