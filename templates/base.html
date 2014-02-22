@@ -265,6 +265,11 @@ jQuery(document).ready(function($) {
 			            	ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_crush_addition:' + num_invites.toString());
 			            {% endif %}
 		        	}
+		        	else {
+			            {% if no_track != True %}
+		            		ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_crush_addition:0');
+		            	{% endif %}
+		        	}
 			        window.app_referral_modal.dialog('close');
 		        	// track how many invites were sent out through google events
 			        location.href="/your_crushes/";
