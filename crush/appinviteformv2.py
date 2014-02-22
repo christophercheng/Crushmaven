@@ -10,7 +10,6 @@ from django.forms import ValidationError
 import requests
 from django.conf import settings
 import json
-from django.utils.safestring import mark_safe
 import logging
 logger = logging.getLogger(__name__)# Get an instance of a logger
 EMAIL_SEPARATOR=re.compile(r'[,;]+')

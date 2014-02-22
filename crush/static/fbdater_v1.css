@@ -4638,19 +4638,25 @@ ul.bxslider_element #slide_overlay {
 	background:orange;
 	margin-left:10px;
 }
-.settings_form .errorlist li{
+.settings_form .errorlist  {
+	margin-top:-4px!important;
+	margin-bottom:-13px!important;
+}
+
+.settings_form #settings_fields .errorlist li{
 	list-style:none;
 	background:red;
 	display:inline-block;
 	padding: 0px 5px;
-	margin-bottom:2px;
+	margin-bottom:1px;
 	margin-left:-17px;
 	color: white;
 	font-size:12px;
 }
 
-.settings_form .preferences_settings_form .errorlist li{
-	margin-left:210px;
+
+.preferences_settings_form .errorlist li{
+	margin-left:0px!important;
 }
 
 #settings_label_credits_available {
