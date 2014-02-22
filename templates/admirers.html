@@ -26,7 +26,7 @@ $(document).ready(function()
 		load_url="/ajax_show_lineup_slider/" + display_id + "/";
 	    e.preventDefault();
 	    {% if no_track != True %}
-	    ga('send', 'event', 'button', 'click', 'view_lineup_button');
+	    ga('send', 'event', 'button', 'click', 'btn_click:admirer_block_view_lineup');
 	    {% endif %}
 		$(".lineup_modal_dialog").children(".ui-dialog-titlebar").append("<span class='help_icon'>?</span>");
 

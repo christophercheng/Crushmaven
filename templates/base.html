@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
 	$(".app_invite_link").on("click", ".app_invite", function(e) {
 		e.preventDefault();
 	    {% if no_track != True %}
-	    ga('send', 'event', 'button', 'click', 'invite_crush_button');
+	    ga('send', 'event', 'button', 'click', 'btn_click:crush_block_send_invite');
 	    {% endif %}
 		var crush_username=$(this).attr('crush_username');	
 		var crush_fullname=$(this).attr('crush_fullname');
@@ -245,7 +245,7 @@ jQuery(document).ready(function($) {
 	
 	$("#app_referral_modal").on("click","#referral_send_btn", function(e){
         {% if no_track != True %}
-        	ga('send', 'event', 'button', 'click', 'invite_fb_friends_YES');
+        	ga('send', 'event', 'button', 'click', 'btn_click:invite_fb_friends');
         {% endif %}
 		// disable all buttons
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
@@ -262,12 +262,12 @@ jQuery(document).ready(function($) {
 		        	if (response.to != undefined){
 			        	var num_invites = response['to'].length;
 			            {% if no_track != True %}
-			            	ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_crush_addition:' + num_invites.toString());
+			            	ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:' + num_invites.toString());
 			            {% endif %}
 		        	}
 		        	else {
 			            {% if no_track != True %}
-		            		ga('send', 'event', 'button', 'click', 'fb_friends_invited_via_crush_addition:0');
+		            		ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:0');
 		            	{% endif %}
 		        	}
 			        window.app_referral_modal.dialog('close');
@@ -508,7 +508,7 @@ jQuery(document).ready(function($) {
            var crush_first_name = $(this).attr('crush_first_name');
            var crush_last_name = $(this).attr('crush_last_name');
            {% if no_track != True %}
-           ga('send', 'event', 'button', 'click', 'notify_inactive_friend_button');
+           ga('send', 'event', 'button', 'click', 'btn_click:right_column_invite_inactive_friend');
            {% endif %}
            send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name);
   });
@@ -604,39 +604,39 @@ $(".tooltip_subtitle").click(function(){
 * -------------------------------------------- */
 
 $('.show_more').click(function(){
-    {% if no_track != True  %}
-    ga('send', 'event', 'button', 'click', 'show_more_help_button');
-    {% endif %}
 	$(this).hide();
 	$('.second_instruction_section').show(200);
 	$('.first_instruction_section .show_less').show();
 	var second_subtitle = $('.instructions_subtitle2');
 	if (second_subtitle.length) {
+        {% if no_track != True %}
+    		ga('send', 'event', 'button', 'click', 'btn_click:unfinished_warning_get_emails_from_fb');
+    	{% endif %}
 		second_subtitle.html("Facebook has everyone's personal email addresses.  They won't share them with you directly, but you can import them into a Yahoo or Hotmail account:");
 		//second_subtitle.css('font-weight','bold');
 		second_subtitle.css('color','#E00000');
+	}
+	else {
+	    {% if no_track != True  %}
+	    ga('send', 'event', 'button', 'click', 'btn_click:new_user_help_show_more');
+	    {% endif %}
 	}
 	setTimeout(function(){$('.new_user_instructions').addClass('expanded');},100);
 	
 });
 $('.show_less').click(function(){
 	$(this).hide();
-	
-	{% if no_track != True  %}
-    ga('send', 'event', 'button', 'click', 'show_less_help_button');
-    {% endif %}
 	$('.show_more').show();
 	$('.second_instruction_section').hide(200);
 	setTimeout(function(){$('.new_user_instructions').removeClass('expanded');},100);
 });
 
 $('.bt-fs-dialog').click(function(){
-	{% if no_track != True  %}
-    ga('send', 'event', 'button', 'click', 'friend_selector_all_buttons');
+    {% if no_track != True %}
+		ga('send', 'event', 'button', 'click', 'btn_click:add_crushes_from_all_places');
     {% endif %}
-	//window.wait_modal_open();
 })
-	    	  
+
 {% if request.user.email == '' or not request.user.is_email_verified %}
 	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},1500);
 	$('.resend_verify_email').click(function(){
@@ -675,32 +675,32 @@ $('.bt-fs-dialog').click(function(){
 
 {% if request.user.email == "" %}
 	{% if 'settings_preferences' not in request.path %}
-	<div class="footer">
-	<div class="outer_footer_container">
-	<div class="inner_footer_container">
-	Please provide us with your email address <a href="/settings_preferences" class="footer_btn">Update Email Settings</a>
-	<div class="footer_subtext">We use it to send notifications when your crushes respond. </div>
-	</div>
-	</div>
-	</div><!-- close off footer div -->
+		<div class="footer">
+		<div class="outer_footer_container">
+		<div class="inner_footer_container">
+		Please provide us with your email address <a href="/settings_preferences" class="footer_btn">Update Email Settings</a>
+		<div class="footer_subtext">We use it to send notifications when your crushes respond. </div>
+		</div>
+		</div>
+		</div><!-- close off footer div -->
 	{% endif %}
 
 {% elif not request.user.is_email_verified %}
-<div class="footer">
-<div class="outer_footer_container">
-<div class="inner_footer_container">
-Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="footer_btn resend_verify_email">resend</a>
-<div class="footer_subtext">Our email may be in your junk or spam folder.  If so, please move it to your inbox. </div>
-</div>
-</div>
-</div><!-- close off footer div -->
+	<div class="footer">
+	<div class="outer_footer_container">
+	<div class="inner_footer_container">
+	Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="footer_btn resend_verify_email">resend</a>
+	<div class="footer_subtext">Our email may be in your junk or spam folder.  If so, please move it to your inbox. </div>
+	</div>
+	</div>
+	</div><!-- close off footer div -->
 {% endif %}
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>
 <div id="app_referral_modal" title="One Last Thing: Invite Your Friends!">
 	<div class="dialog_container">
-	Help us make CrushMaven more popular.  If your friends are using us, we'll also have more ways to contact your crushes and get their responses.
+	Help us make CrushMaven more popular.  If your friends are using us, we'll have more ways to contact your crushes and get their responses.
 		<div class="dialog_container_footnote">Note: Facebook friend invites are not anonymous.</div>
 	</div>
 	<div class="ui-dialog-buttonpane">

@@ -9,6 +9,9 @@ $(document).ready(function()
         var form=$("#app_invite_form");
         
         window.send_invite_later = function(){
+            {% if no_track != True %}
+        		ga('send', 'event', 'button', 'click', 'btn_click:app_invite_form_send_later');
+        	{% endif %}
         	if ({{delayed_invite}}==true)
         		window.app_invite_modal.dialog('close');
         	else
@@ -17,6 +20,9 @@ $(document).ready(function()
         
         
         form.submit(function(e) {
+        		{% if no_track != True %}
+        			ga('send', 'event', 'button', 'click', 'btn_click:add_invite_form_send_invites');
+        		{% endif %}
                 $("#app_invite_form .site_dialog_button").attr('disabled','disabled');
                 var old_send_btn = $("#sendbutton").attr('value');
                 $("#sendbutton").attr('value','Wait');
@@ -62,6 +68,9 @@ $(document).ready(function()
 
 		
 $('#app_invite_form').on('click','#mutual_friend_input_section_show', function(){
+	 {% if no_track != True %}
+	 	ga('send', 'event', 'button', 'click', 'btn_click:app_invite_form_show_mutual_friends');
+	 {% endif %}
 	input_section_element= $('#app_invite_form #mutual_friend_input_section');
 	label_element = $('#app_invite_form #mutual_friend_input_section_show a');
 	input_section_element.toggle();

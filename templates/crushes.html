@@ -43,7 +43,7 @@ $(document).ready(function()
   $("#response_modal").on('click', '#response_send_message', function(e){
   	e.preventDefault();
   	{% if no_track != True  %}
-    ga('send', 'event', 'button', 'click', 'view_response_button');
+    ga('send', 'event', 'button', 'click', 'btn_click:view_crush_response');
     {% endif %}
 	   var crush_id = $(this).attr('crush_id');
 	   //$(this).parent().dialog("close"); 	 
@@ -75,14 +75,14 @@ $(document).ready(function()
    $(".response_view_rating a").click(function(){
    		unique_id=$(this).attr('unique_id');
    		{% if no_track != True  %}
-	    ga('send', 'event', 'button', 'click', 'view_rating_button');
+	    ga('send', 'event', 'button', 'click', 'btn_click:view_platonic_rating_from_response_block');
 	    {% endif %}
 	   	purchase_rating(unique_id);
    });
    
    $("#response_modal").on('click','.response_view_rating a',function(){
 	   {% if no_track != True  %}
-	    ga('send', 'event', 'button', 'click', 'view_rating_button');
+	    ga('send', 'event', 'button', 'click', 'btn_click:view_platonic_rating_from_modal');
 	    {% endif %}
 		unique_id=$(this).attr('unique_id');
 		purchase_rating(unique_id);
@@ -136,7 +136,7 @@ $(document).ready(function()
   		var name=$(this).attr('name');	
   		var username=$(this).attr('username');
   		{% if no_track != True  %}
-	    ga('send', 'event', 'button', 'click', 'delete_crush_button');
+  			ga('send', 'event', 'button', 'click', 'btn_click:remove_crush_attempt');
 	    {% endif %}
   		$.get('/ajax_can_crush_target_be_platonic_friend/' + username + '/', function(){
     		// deletion is possible, so open up the confirmation dialog
@@ -152,13 +152,10 @@ $(document).ready(function()
       window.remove_crush_dialog.dialog('option', 'buttons', {
     		"Cancel": function() {
     			$("#remove_crush_dialog").dialog("close");
-    			{% if no_track != True  %}
-    		    ga('send', 'event', 'button', 'click', 'delete_crush_cancel_button');
-    		    {% endif %}
       		},
       		"Delete": function() {
       			{% if no_track != True  %}
-      		    ga('send', 'event', 'button', 'click', 'delete_crush_confirmation_button');
+      		    ga('send', 'event', 'button', 'click', 'btn_click:remove_crush_confirmation');
       		    {% endif %}
  				$.get('/ajax_make_crush_target_platonic_friend/' + username + '/',function(){
  					document.location.href='/your_crushes/'; // reload page
@@ -181,7 +178,7 @@ $(document).ready(function()
 
 $('.crush_name_link').click(function(){
 	{% if no_track != True  %}
-    ga('send', 'event', 'button', 'click', 'crush_name_link_button');
+    ga('send', 'event', 'button', 'click', 'btn_click:crush_block_name_link');
     {% endif %}
 	menu_element = $(this).parent('.crush_block_name_center').children('ul');
 	var original_state = $(menu_element).css('display');
@@ -295,7 +292,7 @@ $(".response_view_rating .help_icon").qtip({
 	</div>
 
 	<div class="instruction_block_button_line">
-		<a href="javascript:{}" class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush Now</a>
+		<a href="javascript:{}" {% if no_track != True  %}onclick="ga('send', 'event', 'button', 'click', 'btn_click:add_crushes_from_new_user_help');"{% endif %} class="bt-fs-dialog instruction_block_button" title="Add Crush">Add a Crush Now</a>
 	</div>
 
 	</div>		<!-- close off instructional content -->
