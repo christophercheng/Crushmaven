@@ -12,7 +12,6 @@ $(document).ready(function()
 	Help Popup Animation
 
 	* -------------------------------------------- */
-	
 	//handle help icon show and hide
 	$('.new_user_instructions').each(function(){window.scrollTo(0,0);$(this).delay(500).show(1000)});
 	
@@ -302,22 +301,31 @@ $(".response_view_rating .help_icon").qtip({
 <div class="new_user_instructions invite_instructions">
 	<span class="instructions_title">You're Not Finished!</span>
 	<span class="instructions_subtitle1">Get Your Crushes' Emails <span class="instructions_subtitle1_subtext">& Anonymously Invite Them</span></span>
-	<span class="instructions_subtitle2">We need to get your crushes signed in so they can respond.  Email invites are the best option.
-	<B>Don't know their email?</b> Don't worry - fetch 'em from Facebook:</span>
-	<a class="show_more">Get Emails From Facebook</a> 
-	<div class="second_instruction_section">
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Sign into <a target="_blank" href="http://mail.yahoo.com">Yahoo</a> or <a target="_blank" href="http://www.hotmail.com">Hotmail</a> or <a target="_blank" href="http://mail.yahoo.com">(create a new account)</a></span></div>
-		<div class="instruction_sub_step"><span class="instruction_step_text">Sorry Gmail users, you must create a Yahoo or Hotmail account</span></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the corresponding import contacts page:
-			<ul>
-				<li>Yahoo:  <a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">http://address.yahoo.com/?VPC=contact_import_landing</a></li>
-				<li>Hotmail: <a target="_blank" href="http://people.live.com">http://people.live.com</a></li>
-			</ul>
-			</span></div>
-		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Click on the Facebook icon to import your Facebook emails</span></div>
-		<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">Sign back into CrushMaven, click on the 'Send Invite' button for each of your crushes (below), and enter their email address</span></div>
-
-	</div>
+	{% if 'yahoo' in request.user.email %} 
+		<span style="color:#E00000" class="instructions_subtitle2">Facebook has everyone's personal email addresses.  The only way to get them is to import them into your Yahoo account:</span>
+		<a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing" class="show_more">Get Emails From Facebook</a> 
+	{% elif 'hotmail' in request.user.email %}
+		<span style="color:#E00000" class="instructions_subtitle2">Facebook has everyone's personal email addresses.  The only wat to get them is to import them into your Hotmail account:</span>
+		<a target="_blank" href="http://people.live.com" class="show_more">Get Emails From Facebook</a> 
+	{% else %}
+		
+		<span class="instructions_subtitle2">We need to get your crushes signed in so they can respond.  Email invites are the best option.
+		<B>Don't know their email?</b> Don't worry - fetch 'em from Facebook:</span>
+		<a  class="show_more">Get Emails From Facebook</a> 
+		<div class="second_instruction_section">
+			<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Sign into <a target="_blank" href="http://mail.yahoo.com">Yahoo</a> or <a target="_blank" href="http://www.hotmail.com">Hotmail</a> or <a target="_blank" href="http://mail.yahoo.com">(create a new account)</a></span></div>
+			<div class="instruction_sub_step"><span class="instruction_step_text">You must create a Yahoo or Hotmail account</span></div>
+			<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the corresponding import contacts page:
+				<ul>
+					<li>Yahoo:  <a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">http://address.yahoo.com/?VPC=contact_import_landing</a></li>
+					<li>Hotmail: <a target="_blank" href="http://people.live.com">http://people.live.com</a></li>
+				</ul>
+				</span></div>
+			<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Click on the Facebook icon to import your Facebook emails</span></div>
+			<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">Sign back into CrushMaven, click on the 'Send Invite' button for each of your crushes (below), and enter their email address</span></div>
+	
+		</div>
+	{% endif %}
 
 </div>		<!-- close off email_help instructional content -->
 {% endif %} 
