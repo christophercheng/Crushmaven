@@ -237,6 +237,7 @@ class CrushRelationship(BasicRelationship):
     
     @transaction.commit_on_success # rollback entire function if something fails
     def save(self,*args,**kwargs):
+        perform_source_person_notification=False # this is used to delay sending source person notification till after crushrelationship super object saved (notify_source_person calls save function which could result in infinite loop
         print "calling save on crush relationship"
         if (not self.pk): # this is a newly created crush relationship
             try:  # make sure we're not adding a duplicate
@@ -304,7 +305,8 @@ class CrushRelationship(BasicRelationship):
                     self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
                     self.updated_flag = True #show 'new' or 'updated' on crush relation block
                     # notify the source person (notification will go out at the future date_target_responded time
-                    self.notify_source_person()
+                    #self.notify_source_person()
+                    perform_source_person_notification=True
                 except PlatonicRelationship.DoesNotExist:
                     # print "did not find a reciprocal platonic or crush relationship"
                     if self.target_person.is_active == True:
@@ -352,11 +354,14 @@ class CrushRelationship(BasicRelationship):
                         pass # do nothing
                 if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
                     #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
-                    self.notify_source_person()
+                    #self.notify_source_person()
+                    perform_source_person_notification=True
                     
                 
         # Don't forget to commit the relationship's changes to database!
         super(CrushRelationship,self).save(*args,**kwargs)
+        if perform_source_person_notification:
+            self.notify_source_person()
     
     # for crush relationships in a hidden responded mode:
         # 1: crush already admirer as platonic friend so date_target_responded is in future

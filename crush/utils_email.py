@@ -44,7 +44,7 @@ def send_mail_verify_email(user):
     username=user.username
     html=render_to_string('email_template_verify_email.html',{'first_name':first_name,'username':username,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_verify_email_text.html',{'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Please verify your email address',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'Please verify your email address',html,text)
             
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address,recipient_fb_username=None):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL,'recipient_fb_username':recipient_fb_username})
