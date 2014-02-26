@@ -931,7 +931,7 @@ color:#000;
 	text-decoration:underline;
 }
 
-.footer_section:hover .twitter-share-button{
+.footer_section:hover .cm_fb_button,.footer_section:hover .cm_twitter_button{
 opacity:1!important;
 }
 .cm_twitter_button{
@@ -941,7 +941,7 @@ opacity:1!important;
 	margin-bottom:2px;
 	height:20px;
 	margin-left:8px;
-	opacity:.9;
+	opacity:.7;
 }
 .cm_fb_button{
 	display:inline-block;
@@ -949,7 +949,7 @@ opacity:1!important;
 	margin-left:0px;
 	vertical-align:bottom;
 	margin-bottom:2px;
-
+	opacity:.8;
 	height:20px;
 }
 /*
