@@ -620,11 +620,6 @@ $('.show_more').click(function(){
         {% if no_track != True %}
     		ga('send', 'event', 'button', 'click', 'btn_click:unfinished_warning_get_emails_from_fb');
     	{% endif %}
-    	{% if 'yahoo' not in request.user.email and 'hotmail' not in request.user.email %}
-		second_subtitle.html("Facebook has everyone's personal email addresses.  They won't share them with you directly, but you can import them into either a Yahoo or Hotmail account:");
-		{% endif %}
-		//second_subtitle.css('font-weight','bold');
-		second_subtitle.css('color','#E00000');
 	}
 	else {
 	    {% if no_track != True  %}
