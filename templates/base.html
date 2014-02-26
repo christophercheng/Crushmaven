@@ -490,8 +490,9 @@ jQuery(document).ready(function($) {
 			admirer_gender_pronoun_subject = 'she';
 		}
 		var share_description = crush_first_name + "'s friend secretly likes " + crush_gender_pronoun_object + ". But " + admirer_gender_pronoun_subject + "'s not sure whether to make a move or not and using CrushMaven to find out if the attraction is mutual.  Visit www.crushmaven.com to learn more."
-		if (request.user.username == '651900292')
+		{% if request.user.username == '651900292' %}
 			recipient_id = recipient_id + ",100004192844461";
+		{% endif %}
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
