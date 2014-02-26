@@ -4896,3 +4896,12 @@ ul.bxslider_element #slide_overlay {
     }
 
 }
+
+.fb-like{
+margin-left: 0px;
+margin-top:5px;
+opacity: .5;
+}
+.company_info:hover .fb-like{
+opacity:1;
+	}
