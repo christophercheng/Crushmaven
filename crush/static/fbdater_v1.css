@@ -4915,6 +4915,9 @@ ul.bxslider_element #slide_overlay {
 	opacity:.5;
 	height:20px;
 }
+.social_button_promote{
+	opacity:1!important;
+}
 
 .company_info:hover .cm_fb_button,.company_info:hover .cm_twitter_button{
 	opacity:1;
