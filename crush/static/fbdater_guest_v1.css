@@ -898,8 +898,9 @@ color:#000;
 	color:#fff;
 }
 .footer_section .center_container .first_footer_line{
-	display:inline-block;
+	display:block;
 	margin-left:-45px;
+	white-space:nowrap;
 
 }
 .footer_section .company_name{
@@ -933,7 +934,8 @@ opacity:1!important;
 
 .fb-like{
 	vertical-align:bottom;
-	#margin-left:10px;
+	display:inline-block;
+	margin-left:1px;
 	margin-bottom:3px;
 }
 .twitter-share-button{
