@@ -4898,17 +4898,24 @@ ul.bxslider_element #slide_overlay {
     }
 
 }
-
-.fb-like{
-margin-left: 0px;
-margin-top:5px;
-opacity: .5;
-vertical-align:bottom;
-}
-.twitter-share-button{
-	opacity:.5;
+.cm_twitter_button{
+	margin-top:5px;
+	display:inline-block;
+	width:58px;
 	vertical-align:bottom;
+	height:20px;
+	margin-left:0px;
+	opacity:.5;
 }
-.company_info:hover .fb-like,.company_info:hover .twitter-share-button{
-opacity:1;
-	}
+.cm_fb_button{
+	margin-top:5px;
+	display:inline-block;
+	width:92px;
+	vertical-align:bottom;
+	opacity:.5;
+	height:20px;
+}
+
+.company_info:hover .cm_fb_button,.company_info:hover .cm_twitter_button{
+	opacity:1;
+}
