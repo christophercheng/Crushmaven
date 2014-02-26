@@ -18,6 +18,7 @@ from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expirat
 from crush.utils_fb_notifications import notify_person_on_facebook
 from datetime import  datetime,timedelta
 import urllib,json
+from django.db.models import Count
 from django.conf import settings
 import logging
 logger = logging.getLogger(__name__)
@@ -27,6 +28,8 @@ class Command(NoArgsCommand):
         logger.debug("Running Daily Maintenance")
        # if datetime.now().day == 1: 
         monthly_maintenance()
+#        logger.debug("Running Add New Inactive Crushes to Facebook Ad Audience")
+#        add_inactive_crush_to_fb_ad_audience()
         logger.debug("Running Missed Invite Emails")
         send_missed_invite_tips()
         logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
@@ -36,7 +39,13 @@ class Command(NoArgsCommand):
         logger.debug("Running Expired Lineup Auto Completion Process")
         auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
         return
-    
+ 
+#def add_inactive_crush_to_fb_ad_audience():
+#    date_24_hours_ago = datetime.now()-timedelta(hours=24)
+#    inactive_crushes = FacebookUser.objects.filter(is_active=False,date_joined__gt=date_24_hours_ago).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
+#    for crush in inactive_crushes:
+#        response += str(crush.username) + "<BR>"
+#    return HttpResponse(response)    
     
 # for all users who created a crush but didn't invite them - in the last 24 hours, send email invite tip
 def send_missed_invite_tips():
