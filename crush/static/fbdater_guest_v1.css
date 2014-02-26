@@ -934,12 +934,13 @@ opacity:1!important;
 .fb-like{
 	vertical-align:bottom;
 	#margin-left:10px;
-	
+	margin-bottom:3px;
 }
 .twitter-share-button{
 	margin-left:10px;
 	vertical-align:bottom;
-	opacity:.9
+	opacity:.9;
+	margin-bottom:3px;
 }
 
 
