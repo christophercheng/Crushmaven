@@ -892,20 +892,22 @@ color:#000;
 	padding-top:50px;
 	font-size:14px;
 	padding-bottom:85px;
-	#font-family:"helvetica neue",arial;
 	letter-spacing:0px;
 	text-align:center;
 	color:#fff;
 }
 .footer_section .center_container .first_footer_line{
 	display:inline-block;
-	margin-left:-40px;
-	opacity:.6;
+	margin-left:-45px;
+
+}
+.footer_section .company_name{
+		opacity:.7;
 }
 
 
 #bottom_links{
-	margin-top:15px;
+	margin-top:20px;
 	display:block;
 	margin-left:-90px;
 }
@@ -923,6 +925,23 @@ color:#000;
 	opacity:1;
 	text-decoration:underline;
 }
+
+.footer_section:hover .twitter-share-button{
+opacity:1!important;
+}
+
+.fb-like{
+	margin-left:5px;
+	vertical-align:bottom;
+	margin-left:10px;
+	
+}
+.twitter-share-button{
+	margin-left:10px;
+	vertical-align:bottom;
+	opacity:.9
+}
+
 
 /*  ----------- GUEST PAGES ------------ */
 
@@ -1377,10 +1396,4 @@ div.legal{
 	padding:5px 10px;
 	font-size:14px;
 	margin-left:15px;
-}
-
-.fb-like{
-	margin-top:20px;
-	margin-left:-67px;
-	opacity:.6;
 }
