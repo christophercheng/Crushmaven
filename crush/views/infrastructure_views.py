@@ -3,11 +3,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from crush.models import CrushRelationship
+from crush.models import FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
 from crush.utils import fb_fetch
 import re
+from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
@@ -46,6 +48,18 @@ def lineup_expiration(request,target_person_username,display_id):
 def missed_invite_tip(request,source_person_username,source_person_first_name):
     return render(request,'email_template_missed_invite_tip.html',{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
  
+
+@login_required
+def inactive_crush_list(request):
+    if request.user.username != 'admin':
+        return HttpResponse("nu uhhhh")
+    #call_command('daily_maintenance')
+    #lineup_expiration_warning()
+    inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
+    response = 'INACTIVE CRUSH LIST: <BR><BR>'
+    for crush in inactive_crushes:
+        response += str(crush.username) + "<BR>"
+    return HttpResponse(response)
     
 @login_required
 def new_testing(request):
