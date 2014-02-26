@@ -49,43 +49,48 @@ def send_mail_verify_email(user):
 def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,email_address,recipient_fb_username=None):
     html=render_to_string('email_template_crush_invite.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL,'recipient_fb_username':recipient_fb_username})
     text=render_to_string('email_template_crush_invite_text.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', you have an admirer at CrushMaven!',html,text)
-    
+    if friendship_type == 0:
+        send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', your friend added you!',html,text)
+    elif friendship_type == 1:
+        send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', a friend-of-a-friend added you!',html,text)
+    else:
+        send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone added you!',html,text)
+
 def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address,recipient_first_name = '',recipient_fb_username=''):
     html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL,'recipient_first_name':recipient_first_name,'recipient_fb_username':recipient_fb_username})
     text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + " needs your help (not spam)",html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,"Can you help up reach your friend, " + full_name + "?",html,text)
 
 def send_mail_new_admirer(friendship_type,full_name, short_name, first_name,email_address):
     html=render_to_string('email_template_notify_new_admirer.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_new_admirer_text.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,short_name + ', you have a new admirer!',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,short_name + ', you have a new admirer!',html,text)
     
 def send_mail_new_attraction_response(full_name, short_name, first_name,pronoun_subject,pronoun_possessive,email_address,send_time=None):
     html=render_to_string('email_template_notify_new_attraction_response.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_new_attraction_response_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,short_name + ' responded to your crush!',html,text,send_time)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,short_name + ' responded to your crush!',html,text,send_time)
     
 def send_mail_changed_attraction_response(is_attracted,full_name, short_name, first_name,pronoun_subject,pronoun_possessive,email_address):
     html=render_to_string('email_template_notify_changed_attraction_response.html',{'is_attracted':is_attracted,'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_changed_attraction_response_text.html',{'is_attracted':is_attracted,'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':pronoun_subject,'pronoun_possessive':pronoun_possessive,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,short_name + ' changed ' + pronoun_possessive + ' mind',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,short_name + ' changed ' + pronoun_possessive + ' mind',html,text)
    
 def send_mail_delivery_problem(full_name, short_name, first_name,invalid_email_address,email_address):
     html=render_to_string('email_template_notify_delivery_problem.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'invalid_email_address':invalid_email_address,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_delivery_problem_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'invalid_email_address':invalid_email_address,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Unsuccessful invite delivery to ' + invalid_email_address,html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'Unsuccessful invite delivery to ' + invalid_email_address,html,text)
 
 def send_mail_lineup_expiration_warning(email_address,expiration_date):
     html=render_to_string('email_template_notify_lineup_expiration_warning.html',{'expiration_date':expiration_date,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_notify_lineup_expiration_warning_text.html',{'expiration_date':expiration_date,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'Your admirer lineup is about to expire',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'Your admirer lineup is about to expire',html,text)
     
     
 def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushes_count):
     html=render_to_string('email_template_invite_reminder.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_invite_reminder_text.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)
     
 def send_mail_missed_invite_tip(relationship):
     email_address = relationship.source_person.email
@@ -94,4 +99,4 @@ def send_mail_missed_invite_tip(relationship):
     #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_missed_invite_tip_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})
     html=render_to_string('email_template_missed_invite_tip.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL, 'recipient_fb_username':recipient_fb_username})
-    send_mailgun_email('CrushMaven <chris@crushmaven.com>',email_address,'Email Invite Your Crush With Our \'Trick\'',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'Email Invite Your Crush With Our \'Trick\'',html,text)
