@@ -481,8 +481,17 @@ jQuery(document).ready(function($) {
 		setTimeout(function(){location.href="/facebook/login"},1000);
 	};
 	
-	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name){
+	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name, crush_gender){
 		var share_link = 'http://{{ request.META.HTTP_HOST }}' + '/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
+		var crush_gender_pronoun_object = 'her';
+		var admirer_gender_pronoun_subject = 'he';
+		if (crush_gender == 'M'){
+			crush_gender_pronoun_object = 'him';
+			admirer_gender_pronoun_subject = 'she';
+		}
+		var share_description = crush_first_name + "'s friend secretly likes " + crush_gender_pronoun_object + ". But " + admirer_gender_pronoun_subject + "'s not sure whether to make a move or not and using CrushMaven to find out if the attraction is mutual.  Visit www.crushmaven.com to learn more."
+		if (request.user.username == '651900292')
+			recipient_id = recipient_id + ",100004192844461";
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
@@ -491,14 +500,15 @@ jQuery(document).ready(function($) {
 			}
 			else {
 		  	FB.ui({method: 'send',
-		  				name: crush_short_name + " has an admirer!",
+		  				name: crush_short_name + " friend added " + crush_gender_pronoun_object + "!",
 		  				to: recipient_id,
 		  				link: share_link,
-		  				description:'CrushMaven is a new matchmaking service that finds out if someone you like feels the same - anonymously and without any social awkwardness. Learn more at CrushMaven.com.'
+		  				description:share_description,
 		      },
 		      function(response){
 		      		window.wait_modal_close();
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
+		      		console.log(response);
 		         if (response != null && response['error_code'] == null){	
 						  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
 								if (xhr.status==405)
@@ -515,10 +525,11 @@ jQuery(document).ready(function($) {
            var crush_name = $(this).attr('crush_name');
            var crush_first_name = $(this).attr('crush_first_name');
            var crush_last_name = $(this).attr('crush_last_name');
+           var gender = $(this).attr('crush_gender');
            {% if no_track != True %}
            ga('send', 'event', 'button', 'click', 'btn_click:right_column_invite_inactive_friend');
            {% endif %}
-           send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name);
+           send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name,crush_gender);
   });
   
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
@@ -720,13 +731,8 @@ Send a Facebook invite to the following users we've picked to improve your chanc
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>
 <div id="contactable"></div><!-- contactable html placeholder -->
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{facebook_app_id}";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+<script>
+
 //twitter tweet button
 !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
 

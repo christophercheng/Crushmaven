@@ -324,7 +324,7 @@ class FacebookUser(AbstractUser):
                 num_admirers = len(all_admirers)
                 if num_admirers==0:
                     continue # in this case, a user was added as a friend but then someone deleted them laster
-                ajax_response +="<li class='friend_with_admirer'><a id='send_fb_invite' crush_name='" + inactive_crush_friend.get_name() + "' crush_first_name='" + inactive_crush_friend.first_name + "' crush_last_name='" + inactive_crush_friend.last_name + "' crush_username='" + inactive_crush_friend.username + "' href='#'>"
+                ajax_response +="<li class='friend_with_admirer'><a id='send_fb_invite' crush_name='" + inactive_crush_friend.get_name() + "' crush_first_name='" + inactive_crush_friend.first_name + "' crush_last_name='" + inactive_crush_friend.last_name + "' crush_username='" + inactive_crush_friend.username  + "' crush_gender='" + inactive_crush_friend.gender + "' href='#'>"
                 ajax_response +="<img src='" + inactive_crush_friend.get_facebook_pic(40) + "'>"
                 ajax_response += "<ul>"
                 ajax_response += "<li class='friend_name'>" + inactive_crush_friend.first_name + "&nbsp;" + inactive_crush_friend.last_name + "</li>"
