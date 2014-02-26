@@ -113,7 +113,7 @@ def home(request,source=''):
         if request.GET.__contains__('fb_app_center_login'):
             return HttpResponseRedirect('/facebook/login')
         else:
-            return render(request,'guest_home.html', {})
+            return render(request,'guest_home.html', {'facebook_app_id':settings.FACEBOOK_APP_ID})
 
 @login_required
 def verify_email(request,username):
@@ -148,7 +148,7 @@ def google_home(request):
         else:
             return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', { 'ad_visit':True,'google_ad_visit':True})
+        return render(request,'guest_home.html', { 'ad_visit':True,'google_ad_visit':True,'facebook_app_id':settings.FACEBOOK_APP_ID})
 
 #same as home but allows me to do special tracking
 def bing_home(request):
@@ -164,7 +164,7 @@ def bing_home(request):
         else:
             return HttpResponseRedirect('/your_crushes/' + get_parameter_string)
     else:
-        return render(request,'guest_home.html', {'ad_visit':True,'bing_ad_visit':True})
+        return render(request,'guest_home.html', {'ad_visit':True,'bing_ad_visit':True,'facebook_app_id':settings.FACEBOOK_APP_ID})
     
     #same as home but allows me to do special tracking
 def facebook_home(request):
@@ -177,7 +177,7 @@ def facebook_home(request):
             else:
                 return HttpResponseRedirect('/your_crushes/')
     else:
-        return render(request,'guest_home.html', {'ad_visit':True,'facebook_ad_visit':True})
+        return render(request,'guest_home.html', {'ad_visit':True,'facebook_ad_visit':True,'facebook_app_id':settings.FACEBOOK_APP_ID})
         
 @login_required
 def ajax_submit_feedback(request):
