@@ -899,20 +899,21 @@ color:#000;
 }
 .footer_section .center_container .first_footer_line{
 	display:block;
-	margin-left:-45px;
+	margin-left:-102px;
 	white-space:nowrap;
 	width:100%;
 
 }
 .footer_section .company_name{
 		opacity:.7;
+		position:relative;
 }
 
 
 #bottom_links{
 	margin-top:17px;
 	display:block;
-	margin-left:-90px;
+	margin-left:-78px;
 }
 
 #bottom_links a{
@@ -934,16 +935,17 @@ opacity:1!important;
 }
 
 .fb-like{
-	vertical-align:bottom;
+	position:absolute!important;
 	display:inline-block;
-	margin-left:1px;
-	margin-bottom:3px;
+	bottom:3px;
+	right:-155px;
 }
 .twitter-share-button{
-	margin-left:10px;
-	vertical-align:bottom;
+	display:inline-block;
+	bottom:3px;
+	right:-59px;
+	position:absolute!important;
 	opacity:.9;
-	margin-bottom:3px;
 }
 
 
