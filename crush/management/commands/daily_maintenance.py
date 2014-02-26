@@ -25,9 +25,8 @@ logger = logging.getLogger(__name__)
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
         logger.debug("Running Daily Maintenance")
-        if datetime.now().day == 1: 
-            logger.debug("Running Monthly Invite Maintenance")
-            monthly_invite_reminder()
+       # if datetime.now().day == 1: 
+        monthly_maintenance()
         logger.debug("Running Missed Invite Emails")
         send_missed_invite_tips()
         logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
@@ -45,7 +44,7 @@ def send_missed_invite_tips():
     # create an empty list of source persons to notify
     notify_relationships=[]
     notify_persons=[] # temporary list of source persons
-    
+     
     # grab all crush relationships added in the last 24 hours that status is not_invited
     last_cutoff_date=datetime.now()-timedelta(minutes=1440)
     relevant_relationships = CrushRelationship.objects.filter(target_status=0,date_added__gt=last_cutoff_date)
@@ -65,8 +64,11 @@ def send_missed_invite_tips():
 
     return
       
-   
+def monthly_maintenance():
+    monthly_invite_reminder()
+       
 def monthly_invite_reminder():
+    logger.debug("Running Monthly Invite Maintenance")
     relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
     invite_sent_count=0
     for user in relevant_user_set:

@@ -39,9 +39,7 @@
 		    	  ref.parentNode.insertBefore(fpw, ref);
 		    	  })();
 	    	  {% endif %}
-	    	  
-	    	  
-	    	  
+	    	  	    	  
 	    </script>
 	    {% endif %}
 		<link type="text/css" href="/static/fbdater_v1.css?version=1" rel="stylesheet"  />    
@@ -250,12 +248,10 @@ jQuery(document).ready(function($) {
 		// disable all buttons
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
 		// get excluded ids (of existing crushes)
-		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
-		            message: "Check out CrushMaven, the intelligent (and anonymous) secret admirer app!",
-		            filters: ['all','app_non_users'],
-		            exclude_ids:data['data'],
+		            message: "Check Out CrushMaven, the Intelligent & Anonymous Secret Admirer App",
+		            to:window.app_invite_list,
 		            title:'Increase your odds of getting a response!'
 
 		        }, function(response){
@@ -274,7 +270,6 @@ jQuery(document).ready(function($) {
 		        	// track how many invites were sent out through google events
 			        location.href="/your_crushes/";
 		        });
-			});
 	});
 	
 	window.launch_app_invite_dialog = function(current_crush_number,total_crushes,delayed_invite){
@@ -285,10 +280,21 @@ jQuery(document).ready(function($) {
 			// close the dialog
 			window.app_invite_modal.dialog('close');
 			// launch another dialog that asks if they would like to invite their friends to use CrushMaven - the more people aware of CrushMaven, the greater the chance that your crush will respond.
-			if (!window.app_referral_modal)
-				window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:400, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-			window.app_referral_modal.dialog('open');
-			$(':focus').blur();
+			 if (!delayed_invite){
+				window.wait_modal_open();
+
+				$.get( "/ajax_get_invite_crush_array/", function( data ) { 
+					window.wait_modal_close();
+
+					if (data != ""){
+						if (!window.app_referral_modal)
+							window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:510, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+						window.app_referral_modal.dialog('open');
+						window.app_invite_list = data;
+						$(':focus').blur();
+					}
+				})
+			}
 			return;
 		}
 		var crush_username='';
@@ -700,17 +706,17 @@ $('.bt-fs-dialog').click(function(){
 <div id="alert_modal" title="Something's Not Right"></div>
 <div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>
-<div id="app_referral_modal" title="One Last Thing: Invite Your Friends!">
-	<div class="dialog_container">
-	Help us make CrushMaven more popular.  If your friends are using us, we'll have more ways to contact your crushes and get their responses.
-		<div class="dialog_container_footnote">Note: Facebook friend invites are not anonymous.</div>
-	</div>
-	<div class="ui-dialog-buttonpane">
-          <div class="ui-dialog-buttonset">
-          	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>{% endcomment %} 
-          	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Invite Friends on Facebook</span></button>
-         </div><!-- close off buttonset -->
-     </div><!-- close off buttonpane -->
+<div id="app_referral_modal" title="One Last Thing: Help Us Help You!">
+<div class="dialog_container">
+<span class="dialog_container_subtitle">If other friends of yours use CrushMaven, we'll have more ways to reach your crushes and get their responses. </span>
+Send a Facebook invite to the following users we've picked out for you to improve your chances.
+</div>
+<div class="ui-dialog-buttonpane">
+      <div class="ui-dialog-buttonset">
+      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>{% endcomment %} 
+      	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Let's do it!</span></button>
+     </div><!-- close off buttonset -->
+ </div><!-- close off buttonpane -->
 </div>
 <div id="credit_check_modal" title="Feature Purchase"></div>
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>

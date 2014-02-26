@@ -21,17 +21,6 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-@login_required
-def crushlist(request):
-    if request.user.username != '651900292':
-        return HttpResponse("nu uhhhh")
-
-    relevant_relationship_list = CrushRelationship.objects.filter(target_person__is_active=False,target_person__date_twitter_invite_last_sent=None).order_by('-date_added')
-    response = "<h2>" + str(relevant_relationship_list.count()) + " Inactive Users Who Haven't Been Twitter Invited:</h1><BR>"
-    for relationship in relevant_relationship_list:
-        response += relationship.source_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.source_person.username + "'>" + relationship.source_person.username + "</a>)    ----->    " + relationship.target_person.get_name() + " (<a target='_blank' href='http://www.facebook.com/" + relationship.target_person.username + "'>" + relationship.target_person.username + "</a>)<BR>"
-    return HttpResponse(response)
-
 @csrf_exempt
 def facebook_notification(request,function_name,first_arg,second_arg):
     if function_name=="crush_response":

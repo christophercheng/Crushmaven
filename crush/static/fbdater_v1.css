@@ -3926,7 +3926,6 @@ ul.bxslider_element #slide_overlay {
 	padding-right:5px;
 	font-size:12px;
 	font-weight:normal;
-
 }
 
 .app_invite_dialog .title_options_label {
@@ -3947,7 +3946,6 @@ ul.bxslider_element #slide_overlay {
 	border-radius:50%;
 	height:16px;
 	width:16px;
-	#font-weight:bold;
 	font-size:9px;
 	margin-right:5px;
 	text-align:center;
@@ -3956,19 +3954,8 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 }
 
-.twitter_fieldWrapper,.phone_fieldWrapper{
-	margin-bottom:20px;
-}
-.twitter_fieldWrapper{
-	margin-top:15px;
-}
-
 .mf_generic_emails_fieldWrapper{
-	margin-top:15px;
 	margin-bottom:15px
-}
-.mf_generic_emails_label,.twitter_username_label{
-	margin-top:15px;
 }
 
 .fb_invite_checkbox_label{
@@ -4027,7 +4014,7 @@ ul.bxslider_element #slide_overlay {
 	position:relative;
 	margin-bottom:25px;
 	padding-top:10px;
-	margin-top:-10px;
+	margin-top:-40px;
 }
 
 #mutual_friend_help_section label {
@@ -4120,6 +4107,9 @@ ul.bxslider_element #slide_overlay {
 	color:#666666;
 }
 
+.mf_email_field_input .fieldWrapper{
+	margin-bottom:15px!important;
+}
 .mf_email_field_input label{
 	width:155px;
 	font-size:11px!important;
@@ -4149,6 +4139,7 @@ ul.bxslider_element #slide_overlay {
 	display:inline-block;
 	width:330px;
 	position:relative;
+	margin-bottom:45px;
 }
 .email_field_input .fieldWrapper input{
 	width:100%;
@@ -4170,6 +4161,7 @@ ul.bxslider_element #slide_overlay {
 .reliable_option_label{
 	position:absolute;
 	bottom:-16px;
+	margin-bottom:0px!important;
 	left:21px;
 	color:#2E8AE6;
 	font-size:8px;
@@ -4210,12 +4202,13 @@ ul.bxslider_element #slide_overlay {
 }
 
 .email_separator{
-	display:inline-block;
+	display:none;
+	position:absolute;
+	bottom:-15px;
+	left:5px;
 	float:left;
 	font-style:italic;
-	margin-bottom:9px;
-	margin-top:-4px;
-	margin-left:5px
+	margin-bottom:0px!important;
 }
 
 .sub_label{
@@ -4257,7 +4250,7 @@ ul.bxslider_element #slide_overlay {
 	position:relative!important;
 }
 
-#app_invite_form .phone_icon, #app_invite_form .twitter_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
+#app_invite_form .phone_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
 	margin-right:-5px;
 	margin-left:6px;
 	color:#B2B2B2;
@@ -4271,7 +4264,7 @@ ul.bxslider_element #slide_overlay {
 	height:30px!important;
 	border:none!important;
 }
-#app_invite_form .twitter_icon, #app_invite_form .phone_icon{
+ #app_invite_form .phone_icon{
 	margin-left:-20px;
 }
 .email_icon{
@@ -4280,12 +4273,7 @@ ul.bxslider_element #slide_overlay {
 	vertical-align:-1px!important;
 	background-position:-66px -94px!important;
 }
-.twitter_icon{
-	top:5px;
-	left:-2px;
-	vertical-align:-1px!important;
-	background-position:-66px -124px!important;
-}
+
 .phone_icon{
 	top:-1px;
 	left:-2px;
@@ -4508,14 +4496,21 @@ ul.bxslider_element #slide_overlay {
 #app_referral_modal .dialog_container{
 	padding:20px 20px!important;
 	font-size:14px!important;
-	line-height:24px;
+	line-height:30px;
 	color:#474747!important;
+}
+
+.dialog_container_subtitle{
+	font-weight:bold;
+	margin-bottom:9px;
+	display:block;
 }
 #app_referral_modal .dialog_container_footnote{
 	font-size:11px!important;
-	margin-top:3px!important;
+	#margin-top:5px!important;
 	color:#8F8F8F!important;
 	font-style:italic!important;
+	display:block;
 }
 
 #app_referral_modal .ui-dialog-buttonpane{

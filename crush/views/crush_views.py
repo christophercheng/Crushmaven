@@ -3,11 +3,14 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import simplejson
-from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastTwitterUsername,PastPhone
+from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastPhone
 import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
+from django.db.models import Count
+from django.db.models import Q
+from datetime import timedelta
 
 from urllib2 import URLError, HTTPError
 import thread
@@ -222,6 +225,36 @@ def ajax_get_platonic_rating(request, crush_id):
     else:
         return HttpResponseForbidden("Error: You have not paid to see your attraction rating."); 
 
+
+# returns a comma delimited string of usernames that an admirer will be asked to invite
+@login_required
+def ajax_get_invite_crush_array(request):
+
+    # get a list of allfriends who are:
+    # 1) female
+    # 2)  not already using the app
+    # 3) single or not specified relationship status
+    #randomize that list and pick out the first (count of rest of friend) users
+    
+    # build a comma delimited string of the selected usernames
+
+    crush_targets = request.user.crush_targets.all()
+    crush_array=''
+    for index,target in enumerate(crush_targets):
+        if index >0:
+            crush_array+=','
+        crush_array+= str(target.username)
+    
+    fql_query = "SELECT uid,relationship_status FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE (uid1 = me() AND NOT (uid2 IN (" + crush_array + "))) ) AND NOT is_app_user AND relationship_status = 'single' ORDER BY rand() limit " + str(settings.NUMBER_ADMIRER_FRIENDS_TO_INVITE)
+    friend_array = graph_api_fetch(request.user.access_token,fql_query,expect_data=True,fql_query=True)    
+    invite_array='' 
+    for index,friend in enumerate(friend_array):
+        if index > 0:
+            invite_array += ","
+        invite_array += str(friend['uid'])
+    print "INVITE ARRAY: " + str(invite_array)
+    return HttpResponse(invite_array)
+    
 # returns an array of crush username strings - used for fb inviting friends and excluding crushes from the list
 @login_required
 def ajax_get_noinvite_crush_array(request):
@@ -314,33 +347,7 @@ def app_invite_form_v2(request, crush_username):
                     except:
                         friend_email_fail_array.append(email)
                         continue
-            new_twitter_username = form.cleaned_data['twitter_username']['cleaned_email_list']
-            if new_twitter_username != '':
-                target_person=crush_relationship.target_person
-                target_person_existing_twitter=target_person.twitter_username
-                if target_person.twitter_username == None:
-                    # update current twitter username 
-                    crush_relationship.target_person.twitter_username=new_twitter_username
-                    crush_relationship.target_person.save(update_fields=['twitter_username']);
-                    # then send out programattic invite
-                elif target_person_existing_twitter!=new_twitter_username:
-                    # check if there already ten twitter handles, if so then just ignore this one (Some bad user behavior going on)
-                    past_twitters=target_person.pasttwitterusername_set.all()
-                    if past_twitters.count() < 10:
-                        # check if current twitter name has been stored in a past twitterusername instance
-                        new_twitter_exists=False
-                        for past_twitter in past_twitters:
-                            if past_twitter.twitter_username == new_twitter_username:
-                                new_twitter_exists=True;
-                                break
-                        if not new_twitter_exists:
-                            # if it has not already been stored, then store it into past twitterUsername instance
-                            PastTwitterUsername.objects.create(user=target_person,twitter_username=target_person_existing_twitter,date_twitter_invite_last_sent=target_person.date_twitter_invite_last_sent)
-                            # update the current twitter username
-                            crush_relationship.target_person.twitter_username=new_twitter_username
-                            crush_relationship.target_person.save(update_fields=['twitter_username']);
-                        # if new twitter username not previously stored, then send off programatic invite
-                        # if previously stored, then don't send off programatic invite
+
             new_phone = form.cleaned_data['phone']['cleaned_email_list']
             if new_phone != '':
                 target_person=crush_relationship.target_person
@@ -370,7 +377,7 @@ def app_invite_form_v2(request, crush_username):
                         # if previously stored, then don't send off programatic invite           
                     
             # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
-            if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0 or new_twitter_username!="" or new_phone!="":
+            if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0 or new_phone!="":
                 crush_relationship.target_status = 1;
                 crush_relationship.date_invite_last_sent = datetime.datetime.now()
                 crush_relationship.updated_flag = True

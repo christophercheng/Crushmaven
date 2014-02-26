@@ -165,6 +165,7 @@ class FacebookUserManager(UserManager):
             relation.save(update_fields=['target_status','date_target_signed_up'])
         InviteEmail.objects.delete_activated_user_emails(user)
         user.friends_that_invited_me.clear()
+        
         # update the cache inactive user list
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
         try:
@@ -219,12 +220,8 @@ class FacebookUser(AbstractUser):
     is_email_verified = models.BooleanField(default=False)
 
     # --------  END OF REQUIRED FIELDS
-    
-    # ----------  START OF OPTIONAL FIELDS
 
-    # Twitter handle used to invite inactive crush targets
-    twitter_username = models.CharField(max_length=15,blank=True,null=True,default=None)
-    date_twitter_invite_last_sent=models.DateTimeField(null=True,default=None,blank=True) 
+    # ----------  START OF OPTIONAL FIELDS
 
     # Phone number used to invite inactive crush targets
     phone = models.CharField(max_length=20,blank=True,null=True,default=None)

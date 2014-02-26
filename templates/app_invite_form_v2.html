@@ -45,8 +45,6 @@ $(document).ready(function()
            					{% comment %}
            					if ($('#app_invite_form .mf_generic_emails_fieldWrapper .errorlist').length)
                     			$('#show_secondary_options').trigger('click');
-           					if ($('#app_invite_form .twitter_fieldWrapper .errorlist').length)
-                    			$('#show_secondary_options').trigger('click');
            					{% endcomment %}
            					if ($('#app_invite_form #mutual_friend_input_section .errorlist').length) {
                     			//$('#show_secondary_options').trigger('click');
@@ -90,6 +88,10 @@ $('#app_invite_form').on('click','#mutual_friend_input_section_show', function()
 	
 });
 
+$('#app_invite_form').on('click','input#id_crush_emails', function(){
+	$('.email_separator').css('display','block');
+});
+
 setup_qtips=function(){
 $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
 	
@@ -97,29 +99,6 @@ $.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scri
 		content:{
 			text:$('#invite_dialog_twob_help_content'),
 			title:"Why am I asked for the emails of my crush's friends?"
-		},
-		position: {
-	        my: 'left bottom',  
-	        at:'top left'
-		},
-		show:{
-			delay:0,
-		},
-		hide:{
-			delay:500,
-			fixed:true,
-		},
-		style:{
-			classes: 'qtip-blue qtip-rounded qtip-shadow',
-			tip:{
-				corner:true
-			}
-		}
-	});	
-	$(".app_invite_dialog .email_field_input .fieldWrapper.twitter_fieldWrapper .help_icon").qtip({
-		content:{
-			text:$('#invite_dialog_twoc_help_content'),
-			title:"How do you use my crush's twitter name?"
 		},
 		position: {
 	        my: 'left bottom',  
@@ -191,26 +170,20 @@ $(".tooltip_subtitle").click(function(){
 
    <div class="email_field_input" id="attraction_email_input_section">
       <div class="email_input_error_section generic_email_errors" >{{ form.non_field_errors }}</div>
-      <label for="id_crush_emails" class="invite_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun}} Email</span><span class="reliable_option_label">(best option)</span></label> 
+      <label for="id_crush_emails" class="invite_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">1</span>{{ crush_pronoun}} Email</span></label> 
       <div class="fieldWrapper crush_email_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.crush_emails }}
          <span class="email_separator sub_label">separate multiple emails with commas</span>
          <div class="email_input_error_section">{{ form.crush_emails.errors }}</div>
-      		
       </div>
      {% comment %}<div id="show_secondary_options">show invite options 2 & 3<span id="down_arrow" class="arrow">&#x25BC;</span></div>{% endcomment %}
      <div class="secondary_options">
-      <label for="id_phone" class="invite_label"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Phone </span><span class="reliable_option_label">(good option)</span></label>
+      <label for="id_phone" class="invite_label"><span class="crush_email_name"><span class="invite_option_label">2</span>{{ crush_pronoun }} Phone </span></label>
       <div class="fieldWrapper phone_fieldWrapper"><span class="phone_icon">&nbsp;</span>
 	      {{ form.phone }}
 	      <div class="email_input_error_section">{{ form.phone.errors }}</div>
 	  </div>
-      <label for="id_twitter_username" class="twitter_username_label"><span class="crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Twitter </span></label> 
-      <div class="fieldWrapper twitter_fieldWrapper"><span class="twitter_icon">&nbsp;</span>
-	      {{ form.twitter_username }}<span class="help_icon">?</span>
-	      <div class="email_input_error_section">{{ form.twitter_username.errors }}</div>
-      </div>
-      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">4</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
+      <label for="id_mf_generic_emails" class="mf_generic_emails_label"><span class="first_crush_email_name crush_email_name"><span class="invite_option_label">3</span>{{ crush_pronoun }} Friends'<span class="email_icon">&nbsp;</span></span></label> 
       <div class="fieldWrapper mf_generic_emails_fieldWrapper"><span class="email_icon">&nbsp;</span>
          {{ form.mf_generic_emails }}<span class="help_icon">?</span>
          <div class="email_input_error_section">{{ form.mf_generic_emails.errors }}</div>
@@ -305,13 +278,6 @@ $(".tooltip_subtitle").click(function(){
 		<span class="tooltip_content tooltip_relatedcontent">
 			Absolutely not!
 		</span>
-	</span>
-	<span class="tooltip_close">close</span>
-</span>
-	
-<span class="help_dialog_content" id="invite_dialog_twoc_help_content">
-	<span class="tooltip_content tooltip_maincontent">
-	If you know the twitter username of your crush, we can send them an anonymous tweet from our CrushMaven twitter account.  We'll let them know what's up and ask them to sign in. 
 	</span>
 	<span class="tooltip_close">close</span>
 </span>

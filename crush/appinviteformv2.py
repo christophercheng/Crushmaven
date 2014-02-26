@@ -14,6 +14,7 @@ import logging
 logger = logging.getLogger(__name__)# Get an instance of a logger
 EMAIL_SEPARATOR=re.compile(r'[,;]+')
 
+
 class MultiEmailField(forms.Field):
     widget=forms.TextInput(attrs={'maxlength':'100'})
     
@@ -64,30 +65,13 @@ class MF_MultiEmailFieldNoHelp(MultiEmailField):
     widget=forms.TextInput(attrs={'maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
 class MF_MultiEmailFieldHelp(MultiEmailField):
-    widget=forms.TextInput(attrs={'placeholder':'enter any email addresses','maxlength':'100'})
+    widget=forms.TextInput(attrs={'placeholder':'enter any email address','maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
 
 # any friends
 class AF_MultiEmailField(MultiEmailField):
     widget=forms.TextInput(attrs={'placeholder':'emails','maxlength':'100'})
 # same as mutliemailfield but placeholder text is not crush specific
-
-class TwitterField(forms.Field):
-    widget=forms.TextInput(attrs={'placeholder':'username','maxlength':'15'})
-    
-    def to_python(self,value):
-        #'normalize data to a list of strings'
-        if len(value) > 0 and value[0]=='@':
-            value= value[1:]
-        
-        return {'cleaned_email_list':value}
-    
-    def validate(self,value):
-        # check if value consists only of valid emails
-        
-        # use the parent's handling of required fields, etc.
-        if ' ' in value['cleaned_email_list']:
-            raise ValidationError ("invalid Twitter username (can't contain spaces)")
 
 class PhoneField(forms.Field):
     widget=forms.TextInput(attrs={'placeholder':'enter only numbers','maxlength':'20'})
@@ -128,7 +112,6 @@ class AppInviteForm2(forms.Form):
         #else:
         #    self.fields['mutual_friend_%s' % mutual_friend_count] = MF_MultiEmailFieldNoHelp(required=False,label='Other Friends:',help_text='')
     crush_emails = MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
-    twitter_username=TwitterField(required=False,label='crush_field',help_text="HEHEHE")
     phone=PhoneField(required=False,label='crush_field',help_text="HEHEHE")
     mf_generic_emails = AF_MultiEmailField(required=False,label='crush_field',help_text="HEHEHEH")
     source_person_email=''

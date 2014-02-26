@@ -57,8 +57,6 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 
 
     (r'^facebook_notification/(?P<function_name>\w+)/(?P<first_arg>\w+)/(?P<second_arg>\w+)/$','facebook_notification'),   
-
-    (r'^crushlist/$','crushlist'),
     
     (r'^testing/$','testing'),
     (r'^new_testing/$','new_testing'),    
@@ -96,6 +94,8 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_get_platonic_rating/(?P<crush_id>\w+)/$','ajax_get_platonic_rating'),
     
     (r'^ajax_get_noinvite_crush_array/$','ajax_get_noinvite_crush_array'),
+    
+    (r'^ajax_get_invite_crush_array/$','ajax_get_invite_crush_array'),
 
     (r'^ajax_add_one_free_credit/$','ajax_add_one_free_credit'),
     
