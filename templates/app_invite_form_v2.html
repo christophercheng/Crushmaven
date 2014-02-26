@@ -12,8 +12,9 @@ $(document).ready(function()
             {% if no_track != True %}
         		ga('send', 'event', 'button', 'click', 'btn_click:app_invite_form_send_later');
         	{% endif %}
-        	if ({{delayed_invite}}==true)
+        	if ({{delayed_invite}}==true){
         		window.app_invite_modal.dialog('close');
+        	}
         	else
             	window.launch_app_invite_dialog({{current_crush_number}},{{total_crushes_string}},false);
         };

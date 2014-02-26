@@ -260,17 +260,6 @@ $(".response_view_rating .help_icon").qtip({
 
 <!-- ALWAYS display responded crush relationships on top of page, if they exist -->
 
-{% if responded_relationships %}
-
-<div id ="responses">
-	<span id="title_new_responses">You have new responses!</span>
-	{% for crush in responded_relationships %}
-			{% with crush as crush %}
-				 	{% include "crush_block.html" %}
-				{% endwith %}
-	{% endfor %} 
-</div>
-{% endif %} 
 {% if show_help_popup == True %}
 <div class="new_user_instructions crush_instructions">
 	<span class="instructions_title">It's Simple Getting Started!</span>
@@ -303,7 +292,7 @@ $(".response_view_rating .help_icon").qtip({
 	<span class="instructions_subtitle1">Get Your Crushes' Emails <span class="instructions_subtitle1_subtext">& Anonymously Invite Them</span></span>
 	{% if 'yahoo' in request.user.email %} 
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has everyone's personal email addresses.  The only way to get them is to import them into your Yahoo account:</span>
-		<a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing" class="show_more">Get Emails From Facebook</a> 
+		<a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing" style="font-weight:bold;" class="show_more">Get Emails From Facebook</a> 
 	{% elif 'hotmail' in request.user.email %}
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has everyone's personal email addresses.  The only wat to get them is to import them into your Hotmail account:</span>
 		<a target="_blank" href="http://people.live.com" class="show_more">Get Emails From Facebook</a> 
@@ -314,14 +303,21 @@ $(".response_view_rating .help_icon").qtip({
 		<a  class="show_more">Get Emails From Facebook</a> 
 	{% endif %}
 		<div class="second_instruction_section">
-			<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Sign into <a target="_blank" href="http://mail.yahoo.com">Yahoo</a> or <a target="_blank" href="http://www.hotmail.com">Hotmail</a> or <a target="_blank" href="http://mail.yahoo.com">(create a new account)</a></span></div>
-			<div class="instruction_sub_step"><span class="instruction_step_text">You must create a Yahoo or Hotmail account</span></div>
+			{% if 'yahoo' in request.user.email %} 
+			<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Sign into <a target="_blank" href="http://mail.yahoo.com">Yahoo Mail</a></span></div>			
+			<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the import contacts page:<a style="font-weight:bold;display:block" target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">http://address.yahoo.com/?VPC=contact_import_landing</a></div>
+			{% elif 'hotmail' in request.user.email %}
+			<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Sign into <a target="_blank" href="http://www.hotmail.com">Hotmail</a></div>
+			<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the import contacts page: <a target="_blank" href="http://people.live.com" style="font-weight:bold;">http://people.live.com</a></div>			
+			{% else %}
+			<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Create either a <a style="font-weight:bold;" target="_blank" href="http://mail.yahoo.com">Yahoo </a> or <a target="_blank" style="font-weight:bold;" href="http://www.hotmail.com">Hotmail</a> account</div>			
 			<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the corresponding import contacts page:
 				<ul>
-					<li>Yahoo:  <a target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">http://address.yahoo.com/?VPC=contact_import_landing</a></li>
-					<li>Hotmail: <a target="_blank" href="http://people.live.com">http://people.live.com</a></li>
+					<li>Yahoo:  <a target="_blank" style="font-weight:bold;" href="http://address.yahoo.com/?VPC=contact_import_landing">http://address.yahoo.com/?VPC=contact_import_landing</a></li>
+					<li>Hotmail: <a target="_blank" style="font-weight:bold;" href="http://people.live.com">http://people.live.com</a></li>
 				</ul>
 				</span></div>
+			{% endif %}
 			<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Click on the Facebook icon to import your Facebook emails</span></div>
 			<div class="instruction_step"><span class="help_icon2">4</span><span class="instruction_step_text">Sign back into CrushMaven, click on the 'Send Invite' button for each of your crushes (below), and enter their email address</span></div>
 	
@@ -329,6 +325,18 @@ $(".response_view_rating .help_icon").qtip({
 	
 
 </div>		<!-- close off email_help instructional content -->
+{% endif %} 
+
+{% if responded_relationships %}
+
+<div id ="responses">
+	<span id="title_new_responses">You have new responses!</span>
+	{% for crush in responded_relationships %}
+			{% with crush as crush %}
+				 	{% include "crush_block.html" %}
+				{% endwith %}
+	{% endfor %} 
+</div>
 {% endif %} 
 
 {% if crush_relationships %}

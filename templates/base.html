@@ -293,6 +293,8 @@ jQuery(document).ready(function($) {
 						window.app_invite_list = data;
 						$(':focus').blur();
 					}
+					else 
+						location.href="/your_crushes/";
 				})
 			}
 			return;
@@ -619,7 +621,7 @@ $('.show_more').click(function(){
     		ga('send', 'event', 'button', 'click', 'btn_click:unfinished_warning_get_emails_from_fb');
     	{% endif %}
     	{% if 'yahoo' not in request.user.email and 'hotmail' not in request.user.email %}
-		second_subtitle.html("Facebook has everyone's personal email addresses.  They won't share them with you directly, but you can import them into a Yahoo or Hotmail account:");
+		second_subtitle.html("Facebook has everyone's personal email addresses.  They won't share them with you directly, but you can import them into either a Yahoo or Hotmail account:");
 		{% endif %}
 		//second_subtitle.css('font-weight','bold');
 		second_subtitle.css('color','#E00000');
@@ -683,7 +685,7 @@ $('.bt-fs-dialog').click(function(){
 
 {% if request.user.email == "" %}
 	{% if 'settings_preferences' not in request.path %}
-		<div class="footer">
+		<div class="footer {% if num_total_crushes > 0 %}footer_priority{% endif %}">
 		<div class="outer_footer_container">
 		<div class="inner_footer_container">
 		Please provide us with your email address <a href="/settings_preferences" class="footer_btn">Update Email Settings</a>
@@ -694,8 +696,8 @@ $('.bt-fs-dialog').click(function(){
 	{% endif %}
 
 {% elif not request.user.is_email_verified %}
-	<div class="footer">
-	<div class="outer_footer_container">
+	<div class="footer {% if num_total_crushes > 0 %}footer_priority{% endif %}">
+	<div class="outer_footer_container" >
 	<div class="inner_footer_container">
 	Please verify your address: {{request.user.email}} - click the link in our welcome email<a class="footer_btn resend_verify_email">resend</a>
 	<div class="footer_subtext">Our email may be in your junk or spam folder.  If so, please move it to your inbox. </div>
@@ -708,8 +710,8 @@ $('.bt-fs-dialog').click(function(){
 <div id="app_invite_modal" title="Anonymously Invite"></div>
 <div id="app_referral_modal" title="One Last Thing: Help Us Help You!">
 <div class="dialog_container">
-<span class="dialog_container_subtitle">If other friends of yours use CrushMaven, we'll have more ways to reach your crushes and get their responses. </span>
-Send a Facebook invite to the following users we've picked out for you to improve your chances.
+<span class="dialog_container_subtitle">If your friends use CrushMaven, they can help us get your crush signed up to respond. </span>
+Send a Facebook invite to the following users we've picked to improve your chances.
 </div>
 <div class="ui-dialog-buttonpane">
       <div class="ui-dialog-buttonset">

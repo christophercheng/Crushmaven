@@ -144,7 +144,7 @@ def your_crushes(request, reveal_crush_id=None):
         email_exists=True
     show_invite_help_popup=False
     #determine whether to show invite help popup
-    number_noninvited_crushes = crush_progressing_relationships.filter(target_status__lt=4,date_invite_last_sent=None).count()
+    number_noninvited_crushes = crush_progressing_relationships.filter(date_invite_last_sent=None).count()
     if number_noninvited_crushes>0:
         show_invite_help_popup=True
     return render(request, 'crushes.html',
