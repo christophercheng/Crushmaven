@@ -899,7 +899,7 @@ color:#000;
 }
 .footer_section .center_container .first_footer_line{
 	display:block;
-	margin-left:0px;
+	margin-left:-19px;
 	white-space:nowrap;
 	width:100%;
 
@@ -936,11 +936,11 @@ opacity:1!important;
 }
 .cm_twitter_button{
 	display:inline-block;
-	width:57px;
+	width:58px;
 	vertical-align:bottom;
 	margin-bottom:2px;
 	height:20px;
-	margin-left:10px;
+	margin-left:8px;
 }
 .cm_fb_button{
 	display:inline-block;
