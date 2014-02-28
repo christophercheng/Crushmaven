@@ -76,7 +76,7 @@ def cached_inactive_crush_list(request):
     inactive_crushes = cache.get(settings.INACTIVE_USER_CACHE_KEY)   
     response = 'CACHED INACTIVE CRUSH LIST: <BR><BR>'
     for crush in inactive_crushes:
-        response += str(crush.username) + "<BR>"
+        response += str(crush) + "<BR>"
     return HttpResponse(response)
     
 @login_required
