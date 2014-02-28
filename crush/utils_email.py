@@ -90,7 +90,7 @@ def send_mail_lineup_expiration_warning(email_address,expiration_date):
 def send_mail_invite_reminder(first_name, email_address, crush_list, more_crushes_count):
     html=render_to_string('email_template_invite_reminder.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
     text=render_to_string('email_template_invite_reminder_text.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
-    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'You forgot to invite your crush',html,text)
+    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'You must email invite your crush to receive a response!',html,text)
     
 def send_mail_missed_invite_tip(relationship):
     email_address = relationship.source_person.email

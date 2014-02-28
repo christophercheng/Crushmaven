@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
         logger.debug("Running Daily Maintenance")
-       # if datetime.now().day == 1: 
-        monthly_maintenance()
+        #if datetime.now().day == 1: 
+        #    monthly_maintenance()
 #        logger.debug("Running Add New Inactive Crushes to Facebook Ad Audience")
 #        add_inactive_crush_to_fb_ad_audience()
         logger.debug("Running Missed Invite Emails")
@@ -67,7 +67,7 @@ def send_missed_invite_tips():
         send_mail_missed_invite_tip(relationship)
         notify_person_username=relationship.source_person.username
         destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/"
-        message="You forgot to email invite your crush. Click here to see how to get their email address from Facebook."
+        message="You must email invite your crush - click here to see how to get their email address from Facebook."
         notify_person_on_facebook(notify_person_username,destination_url,message)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")
 
