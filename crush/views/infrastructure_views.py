@@ -67,6 +67,11 @@ def inactive_crush_list(request):
     return HttpResponse(response)
 
 @login_required
+def clear_cached_inactive_crush_list(request):
+    cache.delete(settings.INACTIVE_USER_CACHE_KEY)
+    return HttpResponse("Cache Cleared")  
+
+@login_required
 def cached_inactive_crush_list(request):
     
     if request.user.username != 'admin':
