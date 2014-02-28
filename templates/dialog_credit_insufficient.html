@@ -1,7 +1,6 @@
 <script>
 $(document).ready(function() 
 {
-	
 	window.offer_free_credit = function(){
 		{% comment %}
 			{% if completed_survey != True %}
@@ -9,29 +8,24 @@ $(document).ready(function()
 		   {% endif %}
 		{% endcomment %}
 		{% if request.user.site_credits = 0 %}
-			window.wait_modal_open();
-
-			$.get( "/ajax_get_invite_crush_array/", function( data ) { 
-				window.wait_modal_close();
-				if (data != ''){
-					$("#credit_offer_modal").dialog({dialogClass:'credit_offer_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-					$(':focus').blur();
-					window.app_invite_list=data;
-				}
-			});
+				$("#credit_offer_modal").dialog({dialogClass:'credit_offer_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+				$(':focus').blur();
 		{% endif %}
 	};
 	$('#obtain_free_credit_btn').click(function(){
 		$('#credit_offer_modal').html('<div id=\'site-loading\'></div>');
 		// get excluded ids (of existing crushes)
+		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
+				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
-		            message: "Check Out CrushMaven, the Intelligent & Anonymous Secret Admirer App",
-		            to:window.app_invite_list,
-		            title:'Invite these friends to earn free credit'
+		            message: "Check out CrushMaven, the intelligent (and anonymous) secret admirer app!",
+		            filters: ['all','app_non_users'],
+		            exclude_ids:data['data'],
+		            title:'Invite ten friends or more to earn free credit'
 		        }, function(response){
 					$("#credit_offer_modal").dialog('close');
 		        	if (response.to == undefined){
-		        		window.alert_modal("Credit Offer Problem","We cannot give you free credit unless you invite your friends.",undefined, "location.href='';");
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited no one)",undefined, "location.href='';");
 			            {% if no_track != True %}
 		            		ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_credit_offer:0');
 		            	{% endif %}
@@ -41,10 +35,14 @@ $(document).ready(function()
 		            {% if no_track != True %}
 		            	ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_credit_offer:' + num_invites.toString());
 		            {% endif %}
-	        		$.get( "/ajax_add_one_free_credit/", function( data ) {
-	        			window.alert_modal("Thank You","One credit has been added to your account. Thanks for supporting CrushMaven!");
-	        		});
+		        	if (num_invites < 10)	
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited " + num_invites.toString() +")",undefined, "location.href='';");
+		        	else 
+		        		$.get( "/ajax_add_one_free_credit/", function( data ) {
+		        			window.alert_modal("Thank You","One credit has been added to your account. Thanks for supporting CrushMaven!");
+		        		});
 		        });
+			});
 	});
 
 	window.morph_dialog = function(){
@@ -202,7 +200,7 @@ You can always purchase more credits from within the settings menu (in the top r
 </div>
 {% endcomment %}
 <div id="credit_offer_modal" title="Earn Free Credit!">
-<div class="modal_container"><span class="dialog_container_subtitle">Would you like to earn a free credit to use on anywhere on the site?</span>  Invite a few friends on Facebook that we've chosen for you, and we'll instantly update your account.
+<div class="modal_container">Would you like to earn a free credit to use on anywhere on the site?  Invite at least ten friends on Facebook, and we'll instantly update your account.
 </div><!-- close off buttonpane -->	
 <div class="ui-dialog-buttonpane">
 <div class="ui-dialog-buttonset">
@@ -211,5 +209,3 @@ You can always purchase more credits from within the settings menu (in the top r
 </div><!-- close off buttonset -->
 </div><!-- close off buttonpane -->
 </div>
-
-

@@ -241,17 +241,29 @@ jQuery(document).ready(function($) {
 	});
 	{% endcomment %}
 	
-	$("#app_referral_modal").on("click","#referral_send_btn", function(e){
-        {% if no_track != True %}
-        	ga('send', 'event', 'button', 'click', 'btn_click:invite_fb_friends');
-        {% endif %}
+	$("#app_referral_modal").on("click",".referral_send_btn", function(e){
+		btn_id = $(this).attr('id');
+		var invite_list = window.app_invite_list;
+		if (btn_id=="referral_custom_send_btn"){
+			invite_list="";
+			{% if no_track != True %}
+        		ga('send', 'event', 'button', 'click', 'btn_click:invite_custom_fb_friends');
+        	{% endif %}	
+		}
+		else {
+			{% if no_track != True %}
+        		ga('send', 'event', 'button', 'click', 'btn_click:invite_preselected_fb_friends');
+        	{% endif %}
+		}
+
+        
 		// disable all buttons
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
 		// get excluded ids (of existing crushes)
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
 		            message: "Check Out CrushMaven, the Intelligent & Anonymous Secret Admirer App",
-		            to:window.app_invite_list,
+		            to:invite_list,
 		            title:'Increase your odds of getting a response!'
 
 		        }, function(response){
@@ -727,10 +739,10 @@ Send a Facebook invite to the following users we've picked to improve your chanc
 </div>
 <div class="ui-dialog-buttonpane">
       <div class="ui-dialog-buttonset">
-      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>
-      	<button id="referral_custom_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite preselected friends (easiest)</span></button>
-      	<button id="referral_preselect_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite my own selection of friends</span></button>{% endcomment %} 
-      	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Let's do it!</span></button>
+      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>{% endcomment %} 
+      	<button id="referral_preselect_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite preselected friends</span></button>
+      	<button id="referral_custom_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite my own selection of friends</span></button>
+      	{% comment %}<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Let's do it!</span></button>{% endcomment %}
      </div><!-- close off buttonset -->
  </div><!-- close off buttonpane -->
 </div>
