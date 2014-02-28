@@ -619,22 +619,29 @@ $(".tooltip_subtitle").click(function(){
 	NEW USER INSTRUCTION - SHOW MORE LINK HANDLER
 
 * -------------------------------------------- */
+$('.import_contacts_yahoo').click(function(){
+    {% if no_track != True %}
+		ga('send', 'event', 'button', 'click', 'btn_click:import_emails_into_yahoo');
+	{% endif %}
+});
+$('.import_contacts_hotmail').click(function(){
+    {% if no_track != True %}
+		ga('send', 'event', 'button', 'click', 'btn_click:import_emails_into_hotmail');
+	{% endif %}
+});
+$('.import_contacts_other').click(function(){
+    {% if no_track != True %}
+		ga('send', 'event', 'button', 'click', 'btn_click:import_emails_into_other');
+	{% endif %}
+});
 
 $('.show_more').click(function(){
 	$(this).hide();
 	$('.second_instruction_section').show(200);
 	$('.first_instruction_section .show_less').show();
-	var second_subtitle = $('.instructions_subtitle2');
-	if (second_subtitle.length) {
-        {% if no_track != True %}
-    		ga('send', 'event', 'button', 'click', 'btn_click:unfinished_warning_get_emails_from_fb');
-    	{% endif %}
-	}
-	else {
-	    {% if no_track != True  %}
-	    ga('send', 'event', 'button', 'click', 'btn_click:new_user_help_show_more');
-	    {% endif %}
-	}
+    {% if no_track != True  %}
+    ga('send', 'event', 'button', 'click', 'btn_click:new_user_help_show_more');
+    {% endif %}
 	setTimeout(function(){$('.new_user_instructions').addClass('expanded');},100);
 	
 });
