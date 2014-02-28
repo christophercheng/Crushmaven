@@ -68,6 +68,8 @@ def inactive_crush_list(request):
 
 @login_required
 def clear_cached_inactive_crush_list(request):
+    if request.user.username != 'admin':
+        return HttpResponse("nu uhhhh")
     cache.delete(settings.INACTIVE_USER_CACHE_KEY)
     return HttpResponse("Cache Cleared")  
 
@@ -80,6 +82,9 @@ def cached_inactive_crush_list(request):
     #lineup_expiration_warning()
     inactive_crushes = cache.get(settings.INACTIVE_USER_CACHE_KEY)   
     response = 'CACHED INACTIVE CRUSH LIST: <BR><BR>'
+    if inactive_crushes==None:
+        response += 'EMPTY'
+        return HttpResponse(response)
     for crush in inactive_crushes:
         response += str(crush) + "<BR>"
     return HttpResponse(response)
