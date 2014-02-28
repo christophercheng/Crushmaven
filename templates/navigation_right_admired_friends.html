@@ -1,0 +1,15 @@
+{% for inactive_crush_friend,friend_data in friends_with_admirer_data.items %}
+        <li class='friend_with_admirer'>
+        	<a id='send_fb_invite' crush_name='{{inactive_crush_friend.get_name}}' crush_first_name='{{inactive_crush_friend.first_name}}' crush_last_name='{{inactive_crush_friend.last_name}}' crush_username='{{inactive_crush_friend.username}}' crush_gender='{{inactive_crush_friend.gender}}' href='#'>
+        		<img src='http://graph.facebook.com/{{ inactive_crush_friend.username }}/picture?width=40&height=40'>
+        		<ul>
+        			<li class='friend_name'>{{inactive_crush_friend.first_name}}&nbsp;{{inactive_crush_friend.last_name}}</li>
+			        <li class='friend_admirer_count'>{{ friend_data.num_admirers }} admirer{% if friend_data.num_admirers > 1 %}s{% endif %} ({{ friend_data.elapsed_time }})</li>
+			        <li class='friend_help_link'>send invite</li>
+			    </ul>
+			</a>
+		</li>
+{% empty %}
+     <li id="no_friends" class="no_friends">no friends with admirers...</li>
+{% endfor %}
+    
