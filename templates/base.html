@@ -722,14 +722,15 @@ $('.bt-fs-dialog').click(function(){
 <div id="app_invite_modal" title="Anonymously Invite"></div>
 <div id="app_referral_modal" title="One Last Thing: Help Us Help You!">
 <div class="dialog_container">
-If your friends are using CrushMaven, they can help get your crush signed in.
+<span class="dialog_container_subtitle">If your friends are using CrushMaven, they can help get your crush signed in. </span>
+Send a Facebook invite to the following users we've picked to improve your chances.
 </div>
 <div class="ui-dialog-buttonpane">
       <div class="ui-dialog-buttonset">
-      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>{% endcomment %} 
+      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>
       	<button id="referral_custom_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite preselected friends (easiest)</span></button>
-      	<button id="referral_preselect_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite my own selection of friends</span></button>
-
+      	<button id="referral_preselect_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite my own selection of friends</span></button>{% endcomment %} 
+      	<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Let's do it!</span></button>
      </div><!-- close off buttonset -->
  </div><!-- close off buttonpane -->
 </div>
