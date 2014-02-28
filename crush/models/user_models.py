@@ -257,7 +257,6 @@ class FacebookUser(AbstractUser):
     processed_activated_friends_admirers = models.DateTimeField(blank=True,null=True,default=None)
     #call this asynchronously after a user first logs in.
     def find_inactive_friends(self):
-        global all_inactive_user_list
     # this is done whenever an active user is first created
         try:
             logger.warning("calling find_inactive_friends with access_token: " + self.access_token + " and username: " + self.username)
