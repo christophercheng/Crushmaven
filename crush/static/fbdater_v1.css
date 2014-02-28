@@ -1241,7 +1241,7 @@ a.logo img{
 .new_user_instructions span.instructions_subtitle2{
 	display:block;
 	font-weight:normal;
-	margin-bottom:24px;
+	margin-bottom:20px;
 	line-height:21px;
 	font-size:13px!important;
 	font-family:"helvetica neue",helvetica;	
@@ -1330,6 +1330,10 @@ a.logo img{
 	margin-left:-20px;
 	padding: 14px 10px 0px 20px;	
 	position:relative;
+}
+
+.invite_instructions .second_instruction_section {
+	display:block!important;
 }
 
 .new_user_instructions_instructions span.paragraph_break{
