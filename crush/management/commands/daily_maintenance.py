@@ -66,7 +66,13 @@ def send_missed_invite_tips():
     for relationship in notify_relationships:
         send_mail_missed_invite_tip(relationship)
         notify_person_username=relationship.source_person.username
-        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/"
+        source_person_email=relationship.source_person.email
+        email_type="other"
+        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+            email_type="hotmail"
+        elif 'yahoo' in source_person_email:
+            email_type="yahoo"
+        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
         message="You must email invite your crush - click here to see how to get their email address from Facebook."
         notify_person_on_facebook(notify_person_username,destination_url,message)
     logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")

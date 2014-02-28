@@ -24,13 +24,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-def facebook_notification(request,function_name,first_arg,second_arg):
+def facebook_notification(request,function_name,first_arg,second_arg,third_arg=""):
     if function_name=="crush_response":
         return crush_response(request,first_arg,second_arg)
     elif function_name=="lineup_expiration":
         return lineup_expiration(request,first_arg,second_arg)
     elif function_name=="missed_invite_tip":
-        return missed_invite_tip(request,first_arg,second_arg)
+        return missed_invite_tip(request,first_arg,second_arg,third_arg)
 
 @csrf_exempt
 def crush_response(request,first_name,last_name):
@@ -45,8 +45,13 @@ def lineup_expiration(request,target_person_username,display_id):
     return render(request,'email_template_notify_lineup_expiration_warning.html',{'expiration_date':relationship.date_lineup_expires,'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
 
 @csrf_exempt
-def missed_invite_tip(request,source_person_username,source_person_first_name):
-    return render(request,'email_template_missed_invite_tip.html',{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
+def missed_invite_tip(request,source_person_username,source_person_first_name,email_type):
+    html_template = "email_template_missed_invite_tip_other.html"
+    if 'hotmail' == email_type:
+        html_template = "email_template_missed_invite_tip_hotmail.html"
+    elif 'yahoo' == email_type:
+        html_template = "email_template_missed_invite_tip_yahoo.html"   
+    return render(request,html_template,{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
  
 
 @login_required
