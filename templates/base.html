@@ -543,7 +543,7 @@ jQuery(document).ready(function($) {
   });
   
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
-$(".reprocess_friends_with_admirers_section").parent('ul').load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
+$(".process_friends_with_admirers_section").parent('ul').load('/ajax_friends_with_admirers_content/',function(responseText,textStatus,xhr){
 	if (xhr.status==405)
   			reauthorize_user();
   }); 

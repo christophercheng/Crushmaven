@@ -284,6 +284,8 @@ class FacebookUser(AbstractUser):
         self.friends_with_admirers.clear()
         # loop through all friends.  if any friend is in inactive user results, then add them to the friends_with_admirers list.
         all_crushes=self.crush_targets.all()
+        # better optimization:
+        
         for friend in fql_query_results:
             if friend['id'] in all_inactive_user_list:
                 friend_user = FacebookUser.objects.get(username=str(friend['id']))
@@ -308,47 +310,6 @@ class FacebookUser(AbstractUser):
             self.friends_with_admirers.remove(friend_user)
         except FacebookUser.DoesNotExist:
             pass # not really a bug, the user just isn't in the sidebar
-        
-    
-
-    def html_for_inactive_friend_section(self,ajax_reprocess_friends_with_admirers=False): 
-        ajax_response=""
-        if ajax_reprocess_friends_with_admirers:
-            ajax_response+='<span class="reprocess_friends_with_admirers_section" id="site-loading"></span>'
-        else:
-            #print "number of inactive friends: " + str(len(self.friends_with_admirers.all()))
-            for inactive_crush_friend in self.friends_with_admirers.all().order_by('first_name'):
-                #print "creating html for: " + inactive_crush_friend.username
-               
-                all_admirers = crush.models.relationship_models.CrushRelationship.objects.all_admirers(inactive_crush_friend)
-                num_admirers = len(all_admirers)
-                if num_admirers==0:
-                    continue # in this case, a user was added as a friend but then someone deleted them laster
-                ajax_response +="<li class='friend_with_admirer'><a id='send_fb_invite' crush_name='" + inactive_crush_friend.get_name() + "' crush_first_name='" + inactive_crush_friend.first_name + "' crush_last_name='" + inactive_crush_friend.last_name + "' crush_username='" + inactive_crush_friend.username  + "' crush_gender='" + inactive_crush_friend.gender + "' href='#'>"
-                ajax_response +="<img src='" + inactive_crush_friend.get_facebook_pic(40) + "'>"
-                ajax_response += "<ul>"
-                ajax_response += "<li class='friend_name'>" + inactive_crush_friend.first_name + "&nbsp;" + inactive_crush_friend.last_name + "</li>"
-                ajax_response += "<li class='friend_admirer_count'>" + str(num_admirers) + " admirer"
-                if num_admirers > 1:
-                    ajax_response += "s"
-                elapsed_days = (datetime.datetime.now() - all_admirers[num_admirers-1].date_added).days
-                if elapsed_days==0:
-                    elapsed_days = "today"
-                elif elapsed_days == 1:
-                    elapsed_days = "yesterday"
-                elif elapsed_days > 60:
-                    elapsed_days = str(elapsed_days/30) + " months ago"
-                elif elapsed_days > 30:
-                    elapsed_days = "1 month ago"
-                else:
-                    elapsed_days = str(elapsed_days) + " days ago"
-                    
-                ajax_response += " (" + elapsed_days + ")</li>"
-                ajax_response +="<li class='friend_help_link'>send invite</li>"
-                ajax_response+="</ul></a></li>"
-            if ajax_response=="":
-                ajax_response='<li id="no_friends" class="no_friends">no friends with admirers...</li>'
-        return ajax_response 
     
     #processed_inactivated_friends_admirers = models.BooleanField(default=False)
     def find_active_friends_of_inactivated_crush(self):
@@ -394,6 +355,10 @@ class FacebookUser(AbstractUser):
     # called by lineup.html to determine what to do after jquery lineup slider closes
     def get_progressing_admirers(self):
         return crush.models.relationship_models.CrushRelationship.objects.progressing_admirers(self)
+
+    # called by lineup.html to determine what to do after jquery lineup slider closes
+    def get_progressing_admirers_count(self):
+        return crush.models.relationship_models.CrushRelationship.objects.progressing_admirers(self).count()
 
     def get_fb_gender(self):
         if self.gender==u'M':
