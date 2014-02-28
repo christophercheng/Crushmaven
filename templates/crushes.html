@@ -289,26 +289,26 @@ $(".response_view_rating .help_icon").qtip({
 {% if show_invite_help_popup == True %}
 <div class="new_user_instructions invite_instructions">
 	<span class="instructions_title">You Won't Receive A Response Yet!</span>
-	<span class="instructions_subtitle1">We need you to find your crushes' emails and give them to us. We'll then send off an anonymous invite.</span>
+	<span class="instructions_subtitle1">You must first find your crushes' emails and give them to us. We'll then send off an anonymous invite.</span>
 	{% if 'yahoo' in request.user.email %} 
-		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails, but you must import them into your Yahoo mail account to see them. Here's how:</span>
+		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into your Yahoo mail account. Here's how:</span>
 	{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email %}
-		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails, but you must import them into your Hotmail account to see them. Here's how:</span>
+		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into your Hotmail account. Here's how:</span>
 	{% else %}
-		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails, but you must import them into a Yahoo mail account to see them. Here's how:</span>	
+		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into a Yahoo mail account. Here's how:</span>	
 	{% endif %}
 	<div class="second_instruction_section">
 		{% if 'yahoo' in request.user.email %} 			
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_yahoo" style="font-weight:bold;" target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">Yahoo Contacts Page</a></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to start the importing of emails)</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_yahoo" style="font-weight:bold;" target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">Yahoo Contacts Page</a><span class="external_link_icon">&nbsp;</span></span></div>
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to start email importing)</span></div>
 		{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email %}
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_hotmail" target="_blank" href="http://people.live.com" style="font-weight:bold;">Hotmail Contacts Page</a></span></div>			
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to establish a Hotmail - Facebook connection)</span></div>
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Refersh the contact page, and re-click the Facebook icon (to start importing emails from Facebook)</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_hotmail" target="_blank" href="http://people.live.com" style="font-weight:bold;">Hotmail Contacts Page</a><span class="external_link_icon">&nbsp;</span></span></div>			
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to establish a Hotmail Facebook connection)</span></div>
+		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Wait a few moments, then refresh the contacts page and re-click the Facebook icon (to start email importing)</span></div>
 		{% else %}
-		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Create a <a class="import_contacts_other" style="font-weight:bold;" target="_blank" href="http://edit.yahoo.com/registration">Yahoo mail account</a></span></div>			
-		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the <a target="_blank" style="font-weight:bold;" href="http://address.yahoo.com/?VPC=contact_import_landing">Yahoo Contacts Page</a></span></div>
-		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Click on the Facebook icon (to start the importing of emails)</span></div>
+		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Create a <a class="import_contacts_other" style="font-weight:bold;" target="_blank" href="http://edit.yahoo.com/registration">Yahoo mail account</a><span class="external_link_icon">&nbsp;</span></span></div>			
+		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Go to the <a target="_blank" style="font-weight:bold;" href="http://address.yahoo.com/?VPC=contact_import_landing">Yahoo Contacts Page</a><span class="external_link_icon">&nbsp;</span></span></div>
+		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Click on the Facebook icon (to start email importing)</span></div>
 		{% endif %}
 		<div class="instructions_subtitle2">Afterward, return to CrushMaven, click on the 'Send Invite' button for each of your crushes below, and enter their email address.</div>
 

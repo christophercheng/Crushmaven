@@ -4264,6 +4264,18 @@ ul.bxslider_element #slide_overlay {
 	position:relative!important;
 }
 
+.external_link_icon{
+	display:inline-block!important;
+	background-image:url('/static/images/full_sprite.png')!important;
+	background-repeat:no-repeat;
+	background-size:auto!important;
+	width:20px!important;
+	height:20px!important;
+	border:none!important;
+	vertical-align:-1px!important;
+	background-position:-31px -152px!important;
+}
+
 #app_invite_form .phone_icon, #app_invite_form .email_icon, #app_invite_form .fb_invite_icon{
 	margin-right:-5px;
 	margin-left:6px;
