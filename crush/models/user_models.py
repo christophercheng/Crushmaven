@@ -259,7 +259,7 @@ class FacebookUser(AbstractUser):
     def find_inactive_friends(self):
     # this is done whenever an active user is first created
         try:
-            logger.warning("calling find_inactive_friends with access_token: " + self.access_token + " and username: " + self.username)
+            logger.debug("calling find_inactive_friends with access_token: " + self.access_token + " and username: " + self.username)
             #print "attempting to load the json results"
             
             fql_query_results=graph_api_fetch(self.access_token,"me/friends")
@@ -271,7 +271,7 @@ class FacebookUser(AbstractUser):
 
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
         if all_inactive_user_list==None:
-            #print "updating cache with new all_inactive_user_list"
+            logger.debug("updating cache with new all_inactive_user_list")
             all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
             print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)

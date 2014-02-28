@@ -60,6 +60,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^facebook_notification/(?P<function_name>\w+)/(?P<first_arg>\w+)/(?P<second_arg>\w+)/(?P<third_arg>\w+)/$','facebook_notification'),   
     
     (r'^inactive_crush_list/$','inactive_crush_list'),
+    (r'^cached_inactive_crush_list/$','cached_inactive_crush_list'),
     (r'^testing/$','testing'),
     (r'^new_testing/$','new_testing'),    
     (r'^testing2/$','testing2'),
