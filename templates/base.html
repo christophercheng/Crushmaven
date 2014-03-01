@@ -8,7 +8,7 @@
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- ie8 - ignore compatibility option-->
 		<title>CrushMaven - {% block title %}{% endblock %}</title>    	
 	    {% block extrahead %}{% endblock %}
-
+	    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela+Round">
 	    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" />
 	    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}images/cm_favicon1.gif" /> 
 
@@ -48,8 +48,6 @@
 	
 	    <link rel="stylesheet" href="{{ STATIC_URL }}contactable/contactable_v1.css" type="text/css" />
 	    <link rel="stylesheet" href="{{ STATIC_URL }}qtip/jquery.qtip.css" type="text/css" />
-	    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela+Round">
-		
     </head>
 <body>
 {% if 'signin' in request.GET %}
