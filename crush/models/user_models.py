@@ -15,6 +15,9 @@ from django.utils.encoding import smart_text # convert strings into unicode
 # import the logging library
 import logging
 
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 # end imports for testing
@@ -287,14 +290,23 @@ class FacebookUser(AbstractUser):
         
         for friend in fql_query_results:
             if friend['id'] in all_inactive_user_list:
-                friend_user = FacebookUser.objects.get(username=str(friend['id']))
+                try:
+                    friend_user = FacebookUser.objects.get(username=str(friend['id']))
                 # build a list of the user's setup lineup members, where the decision is crush and the members_attraction is unknown
-                
-                # frriend inactive user can't be a crush of the user, can't have already been invited by user, and can't have been a recommendee in one of the user's setups
+                except FacebookUser.DoesNotExist:
+                    # remove this entry from cache and update cache
+                            # update the cache inactive user list
+                    all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
+                    try:
+                        all_inactive_user_list.remove(friend['id'])
+                        cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+                    except :
+                        pass
+                    continue
+                # friend inactive user can't be a crush of the user, can't have already been invited by user, and can't have been a recommendee in one of the user's setups
                 if friend_user not in all_crushes and self not in friend_user.friends_that_invited_me.all(): 
                     self.friends_with_admirers.add(friend_user)
                 
-
         # mark the function complete flag so that future users/pages won't reprocess the user
         self.processed_activated_friends_admirers = datetime.datetime.now()
         self.save(update_fields=['processed_activated_friends_admirers'])
@@ -395,6 +407,20 @@ class FacebookUser(AbstractUser):
     #=========  Debug Self Reference Function =========
     def __unicode__(self):
         return smart_text(self.first_name) + u' ' + smart_text(self.last_name) + u' (' + smart_text(self.username) + u')'
+
+@receiver(pre_delete, sender=FacebookUser)
+def update_cached_inactive_crush_list(sender, instance, **kwargs):
+    print "deleting Facebook User: %s" % instance
+    # update the cache if this user's username was in it
+    if instance.is_active == False and instance.admirer_set.all().count() > 0:
+        all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
+        if all_inactive_user_list != None:    
+            try:
+                all_inactive_user_list.remove(instance.username)
+                cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+            except :
+                pass
+
      
 # used for message-write: recipient auto lookup     
 class NamesLookup(object):

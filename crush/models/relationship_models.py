@@ -11,8 +11,9 @@ from django.db import transaction
 import crush.utils_email
 from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
-import urllib,json
 # import the logging library
+from django.db.models.signals import pre_save,pre_delete
+from django.dispatch.dispatcher import receiver
 import logging
 
 # Get an instance of a logger
@@ -73,52 +74,50 @@ class PlatonicRelationship(BasicRelationship):
     rating_comment = models.CharField(max_length=100,default=None,blank=True,null=True)
     #rating_comment = models.CharField(max_length=100,default=None,blank=True,null=True)
     #rating_visible = models.BooleanField(default=True) # whether or not this rating/comment show up on user's public profile
- 
-    @transaction.commit_on_success # rollback entire function if something fails
-    def save(self,*args, **kwargs):  
-        #  print "saving platonic relationship object"
-        if (not self.pk): # if creating a new platonic relationship
-            try:
-                self.source_person.just_friends_targets.get(username=self.target_person.username)
-                print "existing platonic relationship detected. doing nothing more"
-                return False
-            except FacebookUser.DoesNotExist:
-                pass
-            try:
-                self.source_person.crush_targets.get(username=self.target_person.username)
-                print "existing crush relationship detected. doing nothing more"
-                return False
-            except FacebookUser.DoesNotExist:
-                pass
-            # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
-            #if target platonic friend has a crush on this user, then platonic friend must be informed
-            try:
-                reciprocal_relationship = self.target_person.crush_crushrelationship_set_from_source.get(target_person=self.source_person)
-                # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
-                if reciprocal_relationship.target_status==4 and reciprocal_relationship.is_results_paid:
-                        # find all related lineup members
-                        try:
-                            affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
-                            affected_member.decision=3;
-                            affected_member.save(update_fields=['decision'])
-                        except:
-                            pass
-                # if there is a reciprocal relationship, then update both relationships' target_status
-                reciprocal_relationship.target_status=5 # responded-crush status
-                reciprocal_relationship.date_target_responded=datetime.now()
-                reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag']);
-    
-            except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
-                pass
-
-        super(PlatonicRelationship, self).save(*args,**kwargs)
-        return
-        
-# consider putting in a delete function later
+         
+    # consider putting in a delete function later
           
     def __unicode__(self):
         return u'Platonic Relation:' + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
+@transaction.commit_on_success # rollback entire function if something fails
+@receiver(pre_save, sender=PlatonicRelationship)
+def pre_save_platonic_relationship(sender, instance, **kwargs): 
+    #  print "saving platonic relationship object"
+    if (not instance.pk): # if creating a new platonic relationship
+        try:
+            instance.source_person.just_friends_targets.get(username=instance.target_person.username)
+            print "existing platonic relationship detected. doing nothing more"
+            return False
+        except FacebookUser.DoesNotExist:
+            pass
+        try:
+            instance.source_person.crush_targets.get(username=instance.target_person.username)
+            print "existing crush relationship detected. doing nothing more"
+            return False
+        except FacebookUser.DoesNotExist:
+            pass
+        # check to see if there is a reciprocal relationship i.e. is the platonic friend an admirer of the user?
+        #if target platonic friend has a crush on this user, then platonic friend must be informed
+        try:
+            reciprocal_relationship = instance.target_person.crush_crushrelationship_set_from_source.get(target_person=instance.source_person)
+            # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
+            if reciprocal_relationship.target_status==4 and reciprocal_relationship.is_results_paid:
+                    # find all related lineup members
+                    try:
+                        affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
+                        affected_member.decision=3;
+                        affected_member.save(update_fields=['decision'])
+                    except:
+                        pass
+            # if there is a reciprocal relationship, then update both relationships' target_status
+            reciprocal_relationship.target_status=5 # responded-crush status
+            reciprocal_relationship.date_target_responded=datetime.now()
+            reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
+            reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag']);
+
+        except CrushRelationship.DoesNotExist: #nothing else to do if platonic friend doesn't have a crush on the source user
+            pass
+    return
 
 class CrushRelationshipQuerySet(models.query.QuerySet):
     
@@ -235,134 +234,6 @@ class CrushRelationship(BasicRelationship):
     # short message that admirer can leave for crush (as seen in their lineup
     #admirer_comment = models.CharField(default=None,max_length=50, blank=True,null=True)
     
-    @transaction.commit_on_success # rollback entire function if something fails
-    def save(self,*args,**kwargs):
-        perform_source_person_notification=False # this is used to delay sending source person notification till after crushrelationship super object saved (notify_source_person calls save function which could result in infinite loop
-        print "calling save on crush relationship"
-        if (not self.pk): # this is a newly created crush relationship
-            try:  # make sure we're not adding a duplicate
-                self.source_person.crush_targets.get(username=self.target_person.username)
-                print "duplicate crush relationships detected. doing nothing more"
-                return False
-            except FacebookUser.DoesNotExist:
-                pass # no duplicate crush relationship found
-            try: # check if there is an existing platonic relationship, if so, delete it first
-                existing_platonic_relationship = self.source_person.crush_platonicrelationship_set_from_source.get(target_person=self.target_person)
-                print "existing platonic relationship detected. deleting it before moving on"
-                existing_platonic_relationship.delete()
-            except PlatonicRelationship.DoesNotExist:
-                pass # no duplicate platonic relationship found so continue on
-            try:
-                # determine if the lineup should be free or not (if relationship is FOF or NF type)
-                if self.friendship_type > 0:
-                    self.is_lineup_paid=True
-                
-                # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
-                reciprocal_relationship = CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)
-                
-                # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
-                if reciprocal_relationship.target_status==5 and reciprocal_relationship.is_results_paid:
-                    # find all related lineup members
-                    try:
-                        affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
-                        affected_member.decision=0;
-                        affected_member.save(update_fields=['decision'])
-                    except:
-                        pass
-
-                #if we have a match, update the target_status of both relationship
-                reciprocal_relationship.target_status=4 # responded-crush status
-                self.target_status=4
-                # let the other relationship know right away that there is a response by setting the date_target_responded field to current time
-                    # NOTE: we do not set the newly created relationship yet.  We wait for the original admirer to see the response
-                    # this ordered delay obfuscates the originator of the mutual crushes. it also increases chance that admirer pays to see response
-                reciprocal_relationship.date_target_responded=datetime.now()
-                # both relationships should show the 'updated' or 'new' signs when first displayed to their respective users
-                reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
-                response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT, settings.CRUSH_RESPONSE_DELAY_END + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT)
-                self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
-                self.updated_flag = True #show 'new' or 'updated' on crush relation block
-                # save the reciprocal crush relationship to database
-                reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
-                
-                # CHC 07 01 13 COMMENTING OUT THIS BLOCK BECAUSE I THINKN IT"S REDUNDANT LOGIC CHAIN FROM ABOVE
-                #if reciprocal_relationship.is_results_paid==True: # i think this is repetitive logic from up above 7/1/13 CHC
-                    # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process will do this
-                #   response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                #    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
-                    # notify the source person (notification will go out at the future date_target_responded time
-                #    self.notify_source_person()
-                    
-            except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
-                try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
-                    PlatonicRelationship.objects.all_friends(self.target_person).get(target_person=self.source_person)
-                    # print "Found a reciprocal platonic relationship"
-                    # Update only this relationships' target_status (for anonymity sake, other user can't know that this user likes them)
-                    self.target_status=5
-                    # don't tell this user that their crush isn't attracted to them right away
-                        # without delay, admirer would eventually realize that immediate responses = negative responses - and not pay to see response
-                    response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-                    self.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
-                    self.updated_flag = True #show 'new' or 'updated' on crush relation block
-                    # notify the source person (notification will go out at the future date_target_responded time
-                    #self.notify_source_person()
-                    perform_source_person_notification=True
-                except PlatonicRelationship.DoesNotExist:
-                    # print "did not find a reciprocal platonic or crush relationship"
-                    if self.target_person.is_active == True:
-                        # let admirer know that their crush is already a member 
-                        self.target_status = 2 
-                        # notify the target_person that they have a new admirer
-                        self.notify_target_person()
-                        self.notify_target_person()
-                    else: # admirer is not an existing user (or is a user but not activated yet)
-                        self.target_status = 0
-                    
-                        
-                        # see if any active users are friends with this new inactive crush - solicit their help
-                        #self.target_person.find_active_friends_of_inactivated_crush()         
-            # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,
-                # this check is performed when the lineup slide is pulled
-            # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
-                # get total previous admirers (past and present) and add 1, hopefully this won't create a 
-            self.display_id=self.target_person.crush_crushrelationship_set_from_target.all().count() + 1
-            
-        else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
-            if 'update_fields' in kwargs:
-                # get the original relationship (which excludes the uncommitted changes)
-                original_relationship = CrushRelationship.objects.get(pk=self.pk)
-                # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
-                # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
-                if 'is_results_paid' in kwargs['update_fields'] and (original_relationship.is_results_paid != self.is_results_paid):
-                    #print "admirer paid to see crush response result for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
-                    try:                     
-                        # find the reciprocal crush relationship if it exists ( but only if the reciprocal relationship doesn't already know - use date_target_responded to figure that out)
-                        reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(self.target_person).get(target_person=self.source_person)#,date_target_responded=None)
-                        if reciprocal_crush_relationship.date_source_last_notified==None:
-                            # set the reciprocal crush relationship date_target_responded field
-                            reciprocal_crush_relationship.date_target_responded=datetime.now()
-                            reciprocal_crush_relationship.date_source_last_notified=datetime.now()
-                            reciprocal_crush_relationship.save(update_fields=['date_target_responded','date_source_last_notified'])
-                            # send the other relationship's admirer a notification
-                            reciprocal_crush_relationship.notify_source_person()
-                            
-                        else:
-                            # look for previously hidden messages from the target person and make them acceptable (to read)
-                            reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=settings.STATUS_REJECTED).update(moderation_status=settings.STATUS_ACCEPTED,recipient_deleted_at=None)
-                    except Exception as e: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
-                        print e
-                        pass # do nothing
-                if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != self.target_status):
-                    #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
-                    #self.notify_source_person()
-                    perform_source_person_notification=True
-                    
-                
-        # Don't forget to commit the relationship's changes to database!
-        super(CrushRelationship,self).save(*args,**kwargs)
-        if perform_source_person_notification:
-            self.notify_source_person()
-    
     # for crush relationships in a hidden responded mode:
         # 1: crush already admirer as platonic friend so date_target_responded is in future
         # 2: crush added a lineup member as an attraction but date_target responded set to None so we can let admirer view response first
@@ -457,29 +328,6 @@ class CrushRelationship(BasicRelationship):
         self.save(update_fields=['date_messaging_expires'])
         self.source_person.save(update_fields=['site_credits'])
         return True #must return True or else caller thinks payment failed
- 
-    @transaction.commit_on_success # rollback entire function if something fails
-    def delete(self,*args, **kwargs):  
-        print "delete relationships fired"        
-        # check to see if there is a reciprocal relationship
-        # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
-        lineup_members=self.lineupmember_set.all()
-        for member in lineup_members:
-            member.delete()
-        # delete any associated lineup members
-        super(CrushRelationship, self).delete(*args,**kwargs)
-
-        # automatically create a platonic relationship
-        PlatonicRelationship.objects.create(source_person=self.source_person, target_person=self.target_person)
-        
-        # if the target was previously inactive, then 
-
-        # delete any messages that this user has sent out to the crush (regardless of state)
-        now = datetime.now()
-        self.source_person.sent_messages.filter(recipient = self.target_person).update(sender_deleted_at=now)
-        self.source_person.received_messages.filter(sender=self.target_person).update(recipient_deleted_at=now)
-
-        return
         
     def notify_target_person(self):
 
@@ -563,3 +411,150 @@ class CrushRelationship(BasicRelationship):
     
     def __unicode__(self):
         return u'Crush: '  + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
+
+@receiver(pre_delete, sender=CrushRelationship)
+@transaction.commit_on_success # rollback entire function if something fails
+def pre_delete_crush_relationship(sender, instance, using, **kwargs): 
+    print "delete relationships fired"        
+    # check to see if there is a reciprocal relationship
+    # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
+    lineup_members=instance.lineupmember_set.all()
+    for member in lineup_members:
+        member.delete()
+
+    # automatically create a platonic relationship
+    PlatonicRelationship.objects.create(source_person=instance.source_person, target_person=instance.target_person)
+    
+    # if the target was previously inactive, then 
+
+    # delete any messages that this user has sent out to the crush (regardless of state)
+    now = datetime.now()
+    instance.source_person.sent_messages.filter(recipient = instance.target_person).update(sender_deleted_at=now)
+    instance.source_person.received_messages.filter(sender=instance.target_person).update(recipient_deleted_at=now)
+
+    return
+
+@receiver(pre_save, sender=CrushRelationship)
+@transaction.commit_on_success # rollback entire function if something fails
+def pre_save_crush_relationship(sender, instance, **kwargs): 
+    perform_source_person_notification=False # this is used to delay sending source person notification till after crushrelationship super object saved (notify_source_person calls save function which could result in infinite loop
+    print "calling save on crush relationship"
+    if (not instance.pk): # this is a newly created crush relationship
+        try:  # make sure we're not adding a duplicate
+            instance.source_person.crush_targets.get(username=instance.target_person.username)
+            print "duplicate crush relationships detected. doing nothing more"
+            return False
+        except FacebookUser.DoesNotExist:
+            pass # no duplicate crush relationship found
+        try: # check if there is an existing platonic relationship, if so, delete it first
+            existing_platonic_relationship = instance.source_person.crush_platonicrelationship_set_from_source.get(target_person=instance.target_person)
+            print "existing platonic relationship detected. deleting it before moving on"
+            existing_platonic_relationship.delete()
+        except PlatonicRelationship.DoesNotExist:
+            pass # no duplicate platonic relationship found so continue on
+        try:
+            # determine if the lineup should be free or not (if relationship is FOF or NF type)
+            if instance.friendship_type > 0:
+                instance.is_lineup_paid=True
+            
+            # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
+            reciprocal_relationship = CrushRelationship.objects.all_crushes(instance.target_person).get(target_person=instance.source_person)
+            
+            # check for edge case where reciprocal relationship target status was previously set to 5 (cause user changed their mind)
+            if reciprocal_relationship.target_status==5 and reciprocal_relationship.is_results_paid:
+                # find all related lineup members
+                try:
+                    affected_member = reciprocal_relationship.lineupmember_set.get(user=reciprocal_relationship.source_person)
+                    affected_member.decision=0;
+                    affected_member.save(update_fields=['decision'])
+                except:
+                    pass
+
+            #if we have a match, update the target_status of both relationship
+            reciprocal_relationship.target_status=4 # responded-crush status
+            instance.target_status=4
+            # let the other relationship know right away that there is a response by setting the date_target_responded field to current time
+                # NOTE: we do not set the newly created relationship yet.  We wait for the original admirer to see the response
+                # this ordered delay obfuscates the originator of the mutual crushes. it also increases chance that admirer pays to see response
+            reciprocal_relationship.date_target_responded=datetime.now()
+            # both relationships should show the 'updated' or 'new' signs when first displayed to their respective users
+            reciprocal_relationship.updated_flag = True # show 'updated' on target's crush relation block
+            response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT, settings.CRUSH_RESPONSE_DELAY_END + settings.CRUSH_RESPONSE_MINIMUM_AUTO_WAIT)
+            instance.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
+            instance.updated_flag = True #show 'new' or 'updated' on crush relation block
+            # save the reciprocal crush relationship to database
+            reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
+            
+            # CHC 07 01 13 COMMENTING OUT THIS BLOCK BECAUSE I THINKN IT"S REDUNDANT LOGIC CHAIN FROM ABOVE
+            #if reciprocal_relationship.is_results_paid==True: # i think this is repetitive logic from up above 7/1/13 CHC
+                # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process will do this
+            #   response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+            #    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
+                # notify the source person (notification will go out at the future date_target_responded time
+            #    self.notify_source_person()
+                
+        except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
+            try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
+                PlatonicRelationship.objects.all_friends(instance.target_person).get(target_person=instance.source_person)
+                # print "Found a reciprocal platonic relationship"
+                # Update only this relationships' target_status (for anonymity sake, other user can't know that this user likes them)
+                instance.target_status=5
+                # don't tell this user that their crush isn't attracted to them right away
+                    # without delay, admirer would eventually realize that immediate responses = negative responses - and not pay to see response
+                response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
+                instance.date_target_responded=datetime.now() + timedelta(minutes=response_wait)
+                instance.updated_flag = True #show 'new' or 'updated' on crush relation block
+                # notify the source person (notification will go out at the future date_target_responded time
+                #self.notify_source_person()
+                perform_source_person_notification=True
+            except PlatonicRelationship.DoesNotExist:
+                # print "did not find a reciprocal platonic or crush relationship"
+                if instance.target_person.is_active == True:
+                    # let admirer know that their crush is already a member 
+                    instance.target_status = 2 
+                    # notify the target_person that they have a new admirer
+                    instance.notify_target_person()
+                    instance.notify_target_person()
+                else: # admirer is not an existing user (or is a user but not activated yet)
+                    instance.target_status = 0
+                                 
+                    # see if any active users are friends with this new inactive crush - solicit their help
+                    #self.target_person.find_active_friends_of_inactivated_crush()         
+        # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,
+            # this check is performed when the lineup slide is pulled
+        # finally, give the relationship a secret admirer id.  this is the unique admirer identifier that is displayed to the crush)
+            # get total previous admirers (past and present) and add 1, hopefully this won't create a 
+        instance.display_id=instance.target_person.crush_crushrelationship_set_from_target.all().count() + 1
+        
+    else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
+        if 'update_fields' in kwargs:
+            # get the original relationship (which excludes the uncommitted changes)
+            original_relationship = CrushRelationship.objects.get(pk=instance.pk)
+            # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
+            # also look for any messages that were previously sent to the source person and set their status to accepted (if they were previously rejected ie hidden)
+            if 'is_results_paid' in kwargs['update_fields'] and (original_relationship.is_results_paid != instance.is_results_paid):
+                #print "admirer paid to see crush response result for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
+                try:                     
+                    # find the reciprocal crush relationship if it exists ( but only if the reciprocal relationship doesn't already know - use date_target_responded to figure that out)
+                    reciprocal_crush_relationship=CrushRelationship.objects.all_crushes(instance.target_person).get(target_person=instance.source_person)#,date_target_responded=None)
+                    if reciprocal_crush_relationship.date_source_last_notified==None:
+                        # set the reciprocal crush relationship date_target_responded field
+                        reciprocal_crush_relationship.date_target_responded=datetime.now()
+                        reciprocal_crush_relationship.date_source_last_notified=datetime.now()
+                        reciprocal_crush_relationship.save(update_fields=['date_target_responded','date_source_last_notified'])
+                        # send the other relationship's admirer a notification
+                        reciprocal_crush_relationship.notify_source_person()
+                        
+                    else:
+                        # look for previously hidden messages from the target person and make them acceptable (to read)
+                        reciprocal_crush_relationship.source_person.sent_messages.filter(recipient=reciprocal_crush_relationship.target_person,moderation_status=settings.STATUS_REJECTED).update(moderation_status=settings.STATUS_ACCEPTED,recipient_deleted_at=None)
+                except Exception as e: # there is a reciprocal platonic relationship (crush is not mutually attracted to admirer) 
+                    print e
+                    pass # do nothing
+            if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != instance.target_status):
+                #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
+                #self.notify_source_person()
+                perform_source_person_notification=True
+                
+    if perform_source_person_notification:
+        instance.notify_source_person()
