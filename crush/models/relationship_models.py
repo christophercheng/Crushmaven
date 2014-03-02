@@ -14,8 +14,7 @@ from django.utils.encoding import smart_text
 # import the logging library
 from django.db.models.signals import pre_save,pre_delete
 from django.dispatch.dispatcher import receiver
-from crush.utils import graph_api_fetch
-import logging
+import logging,thread
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -344,11 +343,11 @@ class CrushRelationship(BasicRelationship):
                 crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)       
         # target person is not active
         # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
-        # get the facebook username from the facebook uid
-        query_string=self.target_person.username + "?fields=username"
-        data = graph_api_fetch(self.source_person.access_token,query_string,False)
-        fb_username=data['username']
-        crush.utils_email.send_facebook_mail_crush_invite(self.friendship_type, first_name, fb_username)
+
+        if settings.INITIALIZATION_THREADING:
+            thread.start_new_thread(crush.utils_email.send_facebook_mail_crush_invite,(self.friendship_type, first_name, target_person.username,self.source_person.access_token))         
+        else:
+            crush.utils_email.send_facebook_mail_crush_invite(self.friendship_type, first_name, target_person.username,self.source_person.access_token)
                         
             
     def notify_source_person(self):

@@ -4,6 +4,7 @@ from django.conf import settings
 import requests
 import os
 from django.core.mail import send_mail
+from crush.utils import graph_api_fetch
 
 # import the logging library
 import logging
@@ -59,19 +60,24 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
     else:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
     
-def send_facebook_mail_crush_invite(friendship_type,first_name,recipient_fb_username):
+def send_facebook_mail_crush_invite(friendship_type,first_name,recipient_username,access_token):        # get the facebook username from the facebook uid
+    query_string=recipient_username + "?fields=username"
+    try:
+        data = graph_api_fetch(access_token,query_string,False)
+        fb_username=data['username']
 
-    facebook_email_address=recipient_fb_username + "@facebook.com"
-    if first_name == "":
-        first_name=recipient_fb_username
-    message= first_name + ", a Facebook friend of yours added you as their crush."
-    if friendship_type==1:
-        message = first_name + ", a Facebook friend-of-a-friend added you as their crush."
-    elif friendship_type == 2:
-        message = first_name + ", one of our users - someone you may know - added you as their crush."
-    message += "\r\n\r\nVisit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't"
-    send_mail('', message, 'notifications@crushmaven.com',[facebook_email_address])
-
+        facebook_email_address=fb_username + "@facebook.com"
+        if first_name == "":
+            first_name=recipient_username
+        message= first_name + ", a Facebook friend of yours added you as their crush."
+        if friendship_type==1:
+            message = first_name + ", a Facebook friend-of-a-friend added you as their crush."
+        elif friendship_type == 2:
+            message = first_name + ", one of our users - someone you may know - added you as their crush."
+        message += "\r\n\r\nVisit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't"
+        send_mail('', message, 'notifications@crushmaven.com',[facebook_email_address])
+    except:
+        pass
 def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address,recipient_first_name = '',recipient_fb_username=''):
     html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL,'recipient_first_name':recipient_first_name,'recipient_fb_username':recipient_fb_username})
     text=render_to_string('email_template_mf_invite_text.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL})
