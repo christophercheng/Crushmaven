@@ -94,11 +94,14 @@ def cached_inactive_crush_list(request):
 def new_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
-    send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
-    ['chris.h.cheng@facebook.com'])
+    #send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
+    #['chris.h.cheng@facebook.com'])
     
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-
+    for inactive_crush in inactive_crushes:
+        facebook_email_address=inactive_crush.username + "@facebook.com"
+        send_mail('A Facebook friend of yours added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+   
     return HttpResponse("DONE")
     
 
