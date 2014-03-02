@@ -99,7 +99,7 @@ def new_testing(request):
     response=''
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
     for inactive_crush in inactive_crushes:
-        
+        logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
         query_string=str(inactive_crush.username) + "?fields=username"
         data = graph_api_fetch(request.user.access_token,query_string,False)
         try:
@@ -107,7 +107,7 @@ def new_testing(request):
                 fb_username=data['username']
                 fb_username += "@facebook.com"
                 response += fb_username + "<BR>"
-        except:
+        except Exception as e:
             pass
     return HttpResponse(response)
     
