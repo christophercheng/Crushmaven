@@ -109,7 +109,7 @@ def new_testing(request):
                 if 'username' in data:
                     fb_username=data['username']
                     fb_username += "@facebook.com"
-                    response += fb_username + "<BR>"
+                    response += inactive_crush.first_name + ", your Facebook friend added you as their crush<BR>" + fb_username + "<BR><BR>"
             except Exception as e:
                 continue
         except:
