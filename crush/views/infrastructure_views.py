@@ -103,7 +103,8 @@ def new_testing(request):
         query_string=str(inactive_crush.username) + "?fields=username"
         data = graph_api_fetch(request.user.access_token,query_string,False)
         try:
-            fb_username=data['username'] + "@facebook.com"
+            fb_username=data['username']
+            fb_username += "@facebook.com"
             response += fb_username + "<BR>"
         except:
             continue
