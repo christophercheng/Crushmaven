@@ -9,13 +9,13 @@ from email import utils
 import time
 from django.db import transaction
 import crush.utils_email
-from crush.utils_email import send_facebook_mail_crush_invite
 from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
 # import the logging library
 from django.db.models.signals import pre_save,pre_delete
 from django.dispatch.dispatcher import receiver
 import logging,thread
+from crush.utils import graph_api_fetch
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -342,15 +342,29 @@ class CrushRelationship(BasicRelationship):
             target_person_email=target_person.email
             if target_person_email != None and target_person.bNotify_new_admirer == True:
                 crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)       
-        # target person is not active
-        # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
-
-        if settings.INITIALIZATION_THREADING:
-            thread.start_new_thread(send_facebook_mail_crush_invite,(self.friendship_type, first_name, target_person.username,self.source_person.access_token))         
         else:
-            send_facebook_mail_crush_invite(self.friendship_type, first_name, target_person.username,self.source_person.access_token)
-                        
             
+            # target person is not active
+            # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
+            if settings.INITIALIZATION_THREADING:
+                thread.start_new_thread(self.notify_inactive_crush_on_facebook,())         
+            else:
+                self.notify_inactive_crush_on_facebook()
+
+    
+    def notify_inactive_crush_on_facebook(self):                        
+        query_string=self.target_person.username + "?fields=username"
+        try:
+            data = graph_api_fetch(self.source_person.access_token,query_string,False)
+            fb_username=data['username'] 
+            facebook_email_address=fb_username + "@facebook.com"
+            first_name=self.target_person.first_name
+            if first_name == "":
+                first_name=fb_username
+            crush.utils_email.send_facebook_mail_crush_invite(facebook_email_address, self.friendship_type, first_name) 
+        except:
+            pass 
+                     
     def notify_source_person(self):
        
         #print "notifying the source person of a change in target status: " + str(self.target_status)
