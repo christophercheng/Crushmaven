@@ -9,6 +9,7 @@ from email import utils
 import time
 from django.db import transaction
 import crush.utils_email
+from crush.utils_email import send_facebook_mail_crush_invite
 from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
 # import the logging library
@@ -345,9 +346,9 @@ class CrushRelationship(BasicRelationship):
         # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
 
         if settings.INITIALIZATION_THREADING:
-            thread.start_new_thread(crush.utils_email.send_facebook_mail_crush_invite,(self.friendship_type, first_name, target_person.username,self.source_person.access_token))         
+            thread.start_new_thread(send_facebook_mail_crush_invite,(self.friendship_type, first_name, target_person.username,self.source_person.access_token))         
         else:
-            crush.utils_email.send_facebook_mail_crush_invite(self.friendship_type, first_name, target_person.username,self.source_person.access_token)
+            send_facebook_mail_crush_invite(self.friendship_type, first_name, target_person.username,self.source_person.access_token)
                         
             
     def notify_source_person(self):

@@ -4,7 +4,7 @@ from django.conf import settings
 import requests
 import os
 from django.core.mail import send_mail
-from crush.utils import graph_api_fetch
+#from crush.utils import graph_api_fetch
 
 # import the logging library
 import logging
@@ -61,6 +61,7 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
     
 def send_facebook_mail_crush_invite(friendship_type,first_name,recipient_username,access_token):        # get the facebook username from the facebook uid
+    return
     query_string=recipient_username + "?fields=username"
     try:
         data = graph_api_fetch(access_token,query_string,False)
