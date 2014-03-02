@@ -342,10 +342,7 @@ class CrushRelationship(BasicRelationship):
             target_person_email=target_person.email
             if target_person_email != None and target_person.bNotify_new_admirer == True:
                 crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)  
-            if settings.INITIALIZATION_THREADING:
-                thread.start_new_thread(self.notify_active_crush_on_facebook,())         
-            else:
-                self.notify_active_crush_on_facebook()  
+            self.notify_active_crush_on_facebook()  
         else:
             
             # target person is not active
@@ -362,7 +359,11 @@ class CrushRelationship(BasicRelationship):
         source_first_name=self.source_person.first_name
         destination_url ="new_admirer/" + target_first_name + "/" + target_last_name + "/"
         message = target_first_name + ", you have a new admirer!"
-        notify_person_on_facebook(notify_person_username,destination_url,message)
+        if settings.INITIALIZATION_THREADING:
+            thread.start_new_thread(notify_person_on_facebook,(notify_person_username,destination_url,message))         
+        else:
+            notify_person_on_facebook(notify_person_username,destination_url,message)
+            
     def notify_inactive_crush_on_facebook(self):                        
         query_string=self.target_person.username + "?fields=username"
         try:
@@ -432,7 +433,10 @@ class CrushRelationship(BasicRelationship):
         target_last_name=self.target_person.last_name
         destination_url ="crush_response/" + target_first_name + "/" + target_last_name + "/"
         message = target_first_name + " " + target_last_name + " responded to your crush!"
-        notify_person_on_facebook(notify_person_username,destination_url,message)
+        if settings.INITIALIZATION_THREADING:
+            thread.start_new_thread(notify_person_on_facebook,(notify_person_username,destination_url,message))         
+        else:
+            notify_person_on_facebook(notify_person_username,destination_url,message)
 
     def notify_source_person_bad_invite_email(self,bad_email_address):      
         target_person=self.target_person
