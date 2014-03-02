@@ -14,6 +14,7 @@ from django.utils.encoding import smart_text
 # import the logging library
 from django.db.models.signals import pre_save,pre_delete
 from django.dispatch.dispatcher import receiver
+from crush.utils import graph_api_fetch
 import logging
 
 # Get an instance of a logger
@@ -336,12 +337,18 @@ class CrushRelationship(BasicRelationship):
         full_name=target_person.get_name()
         short_name = target_person.first_name + ' ' + target_person.last_name[0]
         first_name = target_person.first_name
-        target_person_email=target_person.email
-        if target_person_email != None and target_person.bNotify_new_admirer == True:
-            crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)        
-        # else: # target person is not active
-            # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
-        #    crush.utils_email.send_facebook_crush_invite(self.friendship_type,full_name,short_name, first_name, self.target_person.username)
+
+        if target_person.is_active == True:
+            target_person_email=target_person.email
+            if target_person_email != None and target_person.bNotify_new_admirer == True:
+                crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)       
+        # target person is not active
+        # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
+        # get the facebook username from the facebook uid
+        query_string=self.target_person.username + "?fields=username"
+        data = graph_api_fetch(self.source_person.access_token,query_string,False)
+        fb_username=data['username']
+        crush.utils_email.send_facebook_mail_crush_invite(self.friendship_type, first_name, fb_username)
                         
             
     def notify_source_person(self):
@@ -512,12 +519,11 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
                 if instance.target_person.is_active == True:
                     # let admirer know that their crush is already a member 
                     instance.target_status = 2 
-                    # notify the target_person that they have a new admirer
-                    instance.notify_target_person()
-                    instance.notify_target_person()
+
                 else: # admirer is not an existing user (or is a user but not activated yet)
                     instance.target_status = 0
-                                 
+                # notify the target_person that they have a new admirer
+                instance.notify_target_person()                                 
                     # see if any active users are friends with this new inactive crush - solicit their help
                     #self.target_person.find_active_friends_of_inactivated_crush()         
         # no need to check to see if there are any incomplete lineups that have this crush as an undecided member,

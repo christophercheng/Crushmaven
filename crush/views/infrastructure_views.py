@@ -6,8 +6,8 @@ from crush.models import CrushRelationship
 from crush.models import FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
-from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch
+from crush.utils_email import send_mailgun_email, send_facebook_mail_crush_invite
+from crush.utils import fb_fetch,graph_api_fetch
 import re
 from django.db.models import Count
 from django.core.cache import cache
@@ -92,16 +92,19 @@ def cached_inactive_crush_list(request):
     
 @login_required
 def new_testing(request):
-    if request.user.username != '651900292':
+    if request.user.username != '100007405598756':
         return HttpResponse("nu uhhhh")
     #send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
     #['chris.h.cheng@facebook.com'])
     
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
     for inactive_crush in inactive_crushes:
-        facebook_email_address=inactive_crush.username + "@facebook.com"
-        send_mail('A Facebook friend of yours added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't.", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
-   
+        
+        query_string=str(inactive_crush.username) + "?fields=username"
+        data = graph_api_fetch(request.user.access_token,query_string,False)
+        fb_username=data['username']
+        send_facebook_mail_crush_invite(0, inactive_crush.first_name, str(fb_username))
+    
     return HttpResponse("DONE")
     
 
