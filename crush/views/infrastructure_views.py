@@ -14,6 +14,7 @@ from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
 import datetime
+from django.core.mail import send_mail
 
 
 import hashlib, hmac
@@ -93,6 +94,8 @@ def cached_inactive_crush_list(request):
 def new_testing(request):
     if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
+    send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
+    ['chris.h.cheng@facebook.com'])
     #call_command('daily_maintenance')
     #lineup_expiration_warning()
     return HttpResponse("DONE")

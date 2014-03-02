@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 import requests
 import os
+from django.core.mail import send_mail
+
 # import the logging library
 import logging
 
@@ -51,10 +53,16 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
     text=render_to_string('email_template_crush_invite_text.html',{'friendship_type':friendship_type,'full_name':full_name,'short_name':short_name,'first_name':first_name,'STATIC_URL':STATIC_URL})
     if friendship_type == 0:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', your friend on Facebook added you to their crush list',html,text)
+        send_mail('A Facebook friend of yours added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[email_address])
     elif friendship_type == 1:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', a friend-of-a-friend on Facebook added you to their crush list',html,text)
+        send_mail('A Facebook friend-of-a-friend added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[email_address])
+
     else:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
+        send_mail('One of our users - someone you may know - added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[email_address])
+
+        
 
 def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address,recipient_first_name = '',recipient_fb_username=''):
     html=render_to_string('email_template_mf_invite.html',{'full_name':full_name,'short_name':short_name,'first_name':first_name,'pronoun_subject':crush_pronoun_subject,'pronoun_possessive':crush_pronoun_possessive,'STATIC_URL':STATIC_URL,'recipient_first_name':recipient_first_name,'recipient_fb_username':recipient_fb_username})
