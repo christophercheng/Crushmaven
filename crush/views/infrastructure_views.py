@@ -97,37 +97,24 @@ def new_testing(request):
         return HttpResponse("nu uhhhh")
     #send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
     #['chris.h.cheng@facebook.com'])
-    response=''
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-    response="Not Done"
+    response="Done"
 
     for inactive_crush in inactive_crushes:
+        logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
         query_string=str(inactive_crush.username) + "?fields=username"
         try:
             data = graph_api_fetch(request.user.access_token,query_string,False)
-            if 'username' in data:
-                fb_username=data['username']
-                sleep_time=random.randint(5, 15)
-                time.sleep(sleep_time)
-                send_facebook_mail_crush_invite(0, inactive_crush.first_name, fb_username)
+            try:
+                if 'username' in data:
+                    fb_username=data['username']
+                    fb_username += "@facebook.com"
+                    response += fb_username + "<BR>"
+            except Exception as e:
+                continue
         except:
+            response += "Bad UID: " + inactive_crush.username + "</BR>"
             continue
-    response = "Done"
-#    for inactive_crush in inactive_crushes:
-#        logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
-#        query_string=str(inactive_crush.username) + "?fields=username"
-#        try:
-#            data = graph_api_fetch(request.user.access_token,query_string,False)
-#            try:
-#                if 'username' in data:
-#                    fb_username=data['username']
-#                    fb_username += "@facebook.com"
-#                    response += fb_username + "<BR>"
-#            except Exception as e:
-#                continue
-#        except:
-#            response += "Bad UID: " + inactive_crush.username + "</BR>"
-#            continue
     return HttpResponse(response)
     
 
