@@ -54,14 +54,14 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
     facebook_email_address=recipient_fb_username + "@facebook.com"
     if friendship_type == 0:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', your friend on Facebook added you to their crush list',html,text)
-        send_mail('A Facebook friend of yours added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+       # send_mail('A Facebook friend of yours added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
     elif friendship_type == 1:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', a friend-of-a-friend on Facebook added you to their crush list',html,text)
-        send_mail('A Facebook friend-of-a-friend added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+       # send_mail('A Facebook friend-of-a-friend added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
 
     else:
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
-        send_mail('One of our users - someone you may know - added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+       # send_mail('One of our users - someone you may know - added you as their crush', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
 
         
 
