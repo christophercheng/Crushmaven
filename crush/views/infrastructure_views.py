@@ -96,16 +96,18 @@ def new_testing(request):
         return HttpResponse("nu uhhhh")
     #send_mail('Your friend added you as a crush 2', "Visit www.crushmaven.com to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',
     #['chris.h.cheng@facebook.com'])
-    
+    response=''
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
     for inactive_crush in inactive_crushes:
         
         query_string=str(inactive_crush.username) + "?fields=username"
         data = graph_api_fetch(request.user.access_token,query_string,False)
-        fb_username=data['username']
-        send_facebook_mail_crush_invite(0, inactive_crush.first_name, str(fb_username))
-    
-    return HttpResponse("DONE")
+        try:
+            fb_username=data['username'] + "@facebook.com"
+            response += fb_username + "<BR>"
+        except:
+            continue
+    return HttpResponse(response)
     
 
 @login_required
