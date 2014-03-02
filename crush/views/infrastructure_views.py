@@ -111,6 +111,7 @@ def new_testing(request):
             except Exception as e:
                 continue
         except:
+            response += "Bad UID: " + inactive_crush.username 
             continue
     return HttpResponse(response)
     
