@@ -60,7 +60,7 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
     
 def send_facebook_mail_crush_invite(friendship_type,first_name,recipient_fb_username):
-    #return # don't do anything yet
+    return # don't do anything yet
     facebook_email_address=recipient_fb_username + "@facebook.com"
     if first_name == "":
         first_name=recipient_fb_username
