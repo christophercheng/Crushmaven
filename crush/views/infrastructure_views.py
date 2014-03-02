@@ -14,7 +14,7 @@ from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
 import datetime
-import time
+import time,random
 from django.core.mail import send_mail
 
 
@@ -99,24 +99,35 @@ def new_testing(request):
     #['chris.h.cheng@facebook.com'])
     response=''
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
+    response="Not Done"
+
     for inactive_crush in inactive_crushes:
-        logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
         query_string=str(inactive_crush.username) + "?fields=username"
         try:
             data = graph_api_fetch(request.user.access_token,query_string,False)
-            try:
-                if 'username' in data:
-                    fb_username=data['username']
-                    #time.sleep(5)
-                    #send_facebook_mail_crush_invite(0, inactive_crush.first_name, fb_username)
-
-                    fb_username += "@facebook.com"
-                    response += fb_username + "<BR>"
-            except Exception as e:
-                continue
+            if 'username' in data:
+                fb_username=data['username']
+                sleep_time=random.randint(5, 15)
+                time.sleep(sleep_time)
+                send_facebook_mail_crush_invite(0, inactive_crush.first_name, fb_username)
         except:
-            response += "Bad UID: " + inactive_crush.username + "</BR>"
             continue
+    response = "Done"
+#    for inactive_crush in inactive_crushes:
+#        logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
+#        query_string=str(inactive_crush.username) + "?fields=username"
+#        try:
+#            data = graph_api_fetch(request.user.access_token,query_string,False)
+#            try:
+#                if 'username' in data:
+#                    fb_username=data['username']
+#                    fb_username += "@facebook.com"
+#                    response += fb_username + "<BR>"
+#            except Exception as e:
+#                continue
+#        except:
+#            response += "Bad UID: " + inactive_crush.username + "</BR>"
+#            continue
     return HttpResponse(response)
     
 
