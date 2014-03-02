@@ -65,11 +65,11 @@ def send_facebook_mail_crush_invite(friendship_type,first_name,recipient_fb_user
     if first_name == "":
         first_name=recipient_fb_username
     if friendship_type == 0:
-        send_mail(first_name + ', a Facebook friend of yours added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+        send_mail(first_name + ', a Facebook friend of yours added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <chris@crushmaven.com>',[facebook_email_address])
     elif friendship_type == 1:
-        send_mail(first_name + ', a Facebook friend-of-a-friend added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+        send_mail(first_name + ', a Facebook friend-of-a-friend added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <chris@crushmaven.com>',[facebook_email_address])
     else:
-        send_mail(first_name + ', one of our users - someone you may know - added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <notifications@crushmaven.com>',[facebook_email_address])
+        send_mail(first_name + ', one of our users - someone you may know - added you as their crush', "Visit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't", 'CrushMaven <chris@crushmaven.com>',[facebook_email_address])
         
 
 def send_mail_mf_invite(full_name,short_name,first_name,crush_pronoun_subject,crush_pronoun_possessive, email_address,recipient_first_name = '',recipient_fb_username=''):
