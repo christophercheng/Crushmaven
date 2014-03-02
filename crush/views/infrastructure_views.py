@@ -14,6 +14,7 @@ from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
 import datetime
+import time
 from django.core.mail import send_mail
 
 
@@ -106,12 +107,15 @@ def new_testing(request):
             try:
                 if 'username' in data:
                     fb_username=data['username']
+                    #time.sleep(5)
+                    #send_facebook_mail_crush_invite(0, inactive_crush.first_name, fb_username)
+
                     fb_username += "@facebook.com"
                     response += fb_username + "<BR>"
             except Exception as e:
                 continue
         except:
-            response += "Bad UID: " + inactive_crush.username 
+            response += "Bad UID: " + inactive_crush.username + "</BR>"
             continue
     return HttpResponse(response)
     
