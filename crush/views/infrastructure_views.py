@@ -101,14 +101,17 @@ def new_testing(request):
     for inactive_crush in inactive_crushes:
         logger.debug("Trying to get fb username for uid: " + inactive_crush.username + " " + inactive_crush.first_name + " " + inactive_crush.last_name)
         query_string=str(inactive_crush.username) + "?fields=username"
-        data = graph_api_fetch(request.user.access_token,query_string,False)
         try:
-            if 'username' in data:
-                fb_username=data['username']
-                fb_username += "@facebook.com"
-                response += fb_username + "<BR>"
-        except Exception as e:
-            pass
+            data = graph_api_fetch(request.user.access_token,query_string,False)
+            try:
+                if 'username' in data:
+                    fb_username=data['username']
+                    fb_username += "@facebook.com"
+                    response += fb_username + "<BR>"
+            except Exception as e:
+                continue
+        except:
+            continue
     return HttpResponse(response)
     
 
