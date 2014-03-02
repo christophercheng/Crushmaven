@@ -341,7 +341,11 @@ class CrushRelationship(BasicRelationship):
         if target_person.is_active == True:
             target_person_email=target_person.email
             if target_person_email != None and target_person.bNotify_new_admirer == True:
-                crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)       
+                crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)  
+            if settings.INITIALIZATION_THREADING:
+                thread.start_new_thread(self.notify_active_crush_on_facebook,())         
+            else:
+                self.notify_active_crush_on_facebook()  
         else:
             
             # target person is not active
@@ -351,7 +355,14 @@ class CrushRelationship(BasicRelationship):
             else:
                 self.notify_inactive_crush_on_facebook()
 
-    
+    def notify_active_crush_on_facebook(self):
+        notify_person_username = self.target_person.username
+        target_first_name=self.target_person.first_name
+        target_last_name=self.target_person.last_name
+        source_first_name=self.source_person.first_name
+        destination_url ="new_admirer/" + target_first_name + "/" + target_last_name + "/"
+        message = target_first_name + ", you have a new admirer!"
+        notify_person_on_facebook(notify_person_username,destination_url,message)
     def notify_inactive_crush_on_facebook(self):                        
         query_string=self.target_person.username + "?fields=username"
         try:

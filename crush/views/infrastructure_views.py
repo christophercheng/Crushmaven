@@ -29,6 +29,8 @@ logger = logging.getLogger(__name__)
 def facebook_notification(request,function_name,first_arg,second_arg,third_arg=""):
     if function_name=="crush_response":
         return crush_response(request,first_arg,second_arg)
+    if function_name=="new_admirer":
+        return new_admirer(request,first_arg,second_arg)
     elif function_name=="lineup_expiration":
         return lineup_expiration(request,first_arg,second_arg)
     elif function_name=="missed_invite_tip":
@@ -37,6 +39,11 @@ def facebook_notification(request,function_name,first_arg,second_arg,third_arg="
 @csrf_exempt
 def crush_response(request,first_name,last_name):
     return render(request, 'email_template_notify_new_attraction_response.html',{'full_name':first_name + " " + last_name,'short_name':first_name,'first_name':first_name,'facebook_canvas':True})
+
+@csrf_exempt
+def new_admirer(request,first_name,last_name):
+    return render(request, 'email_template_notify_new_admirer.html',{'friendship_type':3,'facebook_canvas':True})
+
 
 @csrf_exempt
 def lineup_expiration(request,target_person_username,display_id):
