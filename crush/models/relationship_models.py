@@ -346,10 +346,10 @@ class CrushRelationship(BasicRelationship):
             
             # target person is not active
             # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
-            if settings.INITIALIZATION_THREADING:
-                thread.start_new_thread(self.notify_inactive_crush_on_facebook,())         
-            else:
-                self.notify_inactive_crush_on_facebook()
+#            if settings.INITIALIZATION_THREADING:
+#                thread.start_new_thread(self.notify_inactive_crush_on_facebook,())         
+#            else:
+            self.notify_inactive_crush_on_facebook()
 
     
     def notify_inactive_crush_on_facebook(self):                        
