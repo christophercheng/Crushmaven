@@ -61,6 +61,22 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # for testing I am running a temporary python "dumb" SMTP server that receives emails locally and displays them to the terminal
+EMAIL_BACKEND = 'crush.email_backend.DKIMBackend'
+DKIM_SELECTOR ='selector' 
+DKIM_DOMAIN ='crushmaven.com'
+DKIM_PRIVATE_KEY ='MIICXAIBAAKBgQCruqWs8uHYBt9YgidoHnfpWrdLOPYJef4p61oJhRQbuZZ3fUU/\
+9iv9cs8UA/fAAphw7tnc4LO/TK5zl19Zc5IeC5gPKwETY+5b0KPSjTeV1D+ww0b2\
+V1UykJ94s9MAT1QoS9e0aG5wjAgbDOV6IGccKxstL4y/pb1NMqFVdDEHDwIDAQAB\
+AoGAG1qMn0LE1IsrskZxDnWj9gicH6BAGHxVDspNOiz3af8ix3+tsyV8Fk/eSjrj\
+kLMZIwv4qeUk3HjTZNgcuPveryWYd0Ed8JWfgh8ZFOYv9yec/KH6dcIJ67AorflU\
+ySs7UhBw6Z90GMo9Flgp6fk7kQ348nYsvZ8chAkmcOTDbskCQQDc7JTH6yd8gfZ9\
+POcESMY+GVoOht4hxU76CNyDiDaF9cn8AYN75p6jAIAG/YeVo04FG7sEne11220F\
+OaeMqyVLAkEAxv6K5svRrLZKiAY5aijGnwxcw6JBiyHVqC/nG4COStcdTl2oLCBs\
+Wb4LpyptU8UlooDSJj50HmsUpCK+LtQ+zQJBAIljRxMcli3D1LoFidUMPNyZf3vR\
+O4rc3UR5Bkl2CBI+zCG//ziqLrVHtlaijBLuv7JFkIRKgkXs81twg1XjiQkCQAcV\
+dqJirRMl5h9TgWW7D98HlKHOO+EVEkMLeYGsIOSfJcbtZJg1i0Xikw2fYAb0ZLOV\
+PGXqIT4X98MkDXsjSR0CQB3fGWb111MJEMQnioFqmfWFXRbZ4JRCPnc+aXOefvaX\
+ZNxvVb+fGonCdYMOiK8aYbstvqe2YuRydGTWGfR8ymo='
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
