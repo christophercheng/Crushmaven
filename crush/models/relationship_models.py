@@ -562,7 +562,7 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
         instance.display_id=instance.target_person.crush_crushrelationship_set_from_target.all().count() + 1
         
     else: # This is an existing crush relationship, just perform updates and potentially send out notfications 
-        if 'update_fields' in kwargs:
+        if 'update_fields' in kwargs and kwargs['update_fields']!=None:
             # get the original relationship (which excludes the uncommitted changes)
             original_relationship = CrushRelationship.objects.get(pk=instance.pk)
             # if the admirer paid to see results of a reciprocal crush relationship (not platonic), then let the mutually attracted crush know
