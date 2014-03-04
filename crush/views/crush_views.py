@@ -378,10 +378,13 @@ def app_invite_form_v2(request, crush_username):
                     
             # change status of crush relationship to invites sent (status 1) if at least one email successfully sent out
             if len(crush_email_success_array) > 0 or len(friend_email_success_array) > 0 or new_phone!="":
-                crush_relationship.target_status = 1;
+                if crush_relationship.target_status == 0:
+                    # don't update target status if it is past 0
+                    crush_relationship.target_status = 1;
+                    update_field_list.append('target_status')
                 crush_relationship.date_invite_last_sent = datetime.datetime.now()
                 crush_relationship.updated_flag = True
-                update_field_list.append('target_status')
+                
                 update_field_list.append('date_invite_last_sent')
                 update_field_list.append('updated_flag')
                 crush_relationship.save(update_fields=update_field_list);        
