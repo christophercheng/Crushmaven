@@ -31,7 +31,9 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
 
 def send_mail_user_bought_credit(user, credit_total):
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
-        send_mailgun_email('CrushMaven Admin <admin@crushmaven.com>','6465732737@vmobl.com',user.get_name() + ' bought ' + str(credit_total) + ' credits!',"It's true","it's true")
+        message = user.get_name() + ' bought ' + str(credit_total) + ' credits!'
+        send_mail(message,'YAY!', 'admin@crushmaven.com',['admin@crushmaven.com'])
+        send_mail('',message, 'admin@crushmaven.com',['6465732737@vmobl.com'])
    
 
 def send_mail_user_logged_in(user, header_string):
