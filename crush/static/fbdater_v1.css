@@ -4928,20 +4928,22 @@ ul.bxslider_element #slide_overlay {
 	vertical-align:bottom;
 	height:20px;
 	margin-left:0px;
-	opacity:.5;
+	/* opacity:.5;*/
 }
 .cm_fb_button{
 	margin-top:5px;
 	display:inline-block;
 	width:92px;
 	vertical-align:bottom;
-	opacity:.5;
+	/*opacity:.5;*/
 	height:20px;
 }
 .social_button_promote{
 	opacity:1!important;
 }
 
+/*
 .company_info:hover .cm_fb_button,.company_info:hover .cm_twitter_button{
 	opacity:1;
 }
+*/
