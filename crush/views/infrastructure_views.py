@@ -337,7 +337,7 @@ def facebook_channel_file(request):
 def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
-                               'change_title': 'Please let ' + first_name + " " + '. know they have an admirer (a friend of theirs)', 
+                               'change_title': 'Please let ' + first_name + " " + last_initial + '. know they have an admirer (a friend of theirs)', 
                                'change_description': "CrushMaven is the new matchmaking service that anonymously finds out if someone you like feels the same. Learn more at www.crushmaven.com.",
                                'change_url':"https://apps.facebook.com/admirer_for/" + first_name + "/" + last_initial + "/",
                                'facebook_app_id':settings.FACEBOOK_APP_ID
