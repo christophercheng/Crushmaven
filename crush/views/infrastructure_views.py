@@ -64,29 +64,6 @@ def missed_invite_tip(request,source_person_username,source_person_first_name,em
         html_template = "email_template_missed_invite_tip_yahoo.html"   
     return render(request,html_template,{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
  
-
-@login_required
-def reset_invite_inactive_crush_list(request):
-    if request.user.username != '651900292':
-        return HttpResponse("nu uhhhh")
-    inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-    if settings.SEND_NOTIFICATIONS==False:
-        magic_cookie='147%3At-_nYdmJgC5hxw%3A2%3A1394001634%3A15839'
-    else:
-        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-    if magic_cookie=='':
-        return HttpResponse("Problem with magic cookie")
-    invite_list_dirty_flag=False
-    all_invite_inactive_crush_list=[]
-    logger.debug("reseting the invite inactive crush list")
-    for inactive_user in inactive_crushes:
-        inactive_username=inactive_user.username
-        if user_can_be_messaged(magic_cookie,inactive_username):
-            all_invite_inactive_crush_list.append(inactive_username)
-    logger.debug("new invite inactive crush list has total members: " + str(len(all_invite_inactive_crush_list)))
-
-    cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
-    return HttpResponse("Done")
     
 @login_required
 def invite_inactive_crush_list(request):
