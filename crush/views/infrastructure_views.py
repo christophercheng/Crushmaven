@@ -7,8 +7,8 @@ from crush.models import FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email, send_facebook_mail_crush_invite
-from crush.utils import fb_fetch,graph_api_fetch
-import re,urllib,json
+from crush.utils import fb_fetch,graph_api_fetch,update_fb_fetch_cookie
+import re,urllib2
 from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
@@ -76,17 +76,23 @@ def inactive_crush_list(request):
     count=0
     for crush in inactive_crushes:
         count=count+1
-        if count >100:
+        if count >10:
             break
-        post_dict = {}
-        post_dict['access_token'] = request.user.access_token
-        post_dict=urllib.urlencode(post_dict)    
+
         
         # run the actual fql batch query, try it a second time if it fails
-        url='https://www.facebook.com/dialog/send?app_id=563185300424922&to=' + crush.username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
-        fb_result = urllib.urlopen(url,post_dict)
-        fb_result=fb_result.read()
-        if 'platform_dialog_error' in fb_result:
+        fetch_url='http://www.facebook.com/dialog/send?app_id=563185300424922&to=' + crush.username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
+        opener = urllib2.build_opener()   
+        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+        if magic_cookie=='':
+            update_fb_fetch_cookie()
+            magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+        opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
+        fetch_response = urllib2.Request(fetch_url)
+        fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
+        fetch_response = fetch_response.read()    
+
+        if 'platform_dialog_error' in fetch_response:
             response+='-----------------------------> BAD USERNAME: ' + crush.username + " : " + crush.get_name() + "<BR>"   
         else:
             response+='Good Username: ' + crush.username + " : " + crush.get_name()   + "<BR>"
