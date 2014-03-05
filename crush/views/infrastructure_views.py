@@ -6,16 +6,15 @@ from crush.models import CrushRelationship
 from crush.models import FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
-from crush.utils_email import send_mailgun_email, send_facebook_mail_crush_invite
-from crush.utils import fb_fetch,graph_api_fetch,update_fb_fetch_cookie,user_can_be_messaged
-import re,urllib2
+from crush.utils_email import send_mailgun_email
+from crush.utils import fb_fetch,graph_api_fetch
 from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
 from django.views.decorators.csrf import csrf_exempt
-import datetime
-import time,random
+import datetime,thread
 from django.core.mail import send_mail
+from django.core.management import call_command
 
 
 import hashlib, hmac
@@ -64,6 +63,13 @@ def missed_invite_tip(request,source_person_username,source_person_first_name,em
         html_template = "email_template_missed_invite_tip_yahoo.html"   
     return render(request,html_template,{'recipient_fb_username':source_person_username,'STATIC_URL':settings.STATIC_URL,'source_first_name':source_person_first_name})
  
+
+@login_required
+def reset_invite_inactive_crush_list(request):
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
+    thread.start_new_thread(call_command,('crush_build_invite_inactive_user_list',))
+    return HttpResponse("Done")
     
 @login_required
 def invite_inactive_crush_list(request):
