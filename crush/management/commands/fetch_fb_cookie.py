@@ -14,6 +14,8 @@ from django.core.management.base import NoArgsCommand
 from crush.utils import update_fb_fetch_cookie, fb_fetch
 import re
 from crush.utils_email import send_mailgun_email
+from django.core.cache import cache
+from django.conf import settings
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
@@ -24,7 +26,8 @@ class Command(NoArgsCommand):
         #extracted_id_list =  re.findall( 'data-profileid=\\"(.*?)\\"',fetch_response,re.MULTILINE )
             # remove duplicates in extracted_list
         extracted_id_list = list(set(extracted_id_list))
-        if len(extracted_id_list) < 1:
+        magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
+        if magic_cookie=="" or len(extracted_id_list) < 1:
             send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"FB_FETCH HAS FAILED","fb_fetch has failed. Fix immediately!","fb_fetch has failed. Fix immediately!")
             print "Facebook Fetch Failed!"
         
