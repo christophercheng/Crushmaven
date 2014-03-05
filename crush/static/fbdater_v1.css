@@ -529,6 +529,13 @@ a.button {
 	margin-right:10px;
 	position:relative;
 }
+.left_sidebar_container_footer{
+	margin-right:10px;
+	margin-top:30px;
+	padding-top:6px;
+	border-top:1px solid #E9E9EB;
+}
+
 
 .center_panel {
 	width:575px;
@@ -555,10 +562,6 @@ a.button {
 .right_sidebar_container {
 	margin-left:10px;
 }
-.right_sidebar_container_footer{
-	margin-left:10px;
-}
-
 
 /* ===========================   Overlays & Loading Animation ========================= */
 
