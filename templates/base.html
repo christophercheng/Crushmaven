@@ -516,9 +516,8 @@ jQuery(document).ready(function($) {
 		      function(response){
 		      		window.wait_modal_close();
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
-		      		console.log(response);
 		         if (response != null && response['error_code'] == null){	
-						  	$(".right_sidebar_container").load('/ajax_right_sidebar_content/' + relation_type + "/" + recipient_id,function(responseText,textStatus,xhr){
+						  	$(".right_sidebar_container").load('/ajax_right_sidebar_content/' + relation_type + '/' + recipient_id,function(responseText,textStatus,xhr){
 								if (xhr.status==405)
 									reauthorize_user();
 				  			});
