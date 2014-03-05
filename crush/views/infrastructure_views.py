@@ -76,7 +76,7 @@ def inactive_crush_list(request):
     count=0
     for crush in inactive_crushes:
         count=count+1
-        if count >10:
+        if count >5:
             break
 
         
