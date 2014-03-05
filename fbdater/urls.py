@@ -72,8 +72,6 @@ urlpatterns += patterns('crush.views.infrastructure_views',
     (r'^feedback_form/$','feedback_form'),
     
     (r'^post_feedback_form/$','post_feedback_form'),
-        
-    (r'^admirer_for/(?P<first_name>\w+)/(?P<last_initial>\w+)/$','admirer_for'),
 
 )
    

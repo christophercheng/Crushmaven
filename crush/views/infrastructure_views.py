@@ -33,6 +33,8 @@ def facebook_notification(request,function_name,first_arg,second_arg,third_arg="
         return new_admirer(request,first_arg,second_arg)
     elif function_name=="lineup_expiration":
         return lineup_expiration(request,first_arg,second_arg)
+    elif function_name=="admirer_for":
+        return admirer_for(request,first_arg,second_arg)
     elif function_name=="missed_invite_tip":
         return missed_invite_tip(request,first_arg,second_arg,third_arg)
 
@@ -313,7 +315,7 @@ def admirer_for(request,first_name,last_initial):
     return render(request, 'guest_home.html',
                               {
                                'change_title': 'Please let ' + first_name + " " + last_initial + '. they have an admirer (a friend of theirs)', 
-                               'change_description': "CrushMaven is a new matchmaking service that anonymously finds out if someone you like feels the same - or why they don't. Learn more at www.crushmaven.com.",
+                               'change_description': "CrushMaven is the new matchmaking service that anonymously finds out if someone you like feels the same. Learn more at www.crushmaven.com.",
                                'change_url':"http://" + request.META['HTTP_HOST'] + "/admirer_for/" + first_name + "/" + last_initial + "/",
                                'facebook_app_id':settings.FACEBOOK_APP_ID
                                })    
