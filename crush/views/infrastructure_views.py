@@ -74,19 +74,20 @@ def inactive_crush_list(request):
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
     response=""
     count=0
+    magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+    if magic_cookie=='':
+        update_fb_fetch_cookie()
+        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+    if magic_cookie=="":
+        return HttpResponse("No magic cookie!")
     for crush in inactive_crushes:
         count=count+1
-        if count >5:
+        if count >10:
             break
-
         
         # run the actual fql batch query, try it a second time if it fails
         fetch_url='http://www.facebook.com/dialog/send?app_id=563185300424922&to=' + crush.username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
         opener = urllib2.build_opener()   
-        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
-        if magic_cookie=='':
-            update_fb_fetch_cookie()
-            magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
         opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
         fetch_response = urllib2.Request(fetch_url)
         fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
