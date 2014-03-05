@@ -76,7 +76,7 @@ def inactive_crush_list(request):
     count=0
     for crush in inactive_crushes:
         count=count+1
-        if count >20:
+        if count >100:
             break
         post_dict = {}
         post_dict['access_token'] = request.user.access_token
