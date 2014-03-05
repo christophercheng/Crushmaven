@@ -499,7 +499,6 @@ jQuery(document).ready(function($) {
 			crush_gender_pronoun_object = 'him';
 			admirer_gender_pronoun_subject = 'she';
 		}
-		var share_description = crush_first_name + "'s friend secretly likes " + crush_gender_pronoun_object + ". But " + admirer_gender_pronoun_subject + "'s not sure whether to make a move or not and using CrushMaven to find out if the attraction is mutual.  Visit www.crushmaven.com to learn more."
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
@@ -511,10 +510,10 @@ jQuery(document).ready(function($) {
 		  				name: crush_short_name + " friend added " + crush_gender_pronoun_object + "!",
 		  				to: recipient_id,
 		  				link: share_link,
-		  				description:share_description,
 		      },
 		      function(response){
 		      		window.wait_modal_close();
+		      		console.log(response);
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
 		         if (response != null && response['error_code'] == null){	
 						  	$(".right_sidebar_container").load('/ajax_right_sidebar_content/' + relation_type + '/' + recipient_id,function(responseText,textStatus,xhr){
