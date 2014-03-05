@@ -26,5 +26,5 @@ PAYPAL_PDT_URL = 'https://www.sandbox.paypal.com/au/cgi-bin/webscr'
 # live
 #PAYPAL_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
 #PAYPAL_PDT_URL = 'https://www.paypal.com/au/cgi-bin/webscr'
-
+SEND_NOTIFICATIONS=False
 

@@ -69,12 +69,11 @@ def get_friends_with_admirer_data(me):
 
 def get_strangers_with_admirer_data(me):
     strangers_with_admirer_data={} # { user:{'num_admirers': num_admirers,'elapsed_time':elapsed_time}, ... } if process_right_sidebar==None: # friends-with-admirer section has been processed before and does not need to be processed
-    all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)   
-    if all_inactive_user_list == None or len(all_inactive_user_list) == 0:# for some reason there is not data in cache's inactive user list - most likely cause we're on development node
-        all_inactive_user_list=[]
-        all_inactive_user_list = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0).values_list('username',flat=True)
-    if all_inactive_user_list != None and len(all_inactive_user_list) > 10:
-        total_inactive_users=len(all_inactive_user_list)
+    all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY)   
+    if all_invite_inactive_user_list == None or len(all_invite_inactive_user_list) == 0:# for some reason there is not data in cache's inactive user list - most likely cause we're on development node
+        return None # don't process this here
+    if all_invite_inactive_user_list != None and len(all_invite_inactive_user_list) > 10:
+        total_inactive_users=len(all_invite_inactive_user_list)
         # get 5 random index numbers to pull from list
         user_indices=[]
         count=0
@@ -86,7 +85,7 @@ def get_strangers_with_admirer_data(me):
             if temp_index not in user_indices:
                 user_indices.append(temp_index)
                 try:
-                    inactive_stranger = FacebookUser.objects.get(is_active=False,username=all_inactive_user_list[temp_index])
+                    inactive_stranger = FacebookUser.objects.get(is_active=False,username=all_invite_inactive_user_list[temp_index])
                     # ensure that user with given username is not a crush of current user nor is a friend (with admirer)
                     if inactive_stranger not in current_user_crush_targets and inactive_stranger not in current_user_friends_with_admirers and me not in inactive_stranger.friends_that_invited_me.all():
                     

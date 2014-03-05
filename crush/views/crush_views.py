@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import simplejson
 from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastPhone
-import json
+import json,urllib2
 import datetime
+from django.core.cache import cache
 from crush.appinviteformv2 import AppInviteForm2
-from crush.utils import graph_api_fetch
+from crush.utils import graph_api_fetch,user_can_be_messaged
 
 from urllib2 import URLError, HTTPError
 import thread
@@ -30,6 +31,8 @@ def ajax_add_crush_targets(request):
         return HttpResponseForbidden("Sorry, during this initial beta period, you cannot have more than " + str(settings.MAXIMUM_CRUSHES) + " ongoing crushes at a time.")
     # this is just for testing, remove later
     counter = 0
+    adjust_crush_user_list=[]
+    inactive_crush_user_list=[]
     for key in post_data:
         if key == "csrfmiddlewaretoken":
             continue
@@ -46,12 +49,45 @@ def ajax_add_crush_targets(request):
         if not(request.user.crush_targets.filter(username=selected_user.username).exists()):
             CrushRelationship.objects.create(target_person=selected_user, source_person=request.user,
                                                        friendship_type=friend_type, updated_flag=True)
-            thread.start_new_thread(adjust_associated_lineup_members,(request.user,selected_user,True))
+            adjust_crush_user_list.append(selected_user)
+            if selected_user.is_active==False:
+                inactive_crush_user_list.append(selected_user)
+    if settings.INITIALIZATION_THREADING:
+        thread.start_new_thread(post_crush_addition_processing,(request.user,adjust_crush_user_list,inactive_crush_user_list))
+    else:
+        post_crush_addition_processing(request.user,adjust_crush_user_list,inactive_crush_user_list)
     if counter > 0:
         return HttpResponse('')
     else:
         return HttpResponseNotFound("Sorry, we were not able to add to your crushes.  Please try again.")
 
+def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user_list):
+    for user in adjust_crush_user_list:
+        adjust_associated_lineup_members(me,user,True)
+    all_invite_inactive_crush_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY ) 
+    if all_invite_inactive_crush_list==None:
+        all_invite_inactive_crush_list=[] 
+    if settings.SEND_NOTIFICATIONS==False:
+        magic_cookie='147%3At-_nYdmJgC5hxw%3A2%3A1394001634%3A15839'
+    else:
+        magic_cookie=cache.get(settings.FB_FETCH_COOKIE,'')
+    if magic_cookie=='':
+        return
+    invite_list_dirty_flag=False
+    for inactive_user in inactive_crush_user_list:
+        inactive_username=inactive_user.username
+        # check to see if inactive user is not already in the inactive_crush_invite_list
+        if inactive_username in all_invite_inactive_crush_list:
+            continue
+        # if not in list then check to see if the user can be messaged
+        
+        if user_can_be_messaged(magic_cookie,inactive_username):
+            all_invite_inactive_crush_list.append(inactive_username)
+            invite_list_dirty_flag=True
+    if invite_list_dirty_flag:
+        cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
+        
+    
 @login_required
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):
     try:

@@ -248,6 +248,7 @@ CACHES = {
 #        }
 
 INACTIVE_USER_CACHE_KEY = 'all_inactive_user_list'
+INVITE_INACTIVE_USER_CACHE_KEY = "all_invite_inactive_user_list"
 FB_FETCH_COOKIE = 'fb_fetch_cookie'
 DATE_NOTIFICATIONS_LAST_SENT_CACHE_KEY = 'date_notifiactions_last_sent'
 
@@ -277,7 +278,7 @@ INITIALIZATION_RESTART_TIME_CRUSH_STATUS_3=15 #minutes to wait to restart initia
 INITIALIZATION_RESTART_TIME_CRUSH_STATUS_4_5=2 #minutes to wait to restart initialization if the current status is 4 or 5 (some sort of network or bug in system)
 
 INITIALIZATION_THREADING=True
- 
+SEND_NOTIFICATIONS=True
 # auto delay the response between the start time and end time (in minutes)
 CRUSH_RESPONSE_DELAY_START = 180 # 180 default = 3hours x 60 minutes =  180
 CRUSH_RESPONSE_DELAY_END = 2880 # 2160 default = 48 hours x 60 minutes = 2880

@@ -21,6 +21,6 @@ class Command(NoArgsCommand):
         current_cache=cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
         print "old cache has # elements: " + str(len(current_cache))
         all_inactive_user_list = FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True)#.only('target_person')
-        cache.add('all_inactive_user_list',all_inactive_user_list)
-        current_cache=cache.get('all_inactive_user_list')
+        cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+        current_cache=cache.get(settings.INACTIVE_USER_CACHE_KEY)
         print "Updated cache's all_inactive_user_list with # elements: " + str(len(current_cache))

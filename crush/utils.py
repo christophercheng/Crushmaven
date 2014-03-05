@@ -104,4 +104,20 @@ def fb_fetch(fb_user_id,start_index):
     except Exception as e: 
         logger.error("fb_fetch exception: " + str(e))
         raise e # pass on the exception for the caller to handle
+    
+def user_can_be_messaged(magic_cookie,username):
+ # run the actual fql batch query, try it a second time if it fails
+    try:
+        fetch_url='http://www.facebook.com/dialog/send?app_id=563185300424922&to=' + username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
+        opener = urllib2.build_opener()   
+        opener.addheaders.append(('Cookie','c_user=100007492440319; xs=' + magic_cookie)) 
+        fetch_response = urllib2.Request(fetch_url)
+        fetch_response = opener.open(fetch_response,None,settings.URLLIB_TIMEOUT)
+        fetch_response = fetch_response.read()        
+        if 'platform_dialog_error' in fetch_response:
+            return False
+        else:
+            return True
+    except:
+        return False
  

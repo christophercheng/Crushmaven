@@ -14,7 +14,8 @@ STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
 #returns True if good, False else
 def notify_person_on_facebook(notify_person_username,destination_url, message):
     
-
+    if settings.SEND_NOTIFICATIONS==False:
+        return
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + notify_person_username
     notify_url+="/notifications?access_token="# + app_token

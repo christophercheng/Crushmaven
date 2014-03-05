@@ -14,6 +14,8 @@ CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message='',send_time=None):
+        if settings.SEND_NOTIFICATIONS==False:
+            return
         try:
             data_dict={"from": from_string,\
                           "to": email_address,"subject": subject, "html": html_message, "text": text_message}
@@ -30,6 +32,8 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
             print "MAIL PROBLEM! " + str(type(e)) + " : " + str(e)
 
 def send_mail_user_bought_credit(user, credit_total):
+    if settings.SEND_NOTIFICATIONS==False:
+        return
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
         message = user.get_name() + ' bought ' + str(credit_total) + ' credits!'
         send_mail(message,'YAY!', 'admin@crushmaven.com',['admin@crushmaven.com'])
@@ -37,6 +41,8 @@ def send_mail_user_bought_credit(user, credit_total):
    
 
 def send_mail_user_logged_in(user, header_string):
+    if settings.SEND_NOTIFICATIONS==False:
+        return
     if user.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
         message = 'http://www.facebook.com/' + str(user.username) + " " + header_string
         send_mail(user.get_name() + ' logged in!',message, 'admin@crushmaven.com',['admin@crushmaven.com'])
@@ -62,7 +68,8 @@ def send_mail_crush_invite(friendship_type,full_name, short_name, first_name,ema
         send_mailgun_email('CrushMaven Notifications <notifications@crushmaven.com>',email_address,full_name + ', someone you may know added you to their crush list',html,text)
     
 def send_facebook_mail_crush_invite(facebook_email_address,friendship_type,first_name):        # get the facebook username from the facebook uid
-
+    if settings.SEND_NOTIFICATIONS==False:
+        return
     message= first_name + ", a Facebook friend of yours added you as their crush."
     if friendship_type==1:
         message = first_name + ", a Facebook friend-of-a-friend added you as their crush."

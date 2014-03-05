@@ -171,11 +171,24 @@ class FacebookUserManager(UserManager):
         
         # update the cache inactive user list
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
+        dirty_flag=False
         try:
             all_inactive_user_list.remove(user.username)
+            dirty_flag=True
         except :
             pass
-        cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+        if dirty_flag:
+            cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+        # update the cache invite inactive user list
+        all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[])
+        dirty_flag=False
+        try:
+            all_invite_inactive_user_list.remove(user.username)
+            dirty_flag=True
+        except :
+            pass
+        if dirty_flag:
+            cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
         # get friends of user who are active user's of application
             # for each of these friends, modify their friends_with_admirer property
         fb_query_string = "SELECT uid FROM user WHERE is_app_user=1 AND uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"
@@ -278,6 +291,7 @@ class FacebookUser(AbstractUser):
             all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
             print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+            # don't set INVITE_INACTIVE_USER_CACHE list cause we don't want people that can't be invited, and we don't want to process list from scratch
             
         #else:
         #    print "using cache's all_inactive_user_list " + str(all_inactive_user_list)
@@ -294,8 +308,8 @@ class FacebookUser(AbstractUser):
                     friend_user = FacebookUser.objects.get(username=str(friend['id']))
                 # build a list of the user's setup lineup members, where the decision is crush and the members_attraction is unknown
                 except FacebookUser.DoesNotExist:
-                    # remove this entry from cache and update cache
-                            # update the cache inactive user list
+                    # bad entry in inactive list , so remove this entry from cache and update cache
+                    # update the cache inactive user list
                     all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
                     try:
                         all_inactive_user_list.remove(friend['id'])
@@ -424,6 +438,14 @@ def update_cached_inactive_crush_list(sender, instance, **kwargs):
             try:
                 all_inactive_user_list.remove(instance.username)
                 cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
+            except :
+                pass
+                all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
+        all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY) 
+        if all_invite_inactive_user_list != None:    
+            try:
+                all_invite_inactive_user_list.remove(instance.username)
+                cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_user_list)
             except :
                 pass
 
