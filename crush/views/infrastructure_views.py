@@ -8,7 +8,7 @@ from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email, send_facebook_mail_crush_invite
 from crush.utils import fb_fetch,graph_api_fetch
-import re
+import re,urllib
 from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
@@ -67,22 +67,29 @@ def missed_invite_tip(request,source_person_username,source_person_first_name,em
 
 @login_required
 def inactive_crush_list(request):
-    if request.user.username != 'admin':
+    if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
     #call_command('daily_maintenance')
     #lineup_expiration_warning()
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-    response = 'INACTIVE CRUSH LIST: <BR><BR>'
-    for crush in inactive_crushes:
-        response += str(crush.username) + "<BR>"
-    return HttpResponse(response)
 
-@login_required
-def clear_cached_inactive_crush_list(request):
-    if request.user.username != 'admin':
-        return HttpResponse("nu uhhhh")
-    cache.delete(settings.INACTIVE_USER_CACHE_KEY)
-    return HttpResponse("Cache Cleared")  
+    for crush in inactive_crushes:
+        post_dict = {}
+        post_dict['access_token'] = request.user.access_token
+        post_dict=urllib.urlencode(post_dict)    
+        
+        # run the actual fql batch query, try it a second time if it fails
+        url='https://www.facebook.com/dialog/send?app_id=563185300424922&to=' + crush.username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
+        fb_result = urllib.urlopen(url,post_dict)
+    return HttpResponse('done')
+
+
+#@login_required
+#def clear_cached_inactive_crush_list(request):
+#    if request.user.username != 'admin':
+#        return HttpResponse("nu uhhhh")
+#    cache.delete(settings.INACTIVE_USER_CACHE_KEY)
+#    return HttpResponse("Cache Cleared")  
 
 @login_required
 def cached_inactive_crush_list(request):

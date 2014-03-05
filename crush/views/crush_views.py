@@ -8,9 +8,6 @@ import json
 import datetime
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch
-from django.db.models import Count
-from django.db.models import Q
-from datetime import timedelta
 
 from urllib2 import URLError, HTTPError
 import thread
