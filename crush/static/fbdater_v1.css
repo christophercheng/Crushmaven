@@ -555,7 +555,9 @@ a.button {
 .right_sidebar_container {
 	margin-left:10px;
 }
-
+.right_sidebar_container_footer{
+	margin-left:10px;
+}
 
 
 /* ===========================   Overlays & Loading Animation ========================= */
