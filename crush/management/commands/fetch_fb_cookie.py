@@ -16,6 +16,9 @@ import re
 from crush.utils_email import send_mailgun_email
 from django.core.cache import cache
 from django.conf import settings
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
@@ -29,5 +32,7 @@ class Command(NoArgsCommand):
         magic_cookie=str(cache.get(settings.FB_FETCH_COOKIE,''))
         if magic_cookie=="" or len(extracted_id_list) < 1:
             send_mailgun_email('admin@crushmaven.com','chris@crushmaven.com',"FB_FETCH HAS FAILED","fb_fetch has failed. Fix immediately!","fb_fetch has failed. Fix immediately!")
-            print "Facebook Fetch Failed!"
+            logger.error( "Facebook Fetch of Magic Cookie Failed!")
+        else:
+            logger.debug("Facebook Fetch of Magic Cookie Succeeded!")
         
