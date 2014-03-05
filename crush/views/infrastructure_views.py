@@ -8,7 +8,7 @@ from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email, send_facebook_mail_crush_invite
 from crush.utils import fb_fetch,graph_api_fetch
-import re,urllib
+import re,urllib,json
 from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:
@@ -72,8 +72,12 @@ def inactive_crush_list(request):
     #call_command('daily_maintenance')
     #lineup_expiration_warning()
     inactive_crushes = FacebookUser.objects.filter(is_active=False).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-
+    response=""
+    count=0
     for crush in inactive_crushes:
+        count=count+1
+        if count >20:
+            break
         post_dict = {}
         post_dict['access_token'] = request.user.access_token
         post_dict=urllib.urlencode(post_dict)    
@@ -81,7 +85,12 @@ def inactive_crush_list(request):
         # run the actual fql batch query, try it a second time if it fails
         url='https://www.facebook.com/dialog/send?app_id=563185300424922&to=' + crush.username + '&link=http://www.google.com&redirect_uri=http://www.crushmaven.com'
         fb_result = urllib.urlopen(url,post_dict)
-    return HttpResponse('done')
+        fb_result=fb_result.read()
+        if 'platform_dialog_error' in fb_result:
+            response+='-----------------------------> BAD USERNAME: ' + crush.username + " : " + crush.get_name() + "<BR>"   
+        else:
+            response+='Good Username: ' + crush.username + " : " + crush.get_name()   + "<BR>"
+    return HttpResponse(response)
 
 
 #@login_required
