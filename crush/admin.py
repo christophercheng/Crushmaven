@@ -38,7 +38,7 @@ class LineupMemberAdmin(admin.ModelAdmin):
     search_fields=('username','relationship','user')
     list_filter=('decision',)
     fields=('username','user','position','decision')
-    ordering = ('-relationship','position')
+    ordering = ('-id','-relationship','position')
     raw_id_fields=('user',)
     
 class PurchaseAdmin(admin.ModelAdmin):

@@ -35,6 +35,7 @@ class Command(NoArgsCommand):
         logger.debug("reseting the invite inactive crush list")
         count=0
         for inactive_user in inactive_crushes:
+            count=count+1
             inactive_username=inactive_user.username
             if user_can_be_messaged(magic_cookie,inactive_username):
                 all_invite_inactive_crush_list.append(inactive_username)
