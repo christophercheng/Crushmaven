@@ -79,8 +79,8 @@ def send_facebook_mail_crush_invite(facebook_email_address,friendship_type,first
     send_mail('', message, 'notifications@crushmaven.com',[facebook_email_address])
 
 def send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name):        # get the facebook username from the facebook uid
-    #if settings.SEND_NOTIFICATIONS==False:
-    #    return
+    if settings.SEND_NOTIFICATIONS==False:
+        return
     message= mf_first_name + ", your friend, " + crush_full_name + ", has a secret admirer (one of their friends).  Would you help us let them know?"
 
     message += "\r\n\r\nVisit https://apps.facebook.com/crushmaven to learn more.\r\n\r\nCrushMaven is the new matchmaking service that discovers anonymously if the person you're attracted to feels the same - or why they don't."
