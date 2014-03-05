@@ -531,7 +531,7 @@ a.button {
 }
 .left_sidebar_container_footer{
 	margin-right:10px;
-	margin-top:30px;
+	margin-top:25px;
 	padding-top:6px;
 	border-top:1px solid #E9E9EB;
 }
@@ -4928,22 +4928,21 @@ ul.bxslider_element #slide_overlay {
 	vertical-align:bottom;
 	height:20px;
 	margin-left:0px;
-	/* opacity:.5;*/
+	opacity:.8;
 }
 .cm_fb_button{
 	margin-top:5px;
 	display:inline-block;
 	width:92px;
 	vertical-align:bottom;
-	/*opacity:.5;*/
+	opacity:.8;
 	height:20px;
 }
 .social_button_promote{
 	opacity:1!important;
 }
 
-/*
+
 .company_info:hover .cm_fb_button,.company_info:hover .cm_twitter_button{
 	opacity:1;
 }
-*/
