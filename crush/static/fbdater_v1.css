@@ -974,22 +974,19 @@ a.logo img{
 
 /* ===========================   Right Sidebar ========================= */
 
-#friend_referral_bar_header {
-	#height:30px;
+.friend_referral_bar_header {
 	display:block;
 	padding:4px 0px 0px 7px;
-	background:#E9E9EB;
-	background:white;
-	#background: -moz-linear-gradient(left,#fff,rgba(0,0,0,.5));
-	#background: -webkit-linear-gradient(left,#fff,rgba(0,0,0,.5));
-	#background: -0-linear-gradient(left,#fff,rgba(0,0,0,.5));
-	#background: linear-gradient(left, #fff,rgba(0,0,0,.5));
-	border-radius:2px 6px 2px 0px;
-	border:1px solid #D8D8DA;
-	#border-bottom:1px solid #D3D3D6;
-	#border-bottom:1px solid #D3D3D6;
+	background:#2E8AE6;
+	border-radius:6px 6px 1px 1px;
+	#border:1px solid #D8D8DA;
+	border:1px solid #256EB8;
+	box-shadow:0px 1px 0px #256EB8;
 	font-size:15px;
+	margin-bottom:3px;
+	color:white;
 }
+
 .header_subtext {
 	display:block;
 	font-size:9px;
@@ -998,12 +995,13 @@ a.logo img{
 	margin-top:1px;
 }
 	
-#friend_referral_bar{
+.friend_referral_bar{
 	width:190px;
 	position:relative!important;
+	margin-bottom:25px;
 }
 
- #friend_referral_bar li#no_friends {
+ .friend_referral_bar li#no_friends {
  	color:#B8B8B8;
  	height:56px;
  	background:none!important;
@@ -1012,10 +1010,11 @@ a.logo img{
  	text-align:center;
  	font-size:11px;
 	border-bottom:1px solid #C6C6CC;
+	border-radius:10px;
  }
 
  
- #friend_referral_bar li.friend_with_admirer {
+ .friend_referral_bar li.friend_with_admirer {
 	position:relative;
 	height:56px;
 	border:1px solid #F1F3F5;
@@ -1024,7 +1023,7 @@ a.logo img{
 	border-radius:5px;
 }
 
-#friend_referral_bar li.friend_with_admirer img {
+.friend_referral_bar li.friend_with_admirer img {
  	position:absolute;
  	display:inline-block;
  	left:5px;
@@ -1033,7 +1032,7 @@ a.logo img{
  	width:40px;
  }
 
-#friend_referral_bar li.friend_with_admirer ul {
+.friend_referral_bar li.friend_with_admirer ul {
 	display:inline-block;
 	position:absolute;
 	top:7px;
@@ -1044,10 +1043,10 @@ a.logo img{
 	line-height:13px;
 	padding-left:5px;
 }
-#friend_referral_bar li.friend_with_admirer ul li {
+.friend_referral_bar li.friend_with_admirer ul li {
 	margin-bottom:1px;
 }
-#friend_referral_bar li ul li.friend_name {
+.friend_referral_bar li ul li.friend_name {
 	font-weight:bold;
 	color:#474747; 
 	width:133px;
@@ -1055,7 +1054,7 @@ a.logo img{
 	white-space:nowrap;
 	overflow:hidden;
 }
-#friend_referral_bar li:hover ul li.friend_name {
+.friend_referral_bar li:hover ul li.friend_name {
 	color:black; 
 	transition-property:color;
 	transition-duration:100ms;
@@ -1063,17 +1062,17 @@ a.logo img{
 	-webkit-transition-property:color;
 }
 
-#friend_referral_bar li ul li.friend_admirer_count {
+.friend_referral_bar li ul li.friend_admirer_count {
 	font-weight:normal;
 	color:#707070; 
 	font-size:10px;
 }
 
-#friend_referral_bar li ul li.friend_help_link {
+.friend_referral_bar li ul li.friend_help_link {
 	font-size:10px;
 	font-weight:bold;
 }
-#friend_referral_bar li a{
+.friend_referral_bar li a{
 	border:none;
 	color:red;
 	height:100%;
@@ -1081,7 +1080,11 @@ a.logo img{
 	border-bottom:1px solid #C6C6CC;
 	border-radius:5px;
 }
-#friend_referral_bar li a:hover {
+
+.strangers_referral_bar li a{
+color:#3b5998!important;
+}
+.friend_referral_bar li a:hover {
 	transition-property:background-color;
 	transition-duration:100ms;
 	-webkit-transition-duration:100ms;
@@ -1089,13 +1092,12 @@ a.logo img{
 	border:1px solid #666676;	
 }
 
-#friend_referral_bar li.no_friends{
+.friend_referral_bar li.no_friends{
 	background-color:white!important;
 }
 
 .company_info {
 
-	padding-top:20px;
 	font-size:12px;
 	color:gray;
 	padding-left:6px;

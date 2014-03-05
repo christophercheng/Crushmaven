@@ -192,8 +192,9 @@ class CrushRelationship(BasicRelationship):
                            (1,'Invited (not member)'),
                            (2,'Not Started Lineup'),
                            (3,'Started Lineup'),
-                           (4,'Responded-crush'),
-                           (5,'Responded-platonic')
+                           (4,'Responded:Crush'),
+                           (5,'Responded:Platonic'),
+                           (6, 'Response Purchased')
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
     # -- PAYMENT CHECKS --
@@ -300,10 +301,11 @@ class CrushRelationship(BasicRelationship):
             return False
         self.source_person.site_credits=F('site_credits') - feature_cost
         self.is_results_paid=True
+        self.target_status=6
         self.date_results_paid=datetime.now()
         self.updated_flag=True
         # change the status of relationship's is_results_paid and save the object
-        self.save(update_fields=['is_results_paid','updated_flag','date_results_paid'])
+        self.save(update_fields=['is_results_paid','updated_flag','date_results_paid','target_status'])
         self.source_person.save(update_fields=['site_credits'])
        
         return True #must return True or else caller thinks payment failed

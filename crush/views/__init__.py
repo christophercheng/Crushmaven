@@ -16,6 +16,8 @@ from crush_views import ajax_find_fb_user
 from platonic_friend_views import ajax_reconsider
 from platonic_friend_views import just_friends
 
+from right_sidebar_views import ajax_right_sidebar_content
+
 from friends_with_admirers_views import friends_with_admirers
 from friends_with_admirers_views import ajax_friends_with_admirers_content
 

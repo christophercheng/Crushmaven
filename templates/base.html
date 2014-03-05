@@ -260,7 +260,7 @@ jQuery(document).ready(function($) {
 		// get excluded ids (of existing crushes)
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
-		            message: "Check Out CrushMaven, the Intelligent & Anonymous Secret Admirer App",
+		            message: "Check Out CrushMaven",
 		            to:invite_list,
 		            title:'Increase your odds of getting a response!'
 
@@ -491,7 +491,7 @@ jQuery(document).ready(function($) {
 		setTimeout(function(){location.href="/facebook/login"},1000);
 	};
 	
-	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name, crush_gender){
+	var send_fb_invite = function(recipient_id,crush_short_name,crush_first_name,crush_last_name, crush_gender,relation_type){
 		var share_link = 'http://{{ request.META.HTTP_HOST }}' + '/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
 		var crush_gender_pronoun_object = 'her';
 		var admirer_gender_pronoun_subject = 'he';
@@ -518,7 +518,7 @@ jQuery(document).ready(function($) {
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
 		      		console.log(response);
 		         if (response != null && response['error_code'] == null){	
-						  	$(".inactive_crushed_friends").load('/ajax_friends_with_admirers_content/' + recipient_id,function(responseText,textStatus,xhr){
+						  	$(".right_sidebar_container").load('/ajax_right_sidebar_content/' + relation_type + "/" + recipient_id,function(responseText,textStatus,xhr){
 								if (xhr.status==405)
 									reauthorize_user();
 				  			});
@@ -528,16 +528,17 @@ jQuery(document).ready(function($) {
 		   }}); // close off FB.api
   }; // close off send_fb_invite
    
-  $(".inactive_crushed_friends").on('click', '#send_fb_invite', function(){
+  $(".right_sidebar_container").on('click', '#send_fb_invite', function(){
            var crush_id = $(this).attr('crush_username');
            var crush_name = $(this).attr('crush_name');
            var crush_first_name = $(this).attr('crush_first_name');
            var crush_last_name = $(this).attr('crush_last_name');
            var crush_gender = $(this).attr('crush_gender');
+           var relation_type=$(this).attr('relation_type');
            {% if no_track != True %}
            ga('send', 'event', 'button', 'click', 'btn_click:right_column_invite_inactive_friend');
            {% endif %}
-           send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name,crush_gender);
+           send_fb_invite(crush_id,crush_name,crush_first_name, crush_last_name,crush_gender,relation_type);
   });
   
 // QUERY INACTIVE FRIENDS WITH ADMIRERS
@@ -545,6 +546,10 @@ $(".process_friends_with_admirers_section").parent('ul').load('/ajax_friends_wit
 	if (xhr.status==405)
   			reauthorize_user();
   }); 
+$(".right_sidebar_container").load("/ajax_right_sidebar_content/",function(responseText,testStatus,xhr){
+	if (xhr.status==405)
+			reauthorize_user();
+}); 
  
 // HANDLE SETTINGS MENU CLICK
 function openSubMenu() {
@@ -666,7 +671,7 @@ $('.bt-fs-dialog').click(function(){
     {% if no_track != True %}
 		ga('send', 'event', 'button', 'click', 'btn_click:add_crushes_from_all_places');
     {% endif %}
-})
+});
 
 {% if request.user.email == '' or not request.user.is_email_verified %}
 	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},1500);
@@ -700,8 +705,9 @@ $('.bt-fs-dialog').click(function(){
 		</div> <!-- close off center_content_container -->
 	</div> <!-- close off center_panel -->
 	<div class="right_sidebar">
-	<div class="right_sidebar_container">{% include "navigation_right.html" %}</div>
-</div> <!-- close off right_sidebar -->
+		<div class="right_sidebar_container">
+		</div>
+	</div> <!-- close off right_sidebar -->
 </div> <!-- close off main_container -->
 
 

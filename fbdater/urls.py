@@ -141,6 +141,13 @@ urlpatterns += patterns('crush.views.platonic_friend_views',
     
     (r'^ajax_reconsider/$','ajax_reconsider'),
 )
+
+# ----      RIGHT SIDE BAR : DISPLAY AND HANDLING PAGES --
+urlpatterns += patterns('crush.views.right_sidebar_views', 
+                        
+    (r'^ajax_right_sidebar_content/$', 'ajax_right_sidebar_content'),
+    (r'^ajax_right_sidebar_content/(?P<remove_relation_type>\w+)/(?P<remove_username>\w+)/$', 'ajax_right_sidebar_content'),
+)
     
 # ----      FRIENDS WITH ADMIRERS:: DISPLAY AND HANDLING PAGES --
 urlpatterns += patterns('crush.views.friends_with_admirers_views', 
