@@ -9,6 +9,7 @@ import datetime
 from django.core.cache import cache
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch,user_can_be_messaged
+from crush.utils_email import send_facebook_mail_mf_invite
 
 from urllib2 import URLError, HTTPError
 import thread
@@ -84,6 +85,25 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
         if user_can_be_messaged(magic_cookie,inactive_username):
             all_invite_inactive_crush_list.append(inactive_username)
             invite_list_dirty_flag=True
+            
+        # invite all of the mutual friends
+        fb_query_string = str(me.username + '/mutualfriends/' + inactive_username)
+        try:           
+            mutual_friend_json = graph_api_fetch(me.access_token, fb_query_string)
+            crush_full_name = inactive_user.get_name()
+            for friend in mutual_friend_json:
+                mf_username = friend['id']
+                
+                friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
+                facebook_email_address=friend_data['username'] + "@facebook.com"
+                mf_first_name = friend['name'].split(' ', 1)[0]              
+                try:
+                    send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
+                except:
+                    pass
+        except Exception as e:
+            logger.debug("finding mutual friends failed with exception: " + str(e))
+            pass
     if invite_list_dirty_flag:
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
         
