@@ -315,13 +315,19 @@ class FacebookUser(AbstractUser):
     # if user sends an fb invite to their inactive friend, them remove them from their list of inactive friends 
     # and add them to list of friend who invited them
     def update_friends_with_admirers(self,remove_relation_type=None,remove_username=None): 
-        try: 
-            friend_user = self.friends_with_admirers.get(username=str(remove_username))
-            friend_user.friends_that_invited_me.add(self)
-            if remove_relation_type == 'friend':
+        if remove_relation_type == 'friend':
+            try: 
+                friend_user = self.friends_with_admirers.get(username=str(remove_username))
+                friend_user.friends_that_invited_me.add(self)
                 self.friends_with_admirers.remove(friend_user)
-        except FacebookUser.DoesNotExist:
-            pass # not really a bug, the user just isn't in the sidebar
+            except FacebookUser.DoesNotExist:
+                pass # not really a bug, the user just isn't in the sidebar
+        else:
+            try: 
+                stranger_user = FacebookUser.objects.get(username=str(remove_username))
+                stranger_user.friends_that_invited_me.add(self)
+            except FacebookUser.DoesNotExist:
+                pass # not really a bug, the user just isn't in the sidebar
     #processed_inactivated_friends_admirers = models.BooleanField(default=False)
     def find_active_friends_of_inactivated_crush(self):
                 
