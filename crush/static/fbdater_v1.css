@@ -1008,16 +1008,34 @@ a.logo img{
 
  .friend_referral_bar li#no_friends {
  	color:#B8B8B8;
- 	height:56px;
+ 	color:#808080;
+ 	#height:56px;
  	background:none!important;
- 	line-height:56px;
+ 	line-height:20px;
  	vertical-align:middle;
- 	text-align:center;
+ 	padding-top:8px;
+ 	padding-bottom:10px;
+ 	padding-left:8px;
+ 	text-align:left;
+ 	#text-align:center;
  	font-size:11px;
 	border-bottom:1px solid #C6C6CC;
 	border-radius:10px;
  }
-
+  .friend_referral_bar li#no_friends a {
+  	display:inline-block!important;
+  	font-size:11px;
+  	 	color:#808080;
+  	
+  	font-weight:bold;
+  	border:0px!important;
+  	width:auto!important;
+  	overflow:visible!important;
+  	padding:0px!important;
+  }
+  .friend_referral_bar li#no_friends a:hover {
+  text-decoration:underline;
+  }
  
  .friend_referral_bar li.friend_with_admirer {
 	position:relative;
@@ -3335,11 +3353,11 @@ ul.bxslider_element #slide_overlay {
 	font-size:14px;
 	margin-bottom:10px;
 	background:none;
-	padding:15px 0px 0px 0px;
+	padding:5px 0px 0px 0px;
 	margin-left:-5px;
 	color:black;
 	#border-radius:6px 6px 0 0;
-	border-top:1px solid #E2E2E2;
+	#border-top:1px solid #E2E2E2;
 }
 #credit_purchase_selection{
 	display:inline-block;
@@ -3352,8 +3370,8 @@ ul.bxslider_element #slide_overlay {
 #credit_check_container #paypal_image{
 	position:absolute;
 	bottom: 9px;
-	left:43px;
-	height:31px;
+	left:23px;
+	height:26px;
 }
 #credit_purchase_selection .purchase_option {
 	display:block;
@@ -3423,8 +3441,12 @@ ul.bxslider_element #slide_overlay {
 }
 .credit_check_dialog .paypal_redirect_buttonset{
 	#float:right!important;
-	margin-left:70px!important;
+	position:absolute;
+	bottom:3px;
+	left:135px;
+	#margin-left:70px!important;
 }
+
 .credit_check_dialog .paypal_redirect_buttonset #credit_deduct_ok {
 	#margin-right:2px;
 }
@@ -4252,8 +4274,10 @@ ul.bxslider_element #slide_overlay {
 }
 .invite_dialog_cancel_button:hover{
 	color:#36F!important;
-	border:1px solid #C8C8C8!important;
+	#border:1px solid #C8C8C8!important;
+	border:1px solid #fff!important;
 	background:none!important;
+	text-decoration:underline;
 }
 .app_invite_dialog .invite_subtitle{
 	font-size:13px!important;

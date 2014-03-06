@@ -137,10 +137,6 @@ class FacebookUserManager(UserManager):
                 fb_profile['is_active'] = is_this_for_me
                 if not is_this_for_me:
                     user = FacebookUser.objects.create_user(username=fb_id)
-                    # finally update the cached list of inactive_users
-                    all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
-                    all_inactive_user_list.append(user.username)
-                    cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
                 else:
                     user = FacebookUser.objects.create_user(username=fb_id,access_token=fb_access_token)
             except Exception as e:

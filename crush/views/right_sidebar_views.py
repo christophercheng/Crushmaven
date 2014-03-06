@@ -26,7 +26,7 @@ def ajax_right_sidebar_content(request,remove_relation_type=None,remove_username
     
     friends_with_admirer_data=get_friends_with_admirer_data(me)
     strangers_with_admirer_data=get_strangers_with_admirer_data(me)
-    return render(request,"navigation_right.html",{'friends_with_admirer_data':friends_with_admirer_data,'strangers_with_admirer_data':strangers_with_admirer_data})
+    return render(request,"navigation_righty.html",{'friends_with_admirer_data':friends_with_admirer_data,'strangers_with_admirer_data':strangers_with_admirer_data})
 
 
 def get_friends_with_admirer_data(me):

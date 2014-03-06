@@ -65,9 +65,9 @@ def ajax_add_crush_targets(request):
 def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user_list):
     for user in adjust_crush_user_list:
         adjust_associated_lineup_members(me,user,True)
-    all_invite_inactive_crush_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY ) 
-    if all_invite_inactive_crush_list==None:
-        all_invite_inactive_crush_list=[] 
+    all_inactive_crush_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
+    all_invite_inactive_crush_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[]) 
+
     if settings.SEND_NOTIFICATIONS==False:
         magic_cookie='147%3At-_nYdmJgC5hxw%3A2%3A1394001634%3A15839'
     else:
@@ -75,17 +75,22 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
     if magic_cookie=='':
         return
     invite_list_dirty_flag=False
+    inactive_list_dirty_flag=False
     for inactive_user in inactive_crush_user_list:
         inactive_username=inactive_user.username
-        # check to see if inactive user is not already in the inactive_crush_invite_list
-        if inactive_username in all_invite_inactive_crush_list:
-            continue
-        # if not in list then check to see if the user can be messaged
+        if inactive_username not in all_inactive_crush_list:
+            # finally update the cached list of inactive_users
+            all_inactive_crush_list.append(user.username)
+            inactive_list_dirty_flag=True
         
-        if user_can_be_messaged(magic_cookie,inactive_username):
-            all_invite_inactive_crush_list.append(inactive_username)
-            invite_list_dirty_flag=True
+        # check to see if inactive user is not already in the inactive_crush_invite_list
+        if inactive_username not in all_invite_inactive_crush_list:
+            # if not in list then check to see if the user can be messaged
             
+            if user_can_be_messaged(magic_cookie,inactive_username):
+                all_invite_inactive_crush_list.append(inactive_username)
+                invite_list_dirty_flag=True
+                
         # invite all of the mutual friends
         fb_query_string = str(me.username + '/mutualfriends/' + inactive_username)
         try:           
@@ -93,19 +98,20 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
             crush_full_name = inactive_user.get_name()
             for friend in mutual_friend_json:
                 mf_username = friend['id']
-                
                 friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
                 facebook_email_address=friend_data['username'] + "@facebook.com"
                 mf_first_name = friend['name'].split(' ', 1)[0]              
                 try:
                     send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
                 except:
-                    pass
+                    pass # process next mutual friend
         except Exception as e:
             logger.debug("finding mutual friends failed with exception: " + str(e))
             pass
     if invite_list_dirty_flag:
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
+    if inactive_list_dirty_flag:
+        cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_crush_list)
         
     
 @login_required

@@ -128,7 +128,7 @@ $(document).ready(function()
 		<!-- <span id="purchase_button_description">You will be directed to PayPal</span> -->
 		<div class="ui-dialog-buttonset paypal_redirect_buttonset">
 		<input type='image' id="credit_deduct_ok" onclick="window.morph_dialog();" alt="Make payments with PayPal - it's fast, free and secure!" src="{{STATIC_URL}}images/paypal_buy_now_button.gif"</input> 
-		<button type='button' onclick="window.purchase_dialog_div.dialog('close');window.offer_free_credit();" class="ui-button site_dialog_button site_dialog_cancel_button" ><span class="ui-button-text">Cancel</span></button> 
+		<button type='button' onclick="window.purchase_dialog_div.dialog('close');window.offer_free_credit();" class="ui-button site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button" ><span class="ui-button-text">{% if request.user.site_credits == 0 %}or earn free credit{% else %}cancel{% endif %}</span></button> 
 		</div>
 	</div><!-- close off button_bar -->
 </form>
@@ -200,7 +200,7 @@ You can always purchase more credits from within the settings menu (in the top r
 </div>
 {% endcomment %}
 <div id="credit_offer_modal" title="Earn Free Credit!">
-<div class="modal_container">Would you like to earn a free credit to use on anywhere on the site?  Invite at least ten friends on Facebook, and we'll instantly update your account.
+<div class="modal_container">Invite at least ten friends on Facebook, and you'll instantly receive one free credit to use anywhere on the site!
 </div><!-- close off buttonpane -->	
 <div class="ui-dialog-buttonpane">
 <div class="ui-dialog-buttonset">
