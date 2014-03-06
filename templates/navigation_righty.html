@@ -1,4 +1,19 @@
 
+
+{% if strangers_with_admirer_data  %}
+	<div class="friend_referral_bar_header nav_header">
+	Other People's Crushes
+	<span class="header_subtext">Help 'em out - they'll reciprocate!<BR></span>
+	</div>
+	
+	<ul class ="friend_referral_bar strangers_referral_bar navbar inactive_crushed_friends">
+		{% with strangers_with_admirer_data as friends_with_admirer_data and 'stranger' as relation_type %}
+			{% include "navigation_right_admired_friends.html" %}
+		{% endwith %}
+	</ul>
+{% endif %}
+
+
 <div class="friend_referral_bar_header nav_header">
 	Friends with Admirers
 	<span class="header_subtext">Pay it forward & let them know!</span>
@@ -17,16 +32,3 @@
 		{% endif %}
 	{% endif %}
 </ul>
-
-{% if strangers_with_admirer_data  %}
-	<div class="friend_referral_bar_header nav_header">
-	Other People's Crushes
-	<span class="header_subtext">Help 'em out - they'll reciprocate!<BR></span>
-	</div>
-	
-	<ul class ="friend_referral_bar strangers_referral_bar navbar inactive_crushed_friends">
-		{% with strangers_with_admirer_data as friends_with_admirer_data and 'stranger' as relation_type %}
-			{% include "navigation_right_admired_friends.html" %}
-		{% endwith %}
-	</ul>
-{% endif %}
