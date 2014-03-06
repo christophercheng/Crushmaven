@@ -1,0 +1,32 @@
+
+<div class="friend_referral_bar_header nav_header">
+	Friends with Admirers
+	<span class="header_subtext">Pay it forward & let them know!</span>
+</div>
+
+<ul class="friend_referral_bar navbar inactive_crushed_friends">
+	{% if friends_with_admirer_data %}
+		{% with friends_with_admirer_data as friends_with_admirer_data and 'friend' as relation_type %}
+			{% include "navigation_right_admired_friends.html" %}
+		{% endwith %}
+	{% else %}
+		{% if request.user.email != "" %}
+			<li id="no_friends">Verify your email address below to see all friends with admirers...</li>
+		{% else %}
+		<li id="no_friends">Supply your <a href="/settings_preferences">email address</a> to see your friends with admirers...</li>
+		{% endif %}
+	{% endif %}
+</ul>
+
+{% if strangers_with_admirer_data  %}
+	<div class="friend_referral_bar_header nav_header">
+	Other People's Crushes
+	<span class="header_subtext">Help 'em out - they'll reciprocate!<BR></span>
+	</div>
+	
+	<ul class ="friend_referral_bar strangers_referral_bar navbar inactive_crushed_friends">
+		{% with strangers_with_admirer_data as friends_with_admirer_data and 'stranger' as relation_type %}
+			{% include "navigation_right_admired_friends.html" %}
+		{% endwith %}
+	</ul>
+{% endif %}
