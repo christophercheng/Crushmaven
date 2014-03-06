@@ -1390,7 +1390,7 @@ color:#3b5998!important;
 	vertical-align:middle;
 	text-align:center;
 	display:inline-block!important;
-	background:#254AB8;
+	background:#335CD7;
 	border-radius:5px;
 	color:white!important;
 	#font-weight:bold;
@@ -1400,7 +1400,7 @@ color:#3b5998!important;
 }
 
 .new_user_instructions a.instruction_block_button:hover{
-	background:#1E3B93;
+	background:#2851CC;
 	transition-property:background;
 	transition-duration:200ms;
 	-webkit-transition-duration:200ms;
