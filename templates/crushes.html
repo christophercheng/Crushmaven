@@ -289,7 +289,7 @@ $(".response_view_rating .help_icon").qtip({
 {% if show_invite_help_popup == True %}
 <div class="new_user_instructions invite_instructions">
 	<span class="instructions_title">You Unlikely Receive A Response Yet!</span>
-	<span class="instructions_subtitle1">You must first find your crushes' emails and give them to us. We'll then send off an anonymous invite.</span>
+	<span class="instructions_subtitle1">Please find your crushes' emails and give them to us. We'll then send off an anonymous invite.</span>
 	{% if 'yahoo' in request.user.email %} 
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into your Yahoo mail account. Here's how:</span>
 	{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email %}
