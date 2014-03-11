@@ -305,6 +305,7 @@ class CrushRelationship(BasicRelationship):
         # change the status of relationship's is_results_paid and save the object
         self.save(update_fields=['is_results_paid','updated_flag','date_results_paid'])
         self.source_person.save(update_fields=['site_credits'])
+        logger.debug("Results paid for: " + str(self))
        
         return True #must return True or else caller thinks payment failed
     

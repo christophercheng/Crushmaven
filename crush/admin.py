@@ -19,7 +19,7 @@ class FacebookUserAdmin(admin.ModelAdmin):
     fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','phone','date_phone_invite_last_sent','is_staff','is_superuser','password','bCompletedSurvey','is_email_verified','access_token','friends_that_invited_me')
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
-    list_display = ( 'source_person','target_person','friendship_type','target_status','lineup_initialization_status','date_added') # what columns to display
+    list_display = ( 'source_person','target_person','friendship_type','target_status','is_results_paid','lineup_initialization_status','date_added') # what columns to display
     search_fields = ('source_person__last_name', 'target_person__last_name','id') # what the search box searches against
     list_filter = ('target_status','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)

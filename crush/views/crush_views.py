@@ -339,6 +339,7 @@ def ajax_add_one_free_credit(request):
         me.site_credits=1
         me.save(update_fields=['site_credits'])
         return HttpResponse("Good")
+        logger.debug("Free Credit Offer given to: " + me.get_name())
     else:
         return HttpResponseForbidden("You are not eligible to receive a free credit since you already have credits.")
 
