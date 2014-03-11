@@ -73,7 +73,7 @@ def credit_checker(request):
 # unique_id is the admirer display id for feature 1 (purchase lineup), it is the crush username for feature 2
 @login_required
 def ajax_deduct_credit(request, feature_id, unique_id):
-    logger.debug( "attempting to deducting credit" )
+    logger.debug( "attempting to deduct credit" )
     me=request.user
 
     if str(feature_id) == '1': # if feature is view lineup
