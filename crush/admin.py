@@ -34,7 +34,7 @@ class PlatonicRelationshipAdmin(admin.ModelAdmin):
     fields=('source_person','target_person','friendship_type','rating','rating_comment')
 
 class LineupMemberAdmin(admin.ModelAdmin):
-    list_display = ('relationship','username','user','decision','position')
+    list_display = ('relationship','username','user','decision','position','id')
     search_fields=('username','relationship','user')
     list_filter=('decision',)
     fields=('username','user','position','decision')
