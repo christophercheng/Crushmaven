@@ -86,8 +86,8 @@ def pre_save_platonic_relationship(sender, instance, **kwargs):
     #  print "saving platonic relationship object"
     if (not instance.pk): # if creating a new platonic relationship
         try:
-            #instance.source_person.just_friends_targets.get(username=instance.target_person.username)
-            PlatonicRelationship.objects.get(source_person=instance.source_person,target_person=instance.target_person)
+            instance.source_person.just_friends_targets.get(username=instance.target_person.username)
+            #PlatonicRelationship.objects.get(source_person=instance.source_person,target_person=instance.target_person)
             print "existing platonic relationship detected. doing nothing more"
             return False
         except FacebookUser.DoesNotExist:
