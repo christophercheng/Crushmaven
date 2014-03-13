@@ -111,6 +111,7 @@ def ajax_display_lineup_block(request, display_id):
                                                     'error':settings.LINEUP_STATUS_CHOICES[4]})
     
     crush_id = relationship.target_person.username
+    rel_id=str(relationship.id)
     rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
@@ -125,16 +126,16 @@ def ajax_display_lineup_block(request, display_id):
                 break
             if crush_id not in g_init_dict: #special case handling            
                 #initialization hasn't started yet so wait another second before restarting loope
-                logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
+                logger.debug("relationship: " + rel_id + ": crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 time.sleep(1) # wait a second
                 counter+=1 
                 continue
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
-                logger.debug("initialization was either a success or failure, breaking out of while loop")
+                logger.debug("relationship: " + rel_id + ": initialization was either a success or failure, breaking out of while loop")
                 break
 
-            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) )
+            logger.debug("relationship: " + rel_id + ": waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) )
             time.sleep(1) # wait a second
             counter+=1
         
@@ -145,13 +146,13 @@ def ajax_display_lineup_block(request, display_id):
             logger.debug("could not refetch crush relationship object during initialization")
             return render(request,'admirer_lineup_preview_block.html', {'relationship':None,
                                                     'error':settings.LINEUP_STATUS_CHOICES[4]})
-    logger.debug("finisehd with while initialization loop")
+    logger.debug("relationship: " + rel_id + ": finished with while initialization loop")
     if relationship.lineup_initialization_status > 1: # show error message
 
-        logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
+        logger.debug("relationship: " + rel_id + ": lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
         return render(request,'admirer_lineup_preview_block.html', {'relationship':relationship,
                                                     'error':settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]})
-    logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
+    logger.debug("relationship: " + rel_id + ": going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
     return_data = render(request,'admirer_lineup_preview_block.html', {'relationship':relationship})
     return return_data
 # called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason (usually heroku shits)
