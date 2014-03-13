@@ -66,6 +66,7 @@ def admirers(request,show_lineup=None):
  
         g_init_dict[me.username]={}    
         g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
+        logger.debug("before starting multi-initialization g_init_dict: " + str(g_init_dict))
 
 
         if settings.INITIALIZATION_THREADING:
@@ -112,6 +113,8 @@ def ajax_display_lineup_block(request, display_id):
     
     crush_id = relationship.target_person.username
     rel_id=str(relationship.id)
+    logger.debug(rel_id + ": before starting ajax display lineup block, g_init_dict: " + str(g_init_dict))
+
     rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
