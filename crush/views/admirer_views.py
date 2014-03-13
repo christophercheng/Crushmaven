@@ -125,6 +125,7 @@ def ajax_display_lineup_block(request, display_id):
             except CrushRelationship.DoesNotExist:
                 return render(request,'admirer_lineup_preview_block.html', {'relationship':None,
                                         'error':settings.LINEUP_STATUS_CHOICES[4]})
+ 
     
             logger.debug("relationship: " + rel_id + ": waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) )
             time.sleep(wait_time) # wait a specified number of seconds
