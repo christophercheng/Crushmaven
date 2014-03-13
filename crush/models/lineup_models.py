@@ -27,6 +27,9 @@ class LineupMemberManager(models.Manager):
 
     def initialize_multiple_lineups(self,start_relationships):
         global g_init_dict
+        crush_id=start_relationships[0].target_person.username
+        g_init_dict[crush_id]={}    
+        g_init_dict[crush_id]['initialization_count'] = len(start_relationships) 
         
         for index,relationship in enumerate(start_relationships):
             crush_id=relationship.target_person.username
