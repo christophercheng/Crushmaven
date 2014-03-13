@@ -187,7 +187,7 @@ def testing2(request):
 def testing_prep(request):
     if request.user.username != '651900292':
        return HttpResponse("nu uhhhh")
-    cache.set(settings.FB_FETCH_COOKIE,"137%3AyoNXnPd5mpliVA%3A2%3A1389009777%3A14734")
+    cache.set(settings.FB_FETCH_COOKIE,"80%3AWmfrwQreSrOIDQ%3A2%3A1394665222%3A15839")
     return HttpResponse("done")
 
 # -- Home Page --

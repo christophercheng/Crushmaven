@@ -7,6 +7,13 @@
 $(document).ready(function() 
 {
 	
+	{% if startup_lineup_initialization %}
+		$.get('/ajax_startup_lineup_initialization').fail(function(){
+			window.alert_modal('Network Problem', "Sorry, we are having a problem connecting with our servers, please refresh your browser.");
+			return;
+			});
+	{% endif %}
+	
 	/* ---------------------------------------------
  	
 	Help Popup Animation

@@ -119,7 +119,7 @@ urlpatterns += patterns('crush.views.admirer_views',
     url(r'^admirers/(?P<show_lineup>\d+)/$', 'admirers',name="admirers_show_lineup"),
     
     url(r'^admirers/$', 'admirers',name="admirers_show_all"),
-
+    (r'^ajax_startup_lineup_initialization/$','ajax_startup_lineup_initialization'),
     (r'^ajax_display_lineup_block/(?P<display_id>\d+)/$','ajax_display_lineup_block'),
     
     (r'^ajax_initialization_failed/(?P<display_id>\d+)/$','ajax_initialization_failed'),

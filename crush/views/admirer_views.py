@@ -19,11 +19,46 @@ logger = logging.getLogger(__name__)
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
-    global g_init_dict
-    me = request.user 
 
+    me = request.user 
+    startup_lineup_initialization=False
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
     progressing_admirers_count = progressing_admirer_relationships.count()
+    
+    for relationship in progressing_admirer_relationships:
+        if relationship.lineup_initialization_status != 1:
+            startup_lineup_initialization=True
+            break
+    
+    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
+    past_admirers_count = admirer_completed_relationships.count()
+     
+    if progressing_admirers_count > 0 and past_admirers_count == 0:#  and not settings.DEBUG:
+        show_help_popup=True
+    else:
+        show_help_popup=False
+        
+       
+    return render(request,'admirers.html',
+                              {'profile': me.get_profile, 
+                               'admirer_relationships':progressing_admirer_relationships,
+                               'past_admirer_relationships':admirer_completed_relationships,
+                               'past_admirers_count': past_admirers_count,
+                               'progressing_admirers_count':progressing_admirers_count,
+                               'show_lineup': show_lineup,
+                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
+                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
+                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
+                               'show_help_popup':show_help_popup,  
+                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT,   
+                               'startup_lineup_initialization':startup_lineup_initialization                        
+                               })    
+
+@login_required
+def ajax_startup_lineup_initialization(request):
+    global g_init_dict
+    me = request.user 
+    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
@@ -33,6 +68,7 @@ def admirers(request,show_lineup=None):
         for relationship in error_relationships: 
             if relationship.lineup_initialization_status==0:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0):
+                    #initialization got stuck somewhere
                     relationship.lineup_initialization_status=0 # reset intilization status
                     relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
@@ -67,55 +103,27 @@ def admirers(request,show_lineup=None):
         g_init_dict[me.username]={}    
         g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
 
-
-        if settings.INITIALIZATION_THREADING:
-            thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))           
-        else:
-            LineupMember.objects.initialize_multiple_lineups(start_relationships)
-    
-    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
-    past_admirers_count = admirer_completed_relationships.count()
-     
-    if progressing_admirers_count > 0 and past_admirers_count == 0:#  and not settings.DEBUG:
-        show_help_popup=True
-    else:
-        show_help_popup=False
+        LineupMember.objects.initialize_multiple_lineups(start_relationships)
+    return HttpResponse("")
         
-       
-    return render(request,'admirers.html',
-                              {'profile': me.get_profile, 
-                               'admirer_relationships':progressing_admirer_relationships,
-                               'past_admirer_relationships':admirer_completed_relationships,
-                               'past_admirers_count': past_admirers_count,
-                               'progressing_admirers_count':progressing_admirers_count,
-                               'show_lineup': show_lineup,
-                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
-                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
-                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
-                               'show_help_popup':show_help_popup,  
-                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT                           
-                               })    
-
-    
     
 @login_required
 def ajax_display_lineup_block(request, display_id):
     global g_init_dict
     int_display_id=int(display_id)
-    #logger.debug("ajax_initialize_lineup_block called with display id: " + str(int_display_id))
-    ajax_response = ""
+    logger.debug("ajax_initialize_lineup_block called with display id: " + str(int_display_id))
     try:    
         relationship = CrushRelationship.objects.all_admirers(request.user).get(display_id=int_display_id)
     except CrushRelationship.DoesNotExist:
+        logger.debug("could not find crush relationship")
         return render(request,'lineup_blockadmirer_lineup_preview_block.html', {'relationship':None,
                                                     'error':settings.LINEUP_STATUS_CHOICES[4]})
-        #return HttpResponse('<div class="lineup_error">' + ajax_response + '</div>')
     
     crush_id = relationship.target_person.username
     rel_id_state=str(relationship.id) + '_initialization_state'
     # wait for a certain amount of time before returning a response
     counter = 0
-    if relationship.lineup_initialization_status==0: # only loop if initialization status is 0 (in progress)
+    if relationship.lineup_initialization_status==0 or relationship.lineup_initialization_status==None: # only loop if initialization status is 0 (in progress)
         logger.debug("staring while initialization loop")
         while True: # this loop handles condition where user is annoyingly refreshing the admirer page while the initialization is in progress     
             #print "rel_id: " + str(relationship.id) + " counter: " + str(counter) + " initialization status: " + str(relationship.lineup_initialization_status)
@@ -126,16 +134,16 @@ def ajax_display_lineup_block(request, display_id):
                 break
             if crush_id not in g_init_dict: #special case handling            
                 #initialization hasn't started yet so wait another second before restarting loope
-                #logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
+                logger.debug("crush id not in g_init_dict while waiting in ajax_display_lineup_block with initialization status: " + str(relationship.lineup_initialization_status))
                 #    relationship.save(update_fields=['lineup_initialization_status'])
                 time.sleep(1) # wait a second
                 counter+=1 
                 continue
             if rel_id_state in g_init_dict[crush_id] and g_init_dict[crush_id][rel_id_state]==2: # initialization was either a success or failed
-                #logger.debug("initialization was either a success or failure, breaking out of while loop")
+                logger.debug("initialization was either a success or failure, breaking out of while loop")
                 break
 
-            #logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) + " and g_init_dict[crush_id][rel_id_state]: " + str(g_init_dict[crush_id][rel_id_state]))
+            logger.debug("waiting for " + str(counter) + " seconds with initialization status:  " + str(relationship.lineup_initialization_status) )
             time.sleep(1) # wait a second
             counter+=1
         
@@ -146,13 +154,13 @@ def ajax_display_lineup_block(request, display_id):
             logger.debug("could not refetch crush relationship object during initialization")
             return render(request,'admirer_lineup_preview_block.html', {'relationship':None,
                                                     'error':settings.LINEUP_STATUS_CHOICES[4]})
-    #logger.debug("finisehd with while initialization loop")
+    logger.debug("finisehd with while initialization loop")
     if relationship.lineup_initialization_status > 1: # show error message
 
         logger.debug("lineup initialization status is greater than 1 in ajax_dispaly_lineup_block")
         return render(request,'admirer_lineup_preview_block.html', {'relationship':relationship,
                                                     'error':settings.LINEUP_STATUS_CHOICES[relationship.lineup_initialization_status]})
-    #logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
+    logger.debug("going to lineup_block.html with lineup initialization status: " + str(relationship.lineup_initialization_status) + " and lineup member count: " + str(relationship.lineupmember_set.count()))
     return_data = render(request,'admirer_lineup_preview_block.html', {'relationship':relationship})
     return return_data
 # called if client-sided call to ajax_display_lineup_block timesout or fails for some odd reason (usually heroku shits)
