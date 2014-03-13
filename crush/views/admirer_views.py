@@ -19,46 +19,11 @@ logger = logging.getLogger(__name__)
 # -- Admirer List Page --
 @login_required
 def admirers(request,show_lineup=None):
-
-    me = request.user 
-    startup_lineup_initialization=False
-    progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
-    progressing_admirers_count = progressing_admirer_relationships.count()
-    
-    for relationship in progressing_admirer_relationships:
-        if relationship.lineup_initialization_status != 1:
-            startup_lineup_initialization=True
-            break
-    
-    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
-    past_admirers_count = admirer_completed_relationships.count()
-     
-    if progressing_admirers_count > 0 and past_admirers_count == 0:#  and not settings.DEBUG:
-        show_help_popup=True
-    else:
-        show_help_popup=False
-        
-       
-    return render(request,'admirers.html',
-                              {'profile': me.get_profile, 
-                               'admirer_relationships':progressing_admirer_relationships,
-                               'past_admirer_relationships':admirer_completed_relationships,
-                               'past_admirers_count': past_admirers_count,
-                               'progressing_admirers_count':progressing_admirers_count,
-                               'show_lineup': show_lineup,
-                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
-                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
-                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
-                               'show_help_popup':show_help_popup,  
-                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT,   
-                               'startup_lineup_initialization':startup_lineup_initialization                        
-                               })    
-
-@login_required
-def ajax_startup_lineup_initialization(request):
     global g_init_dict
     me = request.user 
+
     progressing_admirer_relationships = CrushRelationship.objects.progressing_admirers(me).order_by('friendship_type','is_lineup_paid','display_id')
+    progressing_admirers_count = progressing_admirer_relationships.count()
     
     # initialize any uninitialized relationship lineups (status = None or greater than 1): (1 means initialized and 0 means initialization is in progress)
     uninitialized_relationships = progressing_admirer_relationships.filter(lineup_initialization_status=None)
@@ -68,7 +33,6 @@ def ajax_startup_lineup_initialization(request):
         for relationship in error_relationships: 
             if relationship.lineup_initialization_status==0:
                 if (datetime.datetime.now() - relationship.lineup_initialization_date_started) >= timedelta(minutes=settings.INITIALIZATION_RESTART_TIME_CRUSH_STATUS_0):
-                    #initialization got stuck somewhere
                     relationship.lineup_initialization_status=0 # reset intilization status
                     relationship.save(update_fields=['lineup_initialization_status'])
                     start_relationships.append(relationship)
@@ -103,8 +67,35 @@ def ajax_startup_lineup_initialization(request):
         g_init_dict[me.username]={}    
         g_init_dict[me.username]['initialization_count'] = len(start_relationships) 
 
-        LineupMember.objects.initialize_multiple_lineups(start_relationships)
-    return HttpResponse("")
+
+        if settings.INITIALIZATION_THREADING:
+            thread.start_new_thread(LineupMember.objects.initialize_multiple_lineups,(start_relationships,))           
+        else:
+            LineupMember.objects.initialize_multiple_lineups(start_relationships)
+    
+    admirer_completed_relationships = CrushRelationship.objects.past_admirers(me).order_by('friendship_type','-display_id')
+    past_admirers_count = admirer_completed_relationships.count()
+     
+    if progressing_admirers_count > 0 and past_admirers_count == 0:#  and not settings.DEBUG:
+        show_help_popup=True
+    else:
+        show_help_popup=False
+        
+       
+    return render(request,'admirers.html',
+                              {'profile': me.get_profile, 
+                               'admirer_relationships':progressing_admirer_relationships,
+                               'past_admirer_relationships':admirer_completed_relationships,
+                               'past_admirers_count': past_admirers_count,
+                               'progressing_admirers_count':progressing_admirers_count,
+                               'show_lineup': show_lineup,
+                               'fof_fail_status':settings.LINEUP_STATUS_CHOICES[5],
+                               'minimum_lineup_members':settings.MINIMUM_LINEUP_MEMBERS,
+                               'ideal_lineup_members':settings.IDEAL_LINEUP_MEMBERS,  
+                               'show_help_popup':show_help_popup,  
+                               'lineup_block_timeout':settings.LINEUP_BLOCK_TIMEOUT                           
+                               })    
+
         
     
 @login_required
