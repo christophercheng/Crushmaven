@@ -789,7 +789,7 @@ class LineupMemberManager(models.Manager):
         g_init_dict[crush_id][str(relationship.id) + '_initialization_state']=2
         logger.debug ( "rel_id: " + str(relationship.id) + " set initialization_state to 2")
         g_init_dict[crush_id]['initialization_count']-=1
-        if g_init_dict[crush_id]['initialization_count']==0:
+        if g_init_dict[crush_id]['initialization_count']<1:
             thread.start_new_thread(self.delete_global_data,(crush_id,)) #initialize lineup asynchronously            
 
             
