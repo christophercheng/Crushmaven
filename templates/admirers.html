@@ -7,16 +7,6 @@
 $(document).ready(function() 
 {
 	
-	{% if startup_lineup_initialization %}
-		$.get('/ajax_startup_lineup_initialization').fail(function(){
-			window.alert_modal('Network Problem', "Sorry, we are having a problem connecting with our servers, please refresh your browser.");
-			return;
-			});
-	{% endif %}
-    $('.ajax_display_lineup_block').each(function(){
-		initiate_lineup_initialization($(this),0);
-    });
-	
 	/* ---------------------------------------------
  	
 	Help Popup Animation
@@ -209,6 +199,10 @@ $(document).ready(function()
 			}
 		}
 	});	
+	
+    $('.ajax_display_lineup_block').each(function(){
+		initiate_lineup_initialization($(this),0);
+    });
 	
 }); // close off $(document).ready
 </script>
