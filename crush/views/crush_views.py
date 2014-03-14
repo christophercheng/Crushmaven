@@ -334,17 +334,6 @@ def ajax_get_noinvite_crush_array(request):
 @login_required
 def ajax_get_random_inactive_crush(request):
     
-    return_data={}
-    inactive_stranger = FacebookUser.objects.all()[1]
-    return_data['crush_short_name'] = inactive_stranger.first_name.capitalize() + " " + inactive_stranger.last_name[0].capitalize() + "."
-    return_data['recipient_id']=inactive_stranger.username
-    return_data['crush_first_name'] = inactive_stranger.first_name
-    return_data['crush_last_name']=inactive_stranger.last_name
-    return_data['crush_gender']=inactive_stranger.gender
-    return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
-    
-    
-    
     me=request.user
     return_data = {} # { user:{'num_admirers': num_admirers,'elapsed_time':elapsed_time}, ... } if process_right_sidebar==None: # friends-with-admirer section has been processed before and does not need to be processed
     all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY)   
