@@ -63,8 +63,6 @@ $(document).ready(function()
 		// get excluded ids (of existing crushes)
 		window.wait_modal_open();
 		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
-			console.log(data);
-			alert("check log");
 				
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
