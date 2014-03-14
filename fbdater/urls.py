@@ -63,6 +63,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 
     (r'^inactive_crush_list/$','inactive_crush_list'),
     (r'^cached_inactive_crush_list/$','cached_inactive_crush_list'),
+    (r'^cached_invite_inactive_crush_list/$','cached_invite_inactive_crush_list'),
 #    (r'^clear_cached_inactive_crush_list/$','clear_cached_inactive_crush_list'), 
     
     (r'^testing/$','testing'),

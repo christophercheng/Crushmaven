@@ -100,6 +100,8 @@ def inactive_crush_list(request):
     return HttpResponse(response)
 
 
+
+
 #@login_required
 #def clear_cached_inactive_crush_list(request):
 #    if request.user.username != 'admin':
@@ -110,12 +112,28 @@ def inactive_crush_list(request):
 @login_required
 def cached_inactive_crush_list(request):
     
-    if request.user.username != 'admin':
+    if request.user.username != '651900292':
         return HttpResponse("nu uhhhh")
     #call_command('daily_maintenance')
     #lineup_expiration_warning()
     inactive_crushes = cache.get(settings.INACTIVE_USER_CACHE_KEY)   
     response = 'CACHED INACTIVE CRUSH LIST: <BR><BR>'
+    if inactive_crushes==None:
+        response += 'EMPTY'
+        return HttpResponse(response)
+    for crush in inactive_crushes:
+        response += str(crush) + "<BR>"
+    return HttpResponse(response)
+
+@login_required
+def cached_invite_inactive_crush_list(request):
+    
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")
+    #call_command('daily_maintenance')
+    #lineup_expiration_warning()
+    inactive_crushes = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY)   
+    response = 'CACHED INVITE INACTIVE CRUSH LIST: <BR><BR>'
     if inactive_crushes==None:
         response += 'EMPTY'
         return HttpResponse(response)
