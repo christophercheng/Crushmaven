@@ -1,21 +1,71 @@
 <script>
 $(document).ready(function() 
 {
-	window.offer_free_credit = function(){
-		{% comment %}
-			{% if completed_survey != True %}
-				var survey_dialog = $("#survey_modal_div").dialog({dialogClass:'survey_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-		   {% endif %}
-		{% endcomment %}
-		{% if request.user.site_credits = 0 %}
-				$("#credit_offer_modal").dialog({dialogClass:'credit_offer_dialog blacktop',modal: true, draggable:false,show: 'fade',width:375,resizable:false,autoOpen: true,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-				$(':focus').blur();
-		{% endif %}
-	};
+
+	$('.ui-dialog-title').html('{{ feature_name }}');
+	
+	$('#invite_stranger_btn').click(function(){
+		window.purchase_dialog_div.dialog('destroy');
+		window.wait_modal_open();
+		$.get("/ajax_get_random_inactive_crush/",function(data){
+			var crush_first_name=data['crush_first_name'];
+			var crush_last_name=data['crush_last_name'];
+			var crush_gender=data['crush_gender'];
+			var recipient_id=data['recipient_id'];
+			var crush_short_name=data['crush_short_name'];
+			
+				var share_link = 'https://apps.facebook.com/crushmaven/admirer_for/' + crush_first_name + '/' + crush_last_name[0] + '/';
+				var crush_gender_pronoun_object = 'her';
+				var admirer_gender_pronoun_subject = 'he';
+				if (crush_gender == 'M'){
+					crush_gender_pronoun_object = 'him';
+					admirer_gender_pronoun_subject = 'she';
+				}
+				
+				FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
+					if (!response || response.error){
+						window.wait_modal_close();
+						window.alert_modal("Facebook Messaging Problem","Sorry, but we're having difficulty cooking up a message through Facebook.  Please try again later");
+					}
+					else {
+				  	FB.ui({method: 'send',
+				  				name: crush_short_name + "'s friend added " + crush_gender_pronoun_object + "!",
+				  				to: recipient_id,
+				  				link: share_link,
+				      },
+				      function(response){
+				    	  window.wait_modal_close();
+				    	  if (response == null){
+				        		window.alert_modal("Credit Offer Problem","Invite our selected user to receive a free credit. (You invited no one)",undefined, "location.href='';");
+				        		return;
+				        	}
+	
+				    	  if (response['success']==true)	
+				        	{			            
+				    		  	{% if no_track != True %}
+				    		  		ga('send', 'event', 'button', 'click', 'stat:fb_stranger_invited_via_credit_offer');
+				            	{% endif %}
+				        		$.get( "/ajax_add_one_free_credit/", function( data ) {
+				        			window.alert_modal("Thank You","One credit has been added to your account!");
+				        		});
+				        	}
+				      }      
+				    );// close off fb.ui
+				   }}); // close off FB.api
+		}).fail(function(error){
+			window.wait_modal_close();
+			window.alert_modal("Free Credit Offer Problem",'Sorry, we are having problems finding a suitable person for you to invite.  Please try another option');
+		});
+	});
+	
 	$('#obtain_free_credit_btn').click(function(){
-		$('#credit_offer_modal').html('<div id=\'site-loading\'></div>');
+		window.purchase_dialog_div.dialog('destroy');
 		// get excluded ids (of existing crushes)
+		window.wait_modal_open();
 		$.get( "/ajax_get_noinvite_crush_array/", function( data ) {
+			console.log(data);
+			alert("check log");
+				
 				// call facebook requests dialog with excluded ids
 		        FB.ui({method: 'apprequests',
 		            message: "Check out CrushMaven, the intelligent (and anonymous) secret admirer app!",
@@ -23,9 +73,13 @@ $(document).ready(function()
 		            exclude_ids:data['data'],
 		            title:'Invite ten friends or more to earn free credit'
 		        }, function(response){
-					$("#credit_offer_modal").dialog('close');
+		        	window.wait_modal_close();
+			    	  if (response == null){
+			        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (You invited no one)",undefined, "location.href='';");
+			        		return;
+			        	}
 		        	if (response.to == undefined){
-		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited no one)",undefined, "location.href='';");
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (You invited no one)",undefined, "location.href='';");
 			            {% if no_track != True %}
 		            		ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_credit_offer:0');
 		            	{% endif %}
@@ -36,27 +90,20 @@ $(document).ready(function()
 		            	ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_credit_offer:' + num_invites.toString());
 		            {% endif %}
 		        	if (num_invites < 10)	
-		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (you invited " + num_invites.toString() +")",undefined, "location.href='';");
+		        		window.alert_modal("Credit Offer Problem","Invite at least 10 friends to receive a free credit. (You invited " + num_invites.toString() +")",undefined, "location.href='';");
 		        	else 
 		        		$.get( "/ajax_add_one_free_credit/", function( data ) {
-		        			window.alert_modal("Thank You","One credit has been added to your account. Thanks for supporting CrushMaven!");
+		        			window.alert_modal("Thank You","One credit has been added to your account!");
 		        		});
 		        });
+			}).fail(function(){
+				window.wait_modal_close();
+				window.alert_modal("Free Credit Offer Problem",'Sorry, we are having problems finding friends of yours to invite.  Please try another option');
 			});
 	});
 
-	window.morph_dialog = function(){
-		window.purchase_dialog_div.dialog('close');
-		window.wait_modal_open("Redirecting to Paypal");
-		$('form').trigger('submit');
-	};
-	
-	$( window ).unload(function() {
-		window.wait_modal_close(); // close the wait modal once we get to paypal, this way if user hits back button we don't still see wait modal
-		});
-
 	$.getScript('{{ STATIC_URL }}qtip/jquery.qtip.min.js').done(function(script,scriptStatus){
-		$(".credit_check_dialog .ui-dialog-titlebar .help_icon").qtip({
+		$(".credit_check_dialog #purchase_title .help_icon").qtip({
 			content:{
 				text:$('#credits_help_content'),
 				title:'What are credits?'
@@ -94,36 +141,36 @@ $(document).ready(function()
 </script>
 
 <div id="credit_check_container" class= "credit_insufficient_container">
-	<div id="feature_description">
-		{{ feature_name }}
+	<div id="feature_description" class="feature_description_insufficient">
+		This is a premium feature that requires {{ feature_cost }} credit. You currently have none.	
 	</div>
-	<div id="site-loading"></div>
 	<div id="purchase_description_container">
-		
-		<span class="credit_amount">You have insufficient credits ({{credit_available}}) to make this purchase.</span>
-	
 	</div><!--  close off purchase_description_container -->
-
-
-<form method="post" action='{{ paypal_url }}' >{% csrf_token %}
-
-	<div id="credit_purchase_selection">
-		<h3 id="purchase_title">Purchase More Credit:</h3>
-		<span class="purchase_option"><input type = "radio" name="amount" value="5" onClick="document.getElementById('item_name_field').value='5 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=5';document.getElementById('notify_url').value='{{paypal_notify_url}}5/'"><span class="credit_option_amount">5 credits</span> for $5 USD</span>
-		<span class="purchase_option"><input type = "radio" name="amount" value="9" checked onClick="document.getElementById('item_name_field').value='10 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=10';document.getElementById('notify_url').value='{{paypal_notify_url}}10/'"><span class="credit_option_amount">10 credits</span> for $9 USD &nbsp;<span class="percentage_bonus">10% off!</span></span>
-		<span class="purchase_option"><input type = "radio" name="amount" value="17" onClick="document.getElementById('item_name_field').value='20 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=20';document.getElementById('notify_url').value='{{paypal_notify_url}}20/'"><span class="credit_option_amount">20 credits</span> for $17 USD &nbsp;<span class="percentage_bonus">15% off!</span></span>
-		<span class="purchase_option"><input type = "radio" name="amount" value="32" onClick="document.getElementById('item_name_field').value='40 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=40';document.getElementById('notify_url').value='{{paypal_notify_url}}40/'"><span class="credit_option_amount">40 credits</span> for $32 USD &nbsp;<span class="percentage_bonus">20% off!</span></span>
-		<span class="purchase_option"><input type = "radio" name="amount" value="75" onClick="document.getElementById('item_name_field').value='100 Credits';document.getElementById('return').value='{{paypal_success_url}}&credit_amount=100';document.getElementById('notify_url').value='{{paypal_notify_url}}100/'"><span class="credit_option_amount">100 credits</span> for $75 USD &nbsp;<span class="percentage_bonus">25% off!</span></span>
-		<img src="{{STATIC_URL}}images/paypal_secure_payments.jpg" id="paypal_image">
-		  <input type="hidden" name="cmd" value="_xclick">
-		  <input type="hidden" id="credit_amount" name="credit_amount" value="10">
-		  <input type="hidden" name="business" value="{{ paypal_email }}">
-		  <input type="hidden" id="item_name_field" name="item_name" value="10 Credits">
-		  <input type="hidden" name="currency_code" value="USD">
-		  <input type="hidden" name="return" id="return" value="{{paypal_success_url}}&credit_amount=10">
-		  <input type="hidden" name="notify_url" id="notify_url" value="{{paypal_notify_url}}10/">
-		  <input type="hidden" name="cancel_return" value="{{ paypal_cancel_url}}/">
-	</div><!-- close off credit_purchase_selection -->
+	<div class="purchase_container">
+		<h3 id="purchase_title">Obtain More Credit<span class='help_icon'>?</span></h3>
+		<div class="purchase_option purchase_option_margin" >
+			<span class="purchase_option_label">Option 1</span>
+			<div class="purchase_option_description">
+					Invite someone else's crush & earn one free credit
+			</div>
+			<div class="purchase_option_button" id="invite_stranger_btn">Invite a Stranger</div>
+		</div>
+		<div class="purchase_option purchase_option_margin">
+			<span class="purchase_option_label">Option 2</span>
+			<div class="purchase_option_description">
+				Invite at least ten friends & earn one free credit
+			</div>
+			<div class="purchase_option_button" id="obtain_free_credit_btn">Invite Your Friends</div>
+		</div>
+		<div class="purchase_option">
+			<span class="purchase_option_label">Option 3</span>
+			<div class="purchase_option_description">
+				Purchase more credit using your credit card or PayPal
+			</div>
+			<div class="purchase_option_button" onclick="location.href='/settings_credits/';">Purchase Credit</div>
+		</div>
+	</div><!-- close off purchase container -->
+	{% comment %}
 	<div class="ui-dialog-buttonpane">
 		<!-- <span id="purchase_button_description">You will be directed to PayPal</span> -->
 		<div class="ui-dialog-buttonset paypal_redirect_buttonset">
@@ -131,8 +178,7 @@ $(document).ready(function()
 		<button type='button' onclick="window.purchase_dialog_div.dialog('close');window.offer_free_credit();" class="ui-button site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button" ><span class="ui-button-text">{% if request.user.site_credits == 0 %}or earn free credit{% else %}cancel{% endif %}</span></button> 
 		</div>
 	</div><!-- close off button_bar -->
-</form>
-
+	{% endcomment %}
 </div> <!-- close off credit_check_container -->
 
 <span class="help_dialog_content" id="credits_help_content">
@@ -199,13 +245,3 @@ You can always purchase more credits from within the settings menu (in the top r
 	</div><!-- close off buttonpane -->
 </div>
 {% endcomment %}
-<div id="credit_offer_modal" title="Earn Free Credit!">
-<div class="modal_container">Invite at least ten friends on Facebook, and you'll instantly receive one free credit to use anywhere on the site!
-</div><!-- close off buttonpane -->	
-<div class="ui-dialog-buttonpane">
-<div class="ui-dialog-buttonset">
-	<button type='button' onclick="location.href='';" class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button" ><span class="ui-button-text">No Thanks</span></button> 
-	<button id="obtain_free_credit_btn" type='button' class="site_dialog_button" ><span class="ui-button-text">Let's Do It!</span></button> 
-</div><!-- close off buttonset -->
-</div><!-- close off buttonpane -->
-</div>

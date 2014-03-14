@@ -216,7 +216,6 @@ a.button {
 	border:none!important;
 }
 
-
 .ui-dialog-titlebar {
 	padding-top:15px!important;
 	background:white!important;
@@ -3308,8 +3307,8 @@ ul.bxslider_element #slide_overlay {
 /* ===========================  Credit Sufficient Dialog ========================= */
 
 .credit_check_dialog .help_icon{
-	top:11px;
-	right:5px;
+	top:3px;
+	right:9px;
 }
 
 #credit_check_container #site-loading {
@@ -3329,18 +3328,22 @@ ul.bxslider_element #slide_overlay {
 	background:rgb(102,102,255);
 	background:#2E8AE6;
 	width:100%;
-	padding:5px 15px;
+	padding:5px 15px 5px 20px;
 	color:white;
 	font-weight:normal;
 	font-size:12px;
 	position:relative;
 }
+
 #credit_check_container #purchase_description_container{
 	margin:0 auto!important;
 	display:table;
-	padding:20px 0 10px 0px;
-	padding:20px 15px 20px 15px;
+	padding:25px 15px;
 	line-height:24px;
+}
+
+.credit_insufficient_container #purchase_description_container{
+	padding-bottom:15px!important;
 }
 .credit_amount{
 	color:red;
@@ -3352,13 +3355,14 @@ ul.bxslider_element #slide_overlay {
 	display:block;
 	font-weight:bold;
 	font-size:14px;
-	margin-bottom:10px;
+	margin-bottom:25px;
 	background:none;
-	padding:5px 0px 0px 0px;
-	margin-left:-5px;
-	color:black;
-	#border-radius:6px 6px 0 0;
-	#border-top:1px solid #E2E2E2;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	width:190px;
+	position:relative;
+	padding:0px 15px 0px 0px;
 }
 #credit_purchase_selection{
 	display:inline-block;
@@ -3451,6 +3455,62 @@ ul.bxslider_element #slide_overlay {
 .credit_check_dialog .paypal_redirect_buttonset #credit_deduct_ok {
 	#margin-right:2px;
 }
+
+
+.credit_insufficient_container .purchase_container{
+	padding:20px 15px 25px 15px;
+}
+
+.purchase_option {
+	display:inline-block;
+	padding:15px 10px 10px 10px;
+	width: 160px;
+	border:1px solid gray;
+	border-radius:10px;
+	vertical-align:top;
+	position:relative;
+}
+.purchase_option_margin{
+	margin-right:5px;
+}
+
+.purchase_option_label{
+	position:absolute;
+	top:-9px;
+	left:45px;
+	background:#2E8AE6;
+	border-radius:5px;
+	height:16px;
+	#width:16px;
+	padding: 0px 5px;
+	font-size:10px;
+	margin-right:5px;
+	text-align:center;
+	vertical-align:top;
+	color:white;
+	display:inline-block;
+}
+
+.purchase_option_title{
+	display:inline-block;
+}
+.purchase_option_description{
+	text-align:center;
+}
+.purchase_option_button{
+	text-align:center;
+	margin-top:10px;
+	margin-bottom:5px;
+	padding:5px;
+	background-color:#1F57FF;
+	color:white;
+	border-radius:5px;
+}
+.purchase_option_button:hover{
+	cursor:pointer;
+	background-color:#003DF5;
+}
+
 /* ===========================  Response Dialog  ========================= */
 
 #response_no_match {

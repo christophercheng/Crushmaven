@@ -330,23 +330,23 @@ LINEUP_STATUS_CHOICES = {
 
 FEATURES = {
     '1': {
-        'NAME': 'View the rest of your lineup for 1 credit', 
+        'NAME': 'View the rest of your lineup', 
         'COST': 1,      
     },
     '2': {
-        'NAME':'View your crush\'s response for 1 credit',
+        'NAME':'View your crush\'s response',
         'COST': 1,
     },
     '3': {
-        'NAME':"See why your crush said they weren't interested in you for 1 credit",
+        'NAME':"See why your crush isn't interested",
         'COST': 1,
     },
     '4': {
-        'NAME':"Converse with your crush over the next 2 weeks for 2 credits",
+        'NAME':"Converse for 2 Weeks",
         'COST': 2,
     },
     '5': {
-        'NAME':"Invite Crush via Facebook for 1 credit",
+        'NAME':"Invite you crush via Facebook",
         'COST': 1,
     },
 }

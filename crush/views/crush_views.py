@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import simplejson
 from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastPhone
 import json,urllib2
-import datetime
+import datetime,random
 from django.core.cache import cache
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch,user_can_be_messaged
@@ -330,6 +330,55 @@ def ajax_get_noinvite_crush_array(request):
         crush_array.append(friend['uid'])
     return_data['data']=crush_array
     return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
+
+@login_required
+def ajax_get_random_inactive_crush(request):
+    
+    return_data={}
+    inactive_stranger = FacebookUser.objects.all()[1]
+    return_data['crush_short_name'] = inactive_stranger.first_name.capitalize() + " " + inactive_stranger.last_name[0].capitalize() + "."
+    return_data['recipient_id']=inactive_stranger.username
+    return_data['crush_first_name'] = inactive_stranger.first_name
+    return_data['crush_last_name']=inactive_stranger.last_name
+    return_data['crush_gender']=inactive_stranger.gender
+    return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
+    
+    
+    
+    me=request.user
+    return_data = {} # { user:{'num_admirers': num_admirers,'elapsed_time':elapsed_time}, ... } if process_right_sidebar==None: # friends-with-admirer section has been processed before and does not need to be processed
+    all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY)   
+    if all_invite_inactive_user_list == None or len(all_invite_inactive_user_list) < 10:# for some reason there is not data in cache's inactive user list - most likely cause we're on development node
+        return HttpResponseForbidden("") # don't process this here
+
+    total_inactive_users=len(all_invite_inactive_user_list)
+    # get 5 random index numbers to pull from list
+    user_indices=[]
+    count=0
+    current_user_crush_targets = me.crush_targets.all()
+    current_user_friends_with_admirers=me.friends_with_admirers.all()
+    while (len(return_data) < 1 and count < 25):
+        count=count+1
+        temp_index = random.randint(0,total_inactive_users-1)
+        if temp_index not in user_indices:
+            user_indices.append(temp_index)
+            try:
+                inactive_stranger = FacebookUser.objects.get(is_active=False,username=all_invite_inactive_user_list[temp_index])
+                # ensure that user with given username is not a crush of current user nor is a friend (with admirer)
+                if inactive_stranger not in current_user_crush_targets and inactive_stranger not in current_user_friends_with_admirers and me not in inactive_stranger.friends_that_invited_me.all():
+                
+                    
+                    return_data['crush_short_name'] = inactive_stranger.first_name.capitalize() + " " + inactive_stranger.last_name[0].capitalize() + "."
+                    return_data['recipient_id']=inactive_stranger.username
+                    return_data['crush_first_name'] = inactive_stranger.first_name
+                    return_data['crush_last_name']=inactive_stranger.last_name
+                    return_data['crush_gender']=inactive_stranger.gender
+            except:
+                pass
+    if len(return_data) < 1:
+        return HttpResponseForbidden("") 
+    else:
+        return HttpResponse(simplejson.dumps(return_data),mimetype='application/json')
 
 # give user an extra credit if their current credit is zero - used if user comleted some sort of free credit offer e.g. invite minimum number of facebook friends to app
 @login_required

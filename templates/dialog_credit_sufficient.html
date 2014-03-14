@@ -1,6 +1,7 @@
 <script>
 $(document).ready(function() 
 {
+	$('.ui-dialog-title').html('{{ feature_name }}');
 	$('#credit_check_modal').on('click','#credit_deduct_ok[feature_id="{{feature_id}}"]',function(e) {	
 		// call ajax post function to deduct credit and call related handler
 	 	window.wait_modal_open();
@@ -55,7 +56,7 @@ $(document).ready(function()
 
 <div id="credit_check_container">
 	<div id="feature_description">
-		{{ feature_name }}
+		This is a premium feature that requires {{ feature_cost }} credit
 	</div>
 	<div id="purchase_description_container">
 

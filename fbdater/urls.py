@@ -101,6 +101,8 @@ urlpatterns += patterns('crush.views.crush_views',
     (r'^ajax_get_noinvite_crush_array/$','ajax_get_noinvite_crush_array'),
     
     (r'^ajax_get_invite_crush_array/$','ajax_get_invite_crush_array'),
+    
+    (r'^ajax_get_random_inactive_crush/$','ajax_get_random_inactive_crush'),
 
     (r'^ajax_add_one_free_credit/$','ajax_add_one_free_credit'),
     
