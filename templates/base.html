@@ -259,27 +259,28 @@ jQuery(document).ready(function($) {
 		$("#app_referral_modal").html('<div id="site-loading"></div>');
 		// get excluded ids (of existing crushes)
 				// call facebook requests dialog with excluded ids
-		        FB.ui({method: 'apprequests',
-		            message: "Check Out CrushMaven",
-		            to:invite_list,
-		            title:'Increase your odds of getting a response!'
+        FB.ui({method: 'apprequests',
+            message: "Check Out CrushMaven",
+            to:invite_list,
+            title:'Increase your odds of getting a response!'
 
-		        }, function(response){
-		        	if (response.to != undefined){
-			        	var num_invites = response['to'].length;
-			            {% if no_track != True %}
-			            	ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:' + num_invites.toString());
-			            {% endif %}
-		        	}
-		        	else {
-			            {% if no_track != True %}
-		            		ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:0');
-		            	{% endif %}
-		        	}
-			        window.app_referral_modal.dialog('close');
-		        	// track how many invites were sent out through google events
-			        location.href="/your_crushes/";
-		        });
+        }, function(response){
+
+        	if (response != null && response.to != undefined){
+	        	var num_invites = response['to'].length;
+	            {% if no_track != True %}
+	            	ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:' + num_invites.toString());
+	            {% endif %}
+        	}
+        	else {
+	            {% if no_track != True %}
+            		ga('send', 'event', 'button', 'click', 'stat:fb_friends_invited_via_crush_addition:0');
+            	{% endif %}
+        	}
+	        window.app_referral_modal.dialog('close');
+        	// track how many invites were sent out through google events
+	        location.href="/your_crushes/";
+        });
 	});
 	
 	window.launch_app_invite_dialog = function(current_crush_number,total_crushes,delayed_invite){
