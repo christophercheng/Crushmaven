@@ -102,7 +102,8 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
                 facebook_email_address=friend_data['username'] + "@facebook.com"
                 mf_first_name = friend['name'].split(' ', 1)[0]              
                 try:
-                    send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
+                    if me.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+                        send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
                 except:
                     pass # process next mutual friend
         except Exception as e:

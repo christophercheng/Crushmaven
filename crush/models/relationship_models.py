@@ -368,6 +368,8 @@ class CrushRelationship(BasicRelationship):
             
     def notify_inactive_crush_on_facebook(self):                        
         query_string=self.target_person.username + "?fields=username"
+        if self.source_person.username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+            return
         try:
             data = graph_api_fetch(self.source_person.access_token,query_string,False)
             fb_username=data['username'] 
