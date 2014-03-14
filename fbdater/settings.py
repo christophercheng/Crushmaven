@@ -297,6 +297,7 @@ MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS=30
 MINIMUM_INVITE_RESEND_DAYS=7 # DEFAULT = 7 (days)
 NUMBER_ADMIRER_FRIENDS_TO_INVITE=20 #DEFAULT=20 used to determine number of friends to ask admirer to invite
 MAXIMUM_CRUSHES=50
+SEND_NOTIFICATIONS=True
 #PLATONIC_RATINGS = {
 #                    5:'Very attractive - just not for me',
 #                    4:'Somewhat attractive - just not for me', 

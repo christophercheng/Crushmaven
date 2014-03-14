@@ -379,7 +379,7 @@ class CrushRelationship(BasicRelationship):
         except:
             pass 
                      
-    def notify_source_person(self):
+    def notify_source_person(self, send_time=None):
        
         #print "notifying the source person of a change in target status: " + str(self.target_status)
         target_status=self.target_status
@@ -391,17 +391,7 @@ class CrushRelationship(BasicRelationship):
         first_name = target_person.first_name
         pronoun_subject = target_person.get_gender_pronoun_subject()
         pronoun_possessive = target_person.get_gender_pronoun_possessive()
-        send_time=None
-        
-        # removing crush signed up notification (june 7) for simplification of application in v1
-        #if (target_status==2 and source_person.bNotify_crush_signed_up==True): # user signed up
-        #    subject= target_person_name + " signed up!"
-        #    message=target_person_name + " signed up!"
-        
-        # don't send crush lineup started notifications any longer
-        #elif (target_status==3 and source_person.bNotify_crush_started_lineup==True): # user started line up
-        #    subject= target_person_name + " started your secret admirer lineup!"
-        #    message=target_person_name + " started your secret admirer lineup!  Expect a response soon."
+
         if (target_status > 3): # user responded
             source_notified=False
             if self.is_results_paid == True: # target person changed their mind
@@ -424,7 +414,7 @@ class CrushRelationship(BasicRelationship):
                 if (source_person_email):
                     crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
                     source_notified=True
-                if source_notified:
+                if source_notified and self.pk: # only save the new instance field if the object has laready been created, else we will have infinite loop bug
                     self.date_source_last_notified=datetime.now()
                     self.save(update_fields=['date_source_last_notified'])
 
@@ -475,7 +465,6 @@ def pre_delete_crush_relationship(sender, instance, using, **kwargs):
 @receiver(pre_save, sender=CrushRelationship)
 @transaction.commit_on_success # rollback entire function if something fails
 def pre_save_crush_relationship(sender, instance, **kwargs): 
-    perform_source_person_notification=False # this is used to delay sending source person notification till after crushrelationship super object saved (notify_source_person calls save function which could result in infinite loop
     print "calling save on crush relationship"
     if (not instance.pk): # this is a newly created crush relationship
         try:  # make sure we're not adding a duplicate
@@ -522,14 +511,6 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
             instance.updated_flag = True #show 'new' or 'updated' on crush relation block
             # save the reciprocal crush relationship to database
             reciprocal_relationship.save(update_fields=['target_status','date_target_responded','updated_flag'])
-            
-            # CHC 07 01 13 COMMENTING OUT THIS BLOCK BECAUSE I THINKN IT"S REDUNDANT LOGIC CHAIN FROM ABOVE
-            #if reciprocal_relationship.is_results_paid==True: # i think this is repetitive logic from up above 7/1/13 CHC
-                # edge case handling - the crush used to be a platonic friend and we need to auto set the date_target_responded cause no other process will do this
-            #   response_wait= random.randint(settings.CRUSH_RESPONSE_DELAY_START, settings.CRUSH_RESPONSE_DELAY_END)
-            #    self.date_target_responded=datetime.now() + timedelta(minutes = response_wait)
-                # notify the source person (notification will go out at the future date_target_responded time
-            #    self.notify_source_person()
                 
         except CrushRelationship.DoesNotExist: # did not find an existing reciprocal crush relationship          
             try:  # Now look for a reciprocal platonic relationship (crush previously added admirer as platonic friend in a lineup)
@@ -544,7 +525,7 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
                 instance.updated_flag = True #show 'new' or 'updated' on crush relation block
                 # notify the source person (notification will go out at the future date_target_responded time
                 #self.notify_source_person()
-                perform_source_person_notification=True
+                instance.notify_source_person()
             except PlatonicRelationship.DoesNotExist:
                 # print "did not find a reciprocal platonic or crush relationship"
                 if instance.target_person.is_active == True:
@@ -577,8 +558,7 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
                     if reciprocal_crush_relationship.date_source_last_notified==None:
                         # set the reciprocal crush relationship date_target_responded field
                         reciprocal_crush_relationship.date_target_responded=datetime.now()
-                        reciprocal_crush_relationship.date_source_last_notified=datetime.now()
-                        reciprocal_crush_relationship.save(update_fields=['date_target_responded','date_source_last_notified'])
+                        reciprocal_crush_relationship.save(update_fields=['date_target_responded'])
                         # send the other relationship's admirer a notification
                         reciprocal_crush_relationship.notify_source_person()
                         
@@ -591,7 +571,4 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
             if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != instance.target_status):
                 #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                 #self.notify_source_person()
-                perform_source_person_notification=True
-                
-    if perform_source_person_notification:
-        instance.notify_source_person()
+                instance.notify_source_person()

@@ -15,6 +15,7 @@ STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message='',send_time=None):
         if settings.SEND_NOTIFICATIONS==False:
+            logger.debug("sending email from: " + from_string + " to email: " + email_address + " with subject: " + subject)
             return
         try:
             data_dict={"from": from_string,\
