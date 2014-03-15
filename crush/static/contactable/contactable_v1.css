@@ -13,10 +13,11 @@
 	overflow:hidden;
 	position:fixed;
 	width:155px;
-	z-index:145;
+	z-index:45;
 	right:12px;
 	letter-spacing:1.25px;
 	text-shadow:1px 1px 0px #000;
+	display:none;
 }
 #contactable #contactable_inner:hover {
 	color:white;
@@ -35,10 +36,18 @@
 	padding-left:0px;
 	position:fixed;
 	width:380px;
-	z-index:145;
+	z-index:45;
 	right:12px;
 	text-align:center;
-}	
+}
+
+#contactable.contact_footer #contactForm{
+	bottom:86px;
+	}
+	
+#contactable.contact_footer #contactable_inner {
+	bottom:-23px;
+	}
 
 #contactable #contactForm input, #contactable #contactForm textarea {
 	background:#FFFFFF none repeat scroll 0 0;

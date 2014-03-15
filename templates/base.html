@@ -676,12 +676,14 @@ $('.bt-fs-dialog').click(function(){
 });
 
 {% if request.user.email == '' or not request.user.is_email_verified %}
-	setTimeout(function(){$('.footer').animate({height:'+=38'},500);},1500);
+	$('#contactable_inner').hide();
+	setTimeout(function(){$('.footer').animate({height:'+=38'},500);setTimeout(function(){$('#contactable_inner').fadeIn(1000);},500);},1500);
 	$('.resend_verify_email').click(function(){
 		$(this).replaceWith('&nbsp;(resent)');
 		$.get('/ajax_resend_verification_email');
 	})
 {% else %}
+	setTimeout(function(){$('#contactable_inner').fadeIn(1000);},1500);
 	{% if 'verified_email' in request.GET  %}
 
 		window.alert_modal('Email Verification','Your email, {{ request.user.email }}, has been verified.  Thank you!');
@@ -757,7 +759,7 @@ Send a Facebook invite to the following users we've picked to improve your chanc
 </div>
 <div id="credit_check_modal" title="Premium Feature"></div>
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>
-<div id="contactable"></div><!-- contactable html placeholder -->
+<div id="contactable"  {% if not request.user.is_email_verified %}class="contact_footer"{% endif %}></div><!-- contactable html placeholder -->
 <div id="fb-root"></div>
 <script>
 

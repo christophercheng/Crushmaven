@@ -479,6 +479,7 @@ a.button {
 	width:975px;
 	margin-left: auto;
 	margin-right:auto;
+	position:relative;
 }
 .inner_footer_container{
 
@@ -4882,6 +4883,15 @@ ul.bxslider_element #slide_overlay {
     .footer{
     	display:none;
     }
+    
+    #contactable.contact_footer #contactForm{
+		bottom:46px!important;
+	}
+	#contactable.contact_footer #contactable_inner {
+		bottom:-63px!important
+	}
+    
+    
     .main_container{
     margin-top:0px!important;
     }
@@ -4910,6 +4920,12 @@ ul.bxslider_element #slide_overlay {
      .footer{
     	display:none;
     }
+        #contactable.contact_footer #contactForm{
+		bottom:46px!important;
+	}
+	#contactable.contact_footer #contactable_inner {
+		bottom:-63px!important
+	}
     .main_container{
     margin-top:0px!important;
     }
@@ -4937,6 +4953,12 @@ ul.bxslider_element #slide_overlay {
      .footer{
     	display:none;
     }
+        #contactable.contact_footer #contactForm{
+		bottom:46px!important;
+	}
+	#contactable.contact_footer #contactable_inner {
+		bottom:-63px!important
+	}
     .main_container{
     margin-top:0px!important;
     }
@@ -4965,6 +4987,12 @@ ul.bxslider_element #slide_overlay {
     .footer{
     	display:none;
     }
+        #contactable.contact_footer #contactForm{
+		bottom:46px!important;
+	}
+	#contactable.contact_footer #contactable_inner {
+		bottom:-63px!important
+	}
     .left_sidebar,.center_panel{
     margin-left:0px;
     }	
@@ -4992,6 +5020,12 @@ ul.bxslider_element #slide_overlay {
     .footer{
     	display:none;
     }
+        #contactable.contact_footer #contactForm{
+		bottom:46px!important;
+	}
+	#contactable.contact_footer #contactable_inner {
+		bottom:-63px!important
+	}
     .main_container{
     margin-top:0px!important;
     }
