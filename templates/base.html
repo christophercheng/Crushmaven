@@ -498,12 +498,13 @@ jQuery(document).ready(function($) {
 		window.wait_modal_open();
 		FB.api('/?id='+ share_link + '&scrape=true','POST',{scrape : 'true'},function(response){ // trigger facebook scraper to examine this page
 			if (!response || response.error){
+				console.log(response);
 				window.wait_modal_close();
 				window.alert_modal("Facebook Messaging Problem","Sorry, but we're having difficulty cooking up a message through Facebook.  Please try again later");
 			}
 			else {
 		  	FB.ui({method: 'send',
-		  				name: crush_short_name + "'s friend added " + crush_gender_pronoun_object + "!",
+		  				//name: crush_short_name + "'s friend added " + crush_gender_pronoun_object + "!",
 		  				to: recipient_id,
 		  				link: share_link,
 		      },
