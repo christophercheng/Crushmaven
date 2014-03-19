@@ -491,11 +491,13 @@ class InviteInactiveUserManager(UserManager):
     # called whenever the caache is empty 
     # it rebuilds the cache and returns the cache value    
     def rebuild_invite_inactive_crush_list(self):
+        logger.debug("rebuild_invte_inactive_crush_list called")
         invite_inactive_crush_list = []
         invite_inactive_users = crush.models.user_models.InviteInactiveUser.objects.all()
         for user in invite_inactive_users:
             invite_inactive_crush_list.append(user.username)
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,invite_inactive_crush_list)
+        logger.debug("rebuild_invte_inactive_crush_list returned list with number elements:" + str(len(invite_inactive_crush_list)))
         return invite_inactive_crush_list    
 # InviteInactiveUserClass just holds a reference to an inactive user who can be messaged via Facebook from a stranger
 # instances should be deleted once user activates
