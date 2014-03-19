@@ -39,7 +39,10 @@ class Command(NoArgsCommand):
             inactive_username=inactive_user.username
             if user_can_be_messaged(magic_cookie,inactive_username):
                 all_invite_inactive_crush_list.append(inactive_username)
-                InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
+                try:
+                    InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
+                except:
+                    pass
                 logger.debug(str(count) + ": adding " + str(inactive_username) + " to invite cache")
             else:
                 logger.debug(str(count) + ": excluding " + str(inactive_username) + " to invite cache")
