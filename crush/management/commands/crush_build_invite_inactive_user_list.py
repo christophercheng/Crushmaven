@@ -12,7 +12,7 @@ However, if the cache ever gets out of whack for some odd reason, this command w
 #from __future__ import unicode_literals
 from django.core.management.base import NoArgsCommand
 from django.core.cache import cache
-from crush.models.user_models import FacebookUser
+from crush.models.user_models import FacebookUser,InviteInactiveUser
 from django.conf import settings
 from crush.utils import user_can_be_messaged
 from django.db.models import Count
@@ -39,6 +39,7 @@ class Command(NoArgsCommand):
             inactive_username=inactive_user.username
             if user_can_be_messaged(magic_cookie,inactive_username):
                 all_invite_inactive_crush_list.append(inactive_username)
+                InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
                 logger.debug(str(count) + ": adding " + str(inactive_username) + " to invite cache")
             else:
                 logger.debug(str(count) + ": excluding " + str(inactive_username) + " to invite cache")
