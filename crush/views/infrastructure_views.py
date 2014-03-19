@@ -366,7 +366,7 @@ def admirer_for(request,first_name,last_initial):
                               {
                                'change_title': 'Please let ' + first_name + " " + last_initial + '. know they have an admirer (a friend of theirs)', 
                                'change_description': "CrushMaven is the new matchmaking service that anonymously finds out if someone you like feels the same. Learn more at www.crushmaven.com.",
-                               'change_url':"https://apps.facebook.com/crushmaven/admirer_for/" + first_name + "/" + last_initial + "/",
+                               'change_url':"http://www.crushmaven.com/facebook_notification/admirer_for/" + first_name + "/" + last_initial + "/",
                                'facebook_app_id':settings.FACEBOOK_APP_ID
                                })    
     return HttpResponse("")
