@@ -7,7 +7,7 @@ from relationship_models import PlatonicRelationship
 from relationship_models import CrushRelationship
 from miscellaneous_models import InviteEmail
 from miscellaneous_models import Purchase
-from user_models import FacebookUser
+from user_models import FacebookUser,InviteInactiveUser
 from miscellaneous_models import PastPhone
 
 

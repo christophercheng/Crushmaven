@@ -176,13 +176,21 @@ class FacebookUserManager(UserManager):
         if dirty_flag:
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
         # update the cache invite inactive user list
+        try:
+            invite_inactive_person = InviteInactiveUser.objects.get(invite_inactive_person=user)
+            invite_inactive_person.delete()
+        except:
+            pass
         all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[])
+        if all_invite_inactive_user_list==[]:
+            all_invite_inactive_user_list=InviteInactiveUser.objects.rebuild_invite_inactive_crush_list()
         dirty_flag=False
         try:
             all_invite_inactive_user_list.remove(user.username)
             dirty_flag=True
         except :
             pass
+
         if dirty_flag:
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
         # get friends of user who are active user's of application
@@ -437,13 +445,22 @@ def update_cached_inactive_crush_list(sender, instance, **kwargs):
             except :
                 pass
                 all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
-        all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY) 
+        all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[])
+        if all_invite_inactive_user_list==[]:
+            all_invite_inative_user_list = InviteInactiveUser.objects.rebuild_invite_inactive_crush_list() 
         if all_invite_inactive_user_list != None:    
             try:
                 all_invite_inactive_user_list.remove(instance.username)
                 cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_user_list)
             except :
                 pass
+        try:
+            invite_inactive_person = InviteInactiveUser.objects.get(invite_inactive_person=instance)
+            invite_inactive_person.delete()
+        except:
+            pass
+            
+            
 
      
 # used for message-write: recipient auto lookup     
@@ -468,3 +485,28 @@ class NamesLookup(object):
             this is for displaying the currently selected items (in the case of a ManyToMany field)
         """
         return FacebookUser.objects.filter(pk__in=ids).order_by('first_name','last_name')
+
+class InviteInactiveUserManager(UserManager):
+
+    # called whenever the caache is empty 
+    # it rebuilds the cache and returns the cache value    
+    def rebuild_invite_inactive_crush_list(self):
+        invite_inactive_crush_list = []
+        invite_inactive_users = crush.models.user_models.InviteInactiveUser.objects.all()
+        for user in invite_inactive_users:
+            invite_inactive_crush_list.append(user.username)
+        cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,invite_inactive_crush_list)
+        return invite_inactive_crush_list    
+# InviteInactiveUserClass just holds a reference to an inactive user who can be messaged via Facebook from a stranger
+# instances should be deleted once user activates
+# this class is just used to populate the invite_inactive list cache (whenever it is deleted)
+class InviteInactiveUser(models.Model):
+    
+    class Meta: 
+    # this allows the models to be broken into separate model files
+        app_label = 'crush' 
+        
+    invite_inactive_person=models.ForeignKey(FacebookUser)
+    objects = InviteInactiveUserManager()
+    
+    

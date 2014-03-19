@@ -2,11 +2,10 @@ from django.http import HttpResponse,HttpResponseNotAllowed
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from urllib2 import HTTPError
-from crush.models import CrushRelationship,FacebookUser
+from crush.models import CrushRelationship,FacebookUser,InviteInactiveUser
 from datetime import datetime,timedelta
 from django.core.cache import cache
 from django.conf import settings
-from django.db.models import Count
 import random
 # import the logging library
 import logging
@@ -69,7 +68,9 @@ def get_friends_with_admirer_data(me):
 
 def get_strangers_with_admirer_data(me):
     strangers_with_admirer_data={} # { user:{'num_admirers': num_admirers,'elapsed_time':elapsed_time}, ... } if process_right_sidebar==None: # friends-with-admirer section has been processed before and does not need to be processed
-    all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY)   
+    all_invite_inactive_user_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[])
+    if all_invite_inactive_user_list==[]:
+        all_invite_inactive_user_list = InviteInactiveUser.objects.rebuild_invite_inactive_crush_list()   
     if all_invite_inactive_user_list == None or len(all_invite_inactive_user_list) == 0:# for some reason there is not data in cache's inactive user list - most likely cause we're on development node
         return None # don't process this here
     if all_invite_inactive_user_list != None and len(all_invite_inactive_user_list) > 10:

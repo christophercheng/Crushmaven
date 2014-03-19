@@ -8,6 +8,7 @@ import time
 from crush.utils_email import send_mailgun_email
 from selenium import webdriver
 import os
+#from crush.models.user_models import InviteInactiveUser
 
 
 # Get an instance of a logger
@@ -120,4 +121,6 @@ def user_can_be_messaged(magic_cookie,username):
             return True
     except:
         return False
+
+        
  

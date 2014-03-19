@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import simplejson
-from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastPhone
+from crush.models import CrushRelationship, PlatonicRelationship, FacebookUser, InviteEmail,LineupMember,PastPhone,InviteInactiveUser
 import json,urllib2
 import datetime,random
 from django.core.cache import cache
@@ -67,6 +67,8 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
         adjust_associated_lineup_members(me,user,True)
     all_inactive_crush_list = cache.get(settings.INACTIVE_USER_CACHE_KEY,[])
     all_invite_inactive_crush_list = cache.get(settings.INVITE_INACTIVE_USER_CACHE_KEY,[]) 
+    if all_invite_inactive_crush_list==[]:
+        all_invite_inactive_crush_list = InviteInactiveUser.objects.rebuild_invite_inactive_crush_list()
 
     if settings.SEND_NOTIFICATIONS==False:
         magic_cookie='147%3At-_nYdmJgC5hxw%3A2%3A1394001634%3A15839'
@@ -90,6 +92,7 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
             if user_can_be_messaged(magic_cookie,inactive_username):
                 all_invite_inactive_crush_list.append(inactive_username)
                 invite_list_dirty_flag=True
+                InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
                 
         # invite all of the mutual friends
         fb_query_string = str(me.username + '/mutualfriends/' + inactive_username)
