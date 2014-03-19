@@ -5,7 +5,7 @@ Created on Mar 4, 2013
 '''
 
 from django.contrib import admin
-from crush.models.user_models import FacebookUser
+from crush.models.user_models import FacebookUser,InviteInactiveUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
 from crush.models.miscellaneous_models import Purchase,InviteEmail,PastPhone
 from crush.models.lineup_models import LineupMember
@@ -66,6 +66,10 @@ class PastPhoneAdmin(admin.ModelAdmin):
     fields=('phone','date_phone_invite_last_sent')
     raw_id_fields=('user',)
 
+class InviteInactiveUserAdmin(admin.ModelAdmin):
+    list_display = ('invite_inactive_person__username','invite_inactive_person__last_name','invite_inactive_person__first_name','invite_inactive_person__gender') # what columns to display
+    search_fields = ('invite_inactive_person__username','invite_inactive_person__last_name','invite_inactive_person__first_name') # what the search box searches against
+
 admin.site.register(FacebookUser,FacebookUserAdmin)
 admin.site.register(CrushRelationship,CrushRelationshipAdmin)
 admin.site.register(PlatonicRelationship,PlatonicRelationshipAdmin)
@@ -73,3 +77,4 @@ admin.site.register(LineupMember,LineupMemberAdmin)
 admin.site.register(Purchase,PurchaseAdmin)
 admin.site.register(InviteEmail,InviteEmailAdmin)
 admin.site.register(PastPhone,PastPhoneAdmin)
+admin.site.register(InviteInactiveUser,InviteInactiveUserAdmin)
