@@ -293,7 +293,6 @@ class FacebookUser(AbstractUser):
         if all_inactive_user_list==None:
             logger.debug("updating cache with new all_inactive_user_list")
             all_inactive_user_list = list(FacebookUser.objects.filter(Q(is_active=False),~Q(crush_crushrelationship_set_from_target=None)).values_list('username',flat=True))
-            print str(all_inactive_user_list)
             cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_user_list)
             # don't set INVITE_INACTIVE_USER_CACHE list cause we don't want people that can't be invited, and we don't want to process list from scratch
             
