@@ -1150,6 +1150,7 @@ a.logo img{
 	width:100%;
 	border-bottom:1px solid #C6C6CC;
 	border-radius:5px;
+	display:inline-block;
 }
 
 .strangers_referral_bar li a{
@@ -1162,6 +1163,7 @@ color:#3b5998!important;
 	-webkit-transition-property:background-color;
 	border:1px solid #666676;	
 }
+
 
 .friend_referral_bar li.no_friends{
 	background-color:white!important;
