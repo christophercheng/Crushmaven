@@ -293,23 +293,16 @@ jQuery(document).ready(function($) {
 			 if (!delayed_invite){
 				window.wait_modal_open();
 
-				$.get( "/ajax_get_invite_crush_array/", function( data ) { 
-					window.wait_modal_close();
+				if (!window.app_referral_modal){
+					window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:490, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+					$(".app_referral_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
+					var crush_referral_list = $('.strangers_referral_bar').html()
+					$(".app_referral_dialog").find(".crush_referral_list").html(crush_referral_list);
+				}
+				window.app_referral_modal.dialog('open');
+				window.app_invite_list = data;
+				$(':focus').blur();
 
-					if (data != ""){
-						if (!window.app_referral_modal){
-							window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:510, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-							$(".app_referral_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
-							var crush_referral_list = $('.strangers_referral_bar').html()
-							$(".app_referral_dialog").find(".crush_referral_list").html(crush_referral_list);
-						}
-						window.app_referral_modal.dialog('open');
-						window.app_invite_list = data;
-						$(':focus').blur();
-					}
-					else 
-						location.href="/your_crushes/";
-				})
 			}
 			return;
 		}
@@ -524,13 +517,19 @@ jQuery(document).ready(function($) {
 								if (xhr.status==405)
 									reauthorize_user();
 				  			});
+					         if ($('#app_referral_modal').dialog('isOpen')){
+					        	 $('#app_referral_modal').dialog('close');
+					        	 $('.app_referral_dialog').find('.close_icon').remove();
+					        	 location.href="/your_crushes/";
+					         }
 		  				} //close off if (response != null) 
+
 		      }      
 		    );// close off fb.ui
 		   }}); // close off FB.api
   }; // close off send_fb_invite
    
-  $(".right_sidebar_container").on('click', '#send_fb_invite', function(){
+  $('body').on('click', '#send_fb_invite', function(){
            var crush_id = $(this).attr('crush_username');
            var crush_name = $(this).attr('crush_name');
            var crush_first_name = $(this).attr('crush_first_name');
@@ -750,7 +749,7 @@ $('.bt-fs-dialog').click(function(){
 	<div class="dialog_container">
 	Invite someone else's crush, and we'll ask others to do the same for your crushes.  <div class="dialog_container_subtitle">Select one of these crushes to invite:</div>
 	</div>
-	<ul class="crush_referral_list">
+	<ul class="crush_referral_list friend_referral_bar">
 	</ul>
 </div>
 <div id="credit_check_modal" title="Premium Feature"></div>

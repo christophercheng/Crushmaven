@@ -1036,6 +1036,7 @@ a.logo img{
 	width:190px;
 	position:relative!important;
 	margin-bottom:25px;
+	list-style: none;
 }
 
  .friend_referral_bar li#no_friends {
@@ -1069,6 +1070,8 @@ a.logo img{
   .friend_referral_bar li#no_friends a:hover {
   text-decoration:underline;
   }
+  
+
  
  .friend_referral_bar li.friend_with_admirer {
 	position:relative;
@@ -1079,6 +1082,16 @@ a.logo img{
 	border-radius:5px;
 }
 
+.crush_referral_list{
+	margin-left:20px;
+	margin-top:-20px;
+	width:100%;
+	
+}
+  .crush_referral_list li.friend_with_admirer {
+  width:210px;
+  display:inline-block;
+  }
 .friend_referral_bar li.friend_with_admirer img {
  	position:absolute;
  	display:inline-block;
@@ -1127,9 +1140,11 @@ a.logo img{
 .friend_referral_bar li ul li.friend_help_link {
 	font-size:10px;
 	font-weight:bold;
+	color:#3b5998;
 }
 .friend_referral_bar li a{
 	border:none;
+	border:1px solid #fff;
 	color:red;
 	height:100%;
 	width:100%;
