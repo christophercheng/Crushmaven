@@ -188,9 +188,11 @@ jQuery(document).ready(function($) {
 	};
 	
 	$('body').on('click','.close_icon',function(e){
-
-		$(this).parents('.ui-dialog').find('.ui-dialog-content').dialog('close');
+		var parent_dialog = $(this).parents('.ui-dialog');
+		parent_dialog.find('.ui-dialog-content').dialog('close');
 		$(this).remove();
+		if (parent_dialog.hasClass('app_referral_dialog'))
+			location.href = "/your_crushes/";
 	});
 	
 	window.purchase_conversation = function(csrf_token,attraction_id,purchase_callback_name) {
@@ -235,16 +237,6 @@ jQuery(document).ready(function($) {
 		window.attraction_json[0]=crush_dict;
 		window.launch_app_invite_dialog(0,1,true);
 	});// close .app_invite_link & #inite_interstitial_modal on click app_invite function
-
-	{% comment %}
-	$("#app_referral_modal").on("click","#referral_cancel_btn", function(e){	
-        {% if no_track != True %}
-    		ga('send', 'event', 'button', 'click', 'invite_fb_friends_NO');
-    	{% endif %}
-		window.app_referral_modal.dialog('close');
-		location.href='/your_crushes/';
-	});
-	{% endcomment %}
 	
 	$("#app_referral_modal").on("click",".referral_send_btn", function(e){
 		btn_id = $(this).attr('id');
@@ -305,8 +297,12 @@ jQuery(document).ready(function($) {
 					window.wait_modal_close();
 
 					if (data != ""){
-						if (!window.app_referral_modal)
+						if (!window.app_referral_modal){
 							window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:510, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
+							$(".app_referral_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
+							var crush_referral_list = $('.strangers_referral_bar').html()
+							$(".app_referral_dialog").find(".crush_referral_list").html(crush_referral_list);
+						}
 						window.app_referral_modal.dialog('open');
 						window.app_invite_list = data;
 						$(':focus').blur();
@@ -751,18 +747,11 @@ $('.bt-fs-dialog').click(function(){
 <div id="wait_modal">please wait...</div>
 <div id="app_invite_modal" title="Anonymously Invite"></div>
 <div id="app_referral_modal" title="One Last Thing: Help Us Help You!">
-<div class="dialog_container">
-<span class="dialog_container_subtitle">If your friends are using CrushMaven, they can help get your crush signed in. </span>
-Send a Facebook invite to the following users we've picked to improve your chances.
-</div>
-<div class="ui-dialog-buttonpane">
-      <div class="ui-dialog-buttonset">
-      	{% comment %}<button id="referral_cancel_btn" type='button' class="site_dialog_button site_dialog_cancel_button invite_dialog_cancel_button"><span class="ui-button-text">No Thanks</span></button>{% endcomment %} 
-      	<button id="referral_preselect_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite preselected friends</span></button>
-      	<button id="referral_custom_send_btn" class="referral_send_btn site_dialog_button"><span class="ui-button-text">Invite my own selection of friends</span></button>
-      	{% comment %}<button id="referral_send_btn" class="site_dialog_button"><span class="ui-button-text">Let's do it!</span></button>{% endcomment %}
-     </div><!-- close off buttonset -->
- </div><!-- close off buttonpane -->
+	<div class="dialog_container">
+	Invite someone else's crush, and we'll ask others to do the same for your crushes.  <div class="dialog_container_subtitle">Select one of these crushes to invite:</div>
+	</div>
+	<ul class="crush_referral_list">
+	</ul>
 </div>
 <div id="credit_check_modal" title="Premium Feature"></div>
 <div id="mobile_warning_modal" title="Mobile Site Warning"></div>

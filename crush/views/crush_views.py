@@ -147,7 +147,10 @@ def ajax_make_crush_target_platonic_friend(request, crush_username):
         crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
         target_person = crush_relationship.target_person
         crush_relationship.delete()
-        PlatonicRelationship.objects.create(source_person=request.user, target_person=target_person)
+        try:
+            PlatonicRelationship.objects.create(source_person=request.user, target_person=target_person)
+        except:
+            pass;
         # ===== fix any associated lineup members
         thread.start_new_thread(adjust_associated_lineup_members,(request.user,target_person,False))
         

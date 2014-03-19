@@ -407,6 +407,7 @@ a.button {
 	box-shadow:0 0 10px white!important;
 }
 
+.
 .close_icon{
 	color:#a5a5a5!important;
 	float:right;
@@ -421,6 +422,21 @@ a.button {
 }
 .close_icon:hover{
 	color:#2E8AE6!important;
+}
+.blacktop .close_icon{
+	color:#fff!important;
+		float:right;
+	margin-right:-20px;
+	margin-top:-15px;
+	width:30px;
+	height:30px;
+	text-align:center;
+	padding-top:4px;
+	font-size:18px!important;
+	cursor:pointer;
+}
+.blacktop .close_icon:hover{
+	color:#fff!important;
 }
 
 /* ===========================   Site Layout ========================= */
@@ -4638,6 +4654,7 @@ ul.bxslider_element #slide_overlay {
 .dialog_container_subtitle{
 	font-weight:bold;
 	margin-bottom:9px;
+	margin-top:5px;
 	display:block;
 }
 #app_referral_modal .dialog_container_footnote{

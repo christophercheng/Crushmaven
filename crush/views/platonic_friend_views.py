@@ -68,8 +68,11 @@ def just_friends(request):
                 # only create a new relationship if an existing one between the current user and the selected user does not exist 
     
                 if not(request.user.just_friends_targets.filter(username=selected_user.username).exists()):
-                        PlatonicRelationship.objects.create(target_person=selected_user,source_person=request.user,
+                        try:
+                            PlatonicRelationship.objects.create(target_person=selected_user,source_person=request.user,
                                                                friendship_type=friend_type, updated_flag=True)
+                        except:
+                            pass
                         userlist.append(selected_user)
         return HttpResponseRedirect('/just_friends')
 

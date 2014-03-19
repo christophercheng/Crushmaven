@@ -86,11 +86,11 @@ def pre_save_platonic_relationship(sender, instance, **kwargs):
     #  print "saving platonic relationship object"
     if (not instance.pk): # if creating a new platonic relationship
         try:
-            instance.source_person.just_friends_targets.get(username=instance.target_person.username)
-            #PlatonicRelationship.objects.get(source_person=instance.source_person,target_person=instance.target_person)
+            #instance.source_person.just_friends_targets.get(username=instance.target_person.username)
+            PlatonicRelationship.objects.get(source_person=instance.source_person,target_person=instance.target_person)
             print "existing platonic relationship detected. doing nothing more"
-            return False
-        except FacebookUser.DoesNotExist:
+            raise Exception('Do not create duplicate platonic relationship')#cancel the deletion
+        except PlatonicRelationship.DoesNotExist:
             pass
         try:
             instance.source_person.crush_targets.get(username=instance.target_person.username)
@@ -452,8 +452,11 @@ def pre_delete_crush_relationship(sender, instance, using, **kwargs):
     for member in lineup_members:
         member.delete()
 
-    # automatically create a platonic relationship
-    PlatonicRelationship.objects.create(source_person=instance.source_person, target_person=instance.target_person)
+    # automatically create a platonic relationship (but only if one doesn't already exist
+    try:
+        PlatonicRelationship.objects.create(source_person=instance.source_person, target_person=instance.target_person)
+    except:
+        pass
     
     # if the target was previously inactive, then 
 
@@ -472,7 +475,7 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
         try:  # make sure we're not adding a duplicate
             instance.source_person.crush_targets.get(username=instance.target_person.username)
             print "duplicate crush relationships detected. doing nothing more"
-            return False
+            raise Exception('Do not save crush relationship')#cancel the deletion
         except FacebookUser.DoesNotExist:
             pass # no duplicate crush relationship found
         try: # check if there is an existing platonic relationship, if so, delete it first

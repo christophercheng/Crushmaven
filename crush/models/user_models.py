@@ -494,7 +494,7 @@ class InviteInactiveUserManager(UserManager):
         invite_inactive_crush_list = []
         invite_inactive_users = crush.models.user_models.InviteInactiveUser.objects.all()
         for user in invite_inactive_users:
-            invite_inactive_crush_list.append(user.username)
+            invite_inactive_crush_list.append(user.invite_inactive_person.username)
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,invite_inactive_crush_list)
         logger.debug("rebuild_invte_inactive_crush_list returned list with number elements:" + str(len(invite_inactive_crush_list)))
         return invite_inactive_crush_list    

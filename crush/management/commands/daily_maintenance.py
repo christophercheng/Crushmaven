@@ -159,7 +159,10 @@ def auto_complete_expired_lineups():
             member.decision=1
             updated_fields.append('decision')
             member.save(update_fields=updated_fields)
-            PlatonicRelationship.objects.create(source_person=member.relationship.target_person, target_person=lineup_member_user,rating=1)
+            try:
+                PlatonicRelationship.objects.create(source_person=member.relationship.target_person, target_person=lineup_member_user,rating=1)
+            except:
+                pass
 
         relationship.date_lineup_finished=current_date
         relationship.lineup_auto_completed=True
