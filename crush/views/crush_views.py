@@ -122,7 +122,6 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):
     try:
         crush_relationship = CrushRelationship.objects.all_crushes(request.user).get(target_person__username=crush_username)
-        print crush_relationship
         time_since_add = datetime.datetime.now() - crush_relationship.date_added
         if time_since_add.days < settings.MINIMUM_DELETION_DAYS_SINCE_ADD:
             return HttpResponseForbidden(settings.DELETION_ERROR[0])

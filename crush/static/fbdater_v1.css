@@ -407,6 +407,22 @@ a.button {
 	box-shadow:0 0 10px white!important;
 }
 
+.close_icon{
+	color:#a5a5a5!important;
+	float:right;
+	margin-right:-20px;
+	margin-top:-15px;
+	width:30px;
+	height:30px;
+	text-align:center;
+	padding-top:4px;
+	font-size:18px!important;
+	cursor:pointer;
+}
+.close_icon:hover{
+	color:#2E8AE6!important;
+}
+
 /* ===========================   Site Layout ========================= */
 
 .main_container {

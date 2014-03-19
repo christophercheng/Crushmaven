@@ -173,6 +173,7 @@ jQuery(document).ready(function($) {
 		load_url="/credit_checker/";
 		window.purchase_dialog_div = $("#credit_check_modal");
 		window.purchase_dialog_div.attr("feature_id",data.feature_id)
+		$(".credit_check_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
 		window.wait_modal_open();
 		window.purchase_dialog_div.load(load_url,data,function(responseTxt,statusTxt,xhr){
 			window.wait_modal_close();
@@ -185,6 +186,12 @@ jQuery(document).ready(function($) {
 		}); 
 		return false;
 	};
+	
+	$('body').on('click','.close_icon',function(e){
+
+		$(this).parents('.ui-dialog').find('.ui-dialog-content').dialog('close');
+		$(this).remove();
+	});
 	
 	window.purchase_conversation = function(csrf_token,attraction_id,purchase_callback_name) {
 		purchase_callback_name = typeof purchase_callback_name !== 'undefined' ? purchase_callback_name : "";

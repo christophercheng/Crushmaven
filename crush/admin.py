@@ -67,7 +67,7 @@ class PastPhoneAdmin(admin.ModelAdmin):
     raw_id_fields=('user',)
 
 class InviteInactiveUserAdmin(admin.ModelAdmin):
-    list_display = ('invite_inactive_person__username','invite_inactive_person__last_name','invite_inactive_person__first_name','invite_inactive_person__gender') # what columns to display
+    list_display = ('invite_inactive_person',) # what columns to display
     search_fields = ('invite_inactive_person__username','invite_inactive_person__last_name','invite_inactive_person__first_name') # what the search box searches against
 
 admin.site.register(FacebookUser,FacebookUserAdmin)
