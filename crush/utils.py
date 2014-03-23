@@ -50,14 +50,14 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
         else:
             return results  
     except Exception as e: 
-        logger.error("graph api fetch failed with exception: " + str(e))
+        #logger.error("graph api fetch failed with exception: " + str(e))
         if num_tries == 0:
             # retry once more
             most_recent_user=crush.models.user_models.FacebookUser.objects.filter(is_active=True).latest('id')
             return graph_api_fetch(most_recent_user.access_token,query_string,expect_data,fql_query,1) 
             
         else:
-            logger.error("failed graph api fetch exception: " + str(e) + " : " + str(url))
+            logger.error("Graph api fetch failed with exception: " + str(e) + " : " + str(url))
             raise e # pass on the exception for the caller to handle
         
 # this function forces the cache to update its fb cookie value.  this is called daily from custom management command
