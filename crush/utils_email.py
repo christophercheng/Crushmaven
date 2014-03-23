@@ -30,7 +30,7 @@ def send_site_mass_mail(mail_tuple):
         return
     # don't send more than 100 at a time, 
     grouped_mail_tuple=mygrouper(100,mail_tuple)
-    logger.debug("Mass Email Send: broke into " + str(len(grouped_mail_tuple)) + " groups")
+    logger.debug("Mass Email Send: broke into groups of 100")
     num_groups_sent=0
     try:
         for group in grouped_mail_tuple:
