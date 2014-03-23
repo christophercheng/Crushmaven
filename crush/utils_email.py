@@ -14,8 +14,9 @@ CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message='',send_time=None):
+        logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject)
+
         if settings.SEND_NOTIFICATIONS==False:
-            logger.debug("sending email from: " + from_string + " to email: " + email_address + " with subject: " + subject)
             return
         try:
             data_dict={"from": from_string,\
@@ -25,7 +26,6 @@ def send_mailgun_email(from_string, email_address,subject,html_message,text_mess
             if send_time != None:
                 data_dict["o:deliverytime"]=str(send_time) 
             #logger.debug(str(data_dict))
-            logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject)
             result= requests.post("https://api.mailgun.net/v2/crushmaven.com/messages",auth=("api", settings.MAILGUN_API_KEY),data=data_dict)
             logger.debug( "MailGun Response: " + str(result))
         
@@ -148,16 +148,19 @@ def send_mail_lineup_expiration_warning(email_address,expiration_date):
     send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'Your admirer lineup is about to expire',html,text)
     
 def send_mail_missed_invite_tip(relationship):
-    email_address = relationship.source_person.email
-    source_first_name = relationship.source_person.first_name
-    recipient_fb_username=relationship.source_person.username
-    html_template = "email_template_missed_invite_tip_other.html"
-    source_person_email=relationship.source_person.email
-    if 'hotmail' in source_person_email or 'live.com' in source_person_email:
-        html_template = "email_template_missed_invite_tip_hotmail.html"
-    elif 'yahoo' in source_person_email:
-        html_template = "email_template_missed_invite_tip_yahoo.html"
-    #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
-    text=render_to_string('email_template_missed_invite_tip_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})
-    html=render_to_string(html_template,{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL, 'recipient_fb_username':recipient_fb_username})
-    send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'You must email invite your crush to receive a response!',html,text)
+    try:
+        email_address = relationship.source_person.email
+        source_first_name = relationship.source_person.first_name
+        recipient_fb_username=relationship.source_person.username
+        html_template = "email_template_missed_invite_tip_other.html"
+        source_person_email=relationship.source_person.email
+        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+            html_template = "email_template_missed_invite_tip_hotmail.html"
+        elif 'yahoo' in source_person_email:
+            html_template = "email_template_missed_invite_tip_yahoo.html"
+        #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
+        text=render_to_string('email_template_missed_invite_tip_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})
+        html=render_to_string(html_template,{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL, 'recipient_fb_username':recipient_fb_username})
+        send_mailgun_email('CrushMaven <notifications@crushmaven.com>',email_address,'You must email invite your crush to receive a response!',html,text)
+    except Exception as e:
+        logger.error("problem sending direct mail: admirer not invited crush reminder with exception: " + str(e) + " to relationship: " + str(relationship))

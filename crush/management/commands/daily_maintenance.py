@@ -87,10 +87,10 @@ def auto_complete_expired_lineups():
     
 def run_email_cadence_program():
     try:
-        logger.debug("Emailing Admirers who did not invite their crush")
+        logger.debug("EMAILING Admirers who did not invite their crush")
         admirer_not_invited_crush_cadence()
         
-        logger.debug("emailing active admirers who haven't paid to see results of their responded crushes")
+        logger.debug("EMAILING active admirers who haven't paid to see results of their responded crushes")
         active_crush_responded_cadence() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
         
         logger.debug("emailing & FB messaging inactive crushes inviting them again")
@@ -137,19 +137,22 @@ def admirer_not_invited_crush_cadence():
             notify_persons.append(source_person)
             notify_relationships.append(relationship)
     for relationship in notify_relationships:
-        if relationship.source_person.email!="":
-            send_mail_missed_invite_tip(relationship)
-        
-        notify_person_username=relationship.source_person.username
-        source_person_email=relationship.source_person.email
-        email_type="other"
-        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
-            email_type="hotmail"
-        elif 'yahoo' in source_person_email:
-            email_type="yahoo"
-        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
-        message="You must email invite your crush - click here to get their email address from Facebook."
-        notify_person_on_facebook(notify_person_username,destination_url,message)
+        try:
+            if relationship.source_person.email!="":
+                send_mail_missed_invite_tip(relationship)
+            
+            notify_person_username=relationship.source_person.username
+            source_person_email=relationship.source_person.email
+            email_type="other"
+            if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+                email_type="hotmail"
+            elif 'yahoo' in source_person_email:
+                email_type="yahoo"
+            destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
+            message="You must email invite your crush - click here to get their email address from Facebook."
+            notify_person_on_facebook(notify_person_username,destination_url,message)
+        except Exception as e:
+            logger.error("problem sending fb admirer not invited crush reminder with exception: " + str(e) + " to relationship: " + str(relationship))
         
     for relationship in update_relationships:
         num_sent = relationship.cadence_admirer_num_sent
@@ -242,7 +245,8 @@ def inactive_crush_invite_cadence():
             fb_username=data['username'] 
             facebook_email_address=fb_username + "@facebook.com"
             cadence_send_fb_crush_invite_reminder(relationship,facebook_email_address)
-        except:
+        except Exception as e:
+            logger.error("Can't send fb invite to inactive crush because of exception: " + str(e) + " for relationship: " + str(relationship))
             pass
     
     # gather all invites_emails for crushes for relationships with inactive crush target and that haven't been sent out in more than 14 days and not sent more than 3 times
