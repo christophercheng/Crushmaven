@@ -26,8 +26,8 @@ def send_site_mass_mail(mail_tuple):
         for individual_tuple in mail_tuple:
             logger.debug(" - " + str(individual_tuple[3]))
     
-    if settings.SEND_NOTIFICATIONS==False:
-        return
+        if settings.SEND_NOTIFICATIONS==False:
+            return
     # don't send more than 100 at a time, 
     grouped_mail_tuple=mygrouper(100,mail_tuple)
     logger.debug("Mass Email Send: broke into groups of 100")

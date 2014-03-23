@@ -105,7 +105,7 @@ def run_email_cadence_program():
         inactive_crush_invite_cadence()  
         
         logger.debug("FB messaging mutual friends of inactive crushes inviting them again")
-        #mf_of_inactive_crush_invite_cadence() # this won't work because google has a strict quota
+        mf_of_inactive_crush_invite_cadence() # this won't work because google has a strict quota
         
     except Exception as e:
         logger.error("Daily Maintenance Failed with Exception: " + str(e))
@@ -287,7 +287,20 @@ def active_crush_invite_cadence():
 # send facebook message to mutual friends of an inactive crush invite immediately and every 14 days after (maximum 2)
 # (0, 14)
 
+
 def mf_of_inactive_crush_invite_cadence():
+    # gather all invites_emails for mutual friends for relationships with inactive crush target and that haven't been sent out in more than 14 days and not sent more than 2 times
+    now = datetime.now()
+    cutoff_date=now-timedelta(days=14)
+    remind_emails = InviteEmail.objects.filter(date_last_sent__lt=cutoff_date,is_for_crush=False,num_times_sent__lt=2,relationship__target_status__lt=2)
+    
+    for email in remind_emails:
+        email.send()
+   
+    logger.debug("Django Command: sent MFs of inactive crush cadence: " + str(len(remind_emails)) + " mutual friends messaged via direct email!")   
+    return
+
+def mf_of_inactive_crush_invite_cadence_old():
     # grab all inactive crush relationships who have been invited less than 2 times and not within the last 14 days
     # grab all of their mutual friends ( with admirer)
     # send facebook message to all of them
