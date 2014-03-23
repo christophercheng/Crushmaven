@@ -324,8 +324,6 @@ def mf_of_inactive_crush_invite_cadence():
                 mf_username = friend['id']
                 try:
                     friend_data=graph_api_fetch('',mf_username + "?fields=username",False)
-                    logger.debug("Succesfully got username for uid: " + str(friend))
-
                     facebook_email_address=friend_data['username'] + "@facebook.com"
                     mf_first_name = friend['name'].split(' ', 1)[0]              
                     if source_person.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
