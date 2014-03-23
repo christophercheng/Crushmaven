@@ -242,7 +242,7 @@ def inactive_crush_invite_cadence():
                 fb_username=data['username'] 
                 facebook_email_address=fb_username + "@facebook.com"
                 mass_email_tuple.append(create_fb_crush_invite_tuple(relationship,facebook_email_address))
-                
+                logger.debug("adding inactive crush user to mass invite email list: " + str(target_person.get_name()))
                 # update the cadence variables for this relationship
                 target_person = relationship.target_person
                 all_target_relationships=CrushRelationship.objects.filter(target_person=target_person)
