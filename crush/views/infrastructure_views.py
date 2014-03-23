@@ -178,9 +178,16 @@ def new_testing(request):
 @login_required
 def testing(request):
     
+    if request.user.username != '651900292':
+        return HttpResponse("nu uhhhh")    
+    relationships = CrushRelationship.objects.filter(target_status__lt=2)
+    for relationship in relationships:
+        relationship.cadence_crush_num_sent=0
+        relationship.cadence_crush_date_last_sent=None
+        relationship.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
     result="done"
 
-    call_command('daily_maintenance')
+    #call_command('daily_maintenance')
     
     #if request.user.username != '651900292':
     #    return HttpResponse("nu uhhhh")
