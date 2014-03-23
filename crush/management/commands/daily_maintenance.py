@@ -105,7 +105,7 @@ def run_email_cadence_program():
         inactive_crush_invite_cadence()  
         
         logger.debug("FB messaging mutual friends of inactive crushes inviting them again")
-        mf_of_inactive_crush_invite_cadence() 
+        #mf_of_inactive_crush_invite_cadence() # this won't work because google has a strict quota
         
     except Exception as e:
         logger.error("Daily Maintenance Failed with Exception: " + str(e))

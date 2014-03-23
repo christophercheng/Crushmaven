@@ -36,6 +36,7 @@ def send_site_mass_mail(mail_tuple):
         for group in grouped_mail_tuple:
             send_mass_mail(group)
             num_groups_sent+=1
+            logger.debug("sent out group: " + str(num_groups_sent))
             time.sleep(3)
     except Exception as e:
         logger.error("Mass Email Failed after sending " + str(num_groups_sent) + " groups of 100 emails 3 seconds apart")
