@@ -52,7 +52,6 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
     except Exception as e: 
         logger.error("graph api fetch failed with exception: " + str(e))
         if num_tries == 0:
-            logger.warning( "graph api fetch failed, trying again once most recent user's access_token")
             # retry once more
             most_recent_user=crush.models.user_models.FacebookUser.objects.filter(is_active=True).latest('id')
             return graph_api_fetch(most_recent_user.access_token,query_string,expect_data,fql_query,1) 
