@@ -12,7 +12,7 @@ import crush.utils_email
 from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
 # import the logging library
-from django.db.models.signals import pre_save,post_delete
+from django.db.models.signals import pre_save,pre_delete
 from django.dispatch.dispatcher import receiver
 import logging,thread
 from crush.utils import graph_api_fetch
@@ -94,7 +94,7 @@ def pre_save_platonic_relationship(sender, instance, **kwargs):
             pass
         try:
             instance.source_person.crush_targets.get(username=instance.target_person.username)
-            print "existing crush relationship detected. doing nothing more"
+            logger.warning("existing crush relationship detected and being overridden: " + str(instance))
             return False
         except FacebookUser.DoesNotExist:
             pass
@@ -469,9 +469,9 @@ class CrushRelationship(BasicRelationship):
     def __unicode__(self):
         return u'Crush: '  + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
 
-@receiver(post_delete, sender=CrushRelationship)
+@receiver(pre_delete, sender=CrushRelationship)
 @transaction.commit_on_success # rollback entire function if something fails
-def post_delete_crush_relationship(sender, instance, using, **kwargs): 
+def pre_delete_crush_relationship(sender, instance, using, **kwargs): 
     print "delete relationships fired"        
     # check to see if there is a reciprocal relationship
     # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
