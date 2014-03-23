@@ -317,7 +317,7 @@ def mf_of_inactive_crush_invite_cadence():
                 friend_data=graph_api_fetch('',mf_username + "?fields=username",False)
                 facebook_email_address=friend_data['username'] + "@facebook.com"
                 mf_first_name = friend['name'].split(' ', 1)[0]              
-                if source_person.username not in []:#'100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+                if source_person.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
                     mass_email_tuple.append(create_fb_mf_invite_tuple(facebook_email_address, mf_first_name, crush_full_name))
                 else:
                     logger.debug("sending facebook invite referral mail to mutual friend: " + str(mf_first_name) + " " + str(facebook_email_address) + " on behalf of " + str(crush_full_name))
@@ -325,12 +325,10 @@ def mf_of_inactive_crush_invite_cadence():
             
         except Exception as e:
             logger.debug("finding mutual friends failed with exception: " + str(e))
-            return # return for now so we can bug fix
             pass
         if at_least_one_mf_suceeded:
             # update cadence variables
             num_sent = relationship.cadence_mf_num_sent
-            logger.debug("mf num sent : " + str(num_sent))
             if num_sent==None:
                 relationship.cadence_mf_num_sent = 1
             else:
