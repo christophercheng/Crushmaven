@@ -308,11 +308,13 @@ def mf_of_inactive_crush_invite_cadence():
     
     relevant_relationships = CrushRelationship.objects.filter(Q(target_status__lt=2),Q(cadence_mf_num_sent__lt = 2) | Q(cadence_mf_num_sent = None),Q(cadence_mf_date_last_sent__lt = cutoff_date) | Q(cadence_mf_date_last_sent = None))
     for relationship in relevant_relationships:
+        if len(mass_email_tuple)>10000:
+            break # don't process more than 10000 emails at a time
         source_person=relationship.source_person
         target_person=relationship.target_person
         
         # get list of all of the mutual friends
-        fb_query_string = str(source_person.username + '/mutualfriends/' + target_person.username)
+        fb_query_string = str(source_person.username + '/mutualfriends/' + target_person.username + '/?fields=username,name')
         at_least_one_mf_suceeded=False
         try:           
             mutual_friend_json = graph_api_fetch(source_person.access_token, fb_query_string)
@@ -321,20 +323,17 @@ def mf_of_inactive_crush_invite_cadence():
             crush_full_name = target_person.get_name()
             for friend in mutual_friend_json:
                 attempted_notifications+=1
-                mf_username = friend['id']
-                try:
-                    friend_data=graph_api_fetch('',mf_username + "?fields=username",False)
-                    facebook_email_address=friend_data['username'] + "@facebook.com"
-                    mf_first_name = friend['name'].split(' ', 1)[0]              
+                if 'username' in friend:
+                    facebook_email_address=friend['username'] + "@facebook.com"
+                    if 'name' in friend:
+                        mf_first_name = friend['name'].split(' ', 1)[0]
+                    else:
+                        mf_first_name=friend['username']              
                     if source_person.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
                         mass_email_tuple.append(create_fb_mf_invite_tuple(facebook_email_address, mf_first_name, crush_full_name))
                     else:
                         logger.debug("sending facebook invite referral mail to mutual friend: " + str(mf_first_name) + " " + str(facebook_email_address) + " on behalf of " + str(crush_full_name))
                     at_least_one_mf_suceeded=True
-                except Exception as e:
-                    logger.error("Mutual Friend Cadence Error: Could not get pretty fb username for : " + str(friend))
-                    pass
-            
         except Exception as e:
             logger.error("Mutual Friend Cadence Error: Could not get mutual friends for relationship: " + str(relationship) + " with exception: " + str(e))
             pass

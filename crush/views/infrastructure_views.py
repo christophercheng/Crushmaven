@@ -197,7 +197,7 @@ def testing(request):
 
     result="done"
     thread.start_new_thread(call_command,('daily_maintenance',))
-
+    #call_command('daily_maintenance')
     
 
     #try:

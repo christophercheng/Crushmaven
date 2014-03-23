@@ -2,7 +2,8 @@ from django.template.loader import render_to_string
 #from crush.models.user_models import FacebookUser
 from django.conf import settings
 import requests
-import os
+import os,time
+import itertools
 from django.core.mail import send_mail, send_mass_mail
 
 # import the logging library
@@ -14,15 +15,31 @@ logger = logging.getLogger(__name__)
 CDN_URL = os.getenv('CDN_SUMO_URL')
 STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
     
+def mygrouper(n, iterable):
+    args = [iter(iterable)] * n
+    return ([e for e in t if e != None] for t in itertools.izip_longest(*args))    
+    
 def send_site_mass_mail(mail_tuple):
     logger.debug("Sending Mass emails (" + str(len(mail_tuple)) + ")")
-    for individual_tuple in mail_tuple:
-        logger.debug(" - " + str(individual_tuple[3]))
+    
+    if len(mail_tuple) < 20:
+        for individual_tuple in mail_tuple:
+            logger.debug(" - " + str(individual_tuple[3]))
     
     if settings.SEND_NOTIFICATIONS==False:
         return
-    else:   
-        send_mass_mail(mail_tuple)
+    # don't send more than 100 at a time, 
+    grouped_mail_tuple=mygrouper(100,mail_tuple)
+    logger.debug("Mass Email Send: broke into " + str(len(grouped_mail_tuple)) + " groups")
+    num_groups_sent=0
+    try:
+        for group in grouped_mail_tuple:
+            send_mass_mail(group)
+            num_groups_sent+=1
+            time.sleep(15)
+    except Exception as e:
+        logger.error("Mass Email Failed after sending " + str(num_groups_sent) + " groups of 100 emails")
+        raise e
     
 def send_mailgun_email(from_string, email_address,subject,html_message,text_message='',send_time=None):
         logger.debug("sending mail from :" + from_string + " to: " + email_address + " with subject: " + subject)

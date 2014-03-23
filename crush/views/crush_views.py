@@ -9,7 +9,7 @@ import datetime,random
 from django.core.cache import cache
 from crush.appinviteformv2 import AppInviteForm2
 from crush.utils import graph_api_fetch,user_can_be_messaged
-from crush.utils_email import send_facebook_mail_mf_invite
+from crush.utils_email import send_facebook_mail_mf_invite,create_fb_mf_invite_tuple,send_site_mass_mail
 
 from urllib2 import URLError, HTTPError
 import thread
