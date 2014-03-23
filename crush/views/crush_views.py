@@ -95,16 +95,21 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
                 InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
                 
         # invite all of the mutual friends
-        fb_query_string = str(me.username + '/mutualfriends/' + inactive_username)
+        fb_query_string = str(me.username + '/mutualfriends/' + inactive_username + '/?fields=username,name')
         at_least_one_mf_suceeded=False
         try:           
             mutual_friend_json = graph_api_fetch(me.access_token, fb_query_string)
             crush_full_name = inactive_user.get_name()  
             for friend in mutual_friend_json:
-                mf_username = friend['id']
+                if 'username' not in friend:
+                    continue
+                mf_username = friend['username']
                 friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
                 facebook_email_address=friend_data['username'] + "@facebook.com"
-                mf_first_name = friend['name'].split(' ', 1)[0]              
+                if 'name' in friend:
+                    mf_first_name = friend['name'].split(' ', 1)[0] 
+                else:
+                    mf_first_name = mf_username             
                 try:
                     if me.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
                         send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name,fake_send=True)
