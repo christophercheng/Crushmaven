@@ -229,6 +229,7 @@ def inactive_crush_invite_cadence():
      
     # grab all crush relationships added in the last 24 hours that status is not_invited
     now = datetime.now()
+    update_relationships=[]
     cutoff_date=now-timedelta(days=14)
     mass_email_tuple=[]
     relevant_relationships = CrushRelationship.objects.filter(Q(target_status__lt=2),Q(cadence_crush_num_sent__lt = 3) | Q(cadence_crush_num_sent = None),Q(cadence_crush_date_last_sent__lt = cutoff_date) | Q(cadence_crush_date_last_sent = None))
@@ -244,17 +245,7 @@ def inactive_crush_invite_cadence():
                 mass_email_tuple.append(create_fb_crush_invite_tuple(relationship,facebook_email_address))
                 logger.debug("adding inactive crush user to mass invite email list: " + str(target_person.get_name()))
                 # update the cadence variables for this relationship
-                target_person = relationship.target_person
-                all_target_relationships=CrushRelationship.objects.filter(target_person=target_person)
-                for individual_target_relationship in all_target_relationships:
-                    num_sent = individual_target_relationship.cadence_crush_num_sent
-                    if num_sent==None:
-                        individual_target_relationship.cadence_crush_num_sent = 1
-                    else:
-                        individual_target_relationship.cadence_crush_num_sent = num_sent + 1
-                    individual_target_relationship.cadence_crush_date_last_sent = datetime.now()
-                    individual_target_relationship.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])          
-
+                update_relationships.append(relationship)
 
             except Exception as e:
                 logger.error("Inactive FB invite Cadence Error: Couldn't get pretty username with exception: " + str(e) + " for relationship: " + str(relationship))
@@ -265,8 +256,23 @@ def inactive_crush_invite_cadence():
     
     for email in remind_emails:
         email.send()
-        
-    send_site_mass_mail(mass_email_tuple)
+    try:
+            
+        send_site_mass_mail(mass_email_tuple)
+        for relationship in update_relationships:
+            target_person = relationship.target_person
+            all_target_relationships=CrushRelationship.objects.filter(target_person=target_person)
+            for individual_target_relationship in all_target_relationships:
+                num_sent = individual_target_relationship.cadence_crush_num_sent
+                if num_sent==None:
+                    individual_target_relationship.cadence_crush_num_sent = 1
+                else:
+                    individual_target_relationship.cadence_crush_num_sent = num_sent + 1
+                individual_target_relationship.cadence_crush_date_last_sent = datetime.now()
+                individual_target_relationship.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])   
+    except Exception as e:
+        logger.error("Inactive FB invite Cadence Error: could not send out mass email for some reason : " + str(e))       
+
     logger.debug("Django Command: sent inactive crush cadence: " + str(len(mass_email_tuple)) + " crushes re-invited via facebook email!")   
     logger.debug("Django Command: sent inactive crush cadence: " + str(len(remind_emails)) + " crushes re-invited via invite email!")   
             
@@ -290,7 +296,7 @@ def mf_of_inactive_crush_invite_cadence():
     # in the future check if the mutual friend is an app user, if so, send them a regular mf invite email
     # gather all ianctive crushes who 1) have been invited less than 3 times and 2) haven't been invited in last 14 days 
     # if there are any invite emails on file for them, email invite them too
-
+    update_relationships=[]
     attempted_notifications=0
     # if there are any phone numbers on file for them, text invite them too 
     # update any relationships' cadence variables
@@ -310,13 +316,15 @@ def mf_of_inactive_crush_invite_cadence():
         at_least_one_mf_suceeded=False
         try:           
             mutual_friend_json = graph_api_fetch(source_person.access_token, fb_query_string)
+            logger.debug("Succesfully got mutual friends for relationship: " + str(relationship))
+
             crush_full_name = target_person.get_name()
             for friend in mutual_friend_json:
                 attempted_notifications+=1
                 mf_username = friend['id']
                 try:
                     friend_data=graph_api_fetch('',mf_username + "?fields=username",False)
-                    logger.debug("Succesfully got mutual friends for relationship: " + str(relationship))
+                    logger.debug("Succesfully got username for uid: " + str(friend))
 
                     facebook_email_address=friend_data['username'] + "@facebook.com"
                     mf_first_name = friend['name'].split(' ', 1)[0]              
@@ -334,13 +342,8 @@ def mf_of_inactive_crush_invite_cadence():
             pass
         if at_least_one_mf_suceeded:
             # update cadence variables
-            num_sent = relationship.cadence_mf_num_sent
-            if num_sent==None:
-                relationship.cadence_mf_num_sent = 1
-            else:
-                relationship.cadence_mf_num_sent = num_sent + 1
-            relationship.cadence_mf_date_last_sent = datetime.now()
-            relationship.save(update_fields=['cadence_mf_num_sent','cadence_mf_date_last_sent'])    
+            update_relationships.append(relationship)
+
     
     # gather all invites_emails for mutual friends for relationships with inactive crush target and that haven't been sent out in more than 14 days and not sent more than 2 times
     remind_emails = InviteEmail.objects.filter(date_last_sent__lt=cutoff_date,is_for_crush=False,num_times_sent__lt=2,relationship__target_status__lt=2)
@@ -348,8 +351,20 @@ def mf_of_inactive_crush_invite_cadence():
     for email in remind_emails:
         email.send()
     
-    if len(mass_email_tuple) > 0:
-        send_site_mass_mail(mass_email_tuple)           
+    try:
+        if len(mass_email_tuple) > 0:
+            send_site_mass_mail(mass_email_tuple)    
+            
+        for relationship in update_relationships:
+            num_sent = relationship.cadence_mf_num_sent
+            if num_sent==None:
+                relationship.cadence_mf_num_sent = 1
+            else:
+                relationship.cadence_mf_num_sent = num_sent + 1
+            relationship.cadence_mf_date_last_sent = datetime.now()
+            relationship.save(update_fields=['cadence_mf_num_sent','cadence_mf_date_last_sent'])      
+    except Exception as e:
+        logger.error("Mutual Friend Cadence Error: could not send out mass email for exception: " + str(e))     
             
     logger.debug("Django Command: sent MFs of inactive crush cadence: " + str(len(mass_email_tuple)) + " mutual friends messaged via facebook email out of " + str(attempted_notifications) + " attempted mf's")   
     logger.debug("Django Command: sent MFs of inactive crush cadence: " + str(len(remind_emails)) + " mutual friends messaged via direct email!")   

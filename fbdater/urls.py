@@ -67,6 +67,7 @@ urlpatterns += patterns('crush.views.infrastructure_views',
 #    (r'^clear_cached_inactive_crush_list/$','clear_cached_inactive_crush_list'), 
     
     (r'^testing/$','testing'),
+    (r'^reset_cadence_testing/$','reset_cadence_testing'),
     (r'^new_testing/$','new_testing'),    
     (r'^testing2/$','testing2'),
     (r'^update_fb_fetch_cookie/$','update_fb_fetch_cookie'),
