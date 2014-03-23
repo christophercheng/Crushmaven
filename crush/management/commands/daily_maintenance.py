@@ -12,133 +12,30 @@ This Scheduler Job Process sends exactly one email to any user who :
 from django.core.management.base import NoArgsCommand
 from crush.models.user_models import FacebookUser
 from crush.models.relationship_models import CrushRelationship,PlatonicRelationship
+from crush.models.miscellaneous_models import InviteEmail
 from django.db.models import Q
-from django.db.models import Min
-from crush.utils_email import send_mail_invite_reminder,send_mail_lineup_expiration_warning,send_mail_missed_invite_tip
+from crush.utils import graph_api_fetch
+from crush.utils_email import send_mail_lineup_expiration_warning,send_mail_missed_invite_tip,send_mail_attraction_response_reminder,cadence_send_fb_crush_invite_reminder,send_facebook_mail_mf_invite,send_mail_lineup_not_started
 from crush.utils_fb_notifications import notify_person_on_facebook
 from datetime import  datetime,timedelta
-import urllib,json
-from django.db.models import Count
-from django.conf import settings
 import logging
 logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
         logger.debug("Running Daily Maintenance")
-        #if datetime.now().day == 1: 
-        #    monthly_maintenance()
-#        logger.debug("Running Add New Inactive Crushes to Facebook Ad Audience")
-#        add_inactive_crush_to_fb_ad_audience()
-        logger.debug("Running Missed Invite Emails")
-        send_missed_invite_tips()
-        logger.debug("Running Notifications for Crush Targets Who Weren't Previously Notified")
-        notify_missed_crush_targets() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
-        logger.debug("Running Lineup Expiration Warning Notifications")
-        lineup_expiration_warning() # send warning email to crush targets that their lineup is about to expire
+
+        auto_complete_expired_lineups()  # make sure this runs before daily email cadence program
+        
+        logger.debug("Running Daily Email Cadence Program")
+        run_email_cadence_program()
+        
         logger.debug("Running Expired Lineup Auto Completion Process")
-        auto_complete_expired_lineups() # for any lineup that has expired, auto set undecided lineup members to platonic
+        # for any lineup that has expired, auto set undecided lineup members to platonic
+
         return
- 
-#def add_inactive_crush_to_fb_ad_audience():
-#    date_24_hours_ago = datetime.now()-timedelta(hours=24)
-#    inactive_crushes = FacebookUser.objects.filter(is_active=False,date_joined__gt=date_24_hours_ago).annotate(num_admirers=Count('admirer_set')).filter(num_admirers__gt=0)
-#    for crush in inactive_crushes:
-#        response += str(crush.username) + "<BR>"
-#    return HttpResponse(response)    
-    
-# for all users who created a crush but didn't invite them - in the last 24 hours, send email invite tip
-def send_missed_invite_tips():
-    
-    # create an empty list of source persons to notify
-    notify_relationships=[]
-    notify_persons=[] # temporary list of source persons
-     
-    # grab all crush relationships added in the last 24 hours that status is not_invited
-    last_cutoff_date=datetime.now()-timedelta(minutes=1440)
-    relevant_relationships = CrushRelationship.objects.filter(target_status=0,date_added__gt=last_cutoff_date)
-    for relationship in relevant_relationships:
-        source_person=relationship.source_person
-        source_person_email=source_person.email
-        if source_person not in notify_persons and source_person_email != "":
-            notify_persons.append(source_person)
-            notify_relationships.append(relationship)
-    for relationship in notify_relationships:
-        send_mail_missed_invite_tip(relationship)
-        notify_person_username=relationship.source_person.username
-        source_person_email=relationship.source_person.email
-        email_type="other"
-        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
-            email_type="hotmail"
-        elif 'yahoo' in source_person_email:
-            email_type="yahoo"
-        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
-        message="You must email invite your crush - click here to see how to get their email address from Facebook."
-        notify_person_on_facebook(notify_person_username,destination_url,message)
-    logger.debug("Django Command: sent " + str(len(notify_persons)) + " missed invite email tips!")
 
-    return
-      
-def monthly_maintenance():
-    monthly_invite_reminder()
-       
-def monthly_invite_reminder():
-    logger.debug("Running Monthly Invite Maintenance")
-    relevant_user_set = FacebookUser.objects.filter( Q(Q(is_active=True),~Q(crush_targets=None)) ).annotate(min_crush_status=Min('crush_crushrelationship_set_from_source__target_status')).filter(min_crush_status=0)
-    invite_sent_count=0
-    for user in relevant_user_set:
-        if user.email == '' or user.bNotify_crush_signup_reminder == False:
-            continue
-        crush_list=[]
-        more_crushes_count=0
-        # get all crush relationships for this user
-        relevant_crush_list=user.crush_crushrelationship_set_from_source.filter(target_status__lt=1)[:5]
-        for relevant_crush in relevant_crush_list:
-            crush_list.append(relevant_crush.target_person.get_name())
-        if len(relevant_crush_list)>4: # calculate number of other relationships
-            more_crushes_count = user.crush_crushrelationship_set_from_source.filter(target_status__lt=1).count() - 5
 
-        send_mail_invite_reminder(user.first_name, user.email, crush_list, more_crushes_count)
-        invite_sent_count+=1
-    logger.debug("Django Command: sent " + str(invite_sent_count) + " email invite reminders out!")
-    return
-
-# crush targets who like their admirer need to be notified eventually if their admirer doesn't view their response (which manually triggers notification)
-def notify_missed_crush_targets():
-    # go through and grab any crush relationships where the target_status is responded_crush and date_target_responded is in past AND the date_source_last_notified is empty
-    current_date=datetime.now()
-    relevant_relationships=CrushRelationship.objects.filter(target_status=4,date_target_responded__lt = current_date,date_source_last_notified=None,is_results_paid=False)
-    for relationship in relevant_relationships:
-        relationship.notify_source_person()
-    # for each grabbed relationship 
-        # call notify source person
-        # update date_source_last_notified
-    return
-
-def lineup_expiration_warning():
-    current_date=datetime.now() + timedelta(days=1)
-    relevant_relationships=CrushRelationship.objects.filter(lineup_initialization_status=1,date_lineup_finished=None, date_lineup_expires__lt=current_date)
-    if relevant_relationships.count() == 0:
-        logger.debug('no relationships to warn of lineup expiration')
-    else: # get an access token to send facebook notifications
-        for relationship in relevant_relationships:
-            expiration_datetime=relationship.date_lineup_expires
-            if relationship.target_person.bNotify_lineup_expiration_warning == False:
-                continue
-            notify_target_of_lineup_expiration_on_facebook(relationship)
-            email_address = relationship.target_person.email
-            if email_address!='':
-                send_mail_lineup_expiration_warning(email_address,expiration_datetime)
-            logger.debug("admirer lineup warning sent: " + str(relationship))
-
-    return
-  
-def notify_target_of_lineup_expiration_on_facebook(relationship):
-    #expiration_datetime = urllib.urlencode(expiration_datetime)
-    notify_person_username = relationship.target_person.username
-    destination_url = "lineup_expiration/" + str(relationship.target_person.username) + "/" + str(relationship.display_id) + "/"
-    message="Your admirer's lineup is about to expire (on " + str(relationship.date_lineup_expires) + ") Afterward, undecided lineup members will default to 'Not Interested'"
-    notify_person_on_facebook(notify_person_username,destination_url,message)
     
 def auto_complete_expired_lineups():
     current_date=datetime.now()
@@ -166,7 +63,338 @@ def auto_complete_expired_lineups():
 
         relationship.date_lineup_finished=current_date
         relationship.lineup_auto_completed=True
-        relationship.save(update_fields=['date_lineup_finished','lineup_auto_completed'])
+        if relationship.target_status < 4:
+            relationship.target_status=5 #set to platonic responded if not previously set to crush by user
+        relationship.save(update_fields=['date_lineup_finished','lineup_auto_completed','target_status'])
     if relevant_relationships.count() == 0:
         logger.debug('no relationships to auto complete')
+    return
+
+
+# for every crush relationship have 4 new variables to track notifications:
+    # 1: cadence_admirer_last_notified
+    # 2: cadence_admirer_num_times_notified
+    # 3: cadence_crush_last_notified
+    # 4: cadence_crush_num_times_notified
+# cadence_admirer variables get reset to None and 0 whenever:
+    # a) crush responds and target status becomes crush_responded_platonic or crush_responded_crush (4 or 5)
+# cadence_crush variables get reset to None and 0 whenever:
+    # a) inactive crush signs up
+    # b) active crush starts lineup
+
+                
+
+    
+def run_email_cadence_program():
+    try:
+        logger.debug("Emailing Admirers who did not invite their crush")
+        admirer_not_invited_crush_cadence()
+        
+        logger.debug("emailing active admirers who haven't paid to see results of their responded crushes")
+        active_crush_responded_cadence() #any crush targets who liked their admirer back, but their admirer never sees the result and thus triggers notification within a timeperiod
+        
+        logger.debug("emailing & FB messaging inactive crushes inviting them again")
+        inactive_crush_invite_cadence()  
+    
+        #mf_of_inactive_crush_invite_cadence() this is called from inactive_crush_invite_cadence because mf invites piggy back off of same cadence_crushvariables
+           
+        logger.debug("emailing active crushes who haven't started their lineup")
+        active_crush_nonstarted_lineup_cadence()  
+    
+        logger.debug("emailing active crushes who haven't completed their lineup")
+        active_crush_incomplete_lineup_cadence()  
+        
+
+    except Exception as e:
+        logger.error("Daily Maintenance Failed with Exception: " + str(e))
+    return True
+
+
+# =========  Admirers who haven't invited their crush  =========
+# email them whenever a new relationship has been created, and every 14 days after, for a maximum of 4 emails 
+# (0,14,28,42)
+# keep a variable called active admirer emails
+
+def admirer_not_invited_crush_cadence():
+    
+    # gather all people who 1) have been notified less than 4 times and 2 ) haven't been notified within 14 days or not notified at all
+    
+    # create an empty list of source persons to notify
+    notify_relationships=[]
+    notify_persons=[] # temporary list of source persons
+    # update any relationships' cadence variables
+    update_relationships=[]
+     
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    cutoff_date=datetime.now()-timedelta(days=14)
+    
+    relevant_relationships = CrushRelationship.objects.filter(Q(target_status=0),Q(cadence_admirer_num_sent__lt = 4) | Q(cadence_admirer_num_sent = None),Q(cadence_admirer_date_last_sent__lt = cutoff_date) | Q(cadence_admirer_date_last_sent = None))
+    for relationship in relevant_relationships:
+        source_person=relationship.source_person
+        #source_person_email=source_person.email
+        update_relationships.append(relationship)
+        if source_person not in notify_persons:# and source_person_email != "":
+            notify_persons.append(source_person)
+            notify_relationships.append(relationship)
+    for relationship in notify_relationships:
+        if relationship.source_person.email!="":
+            send_mail_missed_invite_tip(relationship)
+        
+        notify_person_username=relationship.source_person.username
+        source_person_email=relationship.source_person.email
+        email_type="other"
+        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+            email_type="hotmail"
+        elif 'yahoo' in source_person_email:
+            email_type="yahoo"
+        destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
+        message="You must email invite your crush - click here to get their email address from Facebook."
+        notify_person_on_facebook(notify_person_username,destination_url,message)
+        
+    for relationship in update_relationships:
+        num_sent = relationship.cadence_admirer_num_sent
+        if num_sent==None:
+            relationship.cadence_admirer_num_sent = 1
+        else:
+            relationship.cadence_admirer_num_sent = num_sent + 1
+        relationship.cadence_admirer_date_last_sent = datetime.now()
+        relationship.save(update_fields=['cadence_admirer_num_sent','cadence_admirer_date_last_sent'])
+            
+    logger.debug("Django Command: sent admirer cadence: " + str(len(notify_persons)) + " admirer missed invites!")
+        
+
+    return
+
+# ======== Active Admirers who Haven't Paid to see their Crush Response yet ========
+
+
+def active_crush_responded_cadence():  
+    # grab all active admirers who have a crush relationship that has been responded (not results paid) and have been notified less than 4 times
+        # don't grab crushes who liked their admirer back (they shouldn't be notified until either their original admirer pays for results, or the date_target_responded is in past)
+    # gather all people who 1) have been notified less than 4 times and 2 ) haven't been notified within 14 days or not notified at all
+    
+    # create an empty list of source persons to notify
+    notify_relationships=[]
+    notify_persons=[] # temporary list of source persons
+    # update any relationships' cadence variables
+    update_relationships=[]
+     
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    now = datetime.now()
+    cutoff_date=now-timedelta(days=14)
+    
+    relevant_relationships = CrushRelationship.objects.filter(Q(target_status__gt=3),Q(is_results_paid=False),Q(date_target_responded__lt=now),Q(cadence_admirer_num_sent__lt = 4) | Q(cadence_admirer_num_sent = None),Q(cadence_admirer_date_last_sent__lt = cutoff_date) | Q(cadence_admirer_date_last_sent = None))
+    for relationship in relevant_relationships:
+        source_person=relationship.source_person
+        #source_person_email=source_person.email
+        update_relationships.append(relationship)
+        if source_person not in notify_persons:# and source_person_email != "":
+            notify_persons.append(source_person)
+            notify_relationships.append(relationship)
+    for relationship in notify_relationships:
+        if relationship.source_person.email!="":
+            send_mail_attraction_response_reminder(relationship)
+        relationship.notify_source_person_on_facebook()
+        
+    for relationship in update_relationships:
+        num_sent = relationship.cadence_admirer_num_sent
+        if num_sent==None:
+            relationship.cadence_admirer_num_sent = 1
+        else:
+            relationship.cadence_admirer_num_sent = num_sent + 1
+        relationship.cadence_admirer_date_last_sent = datetime.now()
+        relationship.save(update_fields=['cadence_admirer_num_sent','cadence_admirer_date_last_sent'])
+            
+    logger.debug("Django Command: sent admirer cadence: " + str(len(notify_persons)) + " crush responded!")   
+
+    return
+
+# =========  Inactive Crushes who haven't Signed up Yet =========
+# send a facebook message invite to an inactive person immediately and every 14 days after (maximum 3 times)
+    # if the inactive crush person also has at least one invite email associated with them, fire off an email as well
+    # cadence_crush_num_sent should be set to 1 by transactional logic
+# (0,14,28)
+def inactive_crush_invite_cadence():
+    # gather all ianctive crushes who 1) have been invited less than 3 times and 2) haven't been invited in last 14 days 
+    # if there are any invite emails on file for them, email invite them too
+    
+    # if there are any phone numbers on file for them, text invite them too 
+    notify_relationships=[]
+    notify_persons=[] # temporary list of source persons
+    # update any relationships' cadence variables
+    update_relationships=[]
+     
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    now = datetime.now()
+    cutoff_date=now-timedelta(days=14)
+    
+    relevant_relationships = CrushRelationship.objects.filter(Q(target_status__lt=2),Q(cadence_crush_num_sent__lt = 3) | Q(cadence_crush_num_sent = None),Q(cadence_crush_date_last_sent__lt = cutoff_date) | Q(cadence_crush_date_last_sent = None))
+    for relationship in relevant_relationships:
+        target_person=relationship.target_person
+        update_relationships.append(relationship)
+        if target_person not in notify_persons:# and source_person_email != "":
+            notify_persons.append(target_person)
+            notify_relationships.append(relationship)
+    for relationship in notify_relationships:
+        try:
+            query_string=relationship.target_person.username + "?fields=username"
+            data = graph_api_fetch(relationship.source_person.access_token,query_string,False)
+            fb_username=data['username'] 
+            facebook_email_address=fb_username + "@facebook.com"
+            cadence_send_fb_crush_invite_reminder(relationship,facebook_email_address)
+        except:
+            pass
+    
+    # gather all invites_emails for crushes for relationships with inactive crush target and that haven't been sent out in more than 14 days and not sent more than 3 times
+    remind_emails = InviteEmail.objects.filter(date_last_sent__lt=cutoff_date,is_for_crush=True,num_times_sent__lt=3,relationship__target_status__lt=2)
+    
+    for email in remind_emails:
+        email.send()
+    logger.debug("Django Command: sent inactive crush cadence: " + str(len(notify_persons)) + " crushes re-invited via facebook email!")   
+    logger.debug("Django Command: sent inactive crush cadence: " + str(len(remind_emails)) + " crushes re-invited via invite email!")   
+    logger.debug("FB messaging mutual friends of inactive crushes inviting them again")
+    mf_of_inactive_crush_invite_cadence() # call this from here because it piggy backs off of the cadence_crush variables
+    
+    for relationship in update_relationships:
+        num_sent = relationship.cadence_crush_num_sent
+        if num_sent==None:
+            relationship.cadence_crush_num_sent = 1
+        else:
+            relationship.cadence_crush_num_sent = num_sent + 1
+        relationship.cadence_crush_date_last_sent = datetime.now()
+        relationship.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
+            
+    return
+
+
+
+def active_crush_invite_cadence():
+    # this is not needed right now cause we're not at this point yet
+    return True
+# =========  Mutual Friends of Inactive Crushes who haven't Signed up Yet =========
+# send facebook message to mutual friends of an inactive crush invite immediately and every 14 days after (maximum 2)
+# (0, 14)
+
+def mf_of_inactive_crush_invite_cadence():
+    # grab all inactive crush relationships who have been invited less than 2 times and not within the last 14 days
+    # grab all of their mutual friends ( with admirer)
+    # send facebook message to all of them
+    # grab all invite emails associated with mutual friends (who haven't been messaged more than twice, resend them a message
+    
+    # in the future check if the mutual friend is an app user, if so, send them a regular mf invite email
+    # gather all ianctive crushes who 1) have been invited less than 3 times and 2) haven't been invited in last 14 days 
+    # if there are any invite emails on file for them, email invite them too
+
+    notify_persons_count=0
+     
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    now = datetime.now().date()
+    cutoff_date=now-timedelta(days=14)
+    relevant_relationships = CrushRelationship.objects.filter(Q(target_status__lt=2),Q(cadence_crush_num_sent__lt = 2) | Q(cadence_crush_num_sent = None),Q(cadence_crush_date_last_sent__lt = cutoff_date) | Q(cadence_crush_date_last_sent = None))
+    for relationship in relevant_relationships:
+        logger.debug(str(relationship.cadence_crush_date_last_sent))
+    
+    relevant_relationships = CrushRelationship.objects.filter(cadence_crush_date_last_sent__lt = cutoff_date)
+    for relationship in relevant_relationships:
+        source_person=relationship.source_person
+        target_person=relationship.target_person
+        
+        # get list of all of the mutual friends
+        fb_query_string = str(source_person.username + '/mutualfriends/' + target_person.username)
+        try:           
+            mutual_friend_json = graph_api_fetch(source_person.access_token, fb_query_string)
+            crush_full_name = target_person.get_name()
+            for friend in mutual_friend_json:
+                mf_username = friend['id']
+                friend_data=graph_api_fetch(source_person.access_token,mf_username + "?fields=username",False)
+                facebook_email_address=friend_data['username'] + "@facebook.com"
+                mf_first_name = friend['name'].split(' ', 1)[0]              
+                notify_persons_count=notify_persons_count+1
+                if source_person.username not in ['1000063415    28806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+                    send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
+                else:
+                    logger.debug("sending facebook invite referral mail to mutual friend: " + str(mf_first_name) + " " + str(facebook_email_address) + " on behalf of " + str(crush_full_name))
+        except Exception as e:
+            logger.debug("finding mutual friends failed with exception: " + str(e))
+            pass
+    
+    # gather all invites_emails for mutual friends for relationships with inactive crush target and that haven't been sent out in more than 14 days and not sent more than 2 times
+    remind_emails = InviteEmail.objects.filter(date_last_sent__lt=cutoff_date,is_for_crush=False,num_times_sent__lt=2,relationship__target_status__lt=2)
+    
+    for email in remind_emails:
+        email.send()
+    
+    # no need to update crush cadence variables cause we're just piggybacking off of the inactive crush invites cadence logic
+            
+    logger.debug("Django Command: sent MFs of inactive crush cadence: " + str(notify_persons_count) + " mutual friends messaged via facebook email!")   
+    logger.debug("Django Command: sent MFs of inactive crush cadence: " + str(len(remind_emails)) + " mutual friends messaged via direct email!")   
+    return
+
+# =========  Active Crushes who haven't completed the lineup yet =========
+
+# send email and facebook message to active crush who hasn't started crush lineup immediately and every 14 days after (maximum 3)
+def active_crush_nonstarted_lineup_cadence():
+    # grab all active users who have been notified less than 3 times and who have not started a lineup
+        # grab all relationships where the lineup has not been started
+    # send both email and facebook notification
+    notify_relationships=[]
+    notify_persons=[] # temporary list of source persons
+    # update any relationships' cadence variables
+    update_relationships=[]
+     
+    # grab all crush relationships added in the last 24 hours that status is not_invited
+    cutoff_date=datetime.now().date()-timedelta(days=14)
+    
+    relevant_relationships = CrushRelationship.objects.filter(Q(target_status=2),Q(cadence_crush_num_sent__lt = 2) | Q(cadence_crush_num_sent = None),Q(cadence_crush_date_last_sent__lt = cutoff_date) | Q(cadence_crush_date_last_sent = None))
+    for relationship in relevant_relationships:
+        target_person=relationship.target_person
+        #source_person_email=source_person.email
+        update_relationships.append(relationship)
+        if target_person not in notify_persons:# and source_person_email != "":
+            notify_persons.append(target_person)
+            notify_relationships.append(relationship)
+    for relationship in notify_relationships:
+        email=target_person.email
+        if email!="":
+            send_mail_lineup_not_started(email)
+        
+        notify_person_username=target_person.username
+        destination_url="lineup_not_started/"
+        message="Your admirer, someone you know, is waiting for you to complete their lineup..."
+        notify_person_on_facebook(notify_person_username,destination_url,message)
+        
+    for relationship in update_relationships:
+        num_sent = relationship.cadence_crush_num_sent
+        if num_sent==None:
+            relationship.cadence_crush_num_sent = 1
+        else:
+            relationship.cadence_crush_num_sent = num_sent + 1
+        relationship.cadence_crush_date_last_sent = datetime.now()
+        relationship.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
+            
+    logger.debug("Django Command: sent crush cadence: " + str(len(notify_persons)) + " lineup not started reminders!")
+        
+
+
+# send email and facebook message to active crush who hasn't complete lineup a day before lineup expires
+def active_crush_incomplete_lineup_cadence():
+    current_date=datetime.now()
+    day_from_now=current_date + timedelta(days=1)
+    relevant_relationships=CrushRelationship.objects.filter(Q(date_lineup_finished=None,), Q(date_lineup_expires__lt=day_from_now),~Q(date_lineup_expires__lt=current_date))
+    if relevant_relationships.count() == 0:
+        logger.debug('no relationships to warn of lineup expiration')
+    else: # get an access token to send facebook notifications
+        for relationship in relevant_relationships:
+            expiration_datetime=relationship.date_lineup_expires
+            if relationship.target_person.bNotify_lineup_expiration_warning == False:
+                continue
+            email_address = relationship.target_person.email
+            if email_address!='':
+                send_mail_lineup_expiration_warning(email_address,expiration_datetime)
+            notify_person_username = relationship.target_person.username
+            destination_url = "lineup_expiration/" + str(relationship.target_person.username) + "/" + str(relationship.display_id) + "/"
+            message="Your admirer's lineup is about to expire (on " + str(relationship.date_lineup_expires) + ") Afterward, undecided lineup members will default to 'Not Interested'"
+            notify_person_on_facebook(notify_person_username,destination_url,message) 
+            logger.debug("admirer lineup warning sent: " + str(relationship))
+
     return

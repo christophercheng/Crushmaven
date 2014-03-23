@@ -165,6 +165,11 @@ def ajax_show_lineup_slider(request,admirer_id):
     except CrushRelationship.DoesNotExist:
         return HttpResponse("Error: Could not find an admirer relationship for the lineup.")
     member_set = admirer_rel.lineupmember_set.all()
+    # make sure the crush relationship object's date_lineup_started field is set
+    if (admirer_rel.date_lineup_started == None):
+        admirer_rel.date_lineup_started = datetime.datetime.now()
+        admirer_rel.target_status=3 # target status is now: started lineup
+        admirer_rel.save(update_fields=['date_lineup_started','target_status'])
 
     # need to cleanse the lineup members each time the lineup is run 
     # reason: while lineup is not complete, user may have added one of the lineup member as either a crush or a platonic frined
@@ -349,14 +354,8 @@ def ajax_add_lineup_member(request,add_type,display_id,facebook_id,rating=3):
         lineup_member.save(update_fields=['decision'])
         lineup_member_set = admirer_rel.lineupmember_set
         
-
-        # make sure the crush relationship object's date_lineup_started field is set
-        if (admirer_rel.date_lineup_started == None):
-            admirer_rel.date_lineup_started = datetime.datetime.now()
-            admirer_rel.target_status=3 # target status is now: started lineup
-            admirer_rel.save(update_fields=['date_lineup_started','target_status'])
                 # handle processing when last lineup member decided upon
-        elif len(lineup_member_set.filter(decision=None)) == 0:
+        if len(lineup_member_set.filter(decision=None)) == 0:
             admirer_rel.date_lineup_finished= datetime.datetime.now()
             admirer_rel.save(update_fields=['date_lineup_finished'])
     except FacebookUser.DoesNotExist:

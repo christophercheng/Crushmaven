@@ -172,8 +172,10 @@ jQuery(document).ready(function($) {
 
 		load_url="/credit_checker/";
 		window.purchase_dialog_div = $("#credit_check_modal");
-		window.purchase_dialog_div.attr("feature_id",data.feature_id)
-		$(".credit_check_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
+		window.purchase_dialog_div.attr("feature_id",data.feature_id);
+		var close_icon = $(".credit_check_dialog").find(".close_icon");
+		if (close_icon.length == 0)
+			$(".credit_check_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
 		window.wait_modal_open();
 		window.purchase_dialog_div.load(load_url,data,function(responseTxt,statusTxt,xhr){
 			window.wait_modal_close();
@@ -296,7 +298,10 @@ jQuery(document).ready(function($) {
 
 				if (!window.app_referral_modal){
 					window.app_referral_modal = $("#app_referral_modal").dialog({dialogClass:"app_referral_dialog blacktop", draggable:false,resizable:false, width:490, modal: true, autoOpen: false,open: function(event, ui) {$("body").css({ overflow: 'hidden' }) },beforeClose: function(event, ui) {$("body").css({ 'overflow-x':'auto','overflow-y': 'scroll' })}});
-					$(".app_referral_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
+					
+					var close_icon = $(".app_referral_dialog").find(".close_icon");
+					if (close_icon.length == 0)
+						$(".app_referral_dialog").children(".ui-dialog-titlebar").append("<span class='close_icon'>x</span>");
 					var crush_referral_list = $('.strangers_referral_bar').html()
 					$(".app_referral_dialog").find(".crush_referral_list").html(crush_referral_list);
 					$(':focus').blur();
@@ -520,7 +525,6 @@ jQuery(document).ready(function($) {
 				  			});
 					         if ($('#app_referral_modal').dialog('isOpen')){
 					        	 $('#app_referral_modal').dialog('close');
-					        	 $('.app_referral_dialog').find('.close_icon').remove();
 					        	 location.href="/your_crushes/";
 					         }
 		  				} //close off if (response != null) 

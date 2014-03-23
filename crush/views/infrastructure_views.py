@@ -25,11 +25,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-def facebook_notification(request,function_name,first_arg,second_arg,third_arg=""):
+def facebook_notification(request,function_name,first_arg="",second_arg="",third_arg=""):
     if function_name=="crush_response":
         return crush_response(request,first_arg,second_arg)
-    if function_name=="new_admirer":
+    elif function_name=="new_admirer":
         return new_admirer(request,first_arg,second_arg)
+    elif function_name=="lineup_not_started":
+        return lineup_not_started(request)
     elif function_name=="lineup_expiration":
         return lineup_expiration(request,first_arg,second_arg)
     elif function_name=="admirer_for":
@@ -45,6 +47,10 @@ def crush_response(request,first_name,last_name):
 def new_admirer(request,first_name,last_name):
     return render(request, 'email_template_notify_new_admirer.html',{'friendship_type':3,'facebook_canvas':True})
 
+@csrf_exempt
+def lineup_not_started(request):
+
+    return render(request,'email_template_notify_lineup_not_started.html',{'STATIC_URL':settings.STATIC_URL,'facebook_canvas':True})
 
 @csrf_exempt
 def lineup_expiration(request,target_person_username,display_id):
@@ -171,16 +177,21 @@ def new_testing(request):
 
 @login_required
 def testing(request):
-    if request.user.username != '651900292':
-        return HttpResponse("nu uhhhh")
-    try:
-        fetch_response = fb_fetch("1050",0)
-    except Exception as e:
-        return HttpResponse(str(e))
-    extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
-        # remove duplicates in extracted_list
-    extracted_id_list = list(set(extracted_id_list))
-    result = "Number of results: " + str(len(extracted_id_list))
+    
+    result="done"
+
+    call_command('daily_maintenance')
+    
+    #if request.user.username != '651900292':
+    #    return HttpResponse("nu uhhhh")
+    #try:
+    #    fetch_response = fb_fetch("1050",0)
+    #except Exception as e:
+    #    return HttpResponse(str(e))
+    #extracted_id_list =  re.findall( 'user.php\?id=(.*?)&',fetch_response,re.MULTILINE )
+    #    # remove duplicates in extracted_list
+    #extracted_id_list = list(set(extracted_id_list))
+    #result = "Number of results: " + str(len(extracted_id_list))
     
    
     return HttpResponse(result)

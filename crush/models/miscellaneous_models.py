@@ -23,20 +23,17 @@ class InviteEmailManager(models.Manager):
                 # the previous email invite was of a different type.  Assume this newer email is more accurate
                 # change and save the original's type
                 duplicate_relationship_email.is_for_crush=new_is_for_crush
-                duplicate_relationship_email.date_last_sent=datetime.datetime.now()
                 duplicate_relationship_email.send()
-                duplicate_relationship_email.save(update_fields=['is_for_crush','date_last_sent'])
+                duplicate_relationship_email.save(update_fields=['is_for_crush'])
                 #duplicate_relationship_email.send() # send email right away
             else:
-                # only resend if email if enough time has transpired
-                transpired_time = datetime.datetime.now() - duplicate_relationship_email.date_last_sent 
-                if transpired_time.days > settings.MINIMUM_INVITE_RESEND_DAYS:
-                    duplicate_relationship_email.send()
+                # don't resend - our email cadence system handles this automatically and regulates invites
+                pass
                                 
         except Exception as e: # this email doesn't exist for the same relationship, then create it unless we have reached a cap
             invite_emails=self.filter(relationship=new_relationship,is_for_crush=new_is_for_crush).order_by('date_last_sent')
             if (new_is_for_crush==True and len(invite_emails) < settings.MAXIMUM_CRUSH_INVITE_EMAILS) or (new_is_for_crush==False and len(invite_emails) < settings.MAXIMUM_MUTUAL_FRIEND_INVITE_EMAILS):
-                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush,mf_recipient_first_name=mf_recipient_first_name,mf_recipient_fb_username=mf_recipient_fb_username,date_last_sent = datetime.datetime.now())
+                new_invite = self.create(email=new_email,relationship=new_relationship,is_for_crush=new_is_for_crush,mf_recipient_first_name=mf_recipient_first_name,mf_recipient_fb_username=mf_recipient_fb_username,num_times_sent=0)
                 new_invite.send();
             # for now just ignore user's request and don't send out an email - we don't want to overflood the database with random emails.   
             #else: # user has already created a maximum number of crush emails
@@ -68,6 +65,7 @@ class InviteEmail(models.Model):
     relationship = models.ForeignKey('CrushRelationship')
     email=models.CharField(max_length=200) # is this long enough?
     date_last_sent=models.DateTimeField(blank=True,null=True,default=None)
+    num_times_sent=models.IntegerField(default=1) # default of 1 only affects older invite emails on database before this field existed.  the process function of class manager defaults this value to 0
     is_for_crush=models.BooleanField(default=True) # if false, then the email was sent to a mutual friend
 
     mf_recipient_first_name = models.CharField(max_length=50,blank=True,null=True,default=None)
@@ -96,7 +94,8 @@ class InviteEmail(models.Model):
         if self.date_last_sent == None or (datetime.datetime.now() - self.date_last_sent) > datetime.timedelta(hours=1):
             # save current date
             self.date_last_sent = datetime.datetime.now()
-            self.save(update_fields=['date_last_sent'])
+            self.num_times_sent=self.num_times_sent + 1
+            self.save(update_fields=['date_last_sent','num_times_sent'])
 class Purchase(models.Model):
 
     class Meta:

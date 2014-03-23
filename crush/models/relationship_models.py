@@ -12,7 +12,7 @@ import crush.utils_email
 from crush.utils_fb_notifications import notify_person_on_facebook
 from django.utils.encoding import smart_text
 # import the logging library
-from django.db.models.signals import pre_save,pre_delete
+from django.db.models.signals import pre_save,post_delete
 from django.dispatch.dispatcher import receiver
 import logging,thread
 from crush.utils import graph_api_fetch
@@ -197,6 +197,15 @@ class CrushRelationship(BasicRelationship):
                            (5,'Responded:Platonic'),
                            )
     target_status = models.IntegerField(default=0, choices=TARGET_STATUS_CHOICES)
+    
+    #-- Email Cadence Variables --
+    
+    cadence_admirer_date_last_sent = models.DateField(default=None,null=True,blank=True)
+    cadence_admirer_num_sent=models.IntegerField(default=None,null=True,blank=True)
+    
+    cadence_crush_date_last_sent = models.DateField(default=None,null=True,blank=True)
+    cadence_crush_num_sent=models.IntegerField(default=None,null=True,blank=True)
+    
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)
@@ -368,8 +377,6 @@ class CrushRelationship(BasicRelationship):
             
     def notify_inactive_crush_on_facebook(self):                        
         query_string=self.target_person.username + "?fields=username"
-        if self.source_person.username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
-            return
         try:
             data = graph_api_fetch(self.source_person.access_token,query_string,False)
             fb_username=data['username'] 
@@ -377,7 +384,15 @@ class CrushRelationship(BasicRelationship):
             first_name=self.target_person.first_name
             if first_name == "":
                 first_name=fb_username
-            crush.utils_email.send_facebook_mail_crush_invite(facebook_email_address, self.friendship_type, first_name) 
+            crush.utils_email.send_facebook_mail_crush_invite(facebook_email_address, self.friendship_type, first_name)
+            self.cadence_crush_date_last_sent=datetime.now()
+            num_sent= self.cadence_crush_num_sent 
+            if num_sent==None:
+                self.cadence_crush_num_sent  = 1
+            else:
+                self.cadence_crush_num_sent = num_sent + 1
+            if self.pk != None:
+                self.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
         except:
             pass 
                      
@@ -401,6 +416,11 @@ class CrushRelationship(BasicRelationship):
                     crush.utils_email.send_mail_changed_attraction_response(True,full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
                 else:
                     crush.utils_email.send_mail_changed_attraction_response(False,full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email)
+
+                self.date_source_last_notified=datetime.now()
+                self.cadence_admirer_date_last_sent=datetime.now()
+                self.cadence_admirer_num_sent=1
+                self.save(update_fields=['date_source_last_notified','cadence_admirer_date_last_sent','cadence_admirer_num_sent'])
                 return
             else:
                 if self.date_target_responded > datetime.now():# schedule the send time to a future date
@@ -412,13 +432,20 @@ class CrushRelationship(BasicRelationship):
                     #send facebook notification
                     self.notify_source_person_on_facebook()
                     source_notified=True
+                    send_time=None
                 
                 if (source_person_email):
                     crush.utils_email.send_mail_new_attraction_response(full_name, short_name, first_name, pronoun_subject, pronoun_possessive, source_person_email,send_time)
                     source_notified=True
-                if source_notified and self.pk: # only save the new instance field if the object has laready been created, else we will have infinite loop bug
-                    self.date_source_last_notified=datetime.now()
-                    self.save(update_fields=['date_source_last_notified'])
+                if source_notified and self.pk: # only save the new instance field if the object has already been created, else we will have infinite loop bug
+                    if send_time==None:
+                        self.date_source_last_notified=datetime.now()
+                        self.cadence_admirer_date_last_sent=datetime.now()
+                    else:
+                        self.date_source_last_notified=send_time
+                        self.cadence_admirer_date_last_sent=send_time
+                    self.cadence_admirer_num_sent=1
+                    self.save(update_fields=['date_source_last_notified','cadence_admirer_num_sent','cadence_admirer_date_last_sent'])
 
     def notify_source_person_on_facebook(self):
       
@@ -427,7 +454,7 @@ class CrushRelationship(BasicRelationship):
         target_last_name=self.target_person.last_name
         destination_url ="crush_response/" + target_first_name + "/" + target_last_name + "/"
         message = target_first_name + " " + target_last_name + " responded to your crush!"
-        if settings.INITIALIZATION_THREADING:
+        if settings.INITIALIZATION_THREADING or not settings.SEND_NOTIFICATIONS==False:
             thread.start_new_thread(notify_person_on_facebook,(notify_person_username,destination_url,message))         
         else:
             notify_person_on_facebook(notify_person_username,destination_url,message)
@@ -442,9 +469,9 @@ class CrushRelationship(BasicRelationship):
     def __unicode__(self):
         return u'Crush: '  + smart_text(self.source_person.first_name) + " " + smart_text(self.source_person.last_name) + " -> " + smart_text(self.target_person.first_name) + " " + smart_text(self.target_person.last_name)
 
-@receiver(pre_delete, sender=CrushRelationship)
+@receiver(post_delete, sender=CrushRelationship)
 @transaction.commit_on_success # rollback entire function if something fails
-def pre_delete_crush_relationship(sender, instance, using, **kwargs): 
+def post_delete_crush_relationship(sender, instance, using, **kwargs): 
     print "delete relationships fired"        
     # check to see if there is a reciprocal relationship
     # if the target person had a reciprocal relationship, update that person's (crush's) relationship with the new status
@@ -485,9 +512,6 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
         except PlatonicRelationship.DoesNotExist:
             pass # no duplicate platonic relationship found so continue on
         try:
-            # determine if the lineup should be free or not (if relationship is FOF or NF type)
-            if instance.friendship_type > 0:
-                instance.is_lineup_paid=True
             
             # check to see if there is a reciprocal crush relationship i.e. the crush also an admirer of the admirer
             reciprocal_relationship = CrushRelationship.objects.all_crushes(instance.target_person).get(target_person=instance.source_person)
@@ -574,6 +598,13 @@ def pre_save_crush_relationship(sender, instance, **kwargs):
                     print e
                     pass # do nothing
             if 'target_status' in kwargs['update_fields'] and (original_relationship.target_status != instance.target_status):
+                if instance.target_status==2:
+                    # reset crush cadence variables
+                    instance.cadence_crush_num_sent=0
+                    instance.cadence_crush_date_last_sent=None
+                    instance.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
                 #print "target status change: " + str(original_relationship.target_status) + "->" + str(self.target_status) + " for source: " + self.source_person.get_name() + " and target: " + self.target_person.get_name()
                 #self.notify_source_person()
                 instance.notify_source_person()
+
+                    

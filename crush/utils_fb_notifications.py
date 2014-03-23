@@ -14,9 +14,8 @@ STATIC_URL = 'http://' + str(CDN_URL) + '/static/'
 #returns True if good, False else
 def notify_person_on_facebook(notify_person_username,destination_url, message):
 
-    if notify_person_username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
-        return
-    if settings.SEND_NOTIFICATIONS==False:
+    if settings.SEND_NOTIFICATIONS==False or notify_person_username in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:
+        logger.debug("sending fb notification to: " + str(notify_person_username) + " with url: " + str(destination_url) + " with message: " + str(message))
         return
     notify_url='https://graph.facebook.com'
     notify_url+= "/" + notify_person_username
