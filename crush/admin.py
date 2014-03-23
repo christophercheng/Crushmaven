@@ -20,7 +20,7 @@ class FacebookUserAdmin(admin.ModelAdmin):
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','target_status','cadence_admirer_num_sent','cadence_admirer_date_last_sent','cadence_crush_num_sent','cadence_crush_date_last_sent','cadence_mf_num_sent','cadence_mf_date_last_sent','is_results_paid','lineup_initialization_status','date_added') # what columns to display
-    search_fields = ('source_person__last_name', 'target_person__last_name','id','source_person__username') # what the search box searches against
+    search_fields = ('source_person__last_name', 'target_person__last_name','id','target_person__username') # what the search box searches against
     list_filter = ('target_status','friendship_type') # right column auto-filter links
     ordering = ('-date_added',)
     date_hierarchy = 'date_added'
