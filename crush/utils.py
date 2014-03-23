@@ -5,6 +5,7 @@ import urllib2,json,urllib
 import logging
 from django.core.cache import cache
 import time
+import crush.models.user_models
 from crush.utils_email import send_mailgun_email
 from selenium import webdriver
 import os
@@ -49,11 +50,12 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
         else:
             return results  
     except Exception as e: 
-        logger.debug("graph api fetch failed with exception: " + str(e))
+        logger.error("graph api fetch failed with exception: " + str(e))
         if num_tries == 0:
-            logger.warning( "graph api fetch failed, trying again with access_token: " + str(access_token) )
+            logger.warning( "graph api fetch failed, trying again once most recent user's access_token")
             # retry once more
-            return graph_api_fetch(access_token,query_string,expect_data,fql_query,1) 
+            most_recent_user=crush.models.user_models.FacebookUser.objects.filter(is_active=True).latest('id')
+            return graph_api_fetch(most_recent_user.access_token,query_string,expect_data,fql_query,1) 
             
         else:
             logger.error("failed graph api fetch exception: " + str(e) + " : " + str(url))

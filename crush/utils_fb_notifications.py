@@ -28,7 +28,7 @@ def notify_person_on_facebook(notify_person_username,destination_url, message):
         #fb_result=urllib.urlopen('http://graph.facebook.com/' + me.username + '/notes/',param)
         fb_result = json.load(fb_result)
         if 'success' not in fb_result or fb_result['success'] != True:
-            logger.debug("Facebook notification unsuccessfully sent with error: " + str(fb_result))
+            logger.debug("Facebook notification unsuccessfully sent with error: " + str(fb_result) + " for username: " + str(notify_person_username) + " and destination_url: " + str(destination_url) + " and message: " + str(message))
             return False
     except Exception as e:
         logger.debug("ERROR: could not send facebook crush response notification with message: " + str(message) + " - because of exception: " + str(e))            

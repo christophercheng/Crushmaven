@@ -206,6 +206,9 @@ class CrushRelationship(BasicRelationship):
     cadence_crush_date_last_sent = models.DateField(default=None,null=True,blank=True)
     cadence_crush_num_sent=models.IntegerField(default=None,null=True,blank=True)
     
+    cadence_mf_date_last_sent = models.DateField(default=None,null=True,blank=True)
+    cadence_mf_num_sent=models.IntegerField(default=None,null=True,blank=True)
+    
     # -- PAYMENT CHECKS --
     # admirer has to pay to see the results of the match results
     is_results_paid = models.BooleanField(default=False)

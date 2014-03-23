@@ -96,9 +96,10 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
                 
         # invite all of the mutual friends
         fb_query_string = str(me.username + '/mutualfriends/' + inactive_username)
+        at_least_one_mf_suceeded=False
         try:           
             mutual_friend_json = graph_api_fetch(me.access_token, fb_query_string)
-            crush_full_name = inactive_user.get_name()
+            crush_full_name = inactive_user.get_name()  
             for friend in mutual_friend_json:
                 mf_username = friend['id']
                 friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
@@ -106,12 +107,29 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
                 mf_first_name = friend['name'].split(' ', 1)[0]              
                 try:
                     if me.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+                        send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name,fake_send=True)
+                    else:
                         send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name)
+                    at_least_one_mf_suceeded=True
                 except:
                     pass # process next mutual friend
         except Exception as e:
             logger.debug("finding mutual friends failed with exception: " + str(e))
             pass
+        if at_least_one_mf_suceeded:
+            # set the mf cadence variables
+            try:
+                change_relationship = CrushRelationship.objects.get(source_person=me,target_person=inactive_user)
+                num_sent=change_relationship.cadence_mf_num_sent
+                if num_sent == None:
+                    change_relationship.cadence_mf_num_sent=1
+                else:
+                    change_relationship.cadence_mf_num_sent= num_sent + 1
+                change_relationship.cadence_mf_date_last_sent=datetime.datetime.now().date()
+                change_relationship.save(update_fields=['cadence_mf_num_sent','cadence_mf_date_last_sent'])
+            except:
+                pass
+        
     if invite_list_dirty_flag:
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
     if inactive_list_dirty_flag:
