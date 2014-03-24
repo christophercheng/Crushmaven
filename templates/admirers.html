@@ -74,7 +74,7 @@ $(document).ready(function()
         var display_id=element.attr("display_id");
         var lineup_block_parent = element.parent();
         if (num_times==0)
-        	element.replaceWith('<div class="lineup_block_line lineup_previews"><div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few minutes</span></div></div>');
+        	element.replaceWith('<div class="lineup_block_line lineup_previews"><div id="loading"><span id="creating_lineup_text">creating your lineup... &nbsp;&nbsp;&nbsp;it could take us a few seconds</span></div></div>');
         var lineup_block_div = lineup_block_parent.children('.lineup_previews');
         var ajax_url = '/ajax_display_lineup_block/' + display_id + '/'; 
         var ajax_fail_url='/ajax_initialization_failed/' + display_id + '/';

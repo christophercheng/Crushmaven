@@ -33,10 +33,13 @@
 <ul class="title_bar">
 	<li class="title_bar_title">Credits</li>
 </ul>
-
+ 
 
 	<form class="settings_form credits_settings_form" method="post" action='{{ paypal_url }}'>{% csrf_token %}
 
+	<div class="settings_introduction">You need to obtain credits for premium features of the site.  
+	For example, you need credits to see your crush's response. </div>
+	
 	<div id="settings_labels">
 	<span id="settings_label_credits_available"><span class="help_icon"></span>Credit Available:</span>
 	<span id="settings_label_purchase_credits">Purchase More Credit:</span>
@@ -86,8 +89,8 @@
 
 <span class="help_dialog_content" id="credits_help_content">
 <span class="tooltip_content tooltip_maincontent">
-Credits are 'virtual currency' that you can spend on certain features of the site.  
-For example, if we get your crush to respond, you will need to spend credits to see their response.  
+Credits are a virtual currency that you can spend on premium features of the site.  
+For example, you need credits to see your crush's response.  
 </span>
 <span class="related_subsections">related q&a:</span>
 <span class ="tooltip_subsection">

@@ -4721,6 +4721,12 @@ ul.bxslider_element #slide_overlay {
 	width:100%;
 }
 
+.settings_form .settings_introduction{
+	margin-bottom:35px;
+	padding-bottom:20px;
+	border-bottom:1px solid #E0E0E0;
+	line-height:20px;
+}
 .settings_form #settings_labels {
 	display:inline-block;
 	float:left;
