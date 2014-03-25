@@ -357,14 +357,15 @@ class CrushRelationship(BasicRelationship):
             if target_person_email != None and target_person.bNotify_new_admirer == True:
                 crush.utils_email.send_mail_new_admirer(self.friendship_type,full_name,short_name,first_name,target_person_email)  
             self.notify_active_crush_on_facebook()  
-        else:
-            
+        #else:
+            # send facebook invite via daily email cadence
+            #
             # target person is not active
             # now send email to target person's facebook email (even though it has a low probability of success - or zero in fact
-            if settings.INITIALIZATION_THREADING:
-                thread.start_new_thread(self.notify_inactive_crush_on_facebook,())         
-            else:
-                self.notify_inactive_crush_on_facebook()
+            #if settings.INITIALIZATION_THREADING:
+            #    thread.start_new_thread(self.notify_inactive_crush_on_facebook,())         
+            #else:
+            #    self.notify_inactive_crush_on_facebook()
 
     def notify_active_crush_on_facebook(self):
         notify_person_username = self.target_person.username
