@@ -7,7 +7,7 @@ from crush.models import FacebookUser
 from django.conf import settings
 from crush.models.miscellaneous_models import InviteEmail
 from crush.utils_email import send_mailgun_email
-from crush.utils import fb_fetch,graph_api_fetch, update_fb_fetch_cookie
+from crush.utils import graph_api_fetch, update_fb_fetch_cookie
 from django.db.models import Count
 from django.core.cache import cache
 # to allow app to run in facebook canvas without csrf error:

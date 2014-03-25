@@ -286,7 +286,7 @@ class FacebookUser(AbstractUser):
 
         except Exception as e:
             #print str(e)
-            logger.error("failed calling graph api fetch with me/friends and access code: " + self.access_token + " for user: " + self.username)
+            logger.error("failed calling graph api fetch with me/friends and access code: " + str(self.access_token) + " for user: " + str(self.username))
             raise e
 
         all_inactive_user_list = cache.get(settings.INACTIVE_USER_CACHE_KEY)         
