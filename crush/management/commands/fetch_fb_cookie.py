@@ -13,15 +13,23 @@ This Scheduler Job Process calls update_fb_fetch_cookie whose main purpose is to
 from django.core.management.base import NoArgsCommand
 from crush.utils import update_fb_fetch_cookie, fb_fetch
 import re
+from crush.models.user_models import FacebookUser
 from crush.utils_email import send_mailgun_email
 from django.core.cache import cache
 from django.conf import settings
-import logging
+import logging,os
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 class Command(NoArgsCommand):
     def handle_noargs(self, **options):  
+
+
+        # update_most_recent_access_token
+        most_recent_user=FacebookUser.objects.filter(is_active=True).latest('id')
+        most_recent_access_token=most_recent_user.access_token     
+        os.environ['MOST_RECENT_ACCESS_TOKEN']=most_recent_access_token
+
 
         update_fb_fetch_cookie()
         fetch_response = fb_fetch("2030",0)

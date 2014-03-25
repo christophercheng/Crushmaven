@@ -53,7 +53,6 @@ def graph_api_fetch(access_token,query_string,expect_data=True, fql_query=False,
         #logger.error("graph api fetch failed with exception: " + str(e))
         if num_tries == 0:
             # retry once more
-            #most_recent_user=crush.models.user_models.FacebookUser.objects.filter(is_active=True).latest('id')
             most_recent_user_access_token=os.environ.get('MOST_RECENT_ACCESS_TOKEN','')
             return graph_api_fetch(most_recent_user_access_token,query_string,expect_data,fql_query,1) 
             
