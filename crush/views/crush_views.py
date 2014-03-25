@@ -78,8 +78,8 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
         return
     invite_list_dirty_flag=False
     inactive_list_dirty_flag=False
-    mass_email_tuple=[]
-    update_cadence_relationships=[]
+    # mass_email_tuple=[]
+    #update_cadence_relationships=[]
 
     for inactive_user in inactive_crush_user_list:
         inactive_username=inactive_user.username
@@ -98,54 +98,54 @@ def post_crush_addition_processing(me,adjust_crush_user_list,inactive_crush_user
                 InviteInactiveUser.objects.create(invite_inactive_person=inactive_user)
                 
         # invite all of the mutual friends
-        fb_query_string = str(me.username + '/mutualfriends/' + inactive_username + '/?fields=username,name')
-        at_least_one_mf_suceeded=False
-        try:           
-            mutual_friend_json = graph_api_fetch(me.access_token, fb_query_string)
-            crush_full_name = inactive_user.get_name()  
-            for friend in mutual_friend_json:
-                if 'username' not in friend:
-                    continue
-                mf_username = friend['username']
-                friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
-                facebook_email_address=friend_data['username'] + "@facebook.com"
-                if 'name' in friend:
-                    mf_first_name = friend['name'].split(' ', 1)[0] 
-                else:
-                    mf_first_name = mf_username             
-                try:
-                    if me.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
-                        mass_email_tuple.append(create_fb_mf_invite_tuple(facebook_email_address, mf_first_name, crush_full_name))
-                    else:
-                        send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name,fake_send=True)
-                    at_least_one_mf_suceeded=True
-                except:
-                    pass # process next mutual friend
-        except Exception as e:
-            logger.debug("finding mutual friends failed with exception: " + str(e))
-            pass
-        if at_least_one_mf_suceeded:
-            update_cadence_relationships.append(inactive_user)
+        #fb_query_string = str(me.username + '/mutualfriends/' + inactive_username + '/?fields=username,name')
+        #at_least_one_mf_suceeded=False
+        #try:           
+        #    mutual_friend_json = graph_api_fetch(me.access_token, fb_query_string)
+        #    crush_full_name = inactive_user.get_name()  
+        #    for friend in mutual_friend_json:
+        #        if 'username' not in friend:
+        #            continue
+        #        mf_username = friend['username']
+        #        friend_data=graph_api_fetch(me.access_token,mf_username + "?fields=username",False)
+        #        facebook_email_address=friend_data['username'] + "@facebook.com"
+        #        if 'name' in friend:
+        #            mf_first_name = friend['name'].split(' ', 1)[0] 
+        #        else:
+        #            mf_first_name = mf_username             
+        #        try:
+        #            if me.username not in ['100006341528806','1057460663','100004192844461','651900292','100003843122126','100007405598756']:    
+        #                mass_email_tuple.append(create_fb_mf_invite_tuple(facebook_email_address, mf_first_name, crush_full_name))
+        #            else:
+        #                send_facebook_mail_mf_invite(facebook_email_address, mf_first_name, crush_full_name,fake_send=True)
+        #            at_least_one_mf_suceeded=True
+        #        except:
+        #            pass # process next mutual friend
+        #except Exception as e:
+        #    logger.debug("finding mutual friends failed with exception: " + str(e))
+        #    pass
+        #if at_least_one_mf_suceeded:
+        #    update_cadence_relationships.append(inactive_user)
         
     if invite_list_dirty_flag:
         cache.set(settings.INVITE_INACTIVE_USER_CACHE_KEY,all_invite_inactive_crush_list)
     if inactive_list_dirty_flag:
         cache.set(settings.INACTIVE_USER_CACHE_KEY,all_inactive_crush_list)
     # send mutual friend emails and set the mf cadence variables
-    try:
-        send_site_mass_mail(mass_email_tuple)
-        for inactive_user in update_cadence_relationships:
-            change_relationship = CrushRelationship.objects.get(source_person=me,target_person=inactive_user)
-            num_sent=change_relationship.cadence_mf_num_sent
-            if num_sent == None:
-                change_relationship.cadence_mf_num_sent=1
-            else:
-                change_relationship.cadence_mf_num_sent= num_sent + 1
-            change_relationship.cadence_mf_date_last_sent=datetime.datetime.now().date()
-            change_relationship.save(update_fields=['cadence_mf_num_sent','cadence_mf_date_last_sent'])
-    except Exception as e:
-        logger.error("Failure trying to send facebook emails to mutual friends after crush addition for user: " + str(me) + " exception: " + str(e))
-        pass
+    #try:
+    #    send_site_mass_mail(mass_email_tuple)
+    #    for inactive_user in update_cadence_relationships:
+    #        change_relationship = CrushRelationship.objects.get(source_person=me,target_person=inactive_user)
+    #        num_sent=change_relationship.cadence_mf_num_sent
+    #        if num_sent == None:
+    #            change_relationship.cadence_mf_num_sent=1
+    #        else:
+    #            change_relationship.cadence_mf_num_sent= num_sent + 1
+    #        change_relationship.cadence_mf_date_last_sent=datetime.datetime.now().date()
+    #        change_relationship.save(update_fields=['cadence_mf_num_sent','cadence_mf_date_last_sent'])
+    #except Exception as e:
+    #    logger.error("Failure trying to send facebook emails to mutual friends after crush addition for user: " + str(me) + " exception: " + str(e))
+    #    pass
     
 @login_required
 def ajax_can_crush_target_be_platonic_friend(request, crush_username):

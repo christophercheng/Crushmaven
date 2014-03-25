@@ -396,7 +396,8 @@ class CrushRelationship(BasicRelationship):
                 self.cadence_crush_num_sent = num_sent + 1
             if self.pk != None:
                 self.save(update_fields=['cadence_crush_num_sent','cadence_crush_date_last_sent'])
-        except:
+        except Exception as e:
+            logger.error('unable to notify inactive crush via facebook email: exception: ' + str(e) + ' for relationship: ' + str(self))
             pass 
                      
     def notify_source_person(self, send_time=None):
