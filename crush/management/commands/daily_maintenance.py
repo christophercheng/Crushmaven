@@ -146,9 +146,9 @@ def admirer_not_invited_crush_cadence():
             notify_person_username=relationship.source_person.username
             source_person_email=relationship.source_person.email
             email_type="other"
-            if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+            if 'hotmail' in source_person_email or 'live.com' in source_person_email or 'outlook' in source_person_email:
                 email_type="hotmail"
-            elif 'yahoo' in source_person_email:
+            elif 'yahoo' in source_person_email or 'ymail' in source_person_email:
                 email_type="yahoo"
             destination_url="missed_invite_tip/" + notify_person_username + "/" + relationship.source_person.first_name + "/" + email_type + "/"
             message="You must email invite your crush - click here to get their email address from Facebook."

@@ -202,9 +202,9 @@ def send_mail_missed_invite_tip(relationship):
         recipient_fb_username=relationship.source_person.username
         html_template = "email_template_missed_invite_tip_other.html"
         source_person_email=relationship.source_person.email
-        if 'hotmail' in source_person_email or 'live.com' in source_person_email:
+        if 'hotmail' in source_person_email or 'live.com' in source_person_email or 'outlook' in source_person_email:
             html_template = "email_template_missed_invite_tip_hotmail.html"
-        elif 'yahoo' in source_person_email:
+        elif 'yahoo' in source_person_email or 'ymail' in source_person_email:
             html_template = "email_template_missed_invite_tip_yahoo.html"
         #html=render_to_string('email_template_missed_invite_question.html',{'first_name':first_name,'crush_list':crush_list,'more_crushes_count':more_crushes_count,'STATIC_URL':STATIC_URL})
         text=render_to_string('email_template_missed_invite_tip_text.html',{'source_first_name':source_first_name,'STATIC_URL':STATIC_URL})

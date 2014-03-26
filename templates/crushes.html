@@ -290,18 +290,18 @@ $(".response_view_rating .help_icon").qtip({
 <div class="new_user_instructions invite_instructions">
 	<span class="instructions_title">You Unlikely Receive A Response Yet!</span>
 	<span class="instructions_subtitle1">Please find your crushes' emails and give them to us. We'll then send off an anonymous invite.</span>
-	{% if 'yahoo' in request.user.email %} 
+	{% if 'yahoo' in request.user.email or 'ymail' in request.user.email %} 
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into your Yahoo mail account. Here's how:</span>
-	{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email %}
+	{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email or 'outlook' in request.user.email %}
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into your Hotmail account. Here's how:</span>
 	{% else %}
 		<span style="color:#E00000" class="instructions_subtitle2">Facebook has all of your friends' emails.  The only way to see them is to 'import' them into a Yahoo mail account. Here's how:</span>	
 	{% endif %}
 	<div class="second_instruction_section">
-		{% if 'yahoo' in request.user.email %} 			
+		{% if 'yahoo' in request.user.email or 'ymail' in request.user.email %} 			
 		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_yahoo" style="font-weight:bold;" target="_blank" href="http://address.yahoo.com/?VPC=contact_import_landing">Yahoo Contacts Page</a><span class="external_link_icon">&nbsp;</span></span></div>
 		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to start email importing)</span></div>
-		{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email %}
+		{% elif 'hotmail' in request.user.email or 'live.com' in request.user.email or 'outlook' in request.user.email %}
 		<div class="instruction_step"><span class="help_icon2">1</span><span class="instruction_step_text">Go to your <a class="import_contacts_hotmail" target="_blank" href="http://people.live.com" style="font-weight:bold;">Hotmail Contacts Page</a><span class="external_link_icon">&nbsp;</span></span></div>			
 		<div class="instruction_step"><span class="help_icon2">2</span><span class="instruction_step_text">Click on the Facebook icon (to establish a Hotmail Facebook connection)</span></div>
 		<div class="instruction_step"><span class="help_icon2">3</span><span class="instruction_step_text">Wait a few moments, then refresh the contacts page and re-click the Facebook icon (to start email importing)</span></div>
