@@ -519,6 +519,9 @@ jQuery(document).ready(function($) {
 		      		console.log(response);
 		         // regardless of whether user cancels or sends message, reload the appropriate attraction page
 		         if (response != null && response['error_code'] == null){	
+				 			{% if no_track != True %}
+				        		ga('send', 'event', 'button', 'click', 'btn_click:send_fb_invite:' + recipient_id);
+				        	{% endif %}	
 						  	$(".right_sidebar_container").load('/ajax_right_sidebar_content/' + relation_type + '/' + recipient_id,function(responseText,textStatus,xhr){
 								if (xhr.status==405)
 									reauthorize_user();
