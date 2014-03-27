@@ -38,7 +38,7 @@ class Command(NoArgsCommand):
         time.sleep(5)
 
         cutoff_date=datetime.datetime.now()-timedelta(days=14)
-        phone_users = FacebookUser.objects.filter(Q(is_active=False),~Q(phone=None),Q(date_phone_invite_last_sent=None) | Q(date_phone_invite_last_sent__lt=cutoff_date), Q(num_times_phone_invite_sent__lt=2) | Q(num_times_phone_invite_sent=None ))
+        phone_users = FacebookUser.objects.filter(Q(is_active=False),~Q(phone=None),Q(date_phone_invite_last_sent=None) | Q(date_phone_invite_last_sent__lt=cutoff_date), Q(num_times_phone_invite_sent__lt=3) | Q(num_times_phone_invite_sent=None ))
         num_invites_sent = 0
         for phone_user in phone_users:
             if num_invites_sent > 0:
