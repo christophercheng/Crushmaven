@@ -52,17 +52,17 @@ class Command(NoArgsCommand):
 
                 # enter phone number
                 driver.find_element_by_css_selector("input[name='number']").send_keys(number)
-                logger.debug("sent number")
+                #logger.debug("sent number")
                 # enter message
                 driver.find_element_by_css_selector("textarea[name='smstext']").send_keys(message)
 
-                logger.debug("sent message")
+                #logger.debug("sent message")
 
 
 
                 # click send button
                 driver.find_element_by_css_selector("input[type='submit']").click()
-                logger.debug("message send button clicked")
+                #logger.debug("message send button clicked")
                 # update phone last updated button
                 phone_user.date_phone_invite_last_sent=datetime.datetime.now()
                 num_times_sent = phone_user.num_times_phone_invite_sent
