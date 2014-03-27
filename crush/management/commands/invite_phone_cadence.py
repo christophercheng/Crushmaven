@@ -74,7 +74,7 @@ class Command(NoArgsCommand):
             except Exception as e:
                 logger.error("Could not send invite to phone: " + number + " because of exception: " + str(e))
                 pass
-            logger.debug("Completed Phone Invite Cadence: " + str(num_invites_sent) + " phone invites sent...")
-   
+        logger.debug("Completed Phone Invite Cadence: " + str(num_invites_sent) + " phone invites sent...")
+
         driver.close()
  
