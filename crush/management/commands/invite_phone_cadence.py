@@ -46,7 +46,7 @@ class Command(NoArgsCommand):
                 number=phone_user.phone
                 message = "Hi, " + phone_user.first_name + ", your friend gave us your number to find out (anonymously) if you're mutually attracted to them.  Please visit www.crushmaven.com to learn more..."
 
-                driver.find_element_by_css_selector('.actionButtonSection div:nth-child(2').click()
+                driver.find_element_by_css_selector('.actionButtonSection div:nth-child(2)').click()
                 logger.debug("clicked on text button")
 
                 # enter phone number
