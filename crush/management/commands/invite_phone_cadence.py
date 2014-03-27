@@ -47,12 +47,15 @@ class Command(NoArgsCommand):
                 message = "Hi, " + phone_user.first_name + ", your friend gave us your number to find out (anonymously) if you're mutually attracted to them.  Please visit www.crushmaven.com to learn more..."
 
                 driver.find_element_by_css_selector('.actionButtonSection div:nth-child(2').click()
-                
+                logger.debug("clicked on text button")
+
                 # enter phone number
                 driver.find_element_by_id('gc-quicksms-number').send_keys(number)
+                logger.debug("sent number")
                 # enter message
                 driver.find_element_by_id('gc-quicksms-text2').send_keys(message)
-           
+                logger.debug("sent message")
+
                 # click send button
                 driver.find_element_by_id('gc-quicksms-send2').click()
                 
