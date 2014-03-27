@@ -122,6 +122,3 @@ def user_can_be_messaged(magic_cookie,username):
             return True
     except:
         return False
-
-        
- 
