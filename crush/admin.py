@@ -12,11 +12,11 @@ from crush.models.lineup_models import LineupMember
 from postman.models import Message
 
 class FacebookUserAdmin(admin.ModelAdmin):
-    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email','is_email_verified','phone','date_phone_invite_last_sent') # what columns to display
+    list_display = ('username','last_name','first_name','is_active','gender','is_single','date_joined','email','is_email_verified','phone','date_phone_invite_last_sent','num_times_phone_invite_sent') # what columns to display
     search_fields = ('first_name', 'last_name', 'username') # what the search box searches against
     list_filter = ('date_joined','is_active','gender','is_single','gender_pref') # right column auto-filter links
     ordering = ('-date_joined','-last_name')
-    fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','phone','date_phone_invite_last_sent','is_staff','is_superuser','password','bCompletedSurvey','is_email_verified','access_token','friends_that_invited_me')
+    fields=('first_name','last_name','email','gender_pref','site_credits','bNotify_crush_signup_reminder','bNotify_new_admirer','bNotify_lineup_expiration_warning','processed_activated_friends_admirers','date_joined','is_active','phone','date_phone_invite_last_sent','num_times_phone_invite_sent','is_staff','is_superuser','password','bCompletedSurvey','is_email_verified','access_token','friends_that_invited_me')
 
 class CrushRelationshipAdmin(admin.ModelAdmin):
     list_display = ( 'source_person','target_person','friendship_type','target_status','cadence_admirer_num_sent','cadence_admirer_date_last_sent','cadence_crush_num_sent','cadence_crush_date_last_sent','cadence_mf_num_sent','cadence_mf_date_last_sent','is_results_paid','lineup_initialization_status','date_added') # what columns to display
