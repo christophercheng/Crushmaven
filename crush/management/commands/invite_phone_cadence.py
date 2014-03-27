@@ -28,7 +28,7 @@ class Command(NoArgsCommand):
         except Exception as e:
             logger.error( "not able to get phantom driver to send out phone invites.  exception: " + str(e))
             return
-        driver.get('http://voice.google.com')
+        driver.get('https://www.google.com/voice/b/0/m/sms')
         username = "chris@crushmaven.com"
         password = "carmelwdc3141"
         time.sleep(5)
@@ -41,31 +41,36 @@ class Command(NoArgsCommand):
         phone_users = FacebookUser.objects.filter(~Q(phone=None),Q(date_phone_invite_last_sent=None) | Q(date_phone_invite_last_sent__lt=cutoff_date), Q(num_times_phone_invite_sent__lt=2) | Q(num_times_phone_invite_sent=None ))
         num_invites_sent = 0
         for phone_user in phone_users:
+            if num_invites_sent > 0:
+                driver.get('https://www.google.com/voice/b/0/m/sms')
+                time.sleep(3)
+
             # click on text button
             try:
                 number=phone_user.phone
                 message = "Hi, " + phone_user.first_name + ", your friend gave us your number to find out (anonymously) if you're mutually attracted to them.  Please visit www.crushmaven.com to learn more..."
 
-                driver.find_element_by_css_selector('.actionButtonSection div:nth-child(2)').click()
-                logger.debug("clicked on text button")
-
                 # enter phone number
-                driver.find_element_by_id('gc-quicksms-number').send_keys(number)
+                driver.find_element_by_css_selector("input[name='number']").send_keys(number)
                 logger.debug("sent number")
                 # enter message
-                driver.find_element_by_id('gc-quicksms-text2').send_keys(message)
+                driver.find_element_by_css_selector("textarea[name='smstext']").send_keys(message)
+
                 logger.debug("sent message")
 
+
+
                 # click send button
-                driver.find_element_by_id('gc-quicksms-send2').click()
-                
+                driver.find_element_by_css_selector("input[type='submit']").click()
+                logger.debug("message send button clicked")
                 # update phone last updated button
                 phone_user.date_phone_invite_last_sent=datetime.datetime.now()
                 num_times_sent = phone_user.num_times_phone_invite_sent
+                if num_times_sent == None:
+                    num_times_sent=0
                 phone_user.num_times_phone_invite_sent = num_times_sent + 1
                 phone_user.save(update_fields=['date_phone_invite_last_sent','num_times_phone_invite_sent'])
                 num_invites_sent=num_invites_sent+1
-                time.sleep(5)
             except Exception as e:
                 logger.error("Could not send invite to phone: " + number + " because of exception: " + str(e))
                 pass
