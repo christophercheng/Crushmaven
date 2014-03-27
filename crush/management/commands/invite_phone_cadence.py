@@ -48,7 +48,7 @@ class Command(NoArgsCommand):
             # click on text button
             try:
                 number=phone_user.phone
-                message = "Hi, " + phone_user.first_name + ", your friend gave us your number to find out (anonymously) if you're mutually attracted to them.  Please visit www.crushmaven.com to learn more..."
+                message = "Hi, " + phone_user.first_name + ", your friend gave us your number to find out (anonymously) if you're mutually attracted to them. Visit www.crushmaven.com to learn more."
 
                 # enter phone number
                 driver.find_element_by_css_selector("input[name='number']").send_keys(number)
