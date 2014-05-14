@@ -102,7 +102,7 @@ def run_email_cadence_program():
         admirer_not_invited_crush_cadence()
         
         logger.debug("emailing & FB messaging inactive crushes inviting them again")
-        inactive_crush_invite_cadence()  
+        #inactive_crush_invite_cadence()  
         
         logger.debug("FB messaging mutual friends of inactive crushes inviting them again")
         mf_of_inactive_crush_invite_cadence() # this won't work because google has a strict quota
