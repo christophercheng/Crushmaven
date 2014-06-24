@@ -125,7 +125,7 @@ jQuery(document).ready(function($) {
 	
 
 		   // Check the initial Poistion of the Sticky Header
-        var stickyHeaderTop = $('#qa_section').offset().top-47;
+        var stickyHeaderTop = $('#how_it_works_section').offset().top-47;
         var header_element = $('#guest_home_page .header');
         $(window).scroll(function(){
         		var header_top  = header_element.css('top');
@@ -219,38 +219,12 @@ jQuery(document).ready(function($) {
 </div> <!-- close off logo_section div -->
 <a href="#" class="scrolltop"><span id="up">up</a>
 
-<div id="qa_section" class="info_section">
-<div class="info_section_content">
-
-<span class="use_case_outer_border">
-		<span class="use_case_inner_border">
-			<span class="use_case_circle">More than just friends?</span>
-		</span>
-</span>
-<span class="use_case_outer_border">
-		<span class="use_case_inner_border">
-			<span class="use_case_circle ">Too risky to make a move?</span>
-		</span>
-</span>
-<span class="use_case_outer_border">
-		<span class="use_case_inner_border">
-			<span class="use_case_circle">In a relationship? Are they?</span>
-		</span>
-</span>
-<span class="use_case_box">
-<span class="use_case_outer_border">
-		<span class="use_case_inner_border">
-			<span class="use_case_circle">Stuck in friend zone?</span>
-		</span>
-</span>
-</div> <!-- end of info_section_content -->
-</div><!-- end of qa_section div -->
 
 <div id="how_it_works_section" class="info_section">
 	<div class="info_section_content">
 		<div class="info_section_title">How It Works</div>
 		<div class="info_column info_column1">
-		<img class="icon" src="{{ STATIC_URL }}images/crush_selection_opacity.png">
+		<img class="icon" src="{{ STATIC_URL }}images/crush_sel_white.png">
 			<div class="info_section_subtitle"><span class="step_number">1</span> Crush Selection</div>
 			<div class="info_section_text">Select a Facebook friend - or any Facebook user - you're attracted to.  We'll send them an anonymous invitation to sign in to CrushMaven. That's right, anonymous!</div>
 		</div> <!-- end of info_column1 -->
@@ -261,12 +235,14 @@ jQuery(document).ready(function($) {
 			<span id="show_lineup_screenshot"><span class="open_btn">view lineup example</span><div id="lineup_screenshot_container"><img src=""><div class="close_btn"></div></div></span>
 		</div> <!-- end of info_column2 -->
 		<div class="info_column info_column3">
-			<img class="icon" src="{{ STATIC_URL }}images/match_alert_white.png">
+			<img class="icon" src="{{ STATIC_URL }}images/match_alert_purple.png">
 			<div class="info_section_subtitle"><span class="step_number">3</span> Match Alert</div>
 			<div class="info_section_text">Your crush selects any lineup members they're attracted to.  If you're picked, we notify both parties. And your crush will think they chose you first!<BR><i>If not picked, we'll still let you know.</i></div>
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of how_it_works div -->
+
+
 
 <div id="who_it_works_on_section"class="info_section">
 	<div class="info_section_content">
@@ -288,6 +264,7 @@ jQuery(document).ready(function($) {
 		</div> <!-- end of info_column3 -->
 	</div> <!-- end of info_section_content -->
 </div><!-- end of who_it_works_on div -->
+
 
 <div id="who_will_know_section"class="info_section">
 	<div class="info_section_content">
