@@ -510,7 +510,7 @@ div#how_it_works_section .info_section_text {
 	margin-top:5px;
 	color:white;
 	color:#E9E9E9;
-	color:#372050;
+	color:#000;
 	padding-bottom:11px;
 	-webkit-font-smoothing: antialiased;
 	line-height:34px;
@@ -585,6 +585,7 @@ div#who_it_works_on_section .info_section_text{
 	padding:5px 12px 0px 16px;
 	border-bottom:1px solid #DADADA;
 	box-shadow:0px 1px 1px #fff;
+	color:#191919;
 }
 
 div#who_it_works_on_section .info_row3 .info_section_text{
