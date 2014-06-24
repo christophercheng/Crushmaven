@@ -563,7 +563,7 @@ div#who_it_works_on_section .info_section_subtitle {
 
 div#who_it_works_on_section .info_section_title {
 	#color:#3b5998;
-	color:#09ABE8;
+	#color:#09ABE8;
 	font-size:39px;
 	margin-top:-10px;
 	margin-bottom:45px;	
@@ -611,7 +611,7 @@ div#who_will_know_section {
 div#who_will_know_section .info_section_title {
 	#color:#ff0000;
 	#color:#09abe8;
-	color:#09ABE8;
+	#color:#09ABE8;
 	#color:#6F40A0;
 	margin-left:-74px;
 	text-align:center;
@@ -620,10 +620,10 @@ div#who_will_know_section .info_section_title {
 	margin-bottom:45px;
 }
 div#who_will_know_section .info_section_subtitle {
-	color:#ff0000;
+	#color:#ff0000;
 	#color:#09abe8;
-	color:#9A3F98;
-	color:#6F40A0;
+	color:#3b5998;
+	#color:#6F40A0;
 	margin-right:8px;
 	font-size:20px;
 }
@@ -633,7 +633,8 @@ div#who_will_know_section .info_section_subtitle {
 	white-space:nowrap;
 }
 div#who_will_know_section a {
-	color:#09abe8;
+	#color:#09abe8;
+	color:#372050;
 }
 #guest_page #who_will_know_section a {
 	color:silver;
