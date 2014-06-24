@@ -536,27 +536,23 @@ div#who_it_works_on_section {
 }
 
 div#who_it_works_on_section .icon{
-	height:52px;
-	height:82px;
-	margin-bottom:5px;
+	height:50px;
+	margin-bottom:0px;
 	display:block;
-	margin-right:15px;
-	vertical-align:bottom;
-	text-align:center;
-	margin-left:392px;
 }
+
 div#who_it_works_on_section .icon1{
-	margin-left:403px;
+	margin-left:413px;
 }
 #guest_page #who_it_works_on_section .icon2{
-	margin-left:380px;
+	#margin-left:380px;
 }
 div#who_it_works_on_section .icon2{
-	margin-left:383px;
+	margin-left:398px;
 }
 
 div#who_it_works_on_section .icon3{
-	margin-left:353px;
+	margin-left:377px;
 }
 
 div#who_it_works_on_section .info_section_subtitle {
@@ -568,8 +564,8 @@ div#who_it_works_on_section .info_section_subtitle {
 	padding:15px 25px 0px 15px;
 	text-align:center;
 	width:495px!important;
-	margin-left:220px!important;
-	#margin-top:15px;
+	margin-left:210px!important;
+	margin-top:0px;
 }
 
 div#who_it_works_on_section .info_section_title {
@@ -578,7 +574,7 @@ div#who_it_works_on_section .info_section_title {
 	font-size:39px;
 	margin-top:-10px;
 	margin-bottom:45px;	
-	margin-left:-70px;
+	margin-left:-80px;
 	text-align:center;
 	font-size:39px;
 	margin-top:-15px;
