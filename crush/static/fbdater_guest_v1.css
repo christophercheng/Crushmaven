@@ -452,10 +452,18 @@ div#how_it_works_section {
 		border-bottom:1px solid rgb(212,212,212);
 		height:25px;
 	}
+#how_it_works_section .info_section_content {
+	border-bottom:none;
+}
+	
+#guest_page #how_it_works_section {
+	padding-bottom:500px!important;
+	padding-top:40px!important;
+}
 
 #guest_page #how_it_works_section .info_section_title {
 	text-shadow:none;
-	margin-bottom:20px!important;
+	margin-bottom:50px!important;
 
 }
 #guest_page .singles_step_title{
@@ -538,7 +546,10 @@ div#who_it_works_on_section .icon{
 	margin-left:392px;
 }
 div#who_it_works_on_section .icon1{
-	margin-left:402px;
+	margin-left:403px;
+}
+#guest_page #who_it_works_on_section .icon2{
+	margin-left:380px;
 }
 div#who_it_works_on_section .icon2{
 	margin-left:383px;
