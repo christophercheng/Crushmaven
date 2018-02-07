@@ -26,7 +26,9 @@ THE LINEUP'S SOCIAL ALGORITHM:
 There are many more considerations that were programmed into the creation of a line-up in order to protect the identity
 or the originator of the crush, in case the attraction wasn't mutual.  In addition, lineup users were selected with the intent that new attractions would be discovered.  (This was the key viral growth ingredient.)
 
-The timing of the notifications is played with in order to obfuscate who originated the attraction. If both the original user and their crush had a mutual attraction, then the timing of the notification could be delayed in order to give the crush the sense that they initiated the mutual attraction, when in reality, it was the other way around.
+Here are a few examples of the lineup algorithm: 
+
+If both the original user and their crush had a mutual attraction, then the timing of the notifications could be delayed in order to give the crush target the sense that they initiated the mutual attraction and were waiting to find out if the attraction was mutual.  In reality, they were the target of the attraction and not the other way around.
 
 The selection of users in the lineup was carefully crafted to also obfuscate the originater or the attraction.  For example: if the crush was friends-of-friends but not a direct facebook friend of the user, then all of the lineup members would also have to be friends-of-friends.  Two other connection based relationships were programmed for: direct friends and users who don't have any mutual friends between them.
 
@@ -35,8 +37,7 @@ The selection of users in the lineup was carefully crafted to also obfuscate the
 TECHNOLOGY IMPLEMENTED: CrushMaven was built on the Django/Python framework. 
 
 It utilized a PostgreSQL and Memcached on backend and Jquery / Javscript on the front-end.
-It also utilized python multi-threading in order to efficiently parse various facebook friends' lists in special
-situations when those lists were only available by scraping public friend list pages.  (this may no longer be possible).
+It also utilized python multi-threading in order to efficiently parse the public facebook friends' lists pages in situations when those lists were only available through web page scraping (and not through the facebook GraphQL API), e.g. to determine friend-of-fiends.  Note, this functionality has most likely been prohibited by Facebook in recent years.
 
 The social algorithms were implemented inside of Django views.  Interactivity on the front-end were implemented with client side Jquery Javascript and Ajax calls.
 
