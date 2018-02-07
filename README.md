@@ -68,7 +68,7 @@ Note: all of the javscript functionality was written before I  understood how to
 
 3.  There are zero unit tests.  Again, this goes back to the hurried MVP approach.  But if I had to built this in 2018, particularly with a front-end framework like React, I would have included unit tests built on a simple testing framework like Jest/Enzyme.
 
-4.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.
+4.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.  It is also not-responsive.  If re-written today, I would probably expirement utilizing a CSS grid to implement reponsiveness.
 
 Luckily, the django framework and it's separated organization of code by concern e.g. views vs models, helped organize much of the back-end code.
 
