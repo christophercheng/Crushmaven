@@ -36,7 +36,7 @@ The selection of users in the lineup was carefully crafted to also obfuscate the
 
 TECHNOLOGY IMPLEMENTED: CrushMaven was built on the Django/Python framework. 
 
-It utilized a PostgreSQL and Memcached on backend and Jquery / Javscript on the front-end.
+It utilized a PostgreSQL database and Memcached caching on backend and Jquery / Javscript on the front-end.
 
 The social algorithms were implemented inside of Django views.  Interactivity on the front-end were implemented with client side Jquery Javascript and Ajax calls.
 
