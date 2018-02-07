@@ -21,7 +21,9 @@ e.g. demographics like age, location, recent friendships, likes, etc.
 
 The result of that facebook analsyis was a crush LINEUP: A lineup consists of 10 people that the crush would be asked to individually consider if were attracted to. Prior to, they were informed that at least one person in the lineup was already attracted to them.
 
-They were notified if any of their marked attractions was mutually attracted to them.
+They were notified if any of their marked attractions was mutually attracted to them.  And they could send messages to one another within the site.
+
+Note: Beginning in 2017, OkCupid has since implemented a similar line-up feature when a user receives a new like.  The user is notified that one of the a handful of users likes them, and they are given the chance to select any they find attractive.  It's currently known as "Double-take".
 
 ---
 THE LINEUP'S SOCIAL ALGORITHM:
