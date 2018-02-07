@@ -18,7 +18,7 @@ e.g. demographics like age, location, recent friendships, likes, etc.
 
 The result of that facebook analsyis was a crush LINEUP: A lineup consists of 10 people that the crush would be asked to individually consider if were attracted to. Prior to, they are informed that at least one person in the lineup is already attracted to them.
 
-They are notified if any of their marked attractions is mutually attracted to them.
+They were notified if any of their marked attractions was mutually attracted to them.
 
 ---
 THE LINEUP'S SOCIAL ALGORITHM:
