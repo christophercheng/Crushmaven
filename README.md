@@ -54,4 +54,20 @@ CrushMaven was able to effectively parse the paginated pages of the public frien
 
 Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
 
+---
+
+Code Architecture and Implementation Flaws:
+
+There were many.  The entire application was built in a hurried MVP approach with the intent of being completely re-built if the business took off.  Here is just a sampling of the problems with this site:
+
+1.  The Jquery javascript front end code is a complete mess.  If this were re-written in 2018, a front-end framework like React would be used.  
+
+Note: all of the javscript functionality was written before I  understood how to program in a functional programming language and how to utilize the related features of Javascript, in particular how functions act as first class citizens.  
+
+2.  The single responsibility principle was abused all over the place.  Functions are unnecessarily long and contain too many unrleated purposes.
+
+3.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.
+
+Luckily, the django framework and it's separated organization of code by concern e.g. views vs models, helped organize much of the back-end code.
+
 
