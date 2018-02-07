@@ -30,7 +30,7 @@ Here are a few examples of the lineup algorithm:
 
 If both the original user and their crush had a mutual attraction, then the timing of the notifications could be delayed in order to give the crush target the sense that they initiated the mutual attraction and were waiting to find out if the attraction was mutual.  In reality, they were the target of the attraction and not the other way around.
 
-The selection of users in the lineup was carefully crafted to also obfuscate the originater or the attraction.  For example: if the crush was friends-of-friends but not a direct facebook friend of the user, then all of the lineup members would also have to be friends-of-friends.  Two other connection based relationships were programmed for: direct friends and users who don't have any mutual friends between them.
+The selection of users in the lineup was carefully crafted to also obfuscate the originater of the attraction.  For example: if the crush was friends-of-friends but not a direct facebook friend of the user, then all of the lineup members would also have to be friends-of-friends.  Two other connection based relationships were programmed for: direct friends and users who don't have any mutual friends between them.
 
 ---
 
