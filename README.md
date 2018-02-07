@@ -24,7 +24,7 @@ They were notified if any of their marked attractions was mutually attracted to 
 THE LINEUP'S SOCIAL ALGORITHM:
 
 There were many considerations that were programmed into the creation of a line-up in order to protect the identity
-or the originator of the crush, in case the attraction wasn't mutual.  In addition, lineup users were selected with the intent that new attractions would be discovered.  (This was the key viral growth ingredient.)
+of the originator of the crush, in case the attraction wasn't mutual.  In addition, lineup users were selected with the intent that new attractions would be discovered.  (This was the key viral growth ingredient.)
 
 Here are a few examples of the lineup algorithm: 
 
