@@ -48,6 +48,8 @@ Python Multi-threading was utilized for the Facebook hack:
 
 THE FACEBOOK HACK:
 
-CrushMaven utilized python multi-threading in order to efficiently parse the public facebook friends' lists pages in situations when those lists were only available through web page scraping (and not through the facebook GraphQL API), e.g. to determine friend-of-fiends. This type of data scraping was protected by Facebook, but I found a backdoor REST API endpoint that exposed this data.  In order to call this endpoint as many times as I needed to, I had to refresh a cookie that I obtained by mocking as a new browser user on a frequent basis.  Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
+CrushMaven relied on a Facebook hack in order to build the lineups of users who were friends-of-friends with their crush.  At the time, Facebook, limited what friendship data could be obtained (most likely for privacy reasons).  In order to find other friends-of-friends to populate a linup with, CrushMaven could not rely on the Facebook GraphQL API.  Instead it had to parse the paginated pages of the public friends lists for both users.  This required  python multi-threading in order to efficiently run.  But they key obstacle was that this type of data scraping was prohibited and blocked by Facebook.  However, I found a backdoor deprecated REST API endpoint that exposed this data.  In order to call this endpoint as many times as I needed to (and not get blocked), I had to utilize a cookie that I continually refreshed and swapped out by mocking as a new browser user on a frequent basis.  
+
+Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
 
 
