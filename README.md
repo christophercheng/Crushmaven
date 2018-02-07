@@ -66,7 +66,9 @@ Note: all of the javscript functionality was written before I  understood how to
 
 2.  The single responsibility principle was abused all over the place.  Functions are unnecessarily long and contain too many unrlelated purposes.
 
-3.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.
+3.  There are zero unit tests.  Again, this goes back to the hurried MVP approach.  But if I had to built this in 2018, particularly with a front-end framework like React, I would have included unit tests built on a simple testing framework like Jest/Enzyme.
+
+4.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.
 
 Luckily, the django framework and it's separated organization of code by concern e.g. views vs models, helped organize much of the back-end code.
 
