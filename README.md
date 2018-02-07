@@ -16,7 +16,7 @@ Crushmaven users identified the facebook profiles of users they were attracted t
 Once signed up, the facebook data of the user, their crush, and the relationship between them was analyzed
 e.g. demographics like age, location, recent friendships, likes, etc.
 
-The result of that facebook analsyis was a crush LINEUP: A lineup consists of 10 people that the crush would be asked to individually consider if were attracted to. Prior to, they are informed that at least one person in the lineup is already attracted to them.
+The result of that facebook analsyis was a crush LINEUP: A lineup consists of 10 people that the crush would be asked to individually consider if were attracted to. Prior to, they were informed that at least one person in the lineup was already attracted to them.
 
 They were notified if any of their marked attractions was mutually attracted to them.
 
