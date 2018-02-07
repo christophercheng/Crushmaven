@@ -43,7 +43,9 @@ It utilized a PostgreSQL database and Memcached caching on backend and Jquery / 
 
 The social algorithms were implemented inside of Django views.  Interactivity on the front-end were implemented with client side Jquery Javascript and Ajax calls.
 
-3rd Party integrations included the Facebook (GraphQL, Facebook Oath2 User Authentication), PayPal for payments.
+3rd Party integrations included Facebook (GraphQL, Facebook Oath2 User Authentication) and PayPal for payments.
+
+Hosting was set up on Heroku.
 
 Python Multi-threading was utilized for the Facebook hack:
 
