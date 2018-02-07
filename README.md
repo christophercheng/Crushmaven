@@ -64,7 +64,7 @@ There were many.  The entire application was built in a hurried MVP approach wit
 
 Note: all of the javscript functionality was written before I  understood how to program in a functional programming language and how to utilize the related features of Javascript, in particular how functions act as first class citizens.  
 
-2.  The single responsibility principle was abused all over the place.  Functions are unnecessarily long and contain too many unrleated purposes.
+2.  The single responsibility principle was abused all over the place.  Functions are unnecessarily long and contain too many unrlelated purposes.
 
 3.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.
 
