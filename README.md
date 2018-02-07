@@ -37,8 +37,17 @@ The selection of users in the lineup was carefully crafted to also obfuscate the
 TECHNOLOGY IMPLEMENTED: CrushMaven was built on the Django/Python framework. 
 
 It utilized a PostgreSQL and Memcached on backend and Jquery / Javscript on the front-end.
-It also utilized python multi-threading in order to efficiently parse the public facebook friends' lists pages in situations when those lists were only available through web page scraping (and not through the facebook GraphQL API), e.g. to determine friend-of-fiends.  Note, this functionality has most likely been prohibited by Facebook in recent years.
 
 The social algorithms were implemented inside of Django views.  Interactivity on the front-end were implemented with client side Jquery Javascript and Ajax calls.
 
 3rd Party integrations included the Facebook (GraphQL, Facebook Oath2 User Authentication), PayPal for payments.
+
+Python Multi-threading was utilized for the Facebook hack:
+
+---
+
+THE FACEBOOK HACK:
+
+CrushMaven utilized python multi-threading in order to efficiently parse the public facebook friends' lists pages in situations when those lists were only available through web page scraping (and not through the facebook GraphQL API), e.g. to determine friend-of-fiends. This type of data scraping was protected by Facebook, but I found a backdoor REST API endpoint that exposed this data.  In order to call this endpoint as many times as I needed to, I had to refresh a cookie that I obtained by mocking as a new browser user on a frequent basis.  Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
+
+
