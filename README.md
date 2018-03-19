@@ -5,7 +5,7 @@ Development Site URL: http://crushmaven.herokuapp.com/
 
 WHAT WAS CRUSHMAVEN:
 
-CrushMaven.com was a social algorithm / social experiment implemented as a facebook powered dating site.
+CrushMaven.com was a social algorithm / experiment that explored romantic relationships a user might already have within their personal or professional networks.
 
 It was launched in 2013 and was shut down in 2014 after failing to generate sufficient market traction.
 
@@ -41,7 +41,7 @@ The selection of users in the lineup was carefully crafted to also obfuscate the
 
 TECHNOLOGY IMPLEMENTED: CrushMaven was built on the Django/Python framework. 
 
-It utilized a PostgreSQL database and Memcached caching on backend and Jquery / Javscript on the front-end.
+It utilized a PostgreSQL database and Memcached caching on backend and Django templates with Jquery / Javscript on the front-end.
 
 The social algorithms were implemented inside of Django views.  Interactivity on the front-end were implemented with client side Jquery Javascript and Ajax calls embedded inside Django's templates.
 
@@ -49,7 +49,7 @@ The social algorithms were implemented inside of Django views.  Interactivity on
 
 Hosting was set up on Heroku.
 
-Python Multi-threading was utilized for the Facebook hack:
+Python multi-threading was utilized for the Facebook hack:
 
 ---
 
@@ -57,7 +57,7 @@ THE FACEBOOK HACK:
 
 CrushMaven relied on a Facebook hack in order to build the lineups of users who were friends-of-friends with their crush.  At the time, Facebook limited what friendship data could be obtained through its Graph API (most likely for privacy reasons).  It also prohibited data scraping of public data by detecting and blocking parsing agents. The Crushmaven facebook hack overcame this hurdle.
 
-CrushMaven was able to effectively parse the paginated pages of the public friends lists for most users. The key was going through a backdoor and utilizing an unpublished REST API endpoint that exposed this data. (This API endpoint was used as part of ajax calls to dynamically load friends into mobile facebook pages while a user scrolled through a friends list.)  This required python multi-threading in order to efficiently run.  And in order to call this endpoint as many times as I needed to (and not get blocked), I had to utilize a cookie that I had to continually refresh.  Essentially I was mocking as a new, different browser user on a frequent basis.  
+CrushMaven was able to effectively parse the paginated pages of the public friends lists for most users. The key was going through a backdoor and utilizing an unpublished REST API endpoint that exposed this data. (This API endpoint was used as part of ajax calls to dynamically load friends into mobile facebook pages while a user scrolled through a friends list.)  This required python multi-threading in order to efficiently run.  And in order to call this endpoint as many times as I needed to (and not get blocked), I had to utilize a cookie that I programatically refreshed by using an in-memory browser agent.  Essentially I was mocking as a new, different browser user on a frequent basis.  
 
 Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
 
@@ -75,8 +75,6 @@ Note: all of the javscript functionality was written before I  understood how to
 
 3.  There are zero unit tests.  Again, this goes back to the hurried MVP approach.  But if I had to built this in 2018, particularly with a front-end framework like React, I would have included unit tests built on a simple testing framework like Jest/Enzyme.
 
-4.  The CSS styling did not use any newer CSS technologies like SASS.  It is also a complete mess with an over-abundance of !important declarations.  It is also not-responsive.  If re-written today, I would probably expirement utilizing a CSS grid to implement reponsiveness.
+4.  The CSS stylesheet is a complete mess with an over-abundance of !important declarations and selector specificity.  It is also not-responsive.  If re-written today, I would utilize SASS, a class-naming structure like BEM, responsive CSS techniques like built-in CSS display properties e.g. flexbox and grid.  And if using React perhaps mix in CSS modules and various CSS-in-JS styling techniques.
 
 Luckily, the django framework and it's separated organization of code by concern e.g. views vs models, helped organize much of the back-end code.
-
-
