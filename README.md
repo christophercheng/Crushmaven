@@ -1,13 +1,13 @@
 # Crushmaven
-2013 CrushMaven.com Facebook Dating Site
+2013 CrushMaven.com Facebook Social Algorithm / Match-making Application
 
 Development Site URL: http://crushmaven.herokuapp.com/
 
 WHAT WAS CRUSHMAVEN:
 
-CrushMaven.com was a social algorithm / experiment that explored romantic relationships a user might already have within their personal or professional networks.
+CrushMaven.com was a social algorithm / match-making experiment that explored romantic relationships a user might already have within their personal or professional networks.
 
-It was launched in 2013 and was shut down in 2014 after failing to generate sufficient market traction.
+It was launched in 2013 and was shut down in 2015 after failing to generate sufficient market traction.
 
 CrushMaven, unlike traditional online dating sites, was geared towards people who already knew someone they were attracted to i.e. a crush. These users may have shared a friendship with their crush, were co-workers, or were already in another relationship.  Irregardless, they were uncomfortable 'making a move' and revealing their intentions unless they knew their attraction was mutual.
 
