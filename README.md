@@ -3,8 +3,6 @@
 
 Development Site URL: http://crushmaven.herokuapp.com/
 
-WHAT WAS CRUSHMAVEN:
-
 CrushMaven.com was a social algorithm / match-making experiment that explored romantic relationships a user might already have within their personal or professional networks.
 
 It was launched in 2013 and was shut down in 2015 after failing to generate sufficient market traction.
