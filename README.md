@@ -7,9 +7,17 @@ CrushMaven.com was a social algorithm / match-making experiment that explored ro
 
 It was launched in 2013 and was shut down in 2015 after failing to generate sufficient market traction.
 
-CrushMaven, unlike traditional online dating sites, was geared towards people who already knew someone they were attracted to i.e. a crush. These users may have shared a friendship with their crush, were co-workers, or were already in another relationship.  Irregardless, they were uncomfortable 'making a move' and revealing their intentions unless they knew their attraction was mutual.
+CrushMaven, unlike traditional online dating sites, was geared towards people who already knew someone they were attracted to i.e. a crush. These users may have shared a friendship with their crush, were co-workers, or were already in another relationship.  Irregardless, they were uncomfortable 'making a move' and revealing their intentions.
 
-# HOW IT WORKED:
+## The Social Algorithm
+
+The app's social algorithm presupposes the following: 
+1) people are more likely to act on an attraction if they know that attraction is mutual
+2) people may realize they are attracted to someone -- who they previously were not attracted to -- if they know that person is attracted to them.
+
+# The Details
+
+## How It Worked
 
 Crushmaven users identified the facebook profiles of users they were attracted to. They were asked to provide information that Crushmaven could use to help get those people signed up (e.g. email, phone number, twitter account, etc.)
 
@@ -22,7 +30,7 @@ They were notified if any of their marked attractions was mutually attracted to 
 
 Note: Beginning in 2017, OkCupid has since implemented a similar line-up feature when a user receives a new like.  The user is notified that one of a handful of users likes them. They are given the chance to select any that they find attractive, and they are notified if the feeling is mutual.  It's currently known as "Double-take".
 
-# THE LINEUP'S SOCIAL ALGORITHM:
+## The Lineup & Social Algorithm
 
 There were many considerations that were programmed into the creation of a line-up in order to protect the identity
 of the originator of the crush, in case the attraction wasn't mutual.  In addition, lineup users were selected with the intent that new attractions would be discovered.  (This was the key viral growth ingredient.)
@@ -33,7 +41,11 @@ If both the original user and their crush had a mutual attraction, then the timi
 
 The selection of users in the lineup was carefully crafted to also obfuscate the originater of the attraction.  For example: if the crush was friends-of-friends but not a direct facebook friend of the user, then all of the lineup members would also have to be friends-of-friends.  Two other connection based relationships were programmed for: direct friends and users who don't have any mutual friends between them.
 
-# TECHNOLOGY IMPLEMENTED: CrushMaven was built on the Django/Python framework. 
+# TECHNOLOGY 
+
+## Technology Overview
+
+CrushMaven was built on the Django/Python framework. 
 
 It utilized a PostgreSQL database and Memcached caching on backend and Django templates with Jquery / Javscript on the front-end.
 
@@ -45,7 +57,7 @@ Hosting was set up on Heroku.
 
 Python multi-threading was utilized for the Facebook hack:
 
-## THE FACEBOOK HACK:
+## The Facebook Hack
 
 CrushMaven relied on a Facebook hack in order to build the lineups of users who were friends-of-friends with their crush.  At the time, Facebook limited what friendship data could be obtained through its Graph API (most likely for privacy reasons).  It also prohibited data scraping of public data by detecting and blocking parsing agents. The Crushmaven facebook hack overcame this hurdle.
 
@@ -53,7 +65,7 @@ CrushMaven was able to effectively parse the paginated pages of the public frien
 
 Note, this functionality has most likely been prohibited and sealed off by Facebook in recent years.  But it worked great when it did :-)
 
-# Code Architecture and Implementation Flaws:
+## Code Architecture and Implementation Flaws:
 
 There were many.  The entire application was built in a hurried MVP approach with the intent of being completely re-built if the business took off.  Here is just a sampling of the problems with this site:
 
